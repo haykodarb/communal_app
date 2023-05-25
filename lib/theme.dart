@@ -38,6 +38,7 @@ final ElevatedButtonThemeData _elevatedButtonThemeData = ElevatedButtonThemeData
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10),
     ),
+    minimumSize: const Size.fromHeight(60),
   ),
 );
 
@@ -54,6 +55,7 @@ final OutlinedButtonThemeData _outlinedButtonThemeData = OutlinedButtonThemeData
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10),
     ),
+    minimumSize: const Size.fromHeight(60),
   ),
 );
 

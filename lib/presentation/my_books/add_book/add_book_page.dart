@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:biblioteca/presentation/common/text_field.dart';
-import 'package:biblioteca/presentation/mybooks/addbook/addbook_controller.dart';
+import 'package:biblioteca/presentation/my_books/add_book/add_book_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

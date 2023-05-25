@@ -3,8 +3,10 @@ import 'package:biblioteca/routes.dart';
 import 'package:get/get.dart';
 
 class ScaffoldController extends GetxController {
-  void goToMyBooks() {
-    Get.offAllNamed(RouteNames.myBooksPage);
+  void goToRoute(String routeName) {
+    if (Get.currentRoute != routeName) {
+      Get.offAllNamed(routeName);
+    }
   }
 
   void handleLogout() {

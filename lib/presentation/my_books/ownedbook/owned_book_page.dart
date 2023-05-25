@@ -1,5 +1,5 @@
 import 'package:biblioteca/backend/books_backend.dart';
-import 'package:biblioteca/presentation/mybooks/book/ownedbook_controller.dart';
+import 'package:biblioteca/presentation/my_books/ownedbook/owned_book_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 

@@ -32,33 +32,33 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 100,
-      child: TextFormField(
-        validator: widget.validator,
-        cursorColor: Theme.of(context).colorScheme.primary,
-        onChanged: widget.callback,
-        controller: controller,
-        obscureText: widget.isPassword && !isVisible,
-        minLines: widget.minLines,
-        maxLines: widget.maxLines,
-        maxLength: widget.maxLength,
-        decoration: InputDecoration(
-          suffixIcon: widget.isPassword
-              ? IconButton(
-                  icon: Icon(
-                    isVisible ? Icons.visibility : Icons.visibility_off,
-                    color: isVisible ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.primary,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      isVisible = !isVisible;
-                    });
-                  },
-                )
-              : null,
-          label: Text(widget.label),
+    return TextFormField(
+      validator: widget.validator,
+      cursorColor: Theme.of(context).colorScheme.primary,
+      onChanged: widget.callback,
+      controller: controller,
+      obscureText: widget.isPassword && !isVisible,
+      minLines: widget.minLines,
+      maxLines: widget.maxLines,
+      maxLength: widget.maxLength,
+      decoration: InputDecoration(
+        suffixIcon: widget.isPassword
+            ? IconButton(
+                icon: Icon(
+                  isVisible ? Icons.visibility : Icons.visibility_off,
+                  color: isVisible ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.primary,
+                ),
+                onPressed: () {
+                  setState(() {
+                    isVisible = !isVisible;
+                  });
+                },
+              )
+            : null,
+        label: Text(
+          widget.label,
         ),
+        alignLabelWithHint: true,
       ),
     );
   }

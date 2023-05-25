@@ -1,8 +1,10 @@
+import 'package:biblioteca/presentation/communities/communities_page.dart';
+import 'package:biblioteca/presentation/communities/create_community/create_community_page.dart';
 import 'package:biblioteca/presentation/dashboard/dashboard_page.dart';
 import 'package:biblioteca/presentation/login/login_page.dart';
-import 'package:biblioteca/presentation/mybooks/addbook/addbook_page.dart';
-import 'package:biblioteca/presentation/mybooks/book/ownedbook_page.dart';
-import 'package:biblioteca/presentation/mybooks/mybooks_page.dart';
+import 'package:biblioteca/presentation/my_books/add_book/add_book_page.dart';
+import 'package:biblioteca/presentation/my_books/ownedbook/owned_book_page.dart';
+import 'package:biblioteca/presentation/my_books/my_books_page.dart';
 import 'package:biblioteca/presentation/register/register_page.dart';
 import 'package:biblioteca/presentation/start/start_page.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
@@ -64,5 +66,15 @@ List<GetPage> routes() => <GetPage>[
         name: RouteNames.ownedBookPage,
         transition: Transition.downToUp,
         page: () => const OwnedBookPage(),
+      ),
+      GetPage<dynamic>(
+        name: RouteNames.communitiesPage,
+        transition: Transition.noTransition,
+        page: () => const CommunitiesPage(),
+      ),
+      GetPage<dynamic>(
+        name: RouteNames.createCommunityPage,
+        transition: Transition.downToUp,
+        page: () => const CreateCommunityPage(),
       ),
     ];

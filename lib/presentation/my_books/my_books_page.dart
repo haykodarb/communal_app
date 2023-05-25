@@ -1,7 +1,7 @@
 import 'package:biblioteca/backend/books_backend.dart';
 import 'package:biblioteca/models/book.dart';
 import 'package:biblioteca/presentation/common/scaffold_drawer/scaffold_drawer.dart';
-import 'package:biblioteca/presentation/mybooks/mybooks_controller.dart';
+import 'package:biblioteca/presentation/my_books/my_books_controller.dart';
 import 'package:biblioteca/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

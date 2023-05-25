@@ -1,4 +1,5 @@
 import 'package:biblioteca/presentation/common/scaffold_drawer/scaffold_controller.dart';
+import 'package:biblioteca/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -113,12 +114,12 @@ class ScaffoldDrawer extends StatelessWidget {
                         _drawerButton(
                           text: 'My Books',
                           icon: Icons.menu_book,
-                          callback: controller.goToMyBooks,
+                          callback: () => controller.goToRoute(RouteNames.myBooksPage),
                         ),
                         _drawerButton(
                           text: 'Communities',
                           icon: Icons.people_alt_outlined,
-                          callback: () {},
+                          callback: () => controller.goToRoute(RouteNames.communitiesPage),
                         ),
                         _drawerButton(
                           text: 'Logout',
