@@ -29,8 +29,10 @@ class MyBooksController extends GetxController {
     final BackendReponse response = await BooksBackend.getAllBooks();
     loading.value = false;
 
-    userBooks.value = response.payload;
-    userBooks.refresh();
+    if (response.success) {
+      userBooks.value = response.payload;
+      userBooks.refresh();
+    }
   }
 
   Future<void> goToAddBookPage() async {

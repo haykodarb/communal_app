@@ -72,7 +72,7 @@ List<GetPage> routes() => <GetPage>[
         transition: Transition.noTransition,
         page: () => const CommunitiesPage(),
       ),
-      GetPage<dynamic>(
+      GetPage<bool>(
         name: RouteNames.createCommunityPage,
         transition: Transition.downToUp,
         page: () => const CreateCommunityPage(),

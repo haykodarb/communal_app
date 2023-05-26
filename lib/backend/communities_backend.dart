@@ -3,6 +3,45 @@ import 'package:biblioteca/models/community.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CommunitiesBackend {
+  static Future<BackendReponse> getCommunitiesForUser() async {
+    final SupabaseClient client = Supabase.instance.client;
+
+    final String userId = client.auth.currentUser!.id;
+
+    final List<dynamic> response = await client.from('memberships').select().eq('member', userId);
+
+    print(response);
+
+    if (response.isEmpty) {
+      return BackendReponse(success: false, payload: null);
+    }
+
+    final List<String> listOfCommunityIds = response.map((element) => element['community'] as String).toList();
+
+    final List<dynamic> communitiesResponse = await client.from('communities').select().in_(
+          'id',
+          listOfCommunityIds,
+        );
+
+    print(communitiesResponse);
+
+    if (response.isEmpty) {
+      return BackendReponse(success: false, payload: null);
+    }
+
+    final List<Community> listOfCommunities = communitiesResponse
+        .map(
+          (dynamic element) => Community(
+            name: element['name'],
+            description: element['description'],
+            id: element['id'],
+          ),
+        )
+        .toList();
+
+    return BackendReponse(success: true, payload: listOfCommunities);
+  }
+
   static Future<BackendReponse> createCommunity(Community community) async {
     final SupabaseClient client = Supabase.instance.client;
 

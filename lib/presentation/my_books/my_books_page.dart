@@ -135,59 +135,63 @@ class MyBooksPage extends StatelessWidget {
           body: Center(
             child: Obx(
               () {
-                return controller.loading.value
-                    ? const CircularProgressIndicator()
-                    : RefreshIndicator(
-                        onRefresh: controller.reloadBooks,
-                        child: Obx(
-                          () {
-                            return controller.userBooks.isEmpty
-                                ? const Center(
-                                    child: Text(
-                                      'You haven\'t added\nany books yet.',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  )
-                                : ListView.separated(
-                                    itemCount: controller.userBooks.length,
-                                    padding: const EdgeInsets.all(20),
-                                    physics: const AlwaysScrollableScrollPhysics(
-                                      parent: BouncingScrollPhysics(),
-                                    ),
-                                    separatorBuilder: (context, index) {
-                                      return const SizedBox(
-                                        height: 20,
-                                      );
-                                    },
-                                    itemBuilder: (context, index) {
-                                      final Book book = controller.userBooks[index];
+                if (controller.loading.value) {
+                  return const CircularProgressIndicator();
+                } else {
+                  return RefreshIndicator(
+                    onRefresh: controller.reloadBooks,
+                    child: Obx(
+                      () {
+                        if (controller.userBooks.isEmpty) {
+                          return const Center(
+                            child: Text(
+                              'You haven\'t added\nany books yet.',
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          );
+                        } else {
+                          return ListView.separated(
+                            itemCount: controller.userBooks.length,
+                            padding: const EdgeInsets.all(20),
+                            physics: const AlwaysScrollableScrollPhysics(
+                              parent: BouncingScrollPhysics(),
+                            ),
+                            separatorBuilder: (context, index) {
+                              return const SizedBox(
+                                height: 20,
+                              );
+                            },
+                            itemBuilder: (context, index) {
+                              final Book book = controller.userBooks[index];
 
-                                      return FutureBuilder(
-                                        future: BooksBackend.getBookCover(book),
-                                        builder: (context, snapshot) {
-                                          if (!snapshot.hasData) {
-                                            return _bookCard(
-                                              controller,
-                                              book: book,
-                                              cover: null,
-                                            );
-                                          } else {
-                                            return _bookCard(
-                                              controller,
-                                              book: book,
-                                              cover: Image.memory(snapshot.data!),
-                                            );
-                                          }
-                                        },
-                                      );
-                                    },
-                                  );
-                          },
-                        ),
-                      );
+                              return FutureBuilder(
+                                future: BooksBackend.getBookCover(book),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return _bookCard(
+                                      controller,
+                                      book: book,
+                                      cover: null,
+                                    );
+                                  } else {
+                                    return _bookCard(
+                                      controller,
+                                      book: book,
+                                      cover: Image.memory(snapshot.data!),
+                                    );
+                                  }
+                                },
+                              );
+                            },
+                          );
+                        }
+                      },
+                    ),
+                  );
+                }
               },
             ),
           ),

@@ -51,9 +51,9 @@ class CreateCommunityController extends GetxController {
       if (response.success) {
         errorMessage.value = 'Community created.';
 
-        // Get.back<Community>(
-        //   result: response.payload,
-        // );
+        Get.back<dynamic>(
+          result: true,
+        );
       } else {
         errorMessage.value = 'Creating Community failed.';
       }
