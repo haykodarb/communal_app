@@ -4,7 +4,7 @@ import 'package:biblioteca/models/book.dart';
 import 'package:biblioteca/routes.dart';
 import 'package:get/get.dart';
 
-class MyBooksController extends GetxController {
+class BookListController extends GetxController {
   final RxList<Book> userBooks = <Book>[].obs;
   final RxBool loading = true.obs;
 
@@ -36,7 +36,7 @@ class MyBooksController extends GetxController {
   }
 
   Future<void> goToAddBookPage() async {
-    final dynamic result = await Get.toNamed(RouteNames.addBookPage);
+    final dynamic result = await Get.toNamed(RouteNames.bookCreatePage);
 
     if (result != null) {
       userBooks.add(result);

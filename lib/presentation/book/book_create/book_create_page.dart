@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:biblioteca/presentation/common/text_field.dart';
-import 'package:biblioteca/presentation/my_books/add_book/add_book_controller.dart';
+import 'package:biblioteca/presentation/common/common_text_field.dart';
+import 'package:biblioteca/presentation/book/book_create/book_create_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class AddBookPage extends StatelessWidget {
-  const AddBookPage({super.key});
+class BookCreatePage extends StatelessWidget {
+  const BookCreatePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class AddBookPage extends StatelessWidget {
         ),
       ),
       body: GetBuilder(
-          init: AddBookController(),
+          init: BookCreateController(),
           builder: (controller) {
             return SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -86,19 +86,19 @@ class AddBookPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      CustomTextField(
+                      CommonTextField(
                         callback: controller.onTitleChange,
                         label: 'Title',
                         validator: controller.stringValidator,
                         maxLength: 100,
                         maxLines: 2,
                       ),
-                      CustomTextField(
+                      CommonTextField(
                         callback: controller.onAuthorChange,
                         label: 'Author',
                         validator: controller.stringValidator,
                       ),
-                      CustomTextField(
+                      CommonTextField(
                         callback: controller.onPublisherChange,
                         label: 'Publisher',
                         validator: controller.stringValidator,

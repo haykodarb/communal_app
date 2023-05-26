@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:biblioteca/presentation/common/text_field.dart';
+import 'package:biblioteca/presentation/common/common_text_field.dart';
 import 'package:biblioteca/presentation/login/login_controller.dart';
 
 class LoginPage extends StatelessWidget {
@@ -23,12 +23,12 @@ class LoginPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          CustomTextField(
+          CommonTextField(
             validator: controller.emailValidator,
             callback: controller.onEmailChange,
             label: 'Email',
           ),
-          CustomTextField(
+          CommonTextField(
             validator: controller.passwordValidator,
             callback: controller.onPasswordChange,
             label: 'Password',

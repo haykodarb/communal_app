@@ -1,15 +1,15 @@
-import 'package:biblioteca/presentation/common/text_field.dart';
-import 'package:biblioteca/presentation/communities/create_community/create_community_controller.dart';
+import 'package:biblioteca/presentation/common/common_text_field.dart';
+import 'package:biblioteca/presentation/community/community_create/community_create_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CreateCommunityPage extends StatelessWidget {
-  const CreateCommunityPage({super.key});
+class CommunityCreatePage extends StatelessWidget {
+  const CommunityCreatePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: CreateCommunityController(),
+      init: CommunityCreateController(),
       builder: (controller) {
         return Scaffold(
           appBar: AppBar(),
@@ -23,13 +23,13 @@ class CreateCommunityPage extends StatelessWidget {
                   children: [
                     Column(
                       children: [
-                        CustomTextField(
+                        CommonTextField(
                           callback: controller.onNameChange,
                           label: 'Name',
                           validator: (value) => controller.stringValidator(value, 4),
                         ),
                         const Divider(),
-                        CustomTextField(
+                        CommonTextField(
                           callback: controller.onDescriptionChange,
                           label: 'Description',
                           maxLines: 6,

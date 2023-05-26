@@ -29,7 +29,8 @@ class MyApp extends StatelessWidget {
       onInit: () async {},
       getPages: routes(),
       color: Theme.of(context).colorScheme.background,
-      initialRoute: Supabase.instance.client.auth.currentUser == null ? RouteNames.startPage : RouteNames.myBooksPage,
+      initialRoute:
+          Supabase.instance.client.auth.currentUser == null ? RouteNames.startPage : RouteNames.communityListPage,
     );
   }
 }

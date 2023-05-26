@@ -1,10 +1,10 @@
 import 'package:biblioteca/backend/books_backend.dart';
-import 'package:biblioteca/presentation/my_books/ownedbook/owned_book_controller.dart';
+import 'package:biblioteca/presentation/book/book_owned/book_owned_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
-class OwnedBookPage extends StatelessWidget {
-  const OwnedBookPage({super.key});
+class BookOwnedPage extends StatelessWidget {
+  const BookOwnedPage({super.key});
 
   Widget _loadingImageIndicator() {
     return SizedBox(
@@ -69,7 +69,7 @@ class OwnedBookPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: OwnedBookController(),
+      init: BookOwnedController(),
       builder: (controller) {
         return Scaffold(
           appBar: AppBar(

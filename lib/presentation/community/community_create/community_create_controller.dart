@@ -4,7 +4,7 @@ import 'package:biblioteca/models/community.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CreateCommunityController extends GetxController {
+class CommunityCreateController extends GetxController {
   final Rx<Community> communityForm = Community(name: '', description: '').obs;
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();

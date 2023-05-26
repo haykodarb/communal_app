@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:biblioteca/presentation/common/text_field.dart';
+import 'package:biblioteca/presentation/common/common_text_field.dart';
 import 'package:biblioteca/presentation/register/register_controller.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -20,17 +20,17 @@ class RegisterPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            CustomTextField(
+            CommonTextField(
               validator: _registerController.emailValidator,
               callback: _registerController.onEmailChange,
               label: 'Email',
             ),
-            CustomTextField(
+            CommonTextField(
               validator: _registerController.usernameValidator,
               callback: _registerController.onUsernameChange,
               label: 'Username',
             ),
-            CustomTextField(
+            CommonTextField(
               validator: _registerController.passwordValidator,
               callback: _registerController.onPasswordChange,
               label: 'Password',

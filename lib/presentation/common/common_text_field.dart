@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class CustomTextField extends StatefulWidget {
-  const CustomTextField({
+class CommonTextField extends StatefulWidget {
+  const CommonTextField({
     Key? key,
     required this.callback,
     required this.label,
@@ -25,7 +25,7 @@ class CustomTextField extends StatefulWidget {
   _CustomTextFieldState createState() => _CustomTextFieldState();
 }
 
-class _CustomTextFieldState extends State<CustomTextField> {
+class _CustomTextFieldState extends State<CommonTextField> {
   final TextEditingController controller = TextEditingController();
 
   bool isVisible = false;

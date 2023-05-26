@@ -4,7 +4,7 @@ import 'package:biblioteca/models/community.dart';
 import 'package:biblioteca/routes.dart';
 import 'package:get/get.dart';
 
-class CommunitiesController extends GetxController {
+class CommunityListController extends GetxController {
   final RxList<Community> communities = <Community>[].obs;
   final RxBool loading = true.obs;
 
@@ -27,8 +27,8 @@ class CommunitiesController extends GetxController {
     loading.value = false;
   }
 
-  Future<void> goToCreateCommunity() async {
-    final bool? createdCommunity = await Get.toNamed<dynamic>(RouteNames.createCommunityPage);
+  Future<void> goToCommunityCreate() async {
+    final bool? createdCommunity = await Get.toNamed<dynamic>(RouteNames.communityCreatePage);
 
     if (createdCommunity != null && createdCommunity) {
       fetchAllCommunities();

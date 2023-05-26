@@ -8,9 +8,10 @@ class CommunitiesBackend {
 
     final String userId = client.auth.currentUser!.id;
 
-    final List<dynamic> response = await client.from('memberships').select().eq('member', userId);
-
-    print(response);
+    final List<dynamic> response = await client.from('memberships').select().eq('member', userId).order(
+          'joined_at',
+          ascending: true,
+        );
 
     if (response.isEmpty) {
       return BackendReponse(success: false, payload: null);
@@ -22,8 +23,6 @@ class CommunitiesBackend {
           'id',
           listOfCommunityIds,
         );
-
-    print(communitiesResponse);
 
     if (response.isEmpty) {
       return BackendReponse(success: false, payload: null);
@@ -47,8 +46,6 @@ class CommunitiesBackend {
 
     final String userId = client.auth.currentUser!.id;
 
-    print('Userid: $userId');
-
     final Map<String, dynamic> createCommunityResponse = await client
         .from('communities')
         .insert(
@@ -60,8 +57,6 @@ class CommunitiesBackend {
         )
         .select()
         .single();
-
-    print('createCommunityResponse: $createCommunityResponse');
 
     if (createCommunityResponse.isEmpty) {
       return BackendReponse(
@@ -82,8 +77,6 @@ class CommunitiesBackend {
         )
         .select()
         .single();
-
-    print('createMembershipResponse: $createMembershipResponse');
 
     return BackendReponse(
       success: createMembershipResponse.isNotEmpty,

@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AddBookController extends GetxController {
+class BookCreateController extends GetxController {
   final Rx<Book> bookForm = Book(
     author: '',
     title: '',

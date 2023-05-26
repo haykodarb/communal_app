@@ -1,13 +1,13 @@
 import 'package:biblioteca/backend/books_backend.dart';
 import 'package:biblioteca/models/book.dart';
-import 'package:biblioteca/presentation/common/scaffold_drawer/scaffold_drawer.dart';
-import 'package:biblioteca/presentation/my_books/my_books_controller.dart';
+import 'package:biblioteca/presentation/common/common_scaffold/common_scaffold_widget.dart';
+import 'package:biblioteca/presentation/book/book_list_controller.dart';
 import 'package:biblioteca/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class MyBooksPage extends StatelessWidget {
-  const MyBooksPage({super.key});
+class BookListPage extends StatelessWidget {
+  const BookListPage({super.key});
 
   Widget _deletingBookIndicator() {
     return const Center(
@@ -43,7 +43,7 @@ class MyBooksPage extends StatelessWidget {
   }
 
   Widget _bookCard(
-    MyBooksController controller, {
+    BookListController controller, {
     required Book book,
     Image? cover,
   }) {
@@ -119,10 +119,10 @@ class MyBooksPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: MyBooksController(),
-      builder: (MyBooksController controller) {
+      init: BookListController(),
+      builder: (BookListController controller) {
         return Scaffold(
-          drawer: const ScaffoldDrawer(),
+          drawer: const CommonScaffoldWidget(),
           appBar: AppBar(
             title: const Text('My Books'),
           ),

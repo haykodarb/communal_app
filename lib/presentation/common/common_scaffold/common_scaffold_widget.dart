@@ -1,10 +1,10 @@
-import 'package:biblioteca/presentation/common/scaffold_drawer/scaffold_controller.dart';
+import 'package:biblioteca/presentation/common/common_scaffold/common_scaffold_controller.dart';
 import 'package:biblioteca/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ScaffoldDrawer extends StatelessWidget {
-  const ScaffoldDrawer({Key? key}) : super(key: key);
+class CommonScaffoldWidget extends StatelessWidget {
+  const CommonScaffoldWidget({Key? key}) : super(key: key);
 
   Widget _drawerButton({
     required IconData icon,
@@ -91,8 +91,8 @@ class ScaffoldDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-        init: ScaffoldController(),
-        builder: (ScaffoldController controller) {
+        init: CommonScaffoldController(),
+        builder: (CommonScaffoldController controller) {
           return Drawer(
             elevation: 20,
             child: Container(
@@ -114,12 +114,12 @@ class ScaffoldDrawer extends StatelessWidget {
                         _drawerButton(
                           text: 'My Books',
                           icon: Icons.menu_book,
-                          callback: () => controller.goToRoute(RouteNames.myBooksPage),
+                          callback: () => controller.goToRoute(RouteNames.bookListPage),
                         ),
                         _drawerButton(
                           text: 'Communities',
                           icon: Icons.people_alt_outlined,
-                          callback: () => controller.goToRoute(RouteNames.communitiesPage),
+                          callback: () => controller.goToRoute(RouteNames.communityListPage),
                         ),
                         _drawerButton(
                           text: 'Logout',

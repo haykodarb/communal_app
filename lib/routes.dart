@@ -1,10 +1,9 @@
-import 'package:biblioteca/presentation/communities/communities_page.dart';
-import 'package:biblioteca/presentation/communities/create_community/create_community_page.dart';
-import 'package:biblioteca/presentation/dashboard/dashboard_page.dart';
+import 'package:biblioteca/presentation/community/community_list_page.dart';
+import 'package:biblioteca/presentation/community/community_create/community_create_page.dart';
 import 'package:biblioteca/presentation/login/login_page.dart';
-import 'package:biblioteca/presentation/my_books/add_book/add_book_page.dart';
-import 'package:biblioteca/presentation/my_books/ownedbook/owned_book_page.dart';
-import 'package:biblioteca/presentation/my_books/my_books_page.dart';
+import 'package:biblioteca/presentation/book/book_create/book_create_page.dart';
+import 'package:biblioteca/presentation/book/book_owned/book_owned_page.dart';
+import 'package:biblioteca/presentation/book/book_list_page.dart';
 import 'package:biblioteca/presentation/register/register_page.dart';
 import 'package:biblioteca/presentation/start/start_page.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
@@ -15,14 +14,12 @@ class RouteNames {
   static const loginPage = '/login';
   static const registerPage = '/register';
   static const dashboardPage = '/dashboard';
-  static const myBooksPage = '/mybooks';
-  static const addBookPage = '/mybooks/add';
-  static const ownedBookPage = '/mybooks/book';
-  static const communitiesPage = '/communities';
-  static const manageCommunitiesPage = '/communities/manage';
-  static const createCommunityPage = '/communities/create';
-  static const joinCommunityPage = '/communities/join';
-  static const inviteCommunityPage = '/communities/invite';
+  static const bookListPage = '/book';
+  static const bookCreatePage = '/book/create';
+  static const ownedBookPage = '/book/owned';
+  static const communityListPage = '/community';
+  static const communityCreatePage = '/community/create';
+  static const communitySpecificPage = '/community/specific';
 }
 
 List<GetPage> routes() => <GetPage>[
@@ -48,33 +45,28 @@ List<GetPage> routes() => <GetPage>[
         ),
       ),
       GetPage<dynamic>(
-        name: RouteNames.dashboardPage,
+        name: RouteNames.bookListPage,
         transition: Transition.noTransition,
-        page: () => const DashboardPage(),
+        page: () => const BookListPage(),
       ),
       GetPage<dynamic>(
-        name: RouteNames.myBooksPage,
-        transition: Transition.noTransition,
-        page: () => const MyBooksPage(),
-      ),
-      GetPage<dynamic>(
-        name: RouteNames.addBookPage,
+        name: RouteNames.bookCreatePage,
         transition: Transition.downToUp,
-        page: () => const AddBookPage(),
+        page: () => const BookCreatePage(),
       ),
       GetPage<dynamic>(
         name: RouteNames.ownedBookPage,
         transition: Transition.downToUp,
-        page: () => const OwnedBookPage(),
+        page: () => const BookOwnedPage(),
       ),
       GetPage<dynamic>(
-        name: RouteNames.communitiesPage,
+        name: RouteNames.communityListPage,
         transition: Transition.noTransition,
-        page: () => const CommunitiesPage(),
+        page: () => const CommunityListPage(),
       ),
       GetPage<bool>(
-        name: RouteNames.createCommunityPage,
+        name: RouteNames.communityCreatePage,
         transition: Transition.downToUp,
-        page: () => const CreateCommunityPage(),
+        page: () => const CommunityCreatePage(),
       ),
     ];
