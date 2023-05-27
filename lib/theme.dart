@@ -42,6 +42,8 @@ final ElevatedButtonThemeData _elevatedButtonThemeData = ElevatedButtonThemeData
   ),
 );
 
+final DividerThemeData _dividerThemeData = DividerThemeData(color: _colorScheme.surface);
+
 final OutlinedButtonThemeData _outlinedButtonThemeData = OutlinedButtonThemeData(
   style: OutlinedButton.styleFrom(
     foregroundColor: _colorScheme.primary,
@@ -123,4 +125,5 @@ final ThemeData theme = ThemeData(
   canvasColor: _colorScheme.surface,
   scaffoldBackgroundColor: _colorScheme.background,
   floatingActionButtonTheme: _floatingActionButtonThemeData,
+  dividerTheme: _dividerThemeData,
 );

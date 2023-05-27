@@ -1,3 +1,4 @@
+import 'package:biblioteca/presentation/community/community_invite/community_invite_page.dart';
 import 'package:biblioteca/presentation/community/community_list_page.dart';
 import 'package:biblioteca/presentation/community/community_create/community_create_page.dart';
 import 'package:biblioteca/presentation/community/community_specific/community_specific_page.dart';
@@ -21,6 +22,7 @@ class RouteNames {
   static const communityListPage = '/community';
   static const communityCreatePage = '/community/create';
   static const communitySpecificPage = '/community/specific';
+  static const communityInvitePage = '/community/invite';
 }
 
 List<GetPage> routes() => <GetPage>[
@@ -74,5 +76,10 @@ List<GetPage> routes() => <GetPage>[
         name: RouteNames.communitySpecificPage,
         transition: Transition.rightToLeft,
         page: () => const CommunitySpecificPage(),
+      ),
+      GetPage<dynamic>(
+        name: RouteNames.communityInvitePage,
+        transition: Transition.downToUp,
+        page: () => const CommunityInvitePage(),
       ),
     ];

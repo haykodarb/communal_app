@@ -93,7 +93,7 @@ class RegisterController extends GetxController {
       loading.value = false;
 
       if (response.success) {
-        Get.offAllNamed(RouteNames.bookListPage);
+        Get.offAllNamed(RouteNames.startPage);
       } else {
         errorMessage.value = response.payload;
       }

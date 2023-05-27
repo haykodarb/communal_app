@@ -31,14 +31,16 @@ class CommonConfirmationDialog extends StatelessWidget {
           ),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-        height: 200,
+        height: 225,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 22,
+            SizedBox(
+              width: 200,
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 16),
               ),
             ),
             Row(
