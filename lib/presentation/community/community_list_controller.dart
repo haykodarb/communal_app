@@ -34,4 +34,13 @@ class CommunityListController extends GetxController {
       fetchAllCommunities();
     }
   }
+
+  void goToCommunitySpecific(Community community) {
+    Get.toNamed(
+      RouteNames.communitySpecificPage,
+      arguments: {
+        'community': community,
+      },
+    );
+  }
 }

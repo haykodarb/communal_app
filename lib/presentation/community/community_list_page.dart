@@ -7,10 +7,10 @@ import 'package:get/get.dart';
 class CommunityListPage extends StatelessWidget {
   const CommunityListPage({super.key});
 
-  Widget _communityCard(Community community) {
+  Widget _communityCard(CommunityListController controller, Community community) {
     return Card(
       child: InkWell(
-        onTap: () {},
+        onTap: () => controller.goToCommunitySpecific(community),
         child: SizedBox(
           height: 150,
           child: Column(
@@ -36,7 +36,7 @@ class CommunityListPage extends StatelessWidget {
           ),
           drawer: const CommonScaffoldWidget(),
           body: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -65,13 +65,18 @@ class CommunityListPage extends StatelessWidget {
                               separatorBuilder: (context, index) => const Divider(),
                               itemBuilder: (context, index) {
                                 return _communityCard(
+                                  controller,
                                   controller.communities[index],
                                 );
                               },
                             );
                           } else {
                             return const Center(
-                              child: Text('You have joined\nno communities yet.'),
+                              child: Text(
+                                'You haven\'t joined\nany communities yet.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 18),
+                              ),
                             );
                           }
                         },
@@ -79,26 +84,23 @@ class CommunityListPage extends StatelessWidget {
                     );
                   }),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: controller.goToCommunityCreate,
-                          child: const Text('New'),
-                        ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: controller.goToCommunityCreate,
+                        child: const Text('New'),
                       ),
-                      const VerticalDivider(),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          child: const Text('Invites'),
-                        ),
+                    ),
+                    const VerticalDivider(),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        child: const Text('Invites'),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 )
               ],
             ),

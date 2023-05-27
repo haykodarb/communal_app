@@ -3,6 +3,56 @@ import 'package:biblioteca/models/community.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CommunitiesBackend {
+  static Future<BackendReponse> getBooksInCommunity(Community community, int index) async {
+    final SupabaseClient client = Supabase.instance.client;
+
+    final List<dynamic> membershipResponse = await client.from('memberships').select().eq('community', community.id);
+
+    final List<String> listOfUserIDs = membershipResponse.map(
+      (element) {
+        return element['member'] as String;
+      },
+    ).toList();
+
+    // listOfUserIDs.removeWhere((element) => element == client.auth.currentUser!.id);
+
+    final List<dynamic> booksResponse =
+        await client.from('books').select().in_('owner', listOfUserIDs).order('id').range(
+              index * 10,
+              index * 10 + 10,
+            );
+
+    print(booksResponse.map((e) => e['title']));
+
+    return BackendReponse(
+      success: membershipResponse.isEmpty,
+      payload: membershipResponse,
+    );
+  }
+
+  static Future<BackendReponse> getUsersInCommunity(Community community) async {
+    final SupabaseClient client = Supabase.instance.client;
+
+    final List<dynamic> membershipResponse = await client.from('memberships').select().eq('community', community.id);
+
+    final List<String> listOfUserIDs = membershipResponse.map(
+      (element) {
+        return element['member'] as String;
+      },
+    ).toList();
+
+    print(listOfUserIDs);
+
+    final List<dynamic> profilesResponse = await client.from('profiles').select().in_('id', listOfUserIDs);
+
+    print(profilesResponse.map((e) => e['username']));
+
+    return BackendReponse(
+      success: membershipResponse.isEmpty,
+      payload: membershipResponse,
+    );
+  }
+
   static Future<BackendReponse> getCommunitiesForUser() async {
     final SupabaseClient client = Supabase.instance.client;
 

@@ -58,7 +58,7 @@ class CommonScaffoldWidget extends StatelessWidget {
     BuildContext context = Get.context!;
 
     return SizedBox(
-      height: 120,
+      height: 150,
       child: DrawerHeader(
         margin: EdgeInsets.zero,
         padding: EdgeInsets.zero,
@@ -106,6 +106,10 @@ class CommonScaffoldWidget extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        const Divider(
+                          thickness: 2,
+                          color: Colors.transparent,
+                        ),
                         _drawerButton(
                           text: 'Profile',
                           icon: Icons.person_rounded,

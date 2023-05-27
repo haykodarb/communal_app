@@ -28,12 +28,14 @@ class LoginPage extends StatelessWidget {
             callback: controller.onEmailChange,
             label: 'Email',
           ),
+          const Divider(color: Colors.transparent),
           CommonTextField(
             validator: controller.passwordValidator,
             callback: controller.onPasswordChange,
             label: 'Password',
             isPassword: true,
           ),
+          const Divider(color: Colors.transparent),
           Obx(
             () => Visibility(
               visible: controller.loading.value,
@@ -60,6 +62,10 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
             ),
+          ),
+          const Divider(
+            color: Colors.transparent,
+            height: 50,
           ),
           _loginButton(controller),
         ],

@@ -3,22 +3,20 @@ import 'package:get/get.dart';
 import 'package:biblioteca/presentation/start/start_controller.dart';
 
 class StartPage extends StatelessWidget {
-  StartPage({Key? key}) : super(key: key);
+  const StartPage({Key? key}) : super(key: key);
 
-  final StartController _startController = StartController();
-
-  Widget _loginButton() {
+  Widget _loginButton(StartController controller) {
     return ElevatedButton(
-      onPressed: _startController.loginButtonCallback,
+      onPressed: controller.loginButtonCallback,
       child: const Text(
         'Login',
       ),
     );
   }
 
-  Widget _registerButton() {
+  Widget _registerButton(StartController controller) {
     return OutlinedButton(
-      onPressed: _startController.registerButtonCallback,
+      onPressed: controller.registerButtonCallback,
       child: const Text(
         'Register',
       ),
@@ -49,7 +47,7 @@ class StartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: _startController,
+      init: StartController(),
       builder: (StartController controller) {
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.background,
@@ -70,11 +68,11 @@ class StartPage extends StatelessWidget {
                   ),
                   Expanded(
                     flex: 1,
-                    child: Center(child: _loginButton()),
+                    child: Center(child: _loginButton(controller)),
                   ),
                   Expanded(
                     flex: 1,
-                    child: Center(child: _registerButton()),
+                    child: Center(child: _registerButton(controller)),
                   ),
                   const Expanded(
                     flex: 3,

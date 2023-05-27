@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:biblioteca/models/backend_response.dart';
 import 'package:biblioteca/models/book.dart';
+import 'package:biblioteca/models/community.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class BooksBackend {

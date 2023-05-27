@@ -1,5 +1,6 @@
 import 'package:biblioteca/backend/books_backend.dart';
 import 'package:biblioteca/presentation/book/book_owned/book_owned_controller.dart';
+import 'package:biblioteca/presentation/common/common_confirmation_dialog.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
@@ -13,54 +14,6 @@ class BookOwnedPage extends StatelessWidget {
       child: Center(
         child: CircularProgressIndicator(
           color: Get.theme.colorScheme.primary,
-        ),
-      ),
-    );
-  }
-
-  Widget _confirmDeleteDialog() {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Get.theme.colorScheme.background,
-        ),
-        padding: const EdgeInsets.all(20),
-        height: 200,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            const Text(
-              'Confirm delete?',
-              style: TextStyle(
-                fontSize: 22,
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Get.back<bool>(result: true);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: const Size(120, 40),
-                  ),
-                  child: const Text('Yes'),
-                ),
-                OutlinedButton(
-                  onPressed: () {
-                    Get.back<bool>(result: false);
-                  },
-                  style: OutlinedButton.styleFrom(
-                    fixedSize: const Size(120, 40),
-                  ),
-                  child: const Text('No'),
-                ),
-              ],
-            )
-          ],
         ),
       ),
     );
@@ -183,7 +136,14 @@ class BookOwnedPage extends StatelessWidget {
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () async {
-                            final bool deleteConfirm = await Get.dialog<bool>(_confirmDeleteDialog()) ?? false;
+                            final bool deleteConfirm = await Get.dialog<bool>(
+                                  CommonConfirmationDialog(
+                                    title: 'Confirm delete?',
+                                    confirmCallback: () => Get.back<bool>(result: true),
+                                    cancelCallback: () => Get.back<bool>(result: false),
+                                  ),
+                                ) ??
+                                false;
 
                             if (deleteConfirm) {
                               controller.myBooksController.deleteBook(controller.book);

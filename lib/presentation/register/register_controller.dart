@@ -13,6 +13,8 @@ class RegisterController extends GetxController {
     email: '',
   ).obs;
 
+  final RxBool loading = false.obs;
+
   final RxString errorMessage = ''.obs;
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -81,9 +83,14 @@ class RegisterController extends GetxController {
 
   Future<void> onSubmitButton() async {
     if (formKey.currentState!.validate()) {
+      loading.value = true;
+      errorMessage.value = '';
+
       final BackendReponse response = await RegisterBackend.register(
         form: form.value,
       );
+
+      loading.value = false;
 
       if (response.success) {
         Get.offAllNamed(RouteNames.bookListPage);

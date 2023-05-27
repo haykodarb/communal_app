@@ -4,43 +4,43 @@ import 'package:biblioteca/presentation/common/common_text_field.dart';
 import 'package:biblioteca/presentation/register/register_controller.dart';
 
 class RegisterPage extends StatelessWidget {
-  RegisterPage({Key? key}) : super(key: key);
+  const RegisterPage({Key? key}) : super(key: key);
 
-  final RegisterController _registerController = RegisterController();
-
-  Widget _registerForm() {
+  Widget _registerForm(RegisterController controller) {
     final BuildContext context = Get.context!;
 
-    return ConstrainedBox(
-      constraints: BoxConstraints.loose(
-        const Size.fromHeight(600),
-      ),
-      child: Form(
-        key: _registerController.formKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            CommonTextField(
-              validator: _registerController.emailValidator,
-              callback: _registerController.onEmailChange,
-              label: 'Email',
-            ),
-            CommonTextField(
-              validator: _registerController.usernameValidator,
-              callback: _registerController.onUsernameChange,
-              label: 'Username',
-            ),
-            CommonTextField(
-              validator: _registerController.passwordValidator,
-              callback: _registerController.onPasswordChange,
-              label: 'Password',
-              isPassword: true,
-            ),
-            SizedBox(
-              height: 70,
-              child: Obx(
-                () => Text(
-                  _registerController.errorMessage.value,
+    return Form(
+      key: controller.formKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          CommonTextField(
+            validator: controller.emailValidator,
+            callback: controller.onEmailChange,
+            label: 'Email',
+          ),
+          const Divider(color: Colors.transparent),
+          CommonTextField(
+            validator: controller.usernameValidator,
+            callback: controller.onUsernameChange,
+            label: 'Username',
+          ),
+          const Divider(color: Colors.transparent),
+          CommonTextField(
+            validator: controller.passwordValidator,
+            callback: controller.onPasswordChange,
+            label: 'Password',
+            isPassword: true,
+          ),
+          const Divider(color: Colors.transparent),
+          Obx(
+            () => Visibility(
+              visible: controller.errorMessage.value.isNotEmpty,
+              child: SizedBox(
+                height: 70,
+                child: Text(
+                  controller.errorMessage.value,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16,
                     color: Theme.of(context).colorScheme.error,
@@ -49,12 +49,26 @@ class RegisterPage extends StatelessWidget {
                 ),
               ),
             ),
-            ElevatedButton(
-              onPressed: _registerController.onSubmitButton,
-              child: const Text('Register'),
+          ),
+          Obx(
+            () => Visibility(
+              visible: controller.loading.value,
+              child: const SizedBox(
+                height: 40,
+                width: 40,
+                child: CircularProgressIndicator(),
+              ),
             ),
-          ],
-        ),
+          ),
+          const Divider(
+            height: 50,
+            color: Colors.transparent,
+          ),
+          ElevatedButton(
+            onPressed: controller.onSubmitButton,
+            child: const Text('Register'),
+          ),
+        ],
       ),
     );
   }
@@ -62,17 +76,20 @@ class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: _registerController,
+      init: RegisterController(),
       builder: (RegisterController controller) {
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.background,
-          body: Padding(
-            padding: const EdgeInsets.only(
-              top: 75,
-              right: 50,
-              left: 50,
+          resizeToAvoidBottomInset: false,
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(
+                top: 75,
+                right: 50,
+                left: 50,
+              ),
+              child: _registerForm(controller),
             ),
-            child: _registerForm(),
           ),
         );
       },

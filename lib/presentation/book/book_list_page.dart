@@ -52,7 +52,7 @@ class BookListPage extends StatelessWidget {
         return Card(
           child: InkWell(
             onTap: () => Get.toNamed(
-              RouteNames.ownedBookPage,
+              RouteNames.bookOwnedPage,
               arguments: {
                 'book': book,
                 'controller': controller,
@@ -147,7 +147,7 @@ class BookListPage extends StatelessWidget {
                             child: Text(
                               'You haven\'t added\nany books yet.',
                               style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 18,
                               ),
                               textAlign: TextAlign.center,
                             ),
