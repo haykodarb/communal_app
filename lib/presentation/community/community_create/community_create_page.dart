@@ -39,6 +39,7 @@ class CommunityCreatePage extends StatelessWidget {
                         ),
                       ],
                     ),
+                    const Divider(height: 15),
                     Obx(
                       () => Visibility(
                         visible: controller.loading.value,
@@ -64,9 +65,12 @@ class CommunityCreatePage extends StatelessWidget {
                         ),
                       ),
                     ),
+                    const Divider(height: 15),
                     ElevatedButton(
                       onPressed: controller.onSubmit,
-                      child: const Text('Create Community'),
+                      child: const Text(
+                        'Create',
+                      ),
                     ),
                   ],
                 ),

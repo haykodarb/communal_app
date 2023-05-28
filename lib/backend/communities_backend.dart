@@ -60,10 +60,13 @@ class CommunitiesBackend {
 
     final String userId = client.auth.currentUser!.id;
 
-    final List<dynamic> response = await client.from('memberships').select().eq('member', userId).order(
-          'joined_at',
-          ascending: true,
-        );
+    final List<dynamic> response = await client.from('memberships').select().match({
+      'member': userId,
+      'accepted': true,
+    }).order(
+      'joined_at',
+      ascending: true,
+    );
 
     if (response.isEmpty) {
       return BackendReponse(success: false, payload: null);

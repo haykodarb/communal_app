@@ -1,6 +1,7 @@
 import 'package:biblioteca/models/community.dart';
 import 'package:biblioteca/presentation/common/common_scaffold/common_scaffold_widget.dart';
 import 'package:biblioteca/presentation/community/community_list_controller.dart';
+import 'package:biblioteca/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -31,6 +32,14 @@ class CommunityListPage extends StatelessWidget {
       init: CommunityListController(),
       builder: (controller) {
         return Scaffold(
+          floatingActionButton: FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () {
+              Get.toNamed(
+                RouteNames.communityCreatePage,
+              );
+            },
+          ),
           appBar: AppBar(
             title: const Text('Communities'),
           ),
@@ -43,13 +52,7 @@ class CommunityListPage extends StatelessWidget {
                 Expanded(
                   child: Obx(() {
                     if (controller.loading.value) {
-                      return const Center(
-                        child: SizedBox(
-                          height: 50,
-                          width: 50,
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
+                      return const Center(child: CircularProgressIndicator());
                     }
 
                     return RefreshIndicator(
@@ -84,24 +87,6 @@ class CommunityListPage extends StatelessWidget {
                     );
                   }),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: controller.goToCommunityCreate,
-                        child: const Text('New'),
-                      ),
-                    ),
-                    const VerticalDivider(),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        child: const Text('Invites'),
-                      ),
-                    ),
-                  ],
-                )
               ],
             ),
           ),

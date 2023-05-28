@@ -86,6 +86,7 @@ class CommunityInvitePage extends StatelessWidget {
                     ),
                   ),
                 ),
+                const Divider(height: 15),
                 SizedBox(
                   height: 70,
                   child: Center(
@@ -102,6 +103,7 @@ class CommunityInvitePage extends StatelessWidget {
                               color: Get.theme.colorScheme.error,
                               fontSize: 16,
                             ),
+                            textAlign: TextAlign.center,
                           );
                         }
 
@@ -110,7 +112,7 @@ class CommunityInvitePage extends StatelessWidget {
                     ),
                   ),
                 ),
-                const Divider(height: 30),
+                const Divider(height: 15),
                 ElevatedButton(
                   onPressed: controller.onSubmit,
                   child: const Text('Invite'),

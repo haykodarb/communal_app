@@ -126,6 +126,11 @@ class CommonScaffoldWidget extends StatelessWidget {
                           callback: () => controller.goToRoute(RouteNames.communityListPage),
                         ),
                         _drawerButton(
+                          text: 'Invitations',
+                          icon: Icons.mail,
+                          callback: () => controller.goToRoute(RouteNames.invitationsPage),
+                        ),
+                        _drawerButton(
                           text: 'Logout',
                           icon: Icons.logout,
                           callback: controller.handleLogout,

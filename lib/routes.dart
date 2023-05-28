@@ -2,6 +2,7 @@ import 'package:biblioteca/presentation/community/community_invite/community_inv
 import 'package:biblioteca/presentation/community/community_list_page.dart';
 import 'package:biblioteca/presentation/community/community_create/community_create_page.dart';
 import 'package:biblioteca/presentation/community/community_specific/community_specific_page.dart';
+import 'package:biblioteca/presentation/invitations/invitations_page.dart';
 import 'package:biblioteca/presentation/login/login_page.dart';
 import 'package:biblioteca/presentation/book/book_create/book_create_page.dart';
 import 'package:biblioteca/presentation/book/book_owned/book_owned_page.dart';
@@ -23,6 +24,7 @@ class RouteNames {
   static const communityCreatePage = '/community/create';
   static const communitySpecificPage = '/community/specific';
   static const communityInvitePage = '/community/invite';
+  static const invitationsPage = '/invitations';
 }
 
 List<GetPage> routes() => <GetPage>[
@@ -81,5 +83,10 @@ List<GetPage> routes() => <GetPage>[
         name: RouteNames.communityInvitePage,
         transition: Transition.downToUp,
         page: () => const CommunityInvitePage(),
+      ),
+      GetPage<dynamic>(
+        name: RouteNames.invitationsPage,
+        transition: Transition.noTransition,
+        page: () => const InvitationsPage(),
       ),
     ];

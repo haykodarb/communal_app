@@ -1,5 +1,6 @@
 import 'package:biblioteca/models/backend_response.dart';
 import 'package:biblioteca/models/community.dart';
+import 'package:biblioteca/models/invitation.dart';
 import 'package:biblioteca/models/profile.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -22,6 +23,54 @@ class UsersBackend {
     return BackendReponse(success: response.isNotEmpty, payload: profiles);
   }
 
+  static Future<BackendReponse> acceptInvitation(Invitation invitation) async {
+    final SupabaseClient client = Supabase.instance.client;
+
+    final Map<String, dynamic> response = await client
+        .from('memberships')
+        .update({
+          'accepted': true,
+        })
+        .eq('id', invitation.id)
+        .select<Map<String, dynamic>>()
+        .single();
+
+    print(response);
+
+    return BackendReponse(success: true, payload: '');
+  }
+
+  static Future<BackendReponse> getInvitationsForUser() async {
+    final SupabaseClient client = Supabase.instance.client;
+
+    final String userId = client.auth.currentUser!.id;
+
+    final List<Map<String, dynamic>> unconfirmedMemberships = await client
+        .from('memberships')
+        .select<List<Map<String, dynamic>>>('id, communities(id, name, description)')
+        .eq('member', userId)
+        .filter('accepted', 'is', null);
+
+    print(unconfirmedMemberships);
+
+    final List<Invitation> invitationsList = unconfirmedMemberships
+        .map(
+          (element) => Invitation(
+            id: element['id'],
+            communityId: element['communities']['id'],
+            communityName: element['communities']['name'],
+            communityDescription: element['communities']['description'],
+            userId: userId,
+          ),
+        )
+        .toList();
+
+    return BackendReponse(
+      success: invitationsList.isNotEmpty,
+      payload: invitationsList,
+    );
+  }
+
   static Future<BackendReponse> inviteUserToCommunity(Community community, Profile user) async {
     final SupabaseClient client = Supabase.instance.client;
 
@@ -30,8 +79,6 @@ class UsersBackend {
       'member': user.id,
       'accepted': true,
     }).single();
-
-    print(memberExistsResponse);
 
     if (memberExistsResponse.isNotEmpty) {
       return BackendReponse(
@@ -51,8 +98,6 @@ class UsersBackend {
         )
         .select()
         .single();
-
-    print(createMembershipResponse.toString());
 
     return BackendReponse(success: createMembershipResponse.isNotEmpty, payload: createMembershipResponse);
   }
