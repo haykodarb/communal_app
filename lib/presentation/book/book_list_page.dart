@@ -1,10 +1,12 @@
 import 'package:biblioteca/backend/books_backend.dart';
 import 'package:biblioteca/models/book.dart';
+import 'package:biblioteca/presentation/common/common_loading_image.dart';
 import 'package:biblioteca/presentation/common/common_scaffold/common_scaffold_widget.dart';
 import 'package:biblioteca/presentation/book/book_list_controller.dart';
 import 'package:biblioteca/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 class BookListPage extends StatelessWidget {
   const BookListPage({super.key});
@@ -71,7 +73,7 @@ class BookListPage extends StatelessWidget {
                             aspectRatio: 3 / 4,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(5),
-                              child: cover ?? _loadingImageIndicator(),
+                              child: cover ?? const CommonLoadingImage(),
                             ),
                           ),
                           Expanded(

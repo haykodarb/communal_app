@@ -1,6 +1,7 @@
 import 'package:biblioteca/backend/books_backend.dart';
 import 'package:biblioteca/presentation/book/book_owned/book_owned_controller.dart';
 import 'package:biblioteca/presentation/common/common_confirmation_dialog.dart';
+import 'package:biblioteca/presentation/common/common_loading_image.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
@@ -39,12 +40,12 @@ class BookOwnedPage extends StatelessWidget {
                 Card(
                   child: SizedBox(
                     height: 250,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(
-                          flex: 4,
-                          child: AspectRatio(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          AspectRatio(
                             aspectRatio: 3 / 4,
                             child: SizedBox(
                               child: FutureBuilder(
@@ -52,16 +53,14 @@ class BookOwnedPage extends StatelessWidget {
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) return Image.memory(snapshot.data!);
 
-                                  return _loadingImageIndicator();
+                                  return const CommonLoadingImage();
                                 },
                               ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          flex: 5,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
+                          VerticalDivider(),
+                          Expanded(
+                            flex: 5,
                             child: Column(
                               mainAxisSize: MainAxisSize.max,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,9 +81,9 @@ class BookOwnedPage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                          ),
-                        )
-                      ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),

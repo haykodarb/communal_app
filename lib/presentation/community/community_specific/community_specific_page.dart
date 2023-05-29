@@ -1,9 +1,11 @@
 import 'package:biblioteca/backend/books_backend.dart';
 import 'package:biblioteca/models/book.dart';
+import 'package:biblioteca/presentation/common/common_loading_image.dart';
 import 'package:biblioteca/presentation/community/community_specific/community_drawer/community_drawer_widget.dart';
 import 'package:biblioteca/presentation/community/community_specific/community_specific_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CommunitySpecificPage extends StatelessWidget {
   const CommunitySpecificPage({super.key});
@@ -39,7 +41,7 @@ class CommunitySpecificPage extends StatelessWidget {
                   aspectRatio: 3 / 4,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(5),
-                    child: cover ?? _loadingImageIndicator(),
+                    child: cover ?? const CommonLoadingImage(),
                   ),
                 ),
                 Expanded(
