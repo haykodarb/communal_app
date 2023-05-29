@@ -1,3 +1,4 @@
+import 'package:biblioteca/presentation/common/common_loading_body.dart';
 import 'package:biblioteca/presentation/community/community_invite/community_invite_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -46,41 +47,38 @@ class CommunityInvitePage extends StatelessWidget {
                     ),
                     child: Obx(
                       () {
-                        if (controller.loading.value) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-
-                        return ListView.separated(
-                          itemCount: controller.foundProfiles.length,
-                          itemBuilder: (context, index) {
-                            return Obx(
-                              () {
-                                return TextButton(
-                                  onPressed: () => controller.onSelectedIndexChanged(index),
-                                  style: controller.selectedIndex.value == index
-                                      ? TextButton.styleFrom(
-                                          foregroundColor: Get.theme.colorScheme.onPrimary,
-                                          backgroundColor: Get.theme.colorScheme.primary,
-                                        )
-                                      : TextButton.styleFrom(
-                                          foregroundColor: Get.theme.colorScheme.onBackground,
-                                          backgroundColor: Get.theme.colorScheme.background,
-                                        ),
-                                  child: Text(
-                                    controller.foundProfiles[index].username,
-                                    style: const TextStyle(
-                                      fontSize: 16,
+                        return CommonLoadingBody(
+                          isLoading: controller.loading.value,
+                          child: ListView.separated(
+                            itemCount: controller.foundProfiles.length,
+                            itemBuilder: (context, index) {
+                              return Obx(
+                                () {
+                                  return TextButton(
+                                    onPressed: () => controller.onSelectedIndexChanged(index),
+                                    style: controller.selectedIndex.value == index
+                                        ? TextButton.styleFrom(
+                                            foregroundColor: Get.theme.colorScheme.onPrimary,
+                                            backgroundColor: Get.theme.colorScheme.primary,
+                                          )
+                                        : TextButton.styleFrom(
+                                            foregroundColor: Get.theme.colorScheme.onBackground,
+                                            backgroundColor: Get.theme.colorScheme.background,
+                                          ),
+                                    child: Text(
+                                      controller.foundProfiles[index].username,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return const Divider();
-                          },
+                                  );
+                                },
+                              );
+                            },
+                            separatorBuilder: (context, index) {
+                              return const Divider();
+                            },
+                          ),
                         );
                       },
                     ),
@@ -89,26 +87,20 @@ class CommunityInvitePage extends StatelessWidget {
                 const Divider(height: 15),
                 SizedBox(
                   height: 70,
-                  child: Center(
-                    child: Obx(
-                      () {
-                        if (controller.processingInvite.value) {
-                          return const CircularProgressIndicator();
-                        }
-
-                        if (controller.inviteError.value.isNotEmpty) {
-                          return Text(
-                            controller.inviteError.value,
-                            style: TextStyle(
-                              color: Get.theme.colorScheme.error,
-                              fontSize: 16,
-                            ),
-                            textAlign: TextAlign.center,
-                          );
-                        }
-
-                        return const SizedBox.shrink();
-                      },
+                  child: Obx(
+                    () => CommonLoadingBody(
+                      isLoading: controller.processingInvite.value,
+                      size: 40,
+                      child: Obx(
+                        () => Text(
+                          controller.inviteError.value,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Theme.of(context).colorScheme.error,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),

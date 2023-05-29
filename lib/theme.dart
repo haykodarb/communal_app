@@ -5,7 +5,7 @@ const ColorScheme _colorScheme = ColorScheme.dark(
   background: Color(0xFF191724),
   surface: Color(0xFF1f1d2e),
   primary: Color(0xFFebbcba),
-  secondary: Color(0xFF31748f),
+  secondary: Color(0xFF92BFB1),
   onBackground: Color(0xFFe0def4),
   onPrimary: Color(0xFF191724),
   onSecondary: Color(0xFF191724),

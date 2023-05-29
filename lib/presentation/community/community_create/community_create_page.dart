@@ -1,3 +1,4 @@
+import 'package:biblioteca/presentation/common/common_loading_body.dart';
 import 'package:biblioteca/presentation/common/common_text_field.dart';
 import 'package:biblioteca/presentation/community/community_create/community_create_controller.dart';
 import 'package:flutter/material.dart';
@@ -40,26 +41,20 @@ class CommunityCreatePage extends StatelessWidget {
                       ],
                     ),
                     const Divider(height: 15),
-                    Obx(
-                      () => Visibility(
-                        visible: controller.loading.value,
-                        child: const SizedBox(
-                          height: 100,
-                          child: Center(child: CircularProgressIndicator()),
-                        ),
-                      ),
-                    ),
-                    Obx(
-                      () => Visibility(
-                        visible: controller.errorMessage.value != '',
-                        child: SizedBox(
-                          height: 100,
-                          child: Text(
-                            controller.errorMessage.value,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Theme.of(context).colorScheme.error,
-                              fontWeight: FontWeight.w500,
+                    SizedBox(
+                      height: 70,
+                      child: Obx(
+                        () => CommonLoadingBody(
+                          isLoading: controller.loading.value,
+                          size: 40,
+                          child: Obx(
+                            () => Text(
+                              controller.errorMessage.value,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Theme.of(context).colorScheme.error,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ),

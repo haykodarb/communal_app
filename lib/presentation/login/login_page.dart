@@ -1,3 +1,4 @@
+import 'package:biblioteca/presentation/common/common_loading_body.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:biblioteca/presentation/common/common_text_field.dart';
@@ -36,22 +37,14 @@ class LoginPage extends StatelessWidget {
             isPassword: true,
           ),
           const Divider(color: Colors.transparent),
-          Obx(
-            () => Visibility(
-              visible: controller.loading.value,
-              child: const SizedBox(
-                height: 100,
-                child: Center(child: CircularProgressIndicator()),
-              ),
-            ),
-          ),
-          Obx(
-            () => Visibility(
-              visible: controller.errorMessage.value != '',
-              child: SizedBox(
-                height: 100,
-                child: Center(
-                  child: Text(
+          SizedBox(
+            height: 70,
+            child: Obx(
+              () => CommonLoadingBody(
+                isLoading: controller.loading.value,
+                size: 40,
+                child: Obx(
+                  () => Text(
                     controller.errorMessage.value,
                     style: TextStyle(
                       fontSize: 16,
@@ -62,10 +55,6 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
             ),
-          ),
-          const Divider(
-            color: Colors.transparent,
-            height: 50,
           ),
           _loginButton(controller),
         ],

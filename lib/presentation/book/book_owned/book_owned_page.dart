@@ -8,18 +8,6 @@ import 'package:flutter/material.dart';
 class BookOwnedPage extends StatelessWidget {
   const BookOwnedPage({super.key});
 
-  Widget _loadingImageIndicator() {
-    return SizedBox(
-      height: 50,
-      width: 50,
-      child: Center(
-        child: CircularProgressIndicator(
-          color: Get.theme.colorScheme.primary,
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
@@ -58,7 +46,7 @@ class BookOwnedPage extends StatelessWidget {
                               ),
                             ),
                           ),
-                          VerticalDivider(),
+                          const VerticalDivider(),
                           Expanded(
                             flex: 5,
                             child: Column(

@@ -1,5 +1,6 @@
 import 'package:biblioteca/backend/books_backend.dart';
 import 'package:biblioteca/models/book.dart';
+import 'package:biblioteca/presentation/common/common_loading_body.dart';
 import 'package:biblioteca/presentation/common/common_loading_image.dart';
 import 'package:biblioteca/presentation/community/community_specific/community_drawer/community_drawer_widget.dart';
 import 'package:biblioteca/presentation/community/community_specific/community_specific_controller.dart';
@@ -9,18 +10,6 @@ import 'package:shimmer/shimmer.dart';
 
 class CommunitySpecificPage extends StatelessWidget {
   const CommunitySpecificPage({super.key});
-
-  Widget _loadingImageIndicator() {
-    return SizedBox(
-      height: 50,
-      width: 50,
-      child: Center(
-        child: CircularProgressIndicator(
-          color: Get.theme.colorScheme.primary,
-        ),
-      ),
-    );
-  }
 
   Widget _bookCard(
     CommunitySpecificController controller, {
@@ -96,70 +85,72 @@ class CommunitySpecificPage extends StatelessWidget {
           endDrawer: CommunityDrawerWidget(
             community: controller.community,
           ),
-          body: RefreshIndicator(
-            onRefresh: controller.reloadPage,
-            child: Column(
-              children: [
-                Expanded(
-                  child: Obx(
-                    () {
-                      return ListView.separated(
-                        itemCount: controller.booksLoaded.length + 1,
-                        padding: const EdgeInsets.all(20),
-                        physics: const AlwaysScrollableScrollPhysics(
-                          parent: BouncingScrollPhysics(),
-                        ),
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(
-                            height: 20,
-                          );
-                        },
-                        itemBuilder: (context, index) {
-                          if (index == controller.booksLoaded.length) {
-                            return Center(
-                              child: SizedBox(
-                                height: 50,
-                                child: Obx(
-                                  () {
-                                    return controller.loadingMore.value
-                                        ? const Center(
-                                            child: SizedBox(
-                                              width: 30,
-                                              height: 30,
-                                              child: CircularProgressIndicator(),
-                                            ),
-                                          )
-                                        : TextButton(
+          body: Obx(
+            () => CommonLoadingBody(
+              isLoading: controller.booksLoaded.isEmpty && controller.loadingMore.value,
+              child: RefreshIndicator(
+                onRefresh: controller.reloadPage,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Obx(
+                        () {
+                          return ListView.separated(
+                            itemCount: controller.booksLoaded.length + 1,
+                            padding: const EdgeInsets.all(20),
+                            separatorBuilder: (context, index) {
+                              return const SizedBox(
+                                height: 20,
+                              );
+                            },
+                            itemBuilder: (context, index) {
+                              if (index == controller.booksLoaded.length && index != 0) {
+                                return Center(
+                                  child: SizedBox(
+                                    height: 50,
+                                    child: Obx(
+                                      () {
+                                        return CommonLoadingBody(
+                                          isLoading: controller.loadingMore.value,
+                                          child: TextButton(
                                             onPressed: controller.loadBooks,
                                             child: const Text(
-                                              'More...',
+                                              'more...',
                                               style: TextStyle(fontSize: 18),
                                             ),
-                                          );
-                                  },
-                                ),
-                              ),
-                            );
-                          }
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                );
+                              }
 
-                          final Book book = controller.booksLoaded[index];
+                              final Book book = controller.booksLoaded[index];
 
-                          return FutureBuilder(
-                            future: BooksBackend.getBookCover(book),
-                            builder: (context, snapshot) {
-                              return _bookCard(
-                                controller,
-                                book: book,
-                                cover: snapshot.hasData ? Image.memory(snapshot.data!) : null,
+                              return FutureBuilder(
+                                future: BooksBackend.getBookCover(book),
+                                builder: (context, snapshot) {
+                                  return _bookCard(
+                                    controller,
+                                    book: book,
+                                    cover: snapshot.hasData
+                                        ? Image.memory(
+                                            snapshot.data!,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : null,
+                                  );
+                                },
                               );
                             },
                           );
                         },
-                      );
-                    },
-                  ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         );

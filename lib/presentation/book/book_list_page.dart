@@ -1,22 +1,23 @@
 import 'package:biblioteca/backend/books_backend.dart';
 import 'package:biblioteca/models/book.dart';
+import 'package:biblioteca/presentation/common/common_loading_body.dart';
 import 'package:biblioteca/presentation/common/common_loading_image.dart';
 import 'package:biblioteca/presentation/common/common_scaffold/common_scaffold_widget.dart';
 import 'package:biblioteca/presentation/book/book_list_controller.dart';
 import 'package:biblioteca/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class BookListPage extends StatelessWidget {
   const BookListPage({super.key});
 
   Widget _deletingBookIndicator() {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(
+          const Text(
             'Deleting book...',
             style: TextStyle(
               fontSize: 16,
@@ -25,21 +26,12 @@ class BookListPage extends StatelessWidget {
           SizedBox(
             height: 50,
             width: 50,
-            child: CircularProgressIndicator(),
+            child: LoadingAnimationWidget.threeArchedCircle(
+              color: Get.theme.colorScheme.primary,
+              size: 50,
+            ),
           )
         ],
-      ),
-    );
-  }
-
-  Widget _loadingImageIndicator() {
-    return SizedBox(
-      height: 50,
-      width: 50,
-      child: Center(
-        child: CircularProgressIndicator(
-          color: Get.theme.colorScheme.primary,
-        ),
       ),
     );
   }
@@ -137,10 +129,9 @@ class BookListPage extends StatelessWidget {
           body: Center(
             child: Obx(
               () {
-                if (controller.loading.value) {
-                  return const CircularProgressIndicator();
-                } else {
-                  return RefreshIndicator(
+                return CommonLoadingBody(
+                  isLoading: controller.loading.value,
+                  child: RefreshIndicator(
                     onRefresh: controller.reloadBooks,
                     child: Obx(
                       () {
@@ -158,9 +149,6 @@ class BookListPage extends StatelessWidget {
                           return ListView.separated(
                             itemCount: controller.userBooks.length,
                             padding: const EdgeInsets.all(20),
-                            physics: const AlwaysScrollableScrollPhysics(
-                              parent: BouncingScrollPhysics(),
-                            ),
                             separatorBuilder: (context, index) {
                               return const SizedBox(
                                 height: 20,
@@ -175,7 +163,12 @@ class BookListPage extends StatelessWidget {
                                   return _bookCard(
                                     controller,
                                     book: book,
-                                    cover: snapshot.hasData ? Image.memory(snapshot.data!) : null,
+                                    cover: snapshot.hasData
+                                        ? Image.memory(
+                                            snapshot.data!,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : null,
                                   );
                                 },
                               );
@@ -184,8 +177,8 @@ class BookListPage extends StatelessWidget {
                         }
                       },
                     ),
-                  );
-                }
+                  ),
+                );
               },
             ),
           ),

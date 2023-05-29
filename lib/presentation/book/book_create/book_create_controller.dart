@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:biblioteca/backend/books_backend.dart';
 import 'package:biblioteca/models/backend_response.dart';
 import 'package:biblioteca/models/book.dart';
@@ -18,7 +17,7 @@ class BookCreateController extends GetxController {
   final RxBool loading = false.obs;
 
   final ImagePicker imagePicker = ImagePicker();
-  final Rxn<XFile> selectedFile = Rxn<XFile>();
+  final Rxn<File> selectedFile = Rxn<File>();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -27,22 +26,17 @@ class BookCreateController extends GetxController {
     super.onInit();
   }
 
-  Future<void> takePictureFromGallery() async {
-    selectedFile.value = await imagePicker.pickImage(
-      source: ImageSource.gallery,
+  Future<void> takePicture(ImageSource source) async {
+    XFile? pickedImage = await imagePicker.pickImage(
+      source: source,
       imageQuality: 80,
-      maxHeight: 800,
-      maxWidth: 600,
+      maxHeight: 640,
+      maxWidth: 480,
     );
-  }
 
-  Future<void> takePictureFromCamera() async {
-    selectedFile.value = await imagePicker.pickImage(
-      source: ImageSource.camera,
-      imageQuality: 80,
-      maxHeight: 800,
-      maxWidth: 600,
-    );
+    if (pickedImage == null) return;
+
+    selectedFile.value = File(pickedImage.path);
   }
 
   void onTitleChange(String value) {

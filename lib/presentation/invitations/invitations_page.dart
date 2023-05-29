@@ -1,4 +1,5 @@
 import 'package:biblioteca/models/invitation.dart';
+import 'package:biblioteca/presentation/common/common_loading_body.dart';
 import 'package:biblioteca/presentation/common/common_scaffold/common_scaffold_widget.dart';
 import 'package:biblioteca/presentation/invitations/invitations_controller.dart';
 import 'package:flutter/material.dart';
@@ -16,54 +17,51 @@ class InvitationsPage extends StatelessWidget {
           height: 275,
           child: Obx(
             () {
-              if (invitation.loading.value) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text(
-                    invitation.communityName,
-                    style: const TextStyle(
-                      fontSize: 20,
-                    ),
-                  ),
-                  const Divider(height: 30),
-                  Text(
-                    invitation.communityDescription,
-                    style: const TextStyle(
-                      fontSize: 14,
-                    ),
-                  ),
-                  const Divider(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      const Expanded(child: VerticalDivider()),
-                      SizedBox(
-                        width: 80,
-                        height: 40,
-                        child: ElevatedButton(
-                          onPressed: () => controller.respondToInvitation(invitation, true),
-                          child: const Icon(Icons.done),
-                        ),
+              return CommonLoadingBody(
+                isLoading: invitation.loading.value,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Text(
+                      invitation.communityName,
+                      style: const TextStyle(
+                        fontSize: 20,
                       ),
-                      const VerticalDivider(width: 30),
-                      SizedBox(
-                        width: 80,
-                        height: 40,
-                        child: OutlinedButton(
-                          onPressed: () => controller.respondToInvitation(invitation, false),
-                          child: const Icon(Icons.close),
-                        ),
+                    ),
+                    const Divider(height: 30),
+                    Text(
+                      invitation.communityDescription,
+                      style: const TextStyle(
+                        fontSize: 14,
                       ),
-                      const Expanded(child: VerticalDivider()),
-                    ],
-                  ),
-                ],
+                    ),
+                    const Divider(height: 30),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        const Expanded(child: VerticalDivider()),
+                        SizedBox(
+                          width: 80,
+                          height: 40,
+                          child: ElevatedButton(
+                            onPressed: () => controller.respondToInvitation(invitation, true),
+                            child: const Icon(Icons.done),
+                          ),
+                        ),
+                        const VerticalDivider(width: 30),
+                        SizedBox(
+                          width: 80,
+                          height: 40,
+                          child: OutlinedButton(
+                            onPressed: () => controller.respondToInvitation(invitation, false),
+                            child: const Icon(Icons.close),
+                          ),
+                        ),
+                        const Expanded(child: VerticalDivider()),
+                      ],
+                    ),
+                  ],
+                ),
               );
             },
           ),
@@ -84,44 +82,41 @@ class InvitationsPage extends StatelessWidget {
           drawer: const CommonScaffoldWidget(),
           body: Obx(
             () {
-              if (controller.loading.value) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              return RefreshIndicator(
-                onRefresh: controller.loadInvitations,
-                child: Obx(
-                  () {
-                    if (controller.invitationsList.isEmpty) {
-                      return const CustomScrollView(
-                        physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                        slivers: [
-                          SliverFillRemaining(
-                            child: Center(
-                              child: Text(
-                                'You have not received\nany invitations yet.',
-                                style: TextStyle(fontSize: 16),
-                                textAlign: TextAlign.center,
+              return CommonLoadingBody(
+                isLoading: controller.loading.value,
+                child: RefreshIndicator(
+                  onRefresh: controller.loadInvitations,
+                  child: Obx(
+                    () {
+                      if (controller.invitationsList.isEmpty) {
+                        return const CustomScrollView(
+                          physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                          slivers: [
+                            SliverFillRemaining(
+                              child: Center(
+                                child: Text(
+                                  'You have not received\nany invitations yet.',
+                                  style: TextStyle(fontSize: 16),
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      );
-                    }
+                          ],
+                        );
+                      }
 
-                    return ListView.separated(
-                      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                      itemCount: controller.invitationsList.length,
-                      padding: const EdgeInsets.symmetric(vertical: 30),
-                      itemBuilder: (context, index) {
-                        return _invitationElement(controller, controller.invitationsList[index]);
-                      },
-                      separatorBuilder: (context, index) {
-                        return const Divider();
-                      },
-                    );
-                  },
+                      return ListView.separated(
+                        itemCount: controller.invitationsList.length,
+                        padding: const EdgeInsets.symmetric(vertical: 30),
+                        itemBuilder: (context, index) {
+                          return _invitationElement(controller, controller.invitationsList[index]);
+                        },
+                        separatorBuilder: (context, index) {
+                          return const Divider();
+                        },
+                      );
+                    },
+                  ),
                 ),
               );
             },

@@ -1,4 +1,5 @@
 import 'package:biblioteca/models/community.dart';
+import 'package:biblioteca/presentation/common/common_loading_body.dart';
 import 'package:biblioteca/presentation/common/common_scaffold/common_scaffold_widget.dart';
 import 'package:biblioteca/presentation/community/community_list_controller.dart';
 import 'package:biblioteca/routes.dart';
@@ -44,51 +45,47 @@ class CommunityListPage extends StatelessWidget {
             title: const Text('Communities'),
           ),
           drawer: const CommonScaffoldWidget(),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Obx(() {
-                    if (controller.loading.value) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-
-                    return RefreshIndicator(
-                      onRefresh: controller.fetchAllCommunities,
-                      child: Obx(
-                        () {
-                          if (controller.communities.isNotEmpty) {
-                            return ListView.separated(
-                              itemCount: controller.communities.length,
-                              physics: const AlwaysScrollableScrollPhysics(
-                                parent: BouncingScrollPhysics(),
-                              ),
-                              separatorBuilder: (context, index) => const Divider(),
-                              itemBuilder: (context, index) {
-                                return _communityCard(
-                                  controller,
-                                  controller.communities[index],
-                                );
-                              },
-                            );
-                          } else {
-                            return const Center(
-                              child: Text(
-                                'You haven\'t joined\nany communities yet.',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            );
-                          }
-                        },
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Obx(
+                  () {
+                    return CommonLoadingBody(
+                      isLoading: controller.loading.value,
+                      child: RefreshIndicator(
+                        onRefresh: controller.fetchAllCommunities,
+                        child: Obx(
+                          () {
+                            if (controller.communities.isNotEmpty) {
+                              return ListView.separated(
+                                padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
+                                itemCount: controller.communities.length,
+                                separatorBuilder: (context, index) => const Divider(),
+                                itemBuilder: (context, index) {
+                                  return _communityCard(
+                                    controller,
+                                    controller.communities[index],
+                                  );
+                                },
+                              );
+                            } else {
+                              return const Center(
+                                child: Text(
+                                  'You haven\'t joined\nany communities yet.',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              );
+                            }
+                          },
+                        ),
                       ),
                     );
-                  }),
+                  },
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

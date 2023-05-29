@@ -1,3 +1,4 @@
+import 'package:biblioteca/presentation/common/common_loading_body.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:biblioteca/presentation/common/common_text_field.dart';
@@ -33,36 +34,24 @@ class RegisterPage extends StatelessWidget {
             isPassword: true,
           ),
           const Divider(color: Colors.transparent),
-          Obx(
-            () => Visibility(
-              visible: controller.errorMessage.value.isNotEmpty,
-              child: SizedBox(
-                height: 70,
-                child: Text(
-                  controller.errorMessage.value,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Theme.of(context).colorScheme.error,
-                    fontWeight: FontWeight.w500,
+          SizedBox(
+            height: 70,
+            child: Obx(
+              () => CommonLoadingBody(
+                isLoading: controller.loading.value,
+                size: 40,
+                child: Obx(
+                  () => Text(
+                    controller.errorMessage.value,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).colorScheme.error,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          Obx(
-            () => Visibility(
-              visible: controller.loading.value,
-              child: const SizedBox(
-                height: 40,
-                width: 40,
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          ),
-          const Divider(
-            height: 50,
-            color: Colors.transparent,
           ),
           ElevatedButton(
             onPressed: controller.onSubmitButton,

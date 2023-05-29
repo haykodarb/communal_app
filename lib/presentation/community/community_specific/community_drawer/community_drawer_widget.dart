@@ -1,4 +1,5 @@
 import 'package:biblioteca/models/community.dart';
+import 'package:biblioteca/presentation/common/common_loading_body.dart';
 import 'package:biblioteca/presentation/community/community_specific/community_drawer/community_drawer_controller.dart';
 import 'package:biblioteca/routes.dart';
 import 'package:get/get.dart';
@@ -96,41 +97,40 @@ class CommunityDrawerWidget extends StatelessWidget {
             child: Center(
               child: Obx(
                 () {
-                  if (controller.loading.value) {
-                    return const CircularProgressIndicator();
-                  }
-
-                  return Column(
-                    children: [
-                      _drawerHeader(),
-                      _drawerButton(
-                        icon: Icons.people,
-                        text: 'Members',
-                        callback: () {
-                          Get.toNamed(
-                            RouteNames.communityMembersPage,
-                            arguments: {
-                              'community': community,
-                            },
-                          );
-                        },
-                      ),
-                      Visibility(
-                        visible: community.isCurrentUserAdmin != null && community.isCurrentUserAdmin!,
-                        child: _drawerButton(
-                          icon: Icons.person_add,
-                          text: 'Invite',
+                  return CommonLoadingBody(
+                    isLoading: controller.loading.value,
+                    child: Column(
+                      children: [
+                        _drawerHeader(),
+                        _drawerButton(
+                          icon: Icons.people,
+                          text: 'Members',
                           callback: () {
                             Get.toNamed(
-                              RouteNames.communityInvitePage,
+                              RouteNames.communityMembersPage,
                               arguments: {
                                 'community': community,
                               },
                             );
                           },
                         ),
-                      ),
-                    ],
+                        Visibility(
+                          visible: community.isCurrentUserAdmin != null && community.isCurrentUserAdmin!,
+                          child: _drawerButton(
+                            icon: Icons.person_add,
+                            text: 'Invite',
+                            callback: () {
+                              Get.toNamed(
+                                RouteNames.communityInvitePage,
+                                arguments: {
+                                  'community': community,
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 },
               ),
