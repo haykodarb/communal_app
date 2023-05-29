@@ -63,7 +63,7 @@ class LoginController extends GetxController {
       loading.value = true;
       errorMessage.value = '';
 
-      final BackendReponse response = await LoginBackend.login(form: form.value);
+      final BackendResponse response = await LoginBackend.login(form: form.value);
 
       loading.value = false;
 

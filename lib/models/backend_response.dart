@@ -1,17 +1,9 @@
-import 'dart:convert';
-
-class BackendReponse {
+class BackendResponse<ResponseType> {
   bool success = false;
-  dynamic payload;
+  ResponseType payload;
 
-  BackendReponse({
+  BackendResponse({
     required this.success,
     required this.payload,
   });
-
-  BackendReponse.fromBody(String body) {
-    Map<String, dynamic> parsedBody = jsonDecode(body);
-    success = parsedBody['success'];
-    payload = parsedBody['payload'];
-  }
 }

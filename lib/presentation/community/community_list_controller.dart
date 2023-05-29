@@ -17,7 +17,7 @@ class CommunityListController extends GetxController {
 
   Future<void> fetchAllCommunities() async {
     loading.value = true;
-    final BackendReponse response = await CommunitiesBackend.getCommunitiesForUser();
+    final BackendResponse response = await CommunitiesBackend.getCommunitiesForUser();
 
     if (response.success) {
       communities.value = response.payload;

@@ -5,7 +5,7 @@ import 'package:biblioteca/models/profile.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class UsersBackend {
-  static Future<BackendReponse> searchUsers(String query) async {
+  static Future<BackendResponse> searchUsers(String query) async {
     final SupabaseClient client = Supabase.instance.client;
 
     final List<Map<String, dynamic>> response =
@@ -20,27 +20,25 @@ class UsersBackend {
         )
         .toList();
 
-    return BackendReponse(success: response.isNotEmpty, payload: profiles);
+    return BackendResponse(success: response.isNotEmpty, payload: profiles);
   }
 
-  static Future<BackendReponse> acceptInvitation(Invitation invitation) async {
+  static Future<BackendResponse> respondToInvitation(Invitation invitation, bool accept) async {
     final SupabaseClient client = Supabase.instance.client;
 
     final Map<String, dynamic> response = await client
         .from('memberships')
         .update({
-          'accepted': true,
+          'accepted': accept,
         })
         .eq('id', invitation.id)
         .select<Map<String, dynamic>>()
         .single();
 
-    print(response);
-
-    return BackendReponse(success: true, payload: '');
+    return BackendResponse(success: response.isNotEmpty, payload: response);
   }
 
-  static Future<BackendReponse> getInvitationsForUser() async {
+  static Future<BackendResponse> getInvitationsForUser() async {
     final SupabaseClient client = Supabase.instance.client;
 
     final String userId = client.auth.currentUser!.id;
@@ -50,8 +48,6 @@ class UsersBackend {
         .select<List<Map<String, dynamic>>>('id, communities(id, name, description)')
         .eq('member', userId)
         .filter('accepted', 'is', null);
-
-    print(unconfirmedMemberships);
 
     final List<Invitation> invitationsList = unconfirmedMemberships
         .map(
@@ -65,23 +61,23 @@ class UsersBackend {
         )
         .toList();
 
-    return BackendReponse(
+    return BackendResponse(
       success: invitationsList.isNotEmpty,
       payload: invitationsList,
     );
   }
 
-  static Future<BackendReponse> inviteUserToCommunity(Community community, Profile user) async {
+  static Future<BackendResponse> inviteUserToCommunity(Community community, Profile user) async {
     final SupabaseClient client = Supabase.instance.client;
 
-    final Map<String, dynamic> memberExistsResponse = await client.from('memberships').select().match({
+    final Map<String, dynamic>? memberExistsResponse = await client.from('memberships').select().match({
       'community': community.id,
       'member': user.id,
       'accepted': true,
-    }).single();
+    }).maybeSingle();
 
-    if (memberExistsResponse.isNotEmpty) {
-      return BackendReponse(
+    if (memberExistsResponse != null && memberExistsResponse.isNotEmpty) {
+      return BackendResponse(
         success: false,
         payload: 'User is already a member in this community',
       );
@@ -99,36 +95,32 @@ class UsersBackend {
         .select()
         .single();
 
-    return BackendReponse(success: createMembershipResponse.isNotEmpty, payload: createMembershipResponse);
+    return BackendResponse(success: createMembershipResponse.isNotEmpty, payload: createMembershipResponse);
   }
 
-  static Future<BackendReponse> getUsersInCommunity(Community community) async {
+  static Future<BackendResponse<List<Profile>>> getUsersInCommunity(Community community) async {
     final SupabaseClient client = Supabase.instance.client;
 
-    final List<dynamic> membershipResponse = await client.from('memberships').select().match({
+    final List<dynamic> membershipResponse =
+        await client.from('memberships').select('id, is_admin, profiles(id, username)').match({
       'community': community.id,
       'accepted': true,
     }).neq('member', client.auth.currentUser!.id);
 
-    final List<String> listOfUserIDs = membershipResponse.map(
-      (element) {
-        return element['member'] as String;
-      },
-    ).toList();
-
-    final List<dynamic> profilesResponse = await client.from('profiles').select().in_('id', listOfUserIDs);
-
-    final List<Profile> listOfProfiles = profilesResponse
+    final List<Profile> listOfProfiles = membershipResponse
         .map(
           (e) => Profile(
-            username: e['username'],
-            id: e['id'],
+            username: e['profiles']['username'],
+            id: e['profiles']['id'],
+            is_admin: e['is_admin'],
           ),
         )
         .toList();
 
-    return BackendReponse(
-      success: profilesResponse.isNotEmpty,
+    print(listOfProfiles.map((e) => e.username));
+
+    return BackendResponse(
+      success: listOfProfiles.isNotEmpty,
       payload: listOfProfiles,
     );
   }

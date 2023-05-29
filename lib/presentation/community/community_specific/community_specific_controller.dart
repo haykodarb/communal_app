@@ -1,26 +1,40 @@
-import 'package:biblioteca/backend/users_backend.dart';
+import 'package:biblioteca/backend/books_backend.dart';
 import 'package:biblioteca/models/backend_response.dart';
+import 'package:biblioteca/models/book.dart';
 import 'package:biblioteca/models/community.dart';
-import 'package:biblioteca/models/profile.dart';
 import 'package:get/get.dart';
 
 class CommunitySpecificController extends GetxController {
   final Community community = Get.arguments['community'];
 
-  final RxList<Profile> usersInCommunity = <Profile>[].obs;
+  final RxList<Book> booksLoaded = <Book>[].obs;
 
-  final RxInt loadingIndex = 0.obs;
+  final RxBool loadingMore = false.obs;
+
+  int loadingIndex = 0;
 
   @override
-  Future<void> onInit() async {
+  void onInit() {
     super.onInit();
-    final BackendReponse response = await UsersBackend.getUsersInCommunity(community);
+    loadBooks();
+  }
 
-    print(response.payload);
+  Future<void> reloadPage() async {
+    loadingIndex = 0;
+    booksLoaded.clear();
+    await loadBooks();
+  }
+
+  Future<void> loadBooks() async {
+    loadingMore.value = true;
+
+    final BackendResponse response = await BooksBackend.getBooksInCommunity(community, loadingIndex);
 
     if (response.success) {
-      usersInCommunity.value = response.payload;
-      usersInCommunity.refresh();
+      booksLoaded.addAll(response.payload);
+      loadingIndex++;
     }
+
+    loadingMore.value = false;
   }
 }

@@ -15,9 +15,9 @@ class InvitationsController extends GetxController {
     loadInvitations();
   }
 
-  Future<void> acceptInvitation(Invitation invitation) async {
+  Future<void> respondToInvitation(Invitation invitation, bool accept) async {
     invitation.loading.value = true;
-    final BackendReponse response = await UsersBackend.acceptInvitation(invitation);
+    final BackendResponse response = await UsersBackend.respondToInvitation(invitation, accept);
 
     if (response.success) {
       invitationsList.remove(invitation);
@@ -29,7 +29,7 @@ class InvitationsController extends GetxController {
   Future<void> loadInvitations() async {
     loading.value = true;
 
-    final BackendReponse response = await UsersBackend.getInvitationsForUser();
+    final BackendResponse response = await UsersBackend.getInvitationsForUser();
 
     if (response.success) {
       invitationsList.value = response.payload;

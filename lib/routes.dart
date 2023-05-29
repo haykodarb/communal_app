@@ -1,6 +1,7 @@
 import 'package:biblioteca/presentation/community/community_invite/community_invite_page.dart';
 import 'package:biblioteca/presentation/community/community_list_page.dart';
 import 'package:biblioteca/presentation/community/community_create/community_create_page.dart';
+import 'package:biblioteca/presentation/community/community_specific/community_members/community_members_page.dart';
 import 'package:biblioteca/presentation/community/community_specific/community_specific_page.dart';
 import 'package:biblioteca/presentation/invitations/invitations_page.dart';
 import 'package:biblioteca/presentation/login/login_page.dart';
@@ -24,6 +25,7 @@ class RouteNames {
   static const communityCreatePage = '/community/create';
   static const communitySpecificPage = '/community/specific';
   static const communityInvitePage = '/community/invite';
+  static const communityMembersPage = '/community/members';
   static const invitationsPage = '/invitations';
 }
 
@@ -31,7 +33,7 @@ List<GetPage> routes() => <GetPage>[
       GetPage<dynamic>(
         name: RouteNames.startPage,
         transition: Transition.noTransition,
-        page: () => StartPage(),
+        page: () => const StartPage(),
       ),
       GetPage<dynamic>(
         name: RouteNames.loginPage,
@@ -43,7 +45,7 @@ List<GetPage> routes() => <GetPage>[
       ),
       GetPage<dynamic>(
         name: RouteNames.registerPage,
-        page: () => RegisterPage(),
+        page: () => const RegisterPage(),
         transition: Transition.downToUp,
         transitionDuration: const Duration(
           milliseconds: 300,
@@ -83,6 +85,11 @@ List<GetPage> routes() => <GetPage>[
         name: RouteNames.communityInvitePage,
         transition: Transition.downToUp,
         page: () => const CommunityInvitePage(),
+      ),
+      GetPage<dynamic>(
+        name: RouteNames.communityMembersPage,
+        transition: Transition.downToUp,
+        page: () => const CommunityMembersPage(),
       ),
       GetPage<dynamic>(
         name: RouteNames.invitationsPage,

@@ -3,14 +3,14 @@ import 'package:biblioteca/models/register_form.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RegisterBackend {
-  static Future<BackendReponse> register({required RegisterForm form}) async {
+  static Future<BackendResponse> register({required RegisterForm form}) async {
     final SupabaseClient client = Supabase.instance.client;
 
     final Map<String, dynamic>? foundUsername =
         await client.from('profiles').select<Map<String, dynamic>?>().eq('username', form.username).maybeSingle();
 
     if (foundUsername != null) {
-      return BackendReponse(
+      return BackendResponse(
         success: false,
         payload: 'Username already used, please choose another one',
       );
@@ -24,7 +24,7 @@ class RegisterBackend {
       },
     );
 
-    return BackendReponse(
+    return BackendResponse(
       success: signUpResponse.user != null,
       payload: signUpResponse.user,
     );

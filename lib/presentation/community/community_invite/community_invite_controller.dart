@@ -49,10 +49,8 @@ class CommunityInviteController extends GetxController {
     if (confirm) {
       processingInvite.value = true;
       inviteError.value = '';
-      final BackendReponse response = await UsersBackend.inviteUserToCommunity(community, selectedProfile);
+      final BackendResponse response = await UsersBackend.inviteUserToCommunity(community, selectedProfile);
       processingInvite.value = false;
-
-      print(response.payload);
 
       if (!response.success) {
         inviteError.value = response.payload;
@@ -63,7 +61,7 @@ class CommunityInviteController extends GetxController {
   Future<void> onSearch() async {
     selectedIndex.value = null;
     loading.value = true;
-    final BackendReponse response = await UsersBackend.searchUsers(query.value);
+    final BackendResponse response = await UsersBackend.searchUsers(query.value);
     loading.value = false;
 
     if (response.success) {

@@ -170,19 +170,11 @@ class BookListPage extends StatelessWidget {
                               return FutureBuilder(
                                 future: BooksBackend.getBookCover(book),
                                 builder: (context, snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return _bookCard(
-                                      controller,
-                                      book: book,
-                                      cover: null,
-                                    );
-                                  } else {
-                                    return _bookCard(
-                                      controller,
-                                      book: book,
-                                      cover: Image.memory(snapshot.data!),
-                                    );
-                                  }
+                                  return _bookCard(
+                                    controller,
+                                    book: book,
+                                    cover: snapshot.hasData ? Image.memory(snapshot.data!) : null,
+                                  );
                                 },
                               );
                             },

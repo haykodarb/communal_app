@@ -86,7 +86,7 @@ class RegisterController extends GetxController {
       loading.value = true;
       errorMessage.value = '';
 
-      final BackendReponse response = await RegisterBackend.register(
+      final BackendResponse response = await RegisterBackend.register(
         form: form.value,
       );
 

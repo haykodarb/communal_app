@@ -86,7 +86,7 @@ class BookCreateController extends GetxController {
       loading.value = true;
       errorMessage.value = '';
 
-      final BackendReponse response = await BooksBackend.addBook(
+      final BackendResponse response = await BooksBackend.addBook(
         bookForm.value,
         File(selectedFile.value!.path),
       );

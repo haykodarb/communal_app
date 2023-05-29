@@ -1,7 +1,5 @@
 import 'package:biblioteca/models/backend_response.dart';
-import 'package:biblioteca/models/book.dart';
 import 'package:biblioteca/models/community.dart';
-import 'package:biblioteca/models/profile.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CommunitiesBackend {
@@ -20,47 +18,15 @@ class CommunitiesBackend {
     return membershipResponse.isNotEmpty && (membershipResponse['is_admin'] as bool);
   }
 
-  static Future<BackendReponse> getBooksInCommunity(Community community, int index) async {
-    final SupabaseClient client = Supabase.instance.client;
-
-    final List<dynamic> membershipResponse = await client.from('memberships').select().eq('community', community.id);
-
-    final List<String> listOfUserIDs = membershipResponse.map(
-      (element) {
-        return element['member'] as String;
-      },
-    ).toList();
-
-    final List<dynamic> booksResponse =
-        await client.from('books').select().in_('owner', listOfUserIDs).order('id').range(
-              index * 10,
-              index * 10 + 10,
-            );
-
-    final List<Book> listOfBooks = booksResponse
-        .map(
-          (e) => Book(
-            id: e['id'],
-            title: e['title'],
-            author: e['author'],
-            publisher: e['publisher'],
-            image_path: e['image_path'],
-          ),
-        )
-        .toList();
-
-    return BackendReponse(
-      success: listOfBooks.isNotEmpty,
-      payload: listOfBooks,
-    );
-  }
-
-  static Future<BackendReponse> getCommunitiesForUser() async {
+  static Future<BackendResponse> getCommunitiesForUser() async {
     final SupabaseClient client = Supabase.instance.client;
 
     final String userId = client.auth.currentUser!.id;
 
-    final List<dynamic> response = await client.from('memberships').select().match({
+    final List<dynamic> response = await client
+        .from('memberships')
+        .select('id, created_at, joined_at, member, is_admin, accepted, communities(id, name, description)')
+        .match({
       'member': userId,
       'accepted': true,
     }).order(
@@ -68,35 +34,27 @@ class CommunitiesBackend {
       ascending: true,
     );
 
-    if (response.isEmpty) {
-      return BackendReponse(success: false, payload: null);
-    }
-
-    final List<String> listOfCommunityIds = response.map((element) => element['community'] as String).toList();
-
-    final List<dynamic> communitiesResponse = await client.from('communities').select().in_(
-          'id',
-          listOfCommunityIds,
-        );
+    print(response);
 
     if (response.isEmpty) {
-      return BackendReponse(success: false, payload: null);
+      return BackendResponse(success: false, payload: null);
     }
 
-    final List<Community> listOfCommunities = communitiesResponse
+    final List<Community> listOfCommunities = response
         .map(
           (dynamic element) => Community(
-            name: element['name'],
-            description: element['description'],
-            id: element['id'],
+            name: element['communities']['name'],
+            description: element['communities']['description'],
+            id: element['communities']['id'],
+            isCurrentUserAdmin: element['is_admin'],
           ),
         )
         .toList();
 
-    return BackendReponse(success: true, payload: listOfCommunities);
+    return BackendResponse(success: true, payload: listOfCommunities);
   }
 
-  static Future<BackendReponse> createCommunity(Community community) async {
+  static Future<BackendResponse> createCommunity(Community community) async {
     final SupabaseClient client = Supabase.instance.client;
 
     final String userId = client.auth.currentUser!.id;
@@ -114,7 +72,7 @@ class CommunitiesBackend {
         .single();
 
     if (createCommunityResponse.isEmpty) {
-      return BackendReponse(
+      return BackendResponse(
         success: false,
         payload: '',
       );
@@ -133,7 +91,7 @@ class CommunitiesBackend {
         .select()
         .single();
 
-    return BackendReponse(
+    return BackendResponse(
       success: createMembershipResponse.isNotEmpty,
       payload: createMembershipResponse,
     );

@@ -26,7 +26,7 @@ class BookListController extends GetxController {
 
   Future<void> reloadBooks() async {
     loading.value = true;
-    final BackendReponse response = await BooksBackend.getAllBooks();
+    final BackendResponse response = await BooksBackend.getAllBooks();
     loading.value = false;
 
     if (response.success) {

@@ -45,7 +45,7 @@ class CommunityCreateController extends GetxController {
       loading.value = true;
       errorMessage.value = '';
 
-      final BackendReponse response = await CommunitiesBackend.createCommunity(communityForm.value);
+      final BackendResponse response = await CommunitiesBackend.createCommunity(communityForm.value);
 
       loading.value = false;
       if (response.success) {

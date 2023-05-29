@@ -47,7 +47,7 @@ class InvitationsPage extends StatelessWidget {
                         width: 80,
                         height: 40,
                         child: ElevatedButton(
-                          onPressed: () => controller.acceptInvitation(invitation),
+                          onPressed: () => controller.respondToInvitation(invitation, true),
                           child: const Icon(Icons.done),
                         ),
                       ),
@@ -56,9 +56,7 @@ class InvitationsPage extends StatelessWidget {
                         width: 80,
                         height: 40,
                         child: OutlinedButton(
-                          onPressed: () {
-                            print('Rejected ${invitation.communityName}');
-                          },
+                          onPressed: () => controller.respondToInvitation(invitation, false),
                           child: const Icon(Icons.close),
                         ),
                       ),

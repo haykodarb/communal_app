@@ -14,7 +14,7 @@ class BooksBackend {
     return bytes;
   }
 
-  static Future<BackendReponse> addBook(Book book, File image) async {
+  static Future<BackendResponse> addBook(Book book, File image) async {
     final SupabaseClient client = Supabase.instance.client;
 
     final String userId = client.auth.currentUser!.id;
@@ -48,7 +48,7 @@ class BooksBackend {
         .select()
         .single();
 
-    return BackendReponse(
+    return BackendResponse(
       success: response.isNotEmpty,
       payload: Book(
         title: response['title'],
@@ -60,7 +60,7 @@ class BooksBackend {
     );
   }
 
-  static Future<BackendReponse> deleteBook(Book book) async {
+  static Future<BackendResponse> deleteBook(Book book) async {
     final SupabaseClient client = Supabase.instance.client;
 
     final List<dynamic> response = await client.from('books').delete().eq('id', book.id).select();
@@ -69,13 +69,16 @@ class BooksBackend {
       [book.image_path!],
     );
 
-    return BackendReponse(success: response.isNotEmpty, payload: response);
+    return BackendResponse(success: response.isNotEmpty, payload: response);
   }
 
-  static Future<BackendReponse> getAllBooks() async {
+  static Future<BackendResponse> getAllBooks() async {
     final SupabaseClient client = Supabase.instance.client;
 
-    final List<Map<String, dynamic>> response = await client.from('books').select<List<Map<String, dynamic>>>('*');
+    final String userId = client.auth.currentUser!.id;
+
+    final List<Map<String, dynamic>> response =
+        await client.from('books').select<List<Map<String, dynamic>>>().eq('owner', userId);
 
     final List<Book> bookList = response
         .map(
@@ -89,9 +92,52 @@ class BooksBackend {
         )
         .toList();
 
-    return BackendReponse(
+    return BackendResponse(
       success: true,
       payload: bookList,
+    );
+  }
+
+  static Future<BackendResponse> getBooksInCommunity(Community community, int index) async {
+    final SupabaseClient client = Supabase.instance.client;
+
+    final List<dynamic> membershipResponse = await client.from('memberships').select().eq('community', community.id);
+
+    final List<String> listOfUserIDs = membershipResponse.map(
+      (element) {
+        return element['member'] as String;
+      },
+    ).toList();
+
+    listOfUserIDs.remove(client.auth.currentUser!.id);
+
+    final List<dynamic> booksResponse = await client
+        .from('books')
+        .select('id, title, author, publisher, image_path, profiles(id, username)')
+        .in_('owner', listOfUserIDs)
+        .order('id')
+        .range(
+          index * 10,
+          index * 10 + 10,
+        );
+
+    final List<Book> listOfBooks = booksResponse
+        .map(
+          (e) => Book(
+            id: e['id'],
+            title: e['title'],
+            author: e['author'],
+            publisher: e['publisher'],
+            image_path: e['image_path'],
+            ownerName: e['profiles']['username'],
+            ownerId: e['profiles']['id'],
+          ),
+        )
+        .toList();
+
+    return BackendResponse(
+      success: listOfBooks.isNotEmpty,
+      payload: listOfBooks,
     );
   }
 }
