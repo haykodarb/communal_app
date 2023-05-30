@@ -1,10 +1,10 @@
-import 'package:biblioteca/backend/books_backend.dart';
-import 'package:biblioteca/models/book.dart';
-import 'package:biblioteca/presentation/common/common_loading_body.dart';
-import 'package:biblioteca/presentation/common/common_loading_image.dart';
-import 'package:biblioteca/presentation/common/common_scaffold/common_scaffold_widget.dart';
-import 'package:biblioteca/presentation/book/book_list_controller.dart';
-import 'package:biblioteca/routes.dart';
+import 'package:communal/backend/books_backend.dart';
+import 'package:communal/models/book.dart';
+import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_loading_image.dart';
+import 'package:communal/presentation/common/common_scaffold/common_scaffold_widget.dart';
+import 'package:communal/presentation/book/book_list_controller.dart';
+import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';

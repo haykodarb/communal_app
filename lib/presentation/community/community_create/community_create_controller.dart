@@ -1,6 +1,6 @@
-import 'package:biblioteca/backend/communities_backend.dart';
-import 'package:biblioteca/models/backend_response.dart';
-import 'package:biblioteca/models/community.dart';
+import 'package:communal/backend/communities_backend.dart';
+import 'package:communal/models/backend_response.dart';
+import 'package:communal/models/community.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

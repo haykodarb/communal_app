@@ -1,7 +1,7 @@
-import 'package:biblioteca/backend/books_backend.dart';
-import 'package:biblioteca/presentation/book/book_owned/book_owned_controller.dart';
-import 'package:biblioteca/presentation/common/common_confirmation_dialog.dart';
-import 'package:biblioteca/presentation/common/common_loading_image.dart';
+import 'package:communal/backend/books_backend.dart';
+import 'package:communal/presentation/book/book_owned/book_owned_controller.dart';
+import 'package:communal/presentation/common/common_confirmation_dialog.dart';
+import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 

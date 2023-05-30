@@ -1,7 +1,7 @@
-import 'package:biblioteca/models/community.dart';
-import 'package:biblioteca/presentation/common/common_loading_body.dart';
-import 'package:biblioteca/presentation/community/community_specific/community_drawer/community_drawer_controller.dart';
-import 'package:biblioteca/routes.dart';
+import 'package:communal/models/community.dart';
+import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/community/community_specific/community_drawer/community_drawer_controller.dart';
+import 'package:communal/routes.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 

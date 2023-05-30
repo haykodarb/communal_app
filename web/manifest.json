@@ -1,6 +1,6 @@
 {
-    "name": "biblioteca",
-    "short_name": "biblioteca",
+    "name": "communal",
+    "short_name": "communal",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

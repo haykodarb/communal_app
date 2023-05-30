@@ -1,6 +1,6 @@
-import 'package:biblioteca/presentation/common/common_loading_body.dart';
-import 'package:biblioteca/presentation/common/common_text_field.dart';
-import 'package:biblioteca/presentation/community/community_create/community_create_controller.dart';
+import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_text_field.dart';
+import 'package:communal/presentation/community/community_create/community_create_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

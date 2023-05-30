@@ -1,8 +1,8 @@
-import 'package:biblioteca/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:biblioteca/presentation/common/common_text_field.dart';
-import 'package:biblioteca/presentation/register/register_controller.dart';
+import 'package:communal/presentation/common/common_text_field.dart';
+import 'package:communal/presentation/register/register_controller.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({Key? key}) : super(key: key);

@@ -1,5 +1,5 @@
-import 'package:biblioteca/models/book.dart';
-import 'package:biblioteca/presentation/book/book_list_controller.dart';
+import 'package:communal/models/book.dart';
+import 'package:communal/presentation/book/book_list_controller.dart';
 import 'package:get/get.dart';
 
 class BookOwnedController extends GetxController {

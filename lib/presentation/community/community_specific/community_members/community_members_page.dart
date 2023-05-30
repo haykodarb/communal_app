@@ -1,6 +1,6 @@
-import 'package:biblioteca/models/profile.dart';
-import 'package:biblioteca/presentation/common/common_loading_body.dart';
-import 'package:biblioteca/presentation/community/community_specific/community_members/community_members_controller.dart';
+import 'package:communal/models/profile.dart';
+import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/community/community_specific/community_members/community_members_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -37,7 +37,14 @@ class CommunityMembersPage extends StatelessWidget {
                 visible: controller.community.isCurrentUserAdmin != null && controller.community.isCurrentUserAdmin!,
                 child: PopupMenuButton(
                   itemBuilder: (context) {
-                    return <PopupMenuEntry>[];
+                    return <PopupMenuEntry>[
+                      PopupMenuItem(
+                        child: TextButton(
+                          onPressed: () => controller.removeUser(user),
+                          child: Text('Remove'),
+                        ),
+                      ),
+                    ];
                   },
                 ),
               ),

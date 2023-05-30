@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:biblioteca/presentation/start/start_controller.dart';
+import 'package:communal/presentation/start/start_controller.dart';
 
 class StartPage extends StatelessWidget {
   const StartPage({Key? key}) : super(key: key);
@@ -32,7 +32,7 @@ class StartPage extends StatelessWidget {
           vertical: 50,
         ),
         child: Text(
-          'Pequeña Biblioteca',
+          'Pequeña communal',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 50,

@@ -1,7 +1,7 @@
-import 'package:biblioteca/backend/books_backend.dart';
-import 'package:biblioteca/models/backend_response.dart';
-import 'package:biblioteca/models/book.dart';
-import 'package:biblioteca/models/community.dart';
+import 'package:communal/backend/books_backend.dart';
+import 'package:communal/models/backend_response.dart';
+import 'package:communal/models/book.dart';
+import 'package:communal/models/community.dart';
 import 'package:get/get.dart';
 
 class CommunitySpecificController extends GetxController {
@@ -10,19 +10,23 @@ class CommunitySpecificController extends GetxController {
   final RxList<Book> booksLoaded = <Book>[].obs;
 
   final RxBool loadingMore = false.obs;
+  final RxBool firstLoad = true.obs;
 
   int loadingIndex = 0;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
-    loadBooks();
+    await loadBooks();
+    firstLoad.value = false;
   }
 
   Future<void> reloadPage() async {
     loadingIndex = 0;
     booksLoaded.clear();
+    firstLoad.value = true;
     await loadBooks();
+    firstLoad.value = false;
   }
 
   Future<void> loadBooks() async {

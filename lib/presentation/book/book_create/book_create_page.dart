@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:biblioteca/presentation/common/common_loading_body.dart';
-import 'package:biblioteca/presentation/common/common_text_field.dart';
-import 'package:biblioteca/presentation/book/book_create/book_create_controller.dart';
+import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_text_field.dart';
+import 'package:communal/presentation/book/book_create/book_create_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';

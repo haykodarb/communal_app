@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:biblioteca/routes.dart';
+import 'package:communal/routes.dart';
 
 class StartController extends GetxController {
   void loginButtonCallback() {

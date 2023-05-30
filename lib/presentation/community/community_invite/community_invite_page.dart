@@ -1,5 +1,5 @@
-import 'package:biblioteca/presentation/common/common_loading_body.dart';
-import 'package:biblioteca/presentation/community/community_invite/community_invite_controller.dart';
+import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/community/community_invite/community_invite_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -1,5 +1,5 @@
-import 'package:biblioteca/models/backend_response.dart';
-import 'package:biblioteca/models/login_form.dart';
+import 'package:communal/models/backend_response.dart';
+import 'package:communal/models/login_form.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginBackend {

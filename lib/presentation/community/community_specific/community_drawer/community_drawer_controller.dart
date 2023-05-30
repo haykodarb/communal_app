@@ -1,4 +1,4 @@
-import 'package:biblioteca/models/community.dart';
+import 'package:communal/models/community.dart';
 import 'package:get/get.dart';
 
 class CommunityDrawerController extends GetxController {

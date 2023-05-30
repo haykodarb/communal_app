@@ -1,8 +1,8 @@
-import 'package:biblioteca/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:biblioteca/presentation/common/common_text_field.dart';
-import 'package:biblioteca/presentation/login/login_controller.dart';
+import 'package:communal/presentation/common/common_text_field.dart';
+import 'package:communal/presentation/login/login_controller.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);

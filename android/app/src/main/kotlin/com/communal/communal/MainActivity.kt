@@ -1,4 +1,4 @@
-package com.example.communal
+package com.communal.communal
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,7 +1,7 @@
-import 'package:biblioteca/backend/communities_backend.dart';
-import 'package:biblioteca/models/backend_response.dart';
-import 'package:biblioteca/models/community.dart';
-import 'package:biblioteca/routes.dart';
+import 'package:communal/backend/communities_backend.dart';
+import 'package:communal/models/backend_response.dart';
+import 'package:communal/models/community.dart';
+import 'package:communal/routes.dart';
 import 'package:get/get.dart';
 
 class CommunityListController extends GetxController {

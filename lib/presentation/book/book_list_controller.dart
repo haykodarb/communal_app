@@ -1,7 +1,7 @@
-import 'package:biblioteca/backend/books_backend.dart';
-import 'package:biblioteca/models/backend_response.dart';
-import 'package:biblioteca/models/book.dart';
-import 'package:biblioteca/routes.dart';
+import 'package:communal/backend/books_backend.dart';
+import 'package:communal/models/backend_response.dart';
+import 'package:communal/models/book.dart';
+import 'package:communal/routes.dart';
 import 'package:get/get.dart';
 
 class BookListController extends GetxController {

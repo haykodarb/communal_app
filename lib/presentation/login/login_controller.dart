@@ -1,7 +1,7 @@
-import 'package:biblioteca/backend/login_backend.dart';
-import 'package:biblioteca/models/backend_response.dart';
-import 'package:biblioteca/models/login_form.dart';
-import 'package:biblioteca/routes.dart';
+import 'package:communal/backend/login_backend.dart';
+import 'package:communal/models/backend_response.dart';
+import 'package:communal/models/login_form.dart';
+import 'package:communal/routes.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:string_validator/string_validator.dart';

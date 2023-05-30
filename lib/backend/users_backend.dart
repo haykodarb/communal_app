@@ -1,7 +1,7 @@
-import 'package:biblioteca/models/backend_response.dart';
-import 'package:biblioteca/models/community.dart';
-import 'package:biblioteca/models/invitation.dart';
-import 'package:biblioteca/models/profile.dart';
+import 'package:communal/models/backend_response.dart';
+import 'package:communal/models/community.dart';
+import 'package:communal/models/invitation.dart';
+import 'package:communal/models/profile.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class UsersBackend {
@@ -96,6 +96,38 @@ class UsersBackend {
         .single();
 
     return BackendResponse(success: createMembershipResponse.isNotEmpty, payload: createMembershipResponse);
+  }
+
+  static Future<BackendResponse> removeUserFromCommunity(Community community, Profile user) async {
+    final SupabaseClient client = Supabase.instance.client;
+
+    final Map<String, dynamic>? memberExistsResponse = await client.from('memberships').select().match({
+      'community': community.id,
+      'member': user.id,
+      'accepted': true,
+    }).maybeSingle();
+
+    if (memberExistsResponse == null || memberExistsResponse.isEmpty) {
+      return BackendResponse(
+        success: false,
+        payload: 'User does not exist in this community.',
+      );
+    }
+
+    final Map<String, dynamic> deleteMembershipResponse = await client
+        .from('memberships')
+        .delete()
+        .match(
+          {
+            'member': user.id,
+            'community': community.id,
+            'is_admin': false,
+          },
+        )
+        .select()
+        .single();
+
+    return BackendResponse(success: deleteMembershipResponse.isNotEmpty, payload: deleteMembershipResponse);
   }
 
   static Future<BackendResponse<List<Profile>>> getUsersInCommunity(Community community) async {

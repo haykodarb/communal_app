@@ -1,7 +1,7 @@
-import 'package:biblioteca/models/invitation.dart';
-import 'package:biblioteca/presentation/common/common_loading_body.dart';
-import 'package:biblioteca/presentation/common/common_scaffold/common_scaffold_widget.dart';
-import 'package:biblioteca/presentation/invitations/invitations_controller.dart';
+import 'package:communal/models/invitation.dart';
+import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_scaffold/common_scaffold_widget.dart';
+import 'package:communal/presentation/invitations/invitations_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

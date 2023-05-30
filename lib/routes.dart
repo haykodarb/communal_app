@@ -1,15 +1,15 @@
-import 'package:biblioteca/presentation/community/community_invite/community_invite_page.dart';
-import 'package:biblioteca/presentation/community/community_list_page.dart';
-import 'package:biblioteca/presentation/community/community_create/community_create_page.dart';
-import 'package:biblioteca/presentation/community/community_specific/community_members/community_members_page.dart';
-import 'package:biblioteca/presentation/community/community_specific/community_specific_page.dart';
-import 'package:biblioteca/presentation/invitations/invitations_page.dart';
-import 'package:biblioteca/presentation/login/login_page.dart';
-import 'package:biblioteca/presentation/book/book_create/book_create_page.dart';
-import 'package:biblioteca/presentation/book/book_owned/book_owned_page.dart';
-import 'package:biblioteca/presentation/book/book_list_page.dart';
-import 'package:biblioteca/presentation/register/register_page.dart';
-import 'package:biblioteca/presentation/start/start_page.dart';
+import 'package:communal/presentation/community/community_invite/community_invite_page.dart';
+import 'package:communal/presentation/community/community_list_page.dart';
+import 'package:communal/presentation/community/community_create/community_create_page.dart';
+import 'package:communal/presentation/community/community_specific/community_members/community_members_page.dart';
+import 'package:communal/presentation/community/community_specific/community_specific_page.dart';
+import 'package:communal/presentation/invitations/invitations_page.dart';
+import 'package:communal/presentation/login/login_page.dart';
+import 'package:communal/presentation/book/book_create/book_create_page.dart';
+import 'package:communal/presentation/book/book_owned/book_owned_page.dart';
+import 'package:communal/presentation/book/book_list_page.dart';
+import 'package:communal/presentation/register/register_page.dart';
+import 'package:communal/presentation/start/start_page.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 

@@ -1,8 +1,8 @@
-import 'package:biblioteca/backend/users_backend.dart';
-import 'package:biblioteca/models/backend_response.dart';
-import 'package:biblioteca/models/community.dart';
-import 'package:biblioteca/models/profile.dart';
-import 'package:biblioteca/presentation/common/common_confirmation_dialog.dart';
+import 'package:communal/backend/users_backend.dart';
+import 'package:communal/models/backend_response.dart';
+import 'package:communal/models/community.dart';
+import 'package:communal/models/profile.dart';
+import 'package:communal/presentation/common/common_confirmation_dialog.dart';
 import 'package:get/get.dart';
 
 class CommunityInviteController extends GetxController {

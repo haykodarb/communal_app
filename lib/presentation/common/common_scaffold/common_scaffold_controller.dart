@@ -1,5 +1,5 @@
-import 'package:biblioteca/backend/login_backend.dart';
-import 'package:biblioteca/routes.dart';
+import 'package:communal/backend/login_backend.dart';
+import 'package:communal/routes.dart';
 import 'package:get/get.dart';
 
 class CommonScaffoldController extends GetxController {

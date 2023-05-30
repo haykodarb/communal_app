@@ -1,6 +1,6 @@
-import 'package:biblioteca/backend/users_backend.dart';
-import 'package:biblioteca/models/backend_response.dart';
-import 'package:biblioteca/models/invitation.dart';
+import 'package:communal/backend/users_backend.dart';
+import 'package:communal/models/backend_response.dart';
+import 'package:communal/models/invitation.dart';
 import 'package:get/get.dart';
 
 class InvitationsController extends GetxController {

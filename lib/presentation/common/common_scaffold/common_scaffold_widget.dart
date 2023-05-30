@@ -1,5 +1,5 @@
-import 'package:biblioteca/presentation/common/common_scaffold/common_scaffold_controller.dart';
-import 'package:biblioteca/routes.dart';
+import 'package:communal/presentation/common/common_scaffold/common_scaffold_controller.dart';
+import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

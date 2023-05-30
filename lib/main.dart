@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:biblioteca/routes.dart';
-import 'package:biblioteca/theme.dart';
+import 'package:communal/routes.dart';
+import 'package:communal/theme.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
