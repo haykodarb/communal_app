@@ -65,35 +65,15 @@ class CommunitiesBackend {
           {
             'name': community.name,
             'description': community.description,
-            'created_by': userId,
-          },
-        )
-        .select()
-        .single();
-
-    if (createCommunityResponse.isEmpty) {
-      return BackendResponse(
-        success: false,
-        payload: '',
-      );
-    }
-
-    final Map<String, dynamic> createMembershipResponse = await client
-        .from('memberships')
-        .insert(
-          {
-            'member': userId,
-            'community': createCommunityResponse['id'],
-            'is_admin': true,
-            'joined_at': DateTime.now().toIso8601String(),
+            'owner': userId,
           },
         )
         .select()
         .single();
 
     return BackendResponse(
-      success: createMembershipResponse.isNotEmpty,
-      payload: createMembershipResponse,
+      success: createCommunityResponse.isNotEmpty,
+      payload: createCommunityResponse,
     );
   }
 }

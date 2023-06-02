@@ -114,6 +114,11 @@ class CommunityDrawerWidget extends StatelessWidget {
                             );
                           },
                         ),
+                        _drawerButton(
+                          icon: Icons.forum,
+                          text: 'Discussions',
+                          callback: () {},
+                        ),
                         Visibility(
                           visible: community.isCurrentUserAdmin != null && community.isCurrentUserAdmin!,
                           child: _drawerButton(

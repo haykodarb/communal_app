@@ -52,7 +52,10 @@ class CommunityInviteController extends GetxController {
       final BackendResponse response = await UsersBackend.inviteUserToCommunity(community, selectedProfile);
       processingInvite.value = false;
 
-      if (!response.success) {
+      if (response.success) {
+        inviteError.value = 'User invite sent.';
+      }
+      {
         inviteError.value = response.payload;
       }
     }

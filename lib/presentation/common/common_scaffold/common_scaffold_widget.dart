@@ -116,9 +116,19 @@ class CommonScaffoldWidget extends StatelessWidget {
                           callback: () {},
                         ),
                         _drawerButton(
-                          text: 'My Books',
+                          text: 'Books',
                           icon: Icons.menu_book,
                           callback: () => controller.goToRoute(RouteNames.bookListPage),
+                        ),
+                        _drawerButton(
+                          text: 'Loans',
+                          icon: Icons.outbox,
+                          callback: () {},
+                        ),
+                        _drawerButton(
+                          text: 'Messages',
+                          icon: Icons.sms,
+                          callback: () {},
                         ),
                         _drawerButton(
                           text: 'Communities',

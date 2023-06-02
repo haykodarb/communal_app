@@ -13,42 +13,50 @@ class CommunityMembersPage extends StatelessWidget {
         height: 70,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(user.username),
-              Visibility(
-                visible: user.is_admin != null && user.is_admin!,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(
-                      20,
-                    ),
-                    border: Border.all(
-                      color: Get.theme.colorScheme.primary,
-                    ),
-                  ),
-                  child: Text('admin'),
-                ),
-              ),
-              Visibility(
-                visible: controller.community.isCurrentUserAdmin != null && controller.community.isCurrentUserAdmin!,
-                child: PopupMenuButton(
-                  itemBuilder: (context) {
-                    return <PopupMenuEntry>[
-                      PopupMenuItem(
-                        child: TextButton(
-                          onPressed: () => controller.removeUser(user),
-                          child: Text('Remove'),
+          child: Obx(
+            () => CommonLoadingBody(
+              isLoading: user.loading.value,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(user.username),
+                  Visibility(
+                    visible: user.is_admin != null && user.is_admin!,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                          20,
+                        ),
+                        border: Border.all(
+                          color: Get.theme.colorScheme.primary,
                         ),
                       ),
-                    ];
-                  },
-                ),
+                      child: const Text('admin'),
+                    ),
+                  ),
+                  Visibility(
+                    visible:
+                        controller.community.isCurrentUserAdmin != null && controller.community.isCurrentUserAdmin!,
+                    child: PopupMenuButton(
+                      itemBuilder: (context) {
+                        return <PopupMenuEntry>[
+                          PopupMenuItem(
+                            onTap: () => controller.changeUserAdmin(user, !user.is_admin),
+                            child: Text(user.is_admin ? 'Remove as admin' : 'Make admin'),
+                          ),
+                          PopupMenuItem(
+                            onTap: () => controller.removeUser(user),
+                            child: const Text('Remove'),
+                          ),
+                        ];
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

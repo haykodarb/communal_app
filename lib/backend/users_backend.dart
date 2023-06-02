@@ -8,8 +8,14 @@ class UsersBackend {
   static Future<BackendResponse> searchUsers(String query) async {
     final SupabaseClient client = Supabase.instance.client;
 
-    final List<Map<String, dynamic>> response =
-        await client.from('profiles').select<List<Map<String, dynamic>>>().like('username', '%$query%').limit(10);
+    final String userId = client.auth.currentUser!.id;
+
+    final List<Map<String, dynamic>> response = await client
+        .from('profiles')
+        .select<List<Map<String, dynamic>>>()
+        .neq('id', userId)
+        .like('username', '%$query%')
+        .limit(10);
 
     final List<Profile> profiles = response
         .map(
@@ -26,16 +32,23 @@ class UsersBackend {
   static Future<BackendResponse> respondToInvitation(Invitation invitation, bool accept) async {
     final SupabaseClient client = Supabase.instance.client;
 
-    final Map<String, dynamic> response = await client
-        .from('memberships')
-        .update({
-          'accepted': accept,
-        })
-        .eq('id', invitation.id)
-        .select<Map<String, dynamic>>()
-        .single();
+    if (accept) {
+      final Map<String, dynamic> response = await client
+          .from('memberships')
+          .update({
+            'accepted': true,
+          })
+          .eq('id', invitation.id)
+          .select<Map<String, dynamic>>()
+          .single();
 
-    return BackendResponse(success: response.isNotEmpty, payload: response);
+      return BackendResponse(success: response.isNotEmpty, payload: response);
+    } else {
+      final Map<String, dynamic> response =
+          await client.from('memberships').delete().eq('id', invitation.id).select<Map<String, dynamic>>().single();
+
+      return BackendResponse(success: response.isNotEmpty, payload: response);
+    }
   }
 
   static Future<BackendResponse> getInvitationsForUser() async {
@@ -67,20 +80,55 @@ class UsersBackend {
     );
   }
 
+  static Future<BackendResponse> makeUserAdminOfCommunity(Community community, Profile user, bool shouldBeAdmin) async {
+    final SupabaseClient client = Supabase.instance.client;
+
+    final Map<String, dynamic>? updateMembershipResponse = await client
+        .from('memberships')
+        .update(
+          {
+            'is_admin': shouldBeAdmin,
+          },
+        )
+        .match(
+          {
+            'member': user.id,
+            'community': community.id,
+            'accepted': true,
+          },
+        )
+        .select()
+        .maybeSingle();
+
+    if (updateMembershipResponse == null) {
+      BackendResponse(success: false, payload: 'Failed to make user admin.');
+    }
+
+    return BackendResponse(success: updateMembershipResponse!.isNotEmpty, payload: updateMembershipResponse);
+  }
+
   static Future<BackendResponse> inviteUserToCommunity(Community community, Profile user) async {
     final SupabaseClient client = Supabase.instance.client;
 
     final Map<String, dynamic>? memberExistsResponse = await client.from('memberships').select().match({
       'community': community.id,
       'member': user.id,
-      'accepted': true,
     }).maybeSingle();
 
-    if (memberExistsResponse != null && memberExistsResponse.isNotEmpty) {
-      return BackendResponse(
-        success: false,
-        payload: 'User is already a member in this community',
-      );
+    if (memberExistsResponse != null) {
+      if (memberExistsResponse['accepted'] == null) {
+        return BackendResponse(
+          success: false,
+          payload: 'User already has a pending invitation from this community.',
+        );
+      }
+
+      if (memberExistsResponse['accepted']) {
+        return BackendResponse(
+          success: false,
+          payload: 'User is already a member in this community.',
+        );
+      }
     }
 
     final Map<String, dynamic> createMembershipResponse = await client

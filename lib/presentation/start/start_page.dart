@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:communal/presentation/start/start_controller.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class StartPage extends StatelessWidget {
   const StartPage({Key? key}) : super(key: key);
@@ -26,18 +27,31 @@ class StartPage extends StatelessWidget {
   Widget _logo() {
     final BuildContext context = Get.context!;
 
+    final LinearGradient gradient = LinearGradient(
+      colors: [
+        Get.theme.colorScheme.primary,
+        Get.theme.colorScheme.secondary,
+      ],
+    );
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(
           vertical: 50,
         ),
-        child: Text(
-          'Pequeña communal',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 50,
-            fontWeight: FontWeight.w600,
-            color: Theme.of(context).colorScheme.primary,
+        child: ShaderMask(
+          blendMode: BlendMode.srcIn,
+          shaderCallback: (bounds) => gradient.createShader(
+            Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+          ),
+          child: Text(
+            'Communal',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.russoOne(
+              fontSize: 50,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
         ),
       ),

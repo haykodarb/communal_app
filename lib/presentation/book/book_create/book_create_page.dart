@@ -22,7 +22,6 @@ class BookCreatePage extends StatelessWidget {
           init: BookCreateController(),
           builder: (controller) {
             return SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
                 child: Form(

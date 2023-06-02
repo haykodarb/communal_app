@@ -49,9 +49,11 @@ class _CustomTextFieldState extends State<CommonTextField> {
                   color: isVisible ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.primary,
                 ),
                 onPressed: () {
-                  setState(() {
-                    isVisible = !isVisible;
-                  });
+                  setState(
+                    () {
+                      isVisible = !isVisible;
+                    },
+                  );
                 },
               )
             : null,

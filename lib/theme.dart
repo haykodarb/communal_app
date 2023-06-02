@@ -19,7 +19,7 @@ final AppBarTheme _appBarTheme = AppBarTheme(
     size: 30,
   ),
   centerTitle: true,
-  titleTextStyle: TextStyle(
+  titleTextStyle: GoogleFonts.scada(
     fontWeight: FontWeight.w600,
     fontSize: 20,
     color: _colorScheme.onBackground,
@@ -32,7 +32,7 @@ final ElevatedButtonThemeData _elevatedButtonThemeData = ElevatedButtonThemeData
     backgroundColor: _colorScheme.primary,
     foregroundColor: _colorScheme.onPrimary,
     disabledBackgroundColor: _colorScheme.onSurface,
-    textStyle: const TextStyle(
+    textStyle: GoogleFonts.scada(
       fontSize: 22,
     ),
     shape: RoundedRectangleBorder(
@@ -42,7 +42,7 @@ final ElevatedButtonThemeData _elevatedButtonThemeData = ElevatedButtonThemeData
   ),
 );
 
-final DividerThemeData _dividerThemeData = DividerThemeData(color: _colorScheme.surface);
+const DividerThemeData _dividerThemeData = DividerThemeData(color: Colors.transparent);
 
 final OutlinedButtonThemeData _outlinedButtonThemeData = OutlinedButtonThemeData(
   style: OutlinedButton.styleFrom(
@@ -51,7 +51,7 @@ final OutlinedButtonThemeData _outlinedButtonThemeData = OutlinedButtonThemeData
       color: _colorScheme.primary,
       width: 2,
     ),
-    textStyle: const TextStyle(
+    textStyle: GoogleFonts.scada(
       fontSize: 22,
     ),
     shape: RoundedRectangleBorder(
@@ -109,9 +109,20 @@ final CardTheme _cardTheme = CardTheme(
   elevation: 2,
 );
 
+final PopupMenuThemeData _popupMenuTheme = PopupMenuThemeData(
+  color: _colorScheme.surface,
+  shape: RoundedRectangleBorder(
+    side: BorderSide(
+      color: _colorScheme.primary,
+      width: 0.5,
+    ),
+    borderRadius: BorderRadius.circular(5),
+  ),
+);
+
 final ThemeData theme = ThemeData(
   colorScheme: _colorScheme,
-  textTheme: GoogleFonts.notoSansTextTheme().apply(
+  textTheme: GoogleFonts.scadaTextTheme().apply(
     displayColor: _colorScheme.onSurface,
     bodyColor: _colorScheme.onBackground,
     decorationColor: _colorScheme.onBackground,
@@ -126,4 +137,5 @@ final ThemeData theme = ThemeData(
   scaffoldBackgroundColor: _colorScheme.background,
   floatingActionButtonTheme: _floatingActionButtonThemeData,
   dividerTheme: _dividerThemeData,
+  popupMenuTheme: _popupMenuTheme,
 );

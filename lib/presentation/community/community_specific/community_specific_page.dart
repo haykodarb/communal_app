@@ -94,6 +94,22 @@ class CommunitySpecificPage extends StatelessWidget {
                     Expanded(
                       child: Obx(
                         () {
+                          if (controller.booksLoaded.isEmpty) {
+                            return const CustomScrollView(
+                              slivers: [
+                                SliverFillRemaining(
+                                  child: Center(
+                                    child: Text(
+                                      'There are no books\nin this community yet.',
+                                      style: TextStyle(fontSize: 16),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+
                           return ListView.separated(
                             itemCount: controller.booksLoaded.length + 1,
                             padding: const EdgeInsets.all(20),

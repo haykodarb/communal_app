@@ -90,7 +90,6 @@ class InvitationsPage extends StatelessWidget {
                     () {
                       if (controller.invitationsList.isEmpty) {
                         return const CustomScrollView(
-                          physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
                           slivers: [
                             SliverFillRemaining(
                               child: Center(

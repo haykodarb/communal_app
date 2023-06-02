@@ -92,12 +92,15 @@ class CommunityInvitePage extends StatelessWidget {
                       isLoading: controller.processingInvite.value,
                       size: 40,
                       child: Obx(
-                        () => Text(
-                          controller.inviteError.value,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Theme.of(context).colorScheme.error,
-                            fontWeight: FontWeight.w500,
+                        () => Center(
+                          child: Text(
+                            controller.inviteError.value,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Theme.of(context).colorScheme.error,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
                         ),
                       ),

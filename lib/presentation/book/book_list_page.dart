@@ -118,7 +118,7 @@ class BookListPage extends StatelessWidget {
         return Scaffold(
           drawer: const CommonScaffoldWidget(),
           appBar: AppBar(
-            title: const Text('My Books'),
+            title: const Text('Books'),
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: controller.goToAddBookPage,
