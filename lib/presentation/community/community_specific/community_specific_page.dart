@@ -16,56 +16,52 @@ class CommunitySpecificPage extends StatelessWidget {
     Image? cover,
   }) {
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      clipBehavior: Clip.hardEdge,
       child: InkWell(
         onTap: () {},
         child: SizedBox(
           height: 200,
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AspectRatio(
-                  aspectRatio: 3 / 4,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: cover ?? const CommonLoadingImage(),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AspectRatio(
+                aspectRatio: 3 / 4,
+                child: cover ?? const CommonLoadingImage(),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        book.title,
+                        style: TextStyle(
+                          color: Get.theme.colorScheme.primary,
+                          fontSize: 14,
+                        ),
+                      ),
+                      Text(
+                        book.author,
+                        style: const TextStyle(
+                          fontSize: 13,
+                        ),
+                      ),
+                      Text(
+                        '${book.ownerName}',
+                        style: const TextStyle(
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          book.title,
-                          style: TextStyle(
-                            color: Get.theme.colorScheme.primary,
-                            fontSize: 14,
-                          ),
-                        ),
-                        Text(
-                          book.author,
-                          style: const TextStyle(
-                            fontSize: 13,
-                          ),
-                        ),
-                        Text(
-                          '${book.ownerName}',
-                          style: const TextStyle(
-                            fontSize: 13,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

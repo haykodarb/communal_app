@@ -10,7 +10,6 @@ class BookCreateController extends GetxController {
   final Rx<Book> bookForm = Book(
     author: '',
     title: '',
-    publisher: '',
   ).obs;
 
   final RxString errorMessage = ''.obs;
@@ -51,14 +50,6 @@ class BookCreateController extends GetxController {
     bookForm.update(
       (Book? val) {
         val!.author = value;
-      },
-    );
-  }
-
-  void onPublisherChange(String value) {
-    bookForm.update(
-      (Book? val) {
-        val!.publisher = value;
       },
     );
   }

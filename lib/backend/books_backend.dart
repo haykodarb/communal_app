@@ -40,7 +40,6 @@ class BooksBackend {
           {
             'title': book.title,
             'author': book.author,
-            'publisher': book.publisher,
             'owner': client.auth.currentUser!.id,
             'image_path': pathToUpload,
           },
@@ -53,7 +52,6 @@ class BooksBackend {
       payload: Book(
         title: response['title'],
         author: response['author'],
-        publisher: response['publisher'],
         id: response['id'],
         image_path: response['image_path'],
       ),
@@ -85,7 +83,6 @@ class BooksBackend {
           (Map<String, dynamic> element) => Book(
             title: element['title'],
             author: element['author'],
-            publisher: element['publisher'],
             id: element['id'],
             image_path: element['image_path'],
           ),
@@ -113,7 +110,7 @@ class BooksBackend {
 
     final List<dynamic> booksResponse = await client
         .from('books')
-        .select('id, title, author, publisher, image_path, profiles(id, username)')
+        .select('id, title, author, image_path, profiles(id, username)')
         .in_('owner', listOfUserIDs)
         .order('id')
         .range(
@@ -127,7 +124,6 @@ class BooksBackend {
             id: e['id'],
             title: e['title'],
             author: e['author'],
-            publisher: e['publisher'],
             image_path: e['image_path'],
             ownerName: e['profiles']['username'],
             ownerId: e['profiles']['id'],

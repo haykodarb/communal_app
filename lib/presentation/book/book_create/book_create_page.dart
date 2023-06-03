@@ -105,11 +105,6 @@ class BookCreatePage extends StatelessWidget {
                         label: 'Author',
                         validator: controller.stringValidator,
                       ),
-                      CommonTextField(
-                        callback: controller.onPublisherChange,
-                        label: 'Publisher',
-                        validator: controller.stringValidator,
-                      ),
                       SizedBox(
                         height: 70,
                         child: Obx(

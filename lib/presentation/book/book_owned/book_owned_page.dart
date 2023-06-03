@@ -64,9 +64,6 @@ class BookOwnedPage extends StatelessWidget {
                                 Text(
                                   controller.book.author,
                                 ),
-                                Text(
-                                  controller.book.publisher,
-                                ),
                               ],
                             ),
                           )

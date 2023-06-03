@@ -33,6 +33,8 @@ class UsersBackend {
     final SupabaseClient client = Supabase.instance.client;
 
     if (accept) {
+      print('ID: ${invitation.id}');
+
       final Map<String, dynamic> response = await client
           .from('memberships')
           .update({
@@ -41,6 +43,8 @@ class UsersBackend {
           .eq('id', invitation.id)
           .select<Map<String, dynamic>>()
           .single();
+
+      print(response);
 
       return BackendResponse(success: response.isNotEmpty, payload: response);
     } else {
@@ -58,16 +62,27 @@ class UsersBackend {
 
     final List<Map<String, dynamic>> unconfirmedMemberships = await client
         .from('memberships')
-        .select<List<Map<String, dynamic>>>('id, communities(id, name)')
-        .eq('member', userId)
-        .filter('accepted', 'is', null);
+        .select<List<Map<String, dynamic>>>('id, communities(id, name, owner, image_path)')
+        .match(
+      {
+        'member': userId,
+        'accepted': false,
+      },
+    );
+
+    print(unconfirmedMemberships);
 
     final List<Invitation> invitationsList = unconfirmedMemberships
         .map(
           (element) => Invitation(
             id: element['id'],
-            communityId: element['communities']['id'],
-            communityName: element['communities']['name'],
+            community: Community(
+              id: element['communities']['id'],
+              name: element['communities']['name'],
+              image_path: element['communities']['image_path'],
+              owner: element['communities']['owner'],
+              isCurrentUserAdmin: false,
+            ),
             userId: userId,
           ),
         )

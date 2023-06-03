@@ -44,6 +44,10 @@ class BookListPage extends StatelessWidget {
     return Obx(
       () {
         return Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          clipBehavior: Clip.hardEdge,
           child: InkWell(
             onTap: () => Get.toNamed(
               RouteNames.bookOwnedPage,
@@ -54,55 +58,49 @@ class BookListPage extends StatelessWidget {
             ),
             child: SizedBox(
               height: 200,
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: book.deleting.value
-                    ? _deletingBookIndicator()
-                    : Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AspectRatio(
-                            aspectRatio: 3 / 4,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(5),
-                              child: cover ?? const CommonLoadingImage(),
+              child: book.deleting.value
+                  ? _deletingBookIndicator()
+                  : Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AspectRatio(
+                          aspectRatio: 3 / 4,
+                          child: cover ?? const CommonLoadingImage(),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  book.title,
+                                  style: TextStyle(
+                                    color: Get.theme.colorScheme.primary,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                Text(
+                                  book.author,
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                const Text(
+                                  'Prestado',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    book.title,
-                                    style: TextStyle(
-                                      color: Get.theme.colorScheme.primary,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  Text(
-                                    book.author,
-                                    style: const TextStyle(
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                  const Text(
-                                    'Prestado',
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-              ),
+                        ),
+                      ],
+                    ),
             ),
           ),
         );

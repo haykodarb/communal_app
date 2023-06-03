@@ -16,7 +16,9 @@ class InvitationsController extends GetxController {
   }
 
   Future<void> respondToInvitation(Invitation invitation, bool accept) async {
+    print('Respond to invitation $accept');
     invitation.loading.value = true;
+
     final BackendResponse response = await UsersBackend.respondToInvitation(invitation, accept);
 
     if (response.success) {
