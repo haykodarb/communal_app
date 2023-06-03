@@ -9,10 +9,10 @@ class CommunityListController extends GetxController {
   final RxBool loading = true.obs;
 
   @override
-  Future<void> onInit() async {
-    super.onInit();
-
+  void onReady() {
     fetchAllCommunities();
+
+    super.onReady();
   }
 
   Future<void> fetchAllCommunities() async {
@@ -22,6 +22,8 @@ class CommunityListController extends GetxController {
     if (response.success) {
       communities.value = response.payload;
       communities.refresh();
+    } else {
+      communities.clear();
     }
 
     loading.value = false;
@@ -35,12 +37,14 @@ class CommunityListController extends GetxController {
     }
   }
 
-  void goToCommunitySpecific(Community community) {
+  Future<void> goToCommunitySpecific(Community community) async {
     Get.toNamed(
       RouteNames.communitySpecificPage,
       arguments: {
         'community': community,
       },
+    )?.then(
+      (value) => fetchAllCommunities(),
     );
   }
 }

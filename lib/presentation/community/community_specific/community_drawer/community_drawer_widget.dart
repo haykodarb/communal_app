@@ -1,3 +1,4 @@
+import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/community/community_specific/community_drawer/community_drawer_controller.dart';
@@ -102,6 +103,7 @@ class CommunityDrawerWidget extends StatelessWidget {
                     child: Column(
                       children: [
                         _drawerHeader(),
+                        const Divider(),
                         _drawerButton(
                           icon: Icons.people,
                           text: 'Members',
@@ -114,13 +116,8 @@ class CommunityDrawerWidget extends StatelessWidget {
                             );
                           },
                         ),
-                        _drawerButton(
-                          icon: Icons.forum,
-                          text: 'Discussions',
-                          callback: () {},
-                        ),
                         Visibility(
-                          visible: community.isCurrentUserAdmin != null && community.isCurrentUserAdmin!,
+                          visible: community.isCurrentUserAdmin,
                           child: _drawerButton(
                             icon: Icons.person_add,
                             text: 'Invite',
@@ -132,6 +129,19 @@ class CommunityDrawerWidget extends StatelessWidget {
                                 },
                               );
                             },
+                          ),
+                        ),
+                        _drawerButton(
+                          icon: Icons.forum,
+                          text: 'Discussions',
+                          callback: () {},
+                        ),
+                        Visibility(
+                          visible: UsersBackend.isCurrentUserOwnerOfCommunity(community),
+                          child: _drawerButton(
+                            icon: Icons.delete,
+                            text: 'Delete Community',
+                            callback: controller.deleteCommunity,
                           ),
                         ),
                       ],

@@ -58,7 +58,7 @@ class UsersBackend {
 
     final List<Map<String, dynamic>> unconfirmedMemberships = await client
         .from('memberships')
-        .select<List<Map<String, dynamic>>>('id, communities(id, name, description)')
+        .select<List<Map<String, dynamic>>>('id, communities(id, name)')
         .eq('member', userId)
         .filter('accepted', 'is', null);
 
@@ -68,7 +68,6 @@ class UsersBackend {
             id: element['id'],
             communityId: element['communities']['id'],
             communityName: element['communities']['name'],
-            communityDescription: element['communities']['description'],
             userId: userId,
           ),
         )
@@ -197,11 +196,16 @@ class UsersBackend {
         )
         .toList();
 
-    print(listOfProfiles.map((e) => e.username));
-
     return BackendResponse(
       success: listOfProfiles.isNotEmpty,
       payload: listOfProfiles,
     );
+  }
+
+  static bool isCurrentUserOwnerOfCommunity(Community community) {
+    final SupabaseClient client = Supabase.instance.client;
+    final String userId = client.auth.currentUser!.id;
+
+    return community.owner == userId;
   }
 }

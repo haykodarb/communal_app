@@ -80,6 +80,12 @@ class BookCreateController extends GetxController {
       loading.value = true;
       errorMessage.value = '';
 
+      if (selectedFile.value == null) {
+        errorMessage.value = 'Please add a book cover image.';
+        loading.value = false;
+        return;
+      }
+
       final BackendResponse response = await BooksBackend.addBook(
         bookForm.value,
         File(selectedFile.value!.path),

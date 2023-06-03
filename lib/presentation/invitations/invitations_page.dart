@@ -29,13 +29,6 @@ class InvitationsPage extends StatelessWidget {
                       ),
                     ),
                     const Divider(height: 30),
-                    Text(
-                      invitation.communityDescription,
-                      style: const TextStyle(
-                        fontSize: 14,
-                      ),
-                    ),
-                    const Divider(height: 30),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [

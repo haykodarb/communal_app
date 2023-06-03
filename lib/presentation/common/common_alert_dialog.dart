@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CommonConfirmationDialog extends StatelessWidget {
-  const CommonConfirmationDialog({
+class CommonAlertDialog extends StatelessWidget {
+  const CommonAlertDialog({
     super.key,
     required this.title,
     this.confirmCallback,
-    this.cancelCallback,
-    this.confirmationText = 'Yes',
-    this.cancelText = 'No',
+    this.confirmationText = 'Ok',
   });
 
   final void Function()? confirmCallback;
-  final void Function()? cancelCallback;
   final String title;
   final String confirmationText;
-  final String cancelText;
 
   @override
   Widget build(BuildContext context) {
@@ -43,27 +39,14 @@ class CommonConfirmationDialog extends StatelessWidget {
                 style: const TextStyle(fontSize: 16),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                SizedBox(
-                  width: 100,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: confirmCallback ?? () => Get.back(result: true),
-                    child: Text(confirmationText),
-                  ),
-                ),
-                SizedBox(
-                  width: 100,
-                  height: 50,
-                  child: OutlinedButton(
-                    onPressed: cancelCallback ?? () => Get.back(result: false),
-                    child: Text(cancelText),
-                  ),
-                ),
-              ],
-            )
+            SizedBox(
+              width: 100,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: confirmCallback ?? () => Get.back(),
+                child: Text(confirmationText),
+              ),
+            ),
           ],
         ),
       ),

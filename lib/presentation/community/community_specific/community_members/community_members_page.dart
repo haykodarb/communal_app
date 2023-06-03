@@ -22,7 +22,7 @@ class CommunityMembersPage extends StatelessWidget {
                 children: [
                   Text(user.username),
                   Visibility(
-                    visible: user.is_admin != null && user.is_admin!,
+                    visible: user.is_admin,
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                       decoration: BoxDecoration(
@@ -37,8 +37,7 @@ class CommunityMembersPage extends StatelessWidget {
                     ),
                   ),
                   Visibility(
-                    visible:
-                        controller.community.isCurrentUserAdmin != null && controller.community.isCurrentUserAdmin!,
+                    visible: controller.community.isCurrentUserAdmin,
                     child: PopupMenuButton(
                       itemBuilder: (context) {
                         return <PopupMenuEntry>[

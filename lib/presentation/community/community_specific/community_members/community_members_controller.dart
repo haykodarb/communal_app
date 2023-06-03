@@ -25,7 +25,6 @@ class CommunityMembersController extends GetxController {
     if (response.success) {
       listOfMembers.remove(user);
       user.loading.value = false;
-      print(response.payload);
     }
   }
 

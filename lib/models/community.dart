@@ -1,13 +1,22 @@
 class Community {
-  String? id;
+  String id;
   String name;
-  String description;
-  bool? isCurrentUserAdmin;
+  String? image_path;
+  String owner;
+  bool isCurrentUserAdmin;
 
   Community({
     required this.name,
-    required this.description,
-    this.id,
-    this.isCurrentUserAdmin,
+    required this.id,
+    required this.image_path,
+    required this.owner,
+    required this.isCurrentUserAdmin,
   });
+
+  Community.empty()
+      : id = '',
+        name = '',
+        image_path = '',
+        owner = '',
+        isCurrentUserAdmin = false;
 }
