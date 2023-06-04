@@ -58,7 +58,7 @@ class BookListPage extends StatelessWidget {
             ),
             child: SizedBox(
               height: 200,
-              child: book.deleting.value
+              child: book.loading.value
                   ? _deletingBookIndicator()
                   : Row(
                       crossAxisAlignment: CrossAxisAlignment.start,

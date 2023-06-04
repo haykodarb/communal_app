@@ -4,6 +4,7 @@ import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/community/community_specific/community_drawer/community_drawer_widget.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_controller.dart';
+import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -21,7 +22,15 @@ class CommunitySpecificPage extends StatelessWidget {
       ),
       clipBehavior: Clip.hardEdge,
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          Get.toNamed(
+            RouteNames.communitySpecificBookPage,
+            arguments: {
+              'book': book,
+              'community': controller.community,
+            },
+          );
+        },
         child: SizedBox(
           height: 200,
           child: Row(
@@ -52,7 +61,7 @@ class CommunitySpecificPage extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '${book.ownerName}',
+                        book.owner.username,
                         style: const TextStyle(
                           fontSize: 13,
                         ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:communal/routes.dart';
 import 'package:communal/theme.dart';
+import 'package:intl/date_symbol_data_file.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {

@@ -1,15 +1,222 @@
+import 'package:communal/backend/books_backend.dart';
+import 'package:communal/models/book.dart';
+import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_loading_image.dart';
+import 'package:communal/presentation/community/community_specific/community_specific_book/community_specific_book_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
-class CommunitySpecificBookController extends GetxController {
-  CommunitySpecificBookController();
-}
+class CommunitySpecificBookPage extends StatelessWidget {
+  const CommunitySpecificBookPage({super.key});
 
-class CommunitySpecificBookPage extends GetView<CommunitySpecificBookController> {
+  Widget _bookCard(CommunitySpecificBookController controller) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      clipBehavior: Clip.hardEdge,
+      child: SizedBox(
+        height: 250,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            AspectRatio(
+              aspectRatio: 3 / 4,
+              child: SizedBox(
+                child: FutureBuilder(
+                  future: BooksBackend.getBookCover(controller.book),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const CommonLoadingImage();
+                    }
+
+                    return Image.memory(
+                      snapshot.data!,
+                      fit: BoxFit.cover,
+                    );
+                  },
+                ),
+              ),
+            ),
+            const VerticalDivider(),
+            Expanded(
+              flex: 5,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    controller.book.title,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Get.theme.colorScheme.primary,
+                    ),
+                  ),
+                  Text(
+                    controller.book.author,
+                  ),
+                  Text(
+                    controller.book.owner.username,
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _tableRow(String title, String text) {
+    return Container(
+      height: 70,
+      decoration: BoxDecoration(
+        color: Get.theme.colorScheme.background,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Text(
+                title,
+                textAlign: TextAlign.end,
+                style: TextStyle(
+                  color: Get.theme.colorScheme.onBackground,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+            const VerticalDivider(width: 30),
+            Expanded(
+              child: Text(
+                text,
+                style: TextStyle(
+                  color: Get.theme.colorScheme.onBackground,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _loanInformation(CommunitySpecificBookController controller) {
+    return Obx(
+      () {
+        return CommonLoadingBody(
+          isLoading: controller.book.loading.value,
+          child: Obx(
+            () {
+              if (controller.existingLoan.value == null) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Book is available',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    const Divider(height: 50),
+                    ElevatedButton(
+                      onPressed: controller.requestLoan,
+                      child: const Text('Request'),
+                    ),
+                  ],
+                );
+              }
+
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  const Text(
+                    'You have already requested\na loan for this book.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  Column(
+                    children: [
+                      Divider(color: Get.theme.colorScheme.primary),
+                      _tableRow(
+                        'Requested at',
+                        DateFormat('d of MMM y HH:m:s').format(controller.existingLoan.value!.created_at),
+                      ),
+                      Divider(color: Get.theme.colorScheme.primary),
+                      _tableRow(
+                        'Status',
+                        controller.existingLoan.value!.accepted ? 'Accepted' : 'Pending',
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: Text('CommunitySpecificBookPage')),
-        body: SafeArea(child: Text('CommunitySpecificBookController')));
+    return GetBuilder(
+      init: CommunitySpecificBookController(),
+      builder: (CommunitySpecificBookController controller) {
+        return Scaffold(
+          appBar: AppBar(
+            title: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(controller.book.title),
+            ),
+          ),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  _bookCard(controller),
+                  const Divider(
+                    height: 30,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Get.theme.colorScheme.primary,
+                        width: 0.5,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    width: double.maxFinite,
+                    height: 300,
+                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                    child: controller.book.is_loaned ? const SizedBox() : _loanInformation(controller),
+                  ),
+                  const Divider(
+                    height: 30,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(30),
+                    child: Obx(
+                      () => Text(
+                        controller.message.value,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Get.theme.colorScheme.error,
+                        ),
+                        textAlign: TextAlign.justify,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }

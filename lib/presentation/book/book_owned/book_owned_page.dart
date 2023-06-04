@@ -12,7 +12,7 @@ class BookOwnedPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder(
       init: BookOwnedController(),
-      builder: (controller) {
+      builder: (BookOwnedController controller) {
         return Scaffold(
           appBar: AppBar(
             title: FittedBox(

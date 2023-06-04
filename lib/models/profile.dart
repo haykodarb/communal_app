@@ -12,4 +12,8 @@ class Profile {
     required this.id,
     this.is_admin = false,
   });
+
+  Profile.fromMap(Map<String, dynamic> map)
+      : username = map['username'],
+        id = map['id'];
 }

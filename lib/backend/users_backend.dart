@@ -19,32 +19,29 @@ class UsersBackend {
 
     final List<Profile> profiles = response
         .map(
-          (element) => Profile(
-            username: element['username'],
-            id: element['id'],
-          ),
+          (element) => Profile.fromMap(element),
         )
         .toList();
 
-    return BackendResponse(success: response.isNotEmpty, payload: profiles);
+    return BackendResponse(
+      success: response.isNotEmpty,
+      payload: profiles,
+    );
   }
 
   static Future<BackendResponse> respondToInvitation(Invitation invitation, bool accept) async {
     final SupabaseClient client = Supabase.instance.client;
 
     if (accept) {
-      print('ID: ${invitation.id}');
-
       final Map<String, dynamic> response = await client
           .from('memberships')
           .update({
             'accepted': true,
+            'joined_at': 'now()',
           })
           .eq('id', invitation.id)
           .select<Map<String, dynamic>>()
           .single();
-
-      print(response);
 
       return BackendResponse(success: response.isNotEmpty, payload: response);
     } else {
@@ -60,17 +57,13 @@ class UsersBackend {
 
     final String userId = client.auth.currentUser!.id;
 
-    final List<Map<String, dynamic>> unconfirmedMemberships = await client
-        .from('memberships')
-        .select<List<Map<String, dynamic>>>('id, communities(id, name, owner, image_path)')
-        .match(
+    final List<Map<String, dynamic>> unconfirmedMemberships =
+        await client.from('memberships').select<List<Map<String, dynamic>>>('*, communities(*)').match(
       {
         'member': userId,
         'accepted': false,
       },
     );
-
-    print(unconfirmedMemberships);
 
     final List<Invitation> invitationsList = unconfirmedMemberships
         .map(
@@ -81,7 +74,6 @@ class UsersBackend {
               name: element['communities']['name'],
               image_path: element['communities']['image_path'],
               owner: element['communities']['owner'],
-              isCurrentUserAdmin: false,
             ),
             userId: userId,
           ),
@@ -130,17 +122,15 @@ class UsersBackend {
     }).maybeSingle();
 
     if (memberExistsResponse != null) {
-      if (memberExistsResponse['accepted'] == null) {
-        return BackendResponse(
-          success: false,
-          payload: 'User already has a pending invitation from this community.',
-        );
-      }
-
       if (memberExistsResponse['accepted']) {
         return BackendResponse(
           success: false,
           payload: 'User is already a member in this community.',
+        );
+      } else {
+        return BackendResponse(
+          success: false,
+          payload: 'User already has a pending invitation from this community.',
         );
       }
     }
@@ -215,12 +205,5 @@ class UsersBackend {
       success: listOfProfiles.isNotEmpty,
       payload: listOfProfiles,
     );
-  }
-
-  static bool isCurrentUserOwnerOfCommunity(Community community) {
-    final SupabaseClient client = Supabase.instance.client;
-    final String userId = client.auth.currentUser!.id;
-
-    return community.owner == userId;
   }
 }

@@ -7,10 +7,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class BookCreateController extends GetxController {
-  final Rx<Book> bookForm = Book(
-    author: '',
-    title: '',
-  ).obs;
+  final Rx<Book> bookForm = Book.empty().obs;
 
   final RxString errorMessage = ''.obs;
   final RxBool loading = false.obs;
@@ -31,6 +28,7 @@ class BookCreateController extends GetxController {
       imageQuality: 80,
       maxHeight: 640,
       maxWidth: 480,
+      preferredCameraDevice: CameraDevice.rear,
     );
 
     if (pickedImage == null) return;

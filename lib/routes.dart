@@ -2,6 +2,7 @@ import 'package:communal/presentation/community/community_invite/community_invit
 import 'package:communal/presentation/community/community_list_page.dart';
 import 'package:communal/presentation/community/community_create/community_create_page.dart';
 import 'package:communal/presentation/community/community_specific/community_members/community_members_page.dart';
+import 'package:communal/presentation/community/community_specific/community_specific_book/community_specific_book_page.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_page.dart';
 import 'package:communal/presentation/invitations/invitations_page.dart';
 import 'package:communal/presentation/login/login_page.dart';
@@ -24,6 +25,7 @@ class RouteNames {
   static const communityListPage = '/community';
   static const communityCreatePage = '/community/create';
   static const communitySpecificPage = '/community/specific';
+  static const communitySpecificBookPage = '/community/specific/book';
   static const communityInvitePage = '/community/invite';
   static const communityMembersPage = '/community/members';
   static const invitationsPage = '/invitations';
@@ -80,6 +82,11 @@ List<GetPage> routes() => <GetPage>[
         name: RouteNames.communitySpecificPage,
         transition: Transition.rightToLeft,
         page: () => const CommunitySpecificPage(),
+      ),
+      GetPage<bool>(
+        name: RouteNames.communitySpecificBookPage,
+        transition: Transition.rightToLeft,
+        page: () => const CommunitySpecificBookPage(),
       ),
       GetPage<dynamic>(
         name: RouteNames.communityInvitePage,

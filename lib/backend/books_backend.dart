@@ -9,7 +9,7 @@ class BooksBackend {
   static Future<Uint8List> getBookCover(Book book) async {
     final SupabaseClient client = Supabase.instance.client;
 
-    Uint8List bytes = await client.storage.from('book_covers').download(book.image_path!);
+    Uint8List bytes = await client.storage.from('book_covers').download(book.image_path);
 
     return bytes;
   }
@@ -44,17 +44,12 @@ class BooksBackend {
             'image_path': pathToUpload,
           },
         )
-        .select()
+        .select('*, profiles(*)')
         .single();
 
     return BackendResponse(
       success: response.isNotEmpty,
-      payload: Book(
-        title: response['title'],
-        author: response['author'],
-        id: response['id'],
-        image_path: response['image_path'],
-      ),
+      payload: response.isNotEmpty ? Book.fromMap(response) : 'Could not create book. Please try again.',
     );
   }
 
@@ -64,28 +59,23 @@ class BooksBackend {
     final List<dynamic> response = await client.from('books').delete().eq('id', book.id).select();
 
     await client.storage.from('book_covers').remove(
-      [book.image_path!],
+      [book.image_path],
     );
 
     return BackendResponse(success: response.isNotEmpty, payload: response);
   }
 
-  static Future<BackendResponse> getAllBooks() async {
+  static Future<BackendResponse> getAllBooksForUser() async {
     final SupabaseClient client = Supabase.instance.client;
 
     final String userId = client.auth.currentUser!.id;
 
     final List<Map<String, dynamic>> response =
-        await client.from('books').select<List<Map<String, dynamic>>>().eq('owner', userId);
+        await client.from('books').select<List<Map<String, dynamic>>>('*, profiles(*)').eq('owner', userId);
 
     final List<Book> bookList = response
         .map(
-          (Map<String, dynamic> element) => Book(
-            title: element['title'],
-            author: element['author'],
-            id: element['id'],
-            image_path: element['image_path'],
-          ),
+          (Map<String, dynamic> element) => Book.fromMap(element),
         )
         .toList();
 
@@ -110,7 +100,9 @@ class BooksBackend {
 
     final List<dynamic> booksResponse = await client
         .from('books')
-        .select('id, title, author, image_path, profiles(id, username)')
+        .select(
+          '*, profiles(*)',
+        )
         .in_('owner', listOfUserIDs)
         .order('id')
         .range(
@@ -120,14 +112,7 @@ class BooksBackend {
 
     final List<Book> listOfBooks = booksResponse
         .map(
-          (e) => Book(
-            id: e['id'],
-            title: e['title'],
-            author: e['author'],
-            image_path: e['image_path'],
-            ownerName: e['profiles']['username'],
-            ownerId: e['profiles']['id'],
-          ),
+          (element) => Book.fromMap(element),
         )
         .toList();
 

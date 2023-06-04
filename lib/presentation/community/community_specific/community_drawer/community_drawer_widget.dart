@@ -117,7 +117,7 @@ class CommunityDrawerWidget extends StatelessWidget {
                           },
                         ),
                         Visibility(
-                          visible: community.isCurrentUserAdmin,
+                          visible: community.isCurrentUserAdmin != null && community.isCurrentUserAdmin!,
                           child: _drawerButton(
                             icon: Icons.person_add,
                             text: 'Invite',
@@ -137,7 +137,7 @@ class CommunityDrawerWidget extends StatelessWidget {
                           callback: () {},
                         ),
                         Visibility(
-                          visible: UsersBackend.isCurrentUserOwnerOfCommunity(community),
+                          visible: community.isCurrentUserOwner,
                           child: _drawerButton(
                             icon: Icons.delete,
                             text: 'Delete Community',

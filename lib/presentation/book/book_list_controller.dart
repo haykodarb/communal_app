@@ -16,7 +16,7 @@ class BookListController extends GetxController {
   }
 
   Future<void> deleteBook(Book book) async {
-    book.deleting.value = true;
+    book.loading.value = true;
 
     await BooksBackend.deleteBook(book);
 
@@ -26,7 +26,7 @@ class BookListController extends GetxController {
 
   Future<void> reloadBooks() async {
     loading.value = true;
-    final BackendResponse response = await BooksBackend.getAllBooks();
+    final BackendResponse response = await BooksBackend.getAllBooksForUser();
     loading.value = false;
 
     if (response.success) {
