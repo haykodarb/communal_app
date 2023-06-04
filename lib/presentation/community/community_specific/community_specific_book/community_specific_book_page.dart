@@ -1,5 +1,4 @@
 import 'package:communal/backend/books_backend.dart';
-import 'package:communal/models/book.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_book/community_specific_book_controller.dart';
@@ -17,7 +16,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
       ),
       clipBehavior: Clip.hardEdge,
       child: SizedBox(
-        height: 250,
+        height: 200,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -41,26 +40,22 @@ class CommunitySpecificBookPage extends StatelessWidget {
             ),
             const VerticalDivider(),
             Expanded(
-              flex: 5,
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    controller.book.title,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Get.theme.colorScheme.primary,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      controller.book.title,
+                      style: const TextStyle(fontSize: 16, color: Colors.white),
                     ),
-                  ),
-                  Text(
-                    controller.book.author,
-                  ),
-                  Text(
-                    controller.book.owner.username,
-                  ),
-                ],
+                    const Divider(),
+                    Text(controller.book.author),
+                    const Divider(),
+                    Text(controller.book.owner.username),
+                  ],
+                ),
               ),
             )
           ],
@@ -81,6 +76,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
+              flex: 2,
               child: Text(
                 title,
                 textAlign: TextAlign.end,
@@ -90,8 +86,9 @@ class CommunitySpecificBookPage extends StatelessWidget {
                 ),
               ),
             ),
-            const VerticalDivider(width: 30),
+            const VerticalDivider(width: 20),
             Expanded(
+              flex: 3,
               child: Text(
                 text,
                 style: TextStyle(
@@ -114,19 +111,22 @@ class CommunitySpecificBookPage extends StatelessWidget {
           child: Obx(
             () {
               if (controller.existingLoan.value == null) {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Book is available',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    const Divider(height: 50),
-                    ElevatedButton(
-                      onPressed: controller.requestLoan,
-                      child: const Text('Request'),
-                    ),
-                  ],
+                return Padding(
+                  padding: const EdgeInsets.all(60),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Book is available',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      const Divider(height: 50),
+                      ElevatedButton(
+                        onPressed: controller.requestLoan,
+                        child: const Text('Request'),
+                      ),
+                    ],
+                  ),
                 );
               }
 
@@ -134,16 +134,16 @@ class CommunitySpecificBookPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   const Text(
-                    'You have already requested\na loan for this book.',
+                    'Book loan has been requested.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 18),
+                    style: TextStyle(fontSize: 20),
                   ),
                   Column(
                     children: [
                       Divider(color: Get.theme.colorScheme.primary),
                       _tableRow(
-                        'Requested at',
-                        DateFormat('d of MMM y HH:m:s').format(controller.existingLoan.value!.created_at),
+                        'Requested',
+                        DateFormat('HH:m - d MMM y').format(controller.existingLoan.value!.created_at),
                       ),
                       Divider(color: Get.theme.colorScheme.primary),
                       _tableRow(
@@ -201,14 +201,16 @@ class CommunitySpecificBookPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(30),
                     child: Obx(
-                      () => Text(
-                        controller.message.value,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Get.theme.colorScheme.error,
-                        ),
-                        textAlign: TextAlign.justify,
-                      ),
+                      () {
+                        return Text(
+                          controller.message.value,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Get.theme.colorScheme.error,
+                          ),
+                          textAlign: TextAlign.justify,
+                        );
+                      },
                     ),
                   ),
                 ],

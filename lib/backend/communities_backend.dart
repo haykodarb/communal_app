@@ -36,8 +36,6 @@ class CommunitiesBackend {
       return BackendResponse(success: false, payload: null);
     }
 
-    print(response);
-
     final List<Community> listOfCommunities = response
         .map(
           (dynamic element) => Community(

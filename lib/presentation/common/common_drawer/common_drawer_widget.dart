@@ -1,10 +1,10 @@
-import 'package:communal/presentation/common/common_scaffold/common_scaffold_controller.dart';
+import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CommonScaffoldWidget extends StatelessWidget {
-  const CommonScaffoldWidget({Key? key}) : super(key: key);
+class CommonDrawerWidget extends StatelessWidget {
+  const CommonDrawerWidget({Key? key}) : super(key: key);
 
   Widget _drawerButton({
     required IconData icon,
@@ -91,8 +91,8 @@ class CommonScaffoldWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-        init: CommonScaffoldController(),
-        builder: (CommonScaffoldController controller) {
+        init: CommonDrawerController(),
+        builder: (CommonDrawerController controller) {
           return Drawer(
             elevation: 20,
             child: Container(
@@ -110,25 +110,15 @@ class CommonScaffoldWidget extends StatelessWidget {
                           thickness: 2,
                           color: Colors.transparent,
                         ),
-                        _drawerButton(
-                          text: 'Profile',
-                          icon: Icons.person_rounded,
-                          callback: () {},
-                        ),
+                        // _drawerButton(
+                        //   text: 'Profile',
+                        //   icon: Icons.person_rounded,
+                        //   callback: () {},
+                        // ),
                         _drawerButton(
                           text: 'Books',
                           icon: Icons.menu_book,
                           callback: () => controller.goToRoute(RouteNames.bookListPage),
-                        ),
-                        _drawerButton(
-                          text: 'Loans',
-                          icon: Icons.outbox,
-                          callback: () {},
-                        ),
-                        _drawerButton(
-                          text: 'Messages',
-                          icon: Icons.sms,
-                          callback: () {},
                         ),
                         _drawerButton(
                           text: 'Communities',
@@ -140,6 +130,16 @@ class CommonScaffoldWidget extends StatelessWidget {
                           icon: Icons.mail,
                           callback: () => controller.goToRoute(RouteNames.invitationsPage),
                         ),
+                        _drawerButton(
+                          text: 'Loans',
+                          icon: Icons.outbox,
+                          callback: () => controller.goToRoute(RouteNames.loansPage),
+                        ),
+                        // _drawerButton(
+                        //   text: 'Messages',
+                        //   icon: Icons.sms,
+                        //   callback: () {},
+                        // ),
                         _drawerButton(
                           text: 'Logout',
                           icon: Icons.logout,

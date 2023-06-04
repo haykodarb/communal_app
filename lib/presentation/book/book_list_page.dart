@@ -2,7 +2,7 @@ import 'package:communal/backend/books_backend.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
-import 'package:communal/presentation/common/common_scaffold/common_scaffold_widget.dart';
+import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/book/book_list_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
@@ -78,22 +78,15 @@ class BookListPage extends StatelessWidget {
                               children: [
                                 Text(
                                   book.title,
-                                  style: TextStyle(
-                                    color: Get.theme.colorScheme.primary,
-                                    fontSize: 14,
-                                  ),
+                                  style: const TextStyle(fontSize: 16, color: Colors.white),
                                 ),
                                 Text(
                                   book.author,
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                  ),
+                                  style: const TextStyle(fontSize: 13),
                                 ),
-                                const Text(
-                                  'Prestado',
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                  ),
+                                Text(
+                                  book.is_loaned ? 'Loaned' : 'Available',
+                                  style: const TextStyle(fontSize: 13),
                                 ),
                               ],
                             ),
@@ -114,7 +107,7 @@ class BookListPage extends StatelessWidget {
       init: BookListController(),
       builder: (BookListController controller) {
         return Scaffold(
-          drawer: const CommonScaffoldWidget(),
+          drawer: const CommonDrawerWidget(),
           appBar: AppBar(
             title: const Text('Books'),
           ),

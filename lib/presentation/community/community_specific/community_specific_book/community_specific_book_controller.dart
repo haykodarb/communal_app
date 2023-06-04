@@ -26,7 +26,6 @@ class CommunitySpecificBookController extends GetxController {
 
     if (response.success) {
       existingLoan.value = response.payload;
-      print(existingLoan.value!.loanee.username);
       message.value = '';
     }
 

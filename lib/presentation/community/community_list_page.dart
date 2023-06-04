@@ -2,7 +2,7 @@ import 'package:communal/backend/communities_backend.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
-import 'package:communal/presentation/common/common_scaffold/common_scaffold_widget.dart';
+import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/community/community_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -76,7 +76,7 @@ class CommunityListPage extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Communities'),
           ),
-          drawer: const CommonScaffoldWidget(),
+          drawer: const CommonDrawerWidget(),
           body: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

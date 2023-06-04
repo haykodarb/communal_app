@@ -100,11 +100,13 @@ class BookCreatePage extends StatelessWidget {
                         maxLength: 100,
                         maxLines: 2,
                       ),
+                      const Divider(),
                       CommonTextField(
                         callback: controller.onAuthorChange,
                         label: 'Author',
                         validator: controller.stringValidator,
                       ),
+                      const Divider(),
                       SizedBox(
                         height: 70,
                         child: Obx(
@@ -126,7 +128,7 @@ class BookCreatePage extends StatelessWidget {
                       ),
                       ElevatedButton(
                         onPressed: controller.onSubmitButton,
-                        child: const Text('Add Book'),
+                        child: const Text('Add'),
                       ),
                     ],
                   ),

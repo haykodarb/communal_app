@@ -49,10 +49,7 @@ class CommunitySpecificPage extends StatelessWidget {
                     children: [
                       Text(
                         book.title,
-                        style: TextStyle(
-                          color: Get.theme.colorScheme.primary,
-                          fontSize: 14,
-                        ),
+                        style: const TextStyle(fontSize: 16, color: Colors.white),
                       ),
                       Text(
                         book.author,
@@ -119,29 +116,26 @@ class CommunitySpecificPage extends StatelessWidget {
                             itemCount: controller.booksLoaded.length + 1,
                             padding: const EdgeInsets.all(20),
                             separatorBuilder: (context, index) {
-                              return const SizedBox(
-                                height: 20,
-                              );
+                              return const SizedBox(height: 20);
                             },
                             itemBuilder: (context, index) {
                               if (index == controller.booksLoaded.length && index != 0) {
                                 return Center(
-                                  child: SizedBox(
-                                    height: 50,
-                                    child: Obx(
-                                      () {
-                                        return CommonLoadingBody(
-                                          isLoading: controller.loadingMore.value,
-                                          child: TextButton(
-                                            onPressed: controller.loadBooks,
-                                            child: const Text(
-                                              'more...',
-                                              style: TextStyle(fontSize: 18),
-                                            ),
+                                  child: Obx(
+                                    () {
+                                      return CommonLoadingBody(
+                                        isLoading: controller.loadingMore.value,
+                                        child: IconButton(
+                                          onPressed: controller.loadBooks,
+                                          alignment: Alignment.center,
+                                          icon: Icon(
+                                            Icons.more_horiz,
+                                            color: Get.theme.colorScheme.primary,
+                                            size: 50,
                                           ),
-                                        );
-                                      },
-                                    ),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 );
                               }

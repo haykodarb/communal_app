@@ -182,6 +182,39 @@ class UsersBackend {
     return BackendResponse(success: deleteMembershipResponse.isNotEmpty, payload: deleteMembershipResponse);
   }
 
+  static Future<BackendResponse> removeCurrentUserFromCommunity(Community community) async {
+    final SupabaseClient client = Supabase.instance.client;
+    final String userId = client.auth.currentUser!.id;
+
+    final Map<String, dynamic>? memberExistsResponse = await client.from('memberships').select().match({
+      'community': community.id,
+      'member': userId,
+      'accepted': true,
+    }).maybeSingle();
+
+    if (memberExistsResponse == null || memberExistsResponse.isEmpty) {
+      return BackendResponse(
+        success: false,
+        payload: 'User does not exist in this community.',
+      );
+    }
+
+    final Map<String, dynamic> deleteMembershipResponse = await client
+        .from('memberships')
+        .delete()
+        .match(
+          {
+            'member': userId,
+            'community': community.id,
+            'is_admin': false,
+          },
+        )
+        .select()
+        .single();
+
+    return BackendResponse(success: deleteMembershipResponse.isNotEmpty, payload: deleteMembershipResponse);
+  }
+
   static Future<BackendResponse<List<Profile>>> getUsersInCommunity(Community community) async {
     final SupabaseClient client = Supabase.instance.client;
 

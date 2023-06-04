@@ -1,6 +1,7 @@
 import 'package:communal/models/book.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/models/profile.dart';
+import 'package:get/get.dart';
 
 class Loan {
   String id;
@@ -9,7 +10,10 @@ class Loan {
   Book book;
   Profile loanee;
   bool accepted;
+  bool rejected;
   bool returned;
+
+  RxBool loading = false.obs;
 
   Loan({
     required this.id,
@@ -18,6 +22,22 @@ class Loan {
     required this.book,
     required this.loanee,
     required this.accepted,
+    required this.rejected,
     required this.returned,
   });
+
+  Loan.fromMap(Map<String, dynamic> map)
+      : id = map['id'],
+        created_at = DateTime.parse(map['created_at']).toLocal(),
+        community = Community(
+          id: map['communities']['id'],
+          name: map['communities']['name'],
+          owner: map['communities']['owner'],
+          image_path: map['communities']['image_path'],
+        ),
+        book = Book.fromMap(map['books']),
+        loanee = Profile.fromMap(map['profiles']),
+        accepted = map['accepted'],
+        rejected = map['rejected'],
+        returned = map['returned'];
 }

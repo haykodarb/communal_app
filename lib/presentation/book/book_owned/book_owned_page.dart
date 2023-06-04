@@ -26,49 +26,49 @@ class BookOwnedPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  clipBehavior: Clip.hardEdge,
                   child: SizedBox(
                     height: 250,
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          AspectRatio(
-                            aspectRatio: 3 / 4,
-                            child: SizedBox(
-                              child: FutureBuilder(
-                                future: BooksBackend.getBookCover(controller.book),
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData) return Image.memory(snapshot.data!);
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        AspectRatio(
+                          aspectRatio: 3 / 4,
+                          child: SizedBox(
+                            child: FutureBuilder(
+                              future: BooksBackend.getBookCover(controller.book),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) return Image.memory(snapshot.data!);
 
-                                  return const CommonLoadingImage();
-                                },
-                              ),
+                                return const CommonLoadingImage();
+                              },
                             ),
                           ),
-                          const VerticalDivider(),
-                          Expanded(
-                            flex: 5,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  controller.book.title,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Get.theme.colorScheme.primary,
-                                  ),
-                                ),
-                                Text(
-                                  controller.book.author,
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
+                        ),
+                        const VerticalDivider(),
+                        Expanded(
+                          flex: 5,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const Divider(),
+                              Text(
+                                controller.book.title,
+                                style: const TextStyle(fontSize: 16, color: Colors.white),
+                              ),
+                              const Divider(),
+                              Text(
+                                controller.book.author,
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 ),

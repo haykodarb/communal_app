@@ -1,4 +1,3 @@
-import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/community/community_specific/community_drawer/community_drawer_controller.dart';
@@ -142,6 +141,14 @@ class CommunityDrawerWidget extends StatelessWidget {
                             icon: Icons.delete,
                             text: 'Delete Community',
                             callback: controller.deleteCommunity,
+                          ),
+                        ),
+                        Visibility(
+                          visible: !community.isCurrentUserOwner,
+                          child: _drawerButton(
+                            icon: Icons.delete,
+                            text: 'Leave Community',
+                            callback: controller.leaveCommunity,
                           ),
                         ),
                       ],

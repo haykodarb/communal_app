@@ -5,6 +5,7 @@ import 'package:communal/presentation/community/community_specific/community_mem
 import 'package:communal/presentation/community/community_specific/community_specific_book/community_specific_book_page.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_page.dart';
 import 'package:communal/presentation/invitations/invitations_page.dart';
+import 'package:communal/presentation/loans/loans_page.dart';
 import 'package:communal/presentation/login/login_page.dart';
 import 'package:communal/presentation/book/book_create/book_create_page.dart';
 import 'package:communal/presentation/book/book_owned/book_owned_page.dart';
@@ -15,20 +16,21 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 
 class RouteNames {
-  static const startPage = '/start';
-  static const loginPage = '/login';
-  static const registerPage = '/register';
-  static const dashboardPage = '/dashboard';
-  static const bookListPage = '/book';
-  static const bookCreatePage = '/book/create';
-  static const bookOwnedPage = '/book/owned';
-  static const communityListPage = '/community';
-  static const communityCreatePage = '/community/create';
-  static const communitySpecificPage = '/community/specific';
-  static const communitySpecificBookPage = '/community/specific/book';
-  static const communityInvitePage = '/community/invite';
-  static const communityMembersPage = '/community/members';
-  static const invitationsPage = '/invitations';
+  static const String startPage = '/start';
+  static const String loginPage = '/login';
+  static const String registerPage = '/register';
+  static const String dashboardPage = '/dashboard';
+  static const String bookListPage = '/book';
+  static const String bookCreatePage = '/book/create';
+  static const String bookOwnedPage = '/book/owned';
+  static const String communityListPage = '/community';
+  static const String communityCreatePage = '/community/create';
+  static const String communitySpecificPage = '/community/specific';
+  static const String communitySpecificBookPage = '/community/specific/book';
+  static const String communityInvitePage = '/community/invite';
+  static const String communityMembersPage = '/community/members';
+  static const String invitationsPage = '/invitations';
+  static const String loansPage = '/loans';
 }
 
 List<GetPage> routes() => <GetPage>[
@@ -102,5 +104,10 @@ List<GetPage> routes() => <GetPage>[
         name: RouteNames.invitationsPage,
         transition: Transition.noTransition,
         page: () => const InvitationsPage(),
+      ),
+      GetPage<dynamic>(
+        name: RouteNames.loansPage,
+        transition: Transition.noTransition,
+        page: () => const LoansPage(),
       ),
     ];
