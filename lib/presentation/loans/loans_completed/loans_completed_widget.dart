@@ -128,7 +128,7 @@ class LoansCompletedWidget extends StatelessWidget {
                     )
                   : ListView.separated(
                       padding: const EdgeInsets.symmetric(vertical: 20),
-                      itemCount: controller.loans.length * 3,
+                      itemCount: controller.loans.length,
                       separatorBuilder: (context, index) {
                         return Divider(
                           color: Get.theme.colorScheme.primary,
@@ -139,7 +139,7 @@ class LoansCompletedWidget extends StatelessWidget {
                       itemBuilder: (context, index) {
                         return _bookCard(
                           controller,
-                          controller.loans[0],
+                          controller.loans[index],
                         );
                       },
                     ),

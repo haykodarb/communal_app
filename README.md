@@ -1,16 +1,21 @@
-# communal
+# Communal
 
-A new Flutter project.
+A semi-decentralized library, made for sharing physical books between members of a community.
 
-## Getting Started
+A community is thought of as any group of 2 to ~100 people that share location and interests.
 
-This project is a starting point for a Flutter application.
+It could be for example a group of neighbours, a college class, a reading club, a community center, a group of friends, members of an actual library, etc.
 
-A few resources to get you started if this is your first Flutter project:
+The project is made for those of us who enjoy collecting books but who also wish to share them with the people around them.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Once the book sharing part is complete, I'd like to extend the app towards sharing tools and other physical objects whithin a community, to build a sort of semi-decentralized "maker space", since most of us who like building things usually buy tools that spend most of their time sitting idlely in a storage room.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+
+## Developed With
+
+This project is built using Flutter as the frontend and Supabase as the backend. 
+
+The Flutter App has been and will continue to be fully open source and it's developement will be conducted in this repository.
+
+The Supabase database will be open sourced once I finish building it and figure out how to open source the Postgres database. Ideally I'll build it as a self hostable Docker instance, but it's extra work that I'll do once the project is usable.

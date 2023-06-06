@@ -87,16 +87,23 @@ class BooksBackend {
 
   static Future<BackendResponse> getBooksInCommunity(Community community, int index) async {
     final SupabaseClient client = Supabase.instance.client;
+    final String userId = client.auth.currentUser!.id;
 
-    final List<dynamic> membershipResponse = await client.from('memberships').select().eq('community', community.id);
+    final List<dynamic> membershipResponse = await client.from('memberships').select().match(
+      {
+        'community': community.id,
+        'accepted': true,
+      },
+    ).neq(
+      'member',
+      userId,
+    );
 
     final List<String> listOfUserIDs = membershipResponse.map(
       (element) {
         return element['member'] as String;
       },
     ).toList();
-
-    listOfUserIDs.remove(client.auth.currentUser!.id);
 
     final List<dynamic> booksResponse = await client
         .from('books')
