@@ -28,7 +28,7 @@ class LoansPage extends StatelessWidget {
                 ],
               ),
             ),
-            drawer: const CommonDrawerWidget(),
+            drawer: CommonDrawerWidget(),
             body: const TabBarView(
               children: [
                 LoansOwnedWidget(),

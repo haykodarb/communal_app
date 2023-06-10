@@ -46,6 +46,7 @@ dependencies:
   shimmer: ^3.0.0
   loading_animation_widget: ^1.2.0+4
   intl: ^0.18.1
+  timeago: ^3.4.0
 
 dev_dependencies:
   flutter_test:

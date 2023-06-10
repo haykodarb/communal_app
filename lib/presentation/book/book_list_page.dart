@@ -107,7 +107,7 @@ class BookListPage extends StatelessWidget {
       init: BookListController(),
       builder: (BookListController controller) {
         return Scaffold(
-          drawer: const CommonDrawerWidget(),
+          drawer: CommonDrawerWidget(),
           appBar: AppBar(
             title: const Text('Books'),
           ),

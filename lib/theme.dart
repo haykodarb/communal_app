@@ -113,6 +113,9 @@ final IconThemeData _iconThemeData = IconThemeData(
 
 final FloatingActionButtonThemeData _floatingActionButtonThemeData = FloatingActionButtonThemeData(
   backgroundColor: _colorScheme.primary,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(20),
+  ),
 );
 
 final CardTheme _cardTheme = CardTheme(

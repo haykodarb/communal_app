@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       title: 'Kaits',
       theme: theme,
       onInit: () async {},
-      getPages: routes(),
+      getPages: routes,
       color: Theme.of(context).colorScheme.background,
       initialRoute:
           Supabase.instance.client.auth.currentUser == null ? RouteNames.startPage : RouteNames.communityListPage,

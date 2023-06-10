@@ -30,8 +30,8 @@ class CommunityCreateController extends GetxController {
     XFile? pickedImage = await imagePicker.pickImage(
       source: source,
       imageQuality: 80,
-      maxHeight: 360,
-      maxWidth: 640,
+      maxHeight: 720,
+      maxWidth: 1280,
     );
 
     if (pickedImage == null) return;

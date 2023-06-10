@@ -41,6 +41,54 @@ class LoansBackend {
     return BackendResponse(success: true, payload: '');
   }
 
+  static Future<BackendResponse> getLoanCountWhere(LoansRequestType requestType) async {
+    final SupabaseClient client = Supabase.instance.client;
+
+    final String userId = client.auth.currentUser!.id;
+
+    Map<String, dynamic> query;
+
+    switch (requestType) {
+      case LoansRequestType.userIsOwner:
+        query = {
+          'books.owner': userId,
+          'returned': false,
+          'accepted': false,
+          'rejected': false,
+        };
+        break;
+
+      case LoansRequestType.userIsLoanee:
+        query = {
+          'loanee': userId,
+          'returned': false,
+          'rejected': false,
+        };
+        break;
+      case LoansRequestType.loanIsCompleted:
+        query = {
+          'returned': true,
+        };
+        break;
+      default:
+        query = {};
+        break;
+    }
+
+    final PostgrestResponse response = await client
+        .from('loans')
+        .select(
+          '*,  books!inner(*, profiles(*))',
+          const FetchOptions(
+            count: CountOption.exact,
+            // head: true,
+          ),
+        )
+        .match(query);
+
+    return BackendResponse(success: true, payload: response.count);
+  }
+
   static Future<BackendResponse> getLoansWhere(LoansRequestType requestType) async {
     final SupabaseClient client = Supabase.instance.client;
 

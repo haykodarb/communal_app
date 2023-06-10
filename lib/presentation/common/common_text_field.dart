@@ -16,7 +16,7 @@ class CommonTextField extends StatefulWidget {
   final String? Function(String?) validator;
   final int minLines;
   final int maxLines;
-  final int maxLength;
+  final int? maxLength;
   final String label;
   final bool isPassword;
 

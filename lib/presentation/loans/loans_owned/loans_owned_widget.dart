@@ -3,6 +3,7 @@ import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/loans/loans_owned/loans_owned_controller.dart';
+import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -39,7 +40,11 @@ class LoansOwnedWidget extends StatelessWidget {
                 const VerticalDivider(width: 20),
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.toNamed(RouteNames.messagesSpecificPage, arguments: {
+                        'user': loan.loanee,
+                      });
+                    },
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

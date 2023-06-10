@@ -1,3 +1,4 @@
+import 'package:communal/presentation/messages/messages_page.dart';
 import 'package:communal/presentation/community/community_invite/community_invite_page.dart';
 import 'package:communal/presentation/community/community_list_page.dart';
 import 'package:communal/presentation/community/community_create/community_create_page.dart';
@@ -10,6 +11,7 @@ import 'package:communal/presentation/login/login_page.dart';
 import 'package:communal/presentation/book/book_create/book_create_page.dart';
 import 'package:communal/presentation/book/book_owned/book_owned_page.dart';
 import 'package:communal/presentation/book/book_list_page.dart';
+import 'package:communal/presentation/messages/messages_specific/messages_specific_page.dart';
 import 'package:communal/presentation/register/register_page.dart';
 import 'package:communal/presentation/start/start_page.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
@@ -31,83 +33,95 @@ class RouteNames {
   static const String communityMembersPage = '/community/members';
   static const String invitationsPage = '/invitations';
   static const String loansPage = '/loans';
+  static const String messagesPage = '/messages';
+  static const String messagesSpecificPage = '/messages/specific';
 }
 
-List<GetPage> routes() => <GetPage>[
-      GetPage<dynamic>(
-        name: RouteNames.startPage,
-        transition: Transition.noTransition,
-        page: () => const StartPage(),
-      ),
-      GetPage<dynamic>(
-        name: RouteNames.loginPage,
-        page: () => const LoginPage(),
-        transition: Transition.downToUp,
-        transitionDuration: const Duration(
-          milliseconds: 300,
-        ),
-      ),
-      GetPage<dynamic>(
-        name: RouteNames.registerPage,
-        page: () => const RegisterPage(),
-        transition: Transition.downToUp,
-        transitionDuration: const Duration(
-          milliseconds: 300,
-        ),
-      ),
-      GetPage<dynamic>(
-        name: RouteNames.bookListPage,
-        transition: Transition.noTransition,
-        page: () => const BookListPage(),
-      ),
-      GetPage<dynamic>(
-        name: RouteNames.bookCreatePage,
-        transition: Transition.downToUp,
-        page: () => const BookCreatePage(),
-      ),
-      GetPage<dynamic>(
-        name: RouteNames.bookOwnedPage,
-        transition: Transition.rightToLeft,
-        page: () => const BookOwnedPage(),
-      ),
-      GetPage<dynamic>(
-        name: RouteNames.communityListPage,
-        transition: Transition.noTransition,
-        page: () => const CommunityListPage(),
-      ),
-      GetPage<bool>(
-        name: RouteNames.communityCreatePage,
-        transition: Transition.downToUp,
-        page: () => const CommunityCreatePage(),
-      ),
-      GetPage<bool>(
-        name: RouteNames.communitySpecificPage,
-        transition: Transition.rightToLeft,
-        page: () => const CommunitySpecificPage(),
-      ),
-      GetPage<bool>(
-        name: RouteNames.communitySpecificBookPage,
-        transition: Transition.rightToLeft,
-        page: () => const CommunitySpecificBookPage(),
-      ),
-      GetPage<dynamic>(
-        name: RouteNames.communityInvitePage,
-        transition: Transition.downToUp,
-        page: () => const CommunityInvitePage(),
-      ),
-      GetPage<dynamic>(
-        name: RouteNames.communityMembersPage,
-        transition: Transition.downToUp,
-        page: () => const CommunityMembersPage(),
-      ),
-      GetPage<dynamic>(
-        name: RouteNames.invitationsPage,
-        transition: Transition.noTransition,
-        page: () => const InvitationsPage(),
-      ),
-      GetPage<dynamic>(
-        name: RouteNames.loansPage,
-        transition: Transition.noTransition,
-        page: () => const LoansPage(),
-      ),
-    ];
+final List<GetPage> routes = <GetPage>[
+  GetPage<dynamic>(
+    name: RouteNames.startPage,
+    transition: Transition.noTransition,
+    page: () => const StartPage(),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.loginPage,
+    page: () => const LoginPage(),
+    transition: Transition.downToUp,
+    transitionDuration: const Duration(
+      milliseconds: 300,
+    ),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.registerPage,
+    page: () => const RegisterPage(),
+    transition: Transition.downToUp,
+    transitionDuration: const Duration(
+      milliseconds: 300,
+    ),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.bookListPage,
+    transition: Transition.noTransition,
+    page: () => const BookListPage(),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.bookCreatePage,
+    transition: Transition.downToUp,
+    page: () => const BookCreatePage(),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.bookOwnedPage,
+    transition: Transition.rightToLeft,
+    page: () => const BookOwnedPage(),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.communityListPage,
+    transition: Transition.noTransition,
+    page: () => const CommunityListPage(),
+  ),
+  GetPage<bool>(
+    name: RouteNames.communityCreatePage,
+    transition: Transition.downToUp,
+    page: () => const CommunityCreatePage(),
+  ),
+  GetPage<bool>(
+    name: RouteNames.communitySpecificPage,
+    transition: Transition.rightToLeft,
+    page: () => const CommunitySpecificPage(),
+  ),
+  GetPage<bool>(
+    name: RouteNames.communitySpecificBookPage,
+    transition: Transition.rightToLeft,
+    page: () => const CommunitySpecificBookPage(),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.communityInvitePage,
+    transition: Transition.downToUp,
+    page: () => const CommunityInvitePage(),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.communityMembersPage,
+    transition: Transition.downToUp,
+    page: () => const CommunityMembersPage(),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.invitationsPage,
+    transition: Transition.noTransition,
+    page: () => const InvitationsPage(),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.loansPage,
+    transition: Transition.noTransition,
+    page: () => const LoansPage(),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.messagesPage,
+    transition: Transition.noTransition,
+    page: () => const MessagesPage(),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.messagesSpecificPage,
+    transition: Transition.noTransition,
+    page: () => const MessagesSpecificPage(),
+  ),
+];

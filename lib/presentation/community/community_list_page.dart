@@ -76,7 +76,7 @@ class CommunityListPage extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Communities'),
           ),
-          drawer: const CommonDrawerWidget(),
+          drawer: CommonDrawerWidget(),
           body: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

@@ -104,7 +104,7 @@ class InvitationsPage extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Invitations'),
           ),
-          drawer: const CommonDrawerWidget(),
+          drawer: CommonDrawerWidget(),
           body: Obx(
             () {
               return CommonLoadingBody(
