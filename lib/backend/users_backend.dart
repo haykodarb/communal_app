@@ -5,6 +5,16 @@ import 'package:communal/models/profile.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class UsersBackend {
+  static String getCurrentUsername() {
+    final GoTrueClient client = Supabase.instance.client.auth;
+
+    if (client.currentUser == null &&
+        client.currentUser!.userMetadata == null &&
+        client.currentUser!.userMetadata!['username'] == null) return 'No user';
+
+    return client.currentUser!.userMetadata!['username'];
+  }
+
   static Future<BackendResponse> searchUsers(String query) async {
     final SupabaseClient client = Supabase.instance.client;
 
@@ -50,6 +60,33 @@ class UsersBackend {
 
       return BackendResponse(success: response.isNotEmpty, payload: response);
     }
+  }
+
+  static Future<BackendResponse> getInvitationsCountForUser() async {
+    final SupabaseClient client = Supabase.instance.client;
+
+    final String userId = client.auth.currentUser!.id;
+
+    final PostgrestResponse response = await client
+        .from('memberships')
+        .select(
+          '*',
+          const FetchOptions(
+            head: true,
+            count: CountOption.exact,
+          ),
+        )
+        .match(
+      {
+        'member': userId,
+        'accepted': false,
+      },
+    );
+
+    return BackendResponse(
+      success: response.status == 200,
+      payload: response.count,
+    );
   }
 
   static Future<BackendResponse> getInvitationsForUser() async {
