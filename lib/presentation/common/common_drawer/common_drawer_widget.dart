@@ -79,10 +79,6 @@ class CommonDrawerWidget extends StatelessWidget {
             ),
           ),
         ),
-        Divider(
-          thickness: 2,
-          color: Get.theme.colorScheme.surface,
-        ),
       ],
     );
   }
@@ -160,15 +156,27 @@ class CommonDrawerWidget extends StatelessWidget {
                         icon: Icons.sms,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.messagesPage),
                       ),
+                      Divider(
+                        thickness: 2,
+                        color: Get.theme.colorScheme.surface,
+                      ),
                       _drawerButton(
                         text: 'Books',
                         icon: Icons.menu_book,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.bookListPage),
                       ),
+                      Divider(
+                        thickness: 2,
+                        color: Get.theme.colorScheme.surface,
+                      ),
                       _drawerButton(
                         text: 'Communities',
                         icon: Icons.people_alt_outlined,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.communityListPage),
+                      ),
+                      Divider(
+                        thickness: 2,
+                        color: Get.theme.colorScheme.surface,
                       ),
                       _drawerButton(
                         text: 'Invitations',
@@ -176,17 +184,33 @@ class CommonDrawerWidget extends StatelessWidget {
                         callback: () => _commonDrawerController.goToRoute(RouteNames.invitationsPage),
                         notifications: _commonDrawerController.invitationsNotifications,
                       ),
+                      Divider(
+                        thickness: 2,
+                        color: Get.theme.colorScheme.surface,
+                      ),
                       _drawerButton(
                         text: 'Loans',
                         icon: Icons.outbox,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.loansPage),
                         notifications: _commonDrawerController.loanNotifications,
                       ),
+                      Divider(
+                        thickness: 2,
+                        color: Get.theme.colorScheme.surface,
+                      ),
+                      const Expanded(child: SizedBox()),
+
+                      Divider(
+                        thickness: 2,
+                        color: Get.theme.colorScheme.surface,
+                      ),
                       _drawerButton(
                         text: 'Logout',
                         icon: Icons.logout,
                         callback: _commonDrawerController.handleLogout,
                       ),
+
+                      const Divider(height: 10),
                     ],
                   ),
                 ),

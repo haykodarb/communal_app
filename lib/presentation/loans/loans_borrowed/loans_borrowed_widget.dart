@@ -3,6 +3,7 @@ import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/loans/loans_borrowed/loans_borrowed_controller.dart';
+import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -15,7 +16,13 @@ class LoansBorrowedWidget extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40),
         child: OutlinedButton(
-          onPressed: loan.accepted ? () {} : () => controller.deleteLoan(loan),
+          onPressed: loan.accepted
+              ? () {
+                  Get.toNamed(RouteNames.messagesSpecificPage, arguments: {
+                    'user': loan.book.owner,
+                  });
+                }
+              : () => controller.deleteLoan(loan),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

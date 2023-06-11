@@ -1,6 +1,7 @@
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/community/community_specific/community_members/community_members_controller.dart';
+import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -69,9 +70,19 @@ class CommunityMembersPage extends StatelessWidget {
       init: CommunityMembersController(),
       builder: (controller) {
         return Scaffold(
-          appBar: AppBar(
-            title: const Text('Members'),
-          ),
+          floatingActionButton: controller.community.isCurrentUserAdmin!
+              ? FloatingActionButton(
+                  onPressed: () {
+                    Get.toNamed(
+                      RouteNames.communityInvitePage,
+                      arguments: {
+                        'community': controller.community,
+                      },
+                    );
+                  },
+                  child: const Icon(Icons.add),
+                )
+              : null,
           body: Obx(
             () {
               return CommonLoadingBody(

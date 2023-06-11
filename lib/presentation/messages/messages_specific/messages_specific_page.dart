@@ -1,15 +1,91 @@
 import 'package:communal/models/message.dart';
+import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/messages/messages_specific/messages_specific_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class MessagesSpecificPage extends StatelessWidget {
   const MessagesSpecificPage({super.key});
 
+  Widget _messageBubble(MessagesSpecificController controller, int index) {
+    final Message message = controller.messages[controller.messages.length - index - 1];
+
+    final Message? nextMessage = index == 0 ? null : controller.messages[controller.messages.length - index];
+
+    print(index);
+    print('Current > ${message.sender.username} | Next > ${nextMessage?.sender.username}');
+
+    final bool showTime = nextMessage == null || nextMessage.sender.id != message.sender.id;
+
+    final bool isReceived = message.sender.id == controller.user.id;
+
+    return Row(
+      children: [
+        Expanded(
+          flex: isReceived ? 0 : 1,
+          child: const SizedBox(),
+        ),
+        Expanded(
+          flex: 2,
+          child: Column(
+            crossAxisAlignment: isReceived ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+            children: [
+              Container(
+                alignment: isReceived ? Alignment.centerLeft : Alignment.centerRight,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Flexible(
+                      child: Container(
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.circular(15),
+                          color: isReceived ? Get.theme.colorScheme.secondary : Get.theme.colorScheme.primary,
+                        ),
+                        child: Text(
+                          message.content,
+                          style: TextStyle(
+                            color: Get.theme.colorScheme.background,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Visibility(
+                visible: showTime,
+                child: const Divider(height: 5),
+              ),
+              Visibility(
+                visible: showTime,
+                child: Text(
+                  DateFormat.MMMd().add_Hm().format(message.created_at.toLocal()),
+                  textAlign: isReceived ? TextAlign.left : TextAlign.right,
+                  style: TextStyle(
+                    color: Get.theme.colorScheme.onBackground.withOpacity(0.8),
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          flex: isReceived ? 1 : 0,
+          child: const SizedBox(),
+        ),
+      ],
+    );
+  }
+
   Widget _textInput(MessagesSpecificController controller) {
     return SizedBox(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
         child: Row(
           children: [
             Expanded(
@@ -35,16 +111,45 @@ class MessagesSpecificPage extends StatelessWidget {
                   hintStyle: TextStyle(
                     color: Get.theme.colorScheme.primary,
                   ),
-                  suffixIcon: IconButton(
-                    padding: const EdgeInsets.only(right: 10),
-                    onPressed: controller.onMessageSubmit,
-                    icon: Icon(
-                      Icons.send,
-                      color: Get.theme.colorScheme.primary,
-                    ),
-                    iconSize: 30,
-                  ),
                 ),
+              ),
+            ),
+            const VerticalDivider(width: 5),
+            Container(
+              padding: EdgeInsets.zero,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Get.theme.colorScheme.primary,
+              ),
+              height: 60,
+              width: 60,
+              child: Obx(
+                () {
+                  return InkWell(
+                    onTap: controller.sending.value ? null : controller.onMessageSubmit,
+                    enableFeedback: false,
+                    splashColor: Colors.transparent,
+                    child: SizedBox.expand(
+                      child: Center(
+                        child: Obx(
+                          () {
+                            if (controller.sending.value) {
+                              return CircularProgressIndicator(
+                                color: Get.theme.colorScheme.onPrimary,
+                              );
+                            }
+
+                            return Icon(
+                              Icons.send,
+                              color: Get.theme.colorScheme.onPrimary,
+                              size: 30,
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ],
@@ -66,57 +171,33 @@ class MessagesSpecificPage extends StatelessWidget {
             child: Column(
               children: [
                 Expanded(
-                  child: Obx(() {
-                    return ListView.separated(
-                      reverse: true,
-                      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                      itemCount: controller.messages.length,
-                      separatorBuilder: (context, index) {
-                        return const Divider(
-                          height: 7.5,
-                        );
-                      },
-                      itemBuilder: (context, index) {
-                        final Message message = controller.messages[controller.messages.length - index - 1];
-                        final bool isReceived = message.sender == controller.user.id;
-
-                        return Row(
-                          children: [
-                            Expanded(
-                              flex: isReceived ? 0 : 2,
-                              child: const SizedBox(),
-                            ),
-                            Expanded(
-                              flex: 3,
-                              child: Container(
-                                padding: const EdgeInsets.all(20),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: isReceived ? Get.theme.colorScheme.secondary : Get.theme.colorScheme.primary,
-                                ),
-                                alignment: isReceived ? Alignment.centerLeft : Alignment.centerRight,
-                                child: Text(
-                                  message.content,
-                                  style: TextStyle(
-                                    color: Get.theme.colorScheme.background,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: isReceived ? 2 : 0,
-                              child: const SizedBox(),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  }),
+                  child: Obx(
+                    () {
+                      return CommonLoadingBody(
+                        isLoading: controller.loading.value,
+                        child: Obx(
+                          () {
+                            return ListView.separated(
+                              reverse: true,
+                              physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                              itemCount: controller.messages.length,
+                              separatorBuilder: (context, index) {
+                                return const Divider(
+                                  height: 7.5,
+                                );
+                              },
+                              itemBuilder: (context, index) {
+                                return _messageBubble(controller, index);
+                              },
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
                 ),
                 _textInput(controller),
-                const Divider(),
               ],
             ),
           ),

@@ -1,8 +1,10 @@
+import 'package:communal/models/profile.dart';
+
 class Message {
   final String id;
   final DateTime created_at;
-  final String sender;
-  final String receiver;
+  final Profile sender;
+  final Profile receiver;
   final String content;
   final bool is_read;
 
@@ -16,13 +18,23 @@ class Message {
   });
 
   Message.fromMap(Map<String, dynamic> map)
-      : sender = map['sender'],
-        receiver = map['receiver'],
+      : receiver = Profile.fromMap(map['receiver_profile']),
+        sender = Profile.fromMap(map['sender_profile']),
         content = map['content'],
         created_at = DateTime.parse(map['created_at']),
         is_read = map['is_read'],
         id = map['id'];
 
+  @override
+  String toString() {
+    return {
+      'id': id,
+      'created_at': created_at.toIso8601String(),
+      'sender': sender.id,
+      'receiver': receiver.id,
+      'is_read': is_read,
+    }.toString();
+  }
   // Message.empty()
   //     : id = '',
   //       created_at = DateTime.now(),

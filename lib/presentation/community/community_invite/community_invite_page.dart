@@ -13,9 +13,12 @@ class CommunityInvitePage extends StatelessWidget {
       builder: (CommunityInviteController controller) {
         return Scaffold(
           resizeToAvoidBottomInset: false,
-          appBar: AppBar(title: const Text('Invite user')),
+          appBar: AppBar(
+            title: const Text('Invite user'),
+            automaticallyImplyLeading: false,
+          ),
           body: Padding(
-            padding: const EdgeInsets.all(30),
+            padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -40,7 +43,7 @@ class CommunityInvitePage extends StatelessWidget {
                 const Divider(height: 30),
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     decoration: BoxDecoration(
                       border: Border.all(color: Get.theme.colorScheme.primary),
                       borderRadius: BorderRadius.circular(5),
@@ -49,7 +52,7 @@ class CommunityInvitePage extends StatelessWidget {
                       () {
                         return CommonLoadingBody(
                           isLoading: controller.loading.value,
-                          child: ListView.separated(
+                          child: ListView.builder(
                             itemCount: controller.foundProfiles.length,
                             itemBuilder: (context, index) {
                               return Obx(
@@ -74,9 +77,6 @@ class CommunityInvitePage extends StatelessWidget {
                                   );
                                 },
                               );
-                            },
-                            separatorBuilder: (context, index) {
-                              return const Divider();
                             },
                           ),
                         );

@@ -85,6 +85,42 @@ class BooksBackend {
     );
   }
 
+  static Future<BackendResponse> getBooksCountInCommunity(Community community) async {
+    final SupabaseClient client = Supabase.instance.client;
+    final String userId = client.auth.currentUser!.id;
+
+    final List<dynamic> membershipResponse = await client.from('memberships').select().match(
+      {
+        'community': community.id,
+        'accepted': true,
+      },
+    ).neq(
+      'member',
+      userId,
+    );
+
+    final List<String> listOfUserIDs = membershipResponse.map(
+      (element) {
+        return element['member'] as String;
+      },
+    ).toList();
+
+    final PostgrestResponse booksResponse = await client
+        .from('books')
+        .select(
+          '*, profiles(*)',
+          const FetchOptions(count: CountOption.exact, head: true),
+        )
+        .in_('owner', listOfUserIDs);
+
+    print(booksResponse.count);
+
+    return BackendResponse(
+      success: booksResponse.status == 200,
+      payload: booksResponse.count,
+    );
+  }
+
   static Future<BackendResponse> getBooksInCommunity(Community community, int index) async {
     final SupabaseClient client = Supabase.instance.client;
     final String userId = client.auth.currentUser!.id;

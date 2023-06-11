@@ -15,11 +15,16 @@ class MessagesSpecificController extends GetxController {
 
   final RxList<Message> messages = <Message>[].obs;
 
+  final RxBool sending = false.obs;
+  final RxBool loading = false.obs;
+
   RealtimeChannel? subscription;
 
   @override
   Future<void> onInit() async {
     super.onInit();
+
+    loading.value = true;
 
     subscription ??= MessagesBackend.subscribeToMessagesWithUser(user, onNewMessageReceived);
 
@@ -28,8 +33,10 @@ class MessagesSpecificController extends GetxController {
     final BackendResponse response = await MessagesBackend.getMessagesWithUser(user);
 
     if (response.success) {
-      messages.addAll(response.payload);
+      messages.value = response.payload;
     }
+
+    loading.value = false;
   }
 
   @override
@@ -50,6 +57,7 @@ class MessagesSpecificController extends GetxController {
   }
 
   Future<void> onMessageSubmit() async {
+    sending.value = true;
     final BackendResponse response = await MessagesBackend.submitMessage(user, typedMessage.value);
 
     if (response.success) {
@@ -57,5 +65,6 @@ class MessagesSpecificController extends GetxController {
       typedMessage.value = '';
       // Get.focusScope?.unfocus();
     }
+    sending.value = false;
   }
 }

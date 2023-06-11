@@ -5,6 +5,12 @@ import 'package:communal/models/profile.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class UsersBackend {
+  static String getCurrentUserId() {
+    final GoTrueClient client = Supabase.instance.client.auth;
+
+    return client.currentUser!.id;
+  }
+
   static String getCurrentUsername() {
     final GoTrueClient client = Supabase.instance.client.auth;
 
