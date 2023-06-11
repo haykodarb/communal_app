@@ -8,7 +8,7 @@ It could be for example a group of neighbours, a college class, a reading club, 
 
 The project is made for those of us who enjoy collecting books but who also wish to share them with the people around them.
 
-Sharing is done between members of a community in order to promote sharing betweent people that know each other IRL and can trust themselves with each other's books. If the community has leaders or organizers they should also be in charge of mediating transactions, inviting new people and kicking out anyone who doesn't follow rules and guidelines.
+Sharing is done between members of a community in order to promote sharing between people that know each other IRL and can trust each other with their books. If the community has leaders or organizers they should also be in charge of mediating transactions, inviting new people and kicking out anyone who doesn't follow rules and guidelines.
 
 Once the book sharing part is complete, I'd like to extend the app towards sharing tools and other physical objects whithin a community, to build a sort of semi-decentralized "maker space", since most of us who like building things usually buy tools that spend most of their time sitting idlely in a storage room.
 
