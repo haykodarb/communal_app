@@ -1,3 +1,4 @@
+import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/community/community_specific/community_members/community_members_controller.dart';
@@ -37,23 +38,42 @@ class CommunityMembersPage extends StatelessWidget {
                       child: const Text('admin'),
                     ),
                   ),
-                  Visibility(
-                    visible:
-                        controller.community.isCurrentUserAdmin != null && controller.community.isCurrentUserAdmin!,
-                    child: PopupMenuButton(
-                      itemBuilder: (context) {
-                        return <PopupMenuEntry>[
-                          PopupMenuItem(
-                            onTap: () => controller.changeUserAdmin(user, !user.is_admin),
-                            child: Text(user.is_admin ? 'Remove as admin' : 'Make admin'),
+                  Builder(
+                    builder: (context) {
+                      if (user.id == UsersBackend.getCurrentUserId()) {
+                        return Container(
+                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                              20,
+                            ),
+                            border: Border.all(
+                              color: Get.theme.colorScheme.primary,
+                            ),
                           ),
-                          PopupMenuItem(
-                            onTap: () => controller.removeUser(user),
-                            child: const Text('Remove'),
-                          ),
-                        ];
-                      },
-                    ),
+                          child: const Text('you'),
+                        );
+                      }
+
+                      if (controller.community.isCurrentUserAdmin != null && controller.community.isCurrentUserAdmin!) {
+                        return PopupMenuButton(
+                          itemBuilder: (context) {
+                            return <PopupMenuEntry>[
+                              PopupMenuItem(
+                                onTap: () => controller.changeUserAdmin(user, !user.is_admin),
+                                child: Text(user.is_admin ? 'Remove as admin' : 'Make admin'),
+                              ),
+                              PopupMenuItem(
+                                onTap: () => controller.removeUser(user),
+                                child: const Text('Remove'),
+                              ),
+                            ];
+                          },
+                        );
+                      }
+
+                      return const SizedBox.shrink();
+                    },
                   ),
                 ],
               ),

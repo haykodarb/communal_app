@@ -135,10 +135,10 @@ class BookOwnedPage extends StatelessWidget {
                             }
                           },
                           style: OutlinedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                            foregroundColor: Get.theme.colorScheme.error,
+                            side: BorderSide(
+                              color: Get.theme.colorScheme.error,
                             ),
-                            minimumSize: const Size.fromHeight(60),
                           ),
                           child: const Text('Delete'),
                         ),

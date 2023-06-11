@@ -265,7 +265,7 @@ class UsersBackend {
         await client.from('memberships').select('id, is_admin, profiles(id, username)').match({
       'community': community.id,
       'accepted': true,
-    }).neq('member', client.auth.currentUser!.id);
+    });
 
     final List<Profile> listOfProfiles = membershipResponse
         .map(

@@ -15,6 +15,10 @@ const ColorScheme _colorScheme = ColorScheme.dark(
 
 final BottomNavigationBarThemeData _bottomNavigationBarTheme = BottomNavigationBarThemeData(
   selectedItemColor: _colorScheme.primary,
+  unselectedItemColor: _colorScheme.onSurface,
+  unselectedLabelStyle: TextStyle(color: _colorScheme.onSurface),
+  showUnselectedLabels: true,
+  showSelectedLabels: true,
 );
 
 final AppBarTheme _appBarTheme = AppBarTheme(
@@ -37,12 +41,12 @@ final ElevatedButtonThemeData _elevatedButtonThemeData = ElevatedButtonThemeData
     foregroundColor: _colorScheme.onPrimary,
     disabledBackgroundColor: _colorScheme.onSurface,
     textStyle: GoogleFonts.scada(
-      fontSize: 22,
+      fontSize: 20,
     ),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10),
     ),
-    minimumSize: const Size.fromHeight(60),
+    minimumSize: const Size.fromHeight(50),
   ),
 );
 
@@ -56,12 +60,12 @@ final OutlinedButtonThemeData _outlinedButtonThemeData = OutlinedButtonThemeData
       width: 2,
     ),
     textStyle: GoogleFonts.scada(
-      fontSize: 22,
+      fontSize: 20,
     ),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10),
     ),
-    minimumSize: const Size.fromHeight(60),
+    minimumSize: const Size.fromHeight(50),
   ),
 );
 
@@ -141,6 +145,7 @@ final ThemeData theme = ThemeData(
   appBarTheme: _appBarTheme,
   cardTheme: _cardTheme,
   canvasColor: _colorScheme.surface,
+  disabledColor: _colorScheme.onBackground,
   scaffoldBackgroundColor: _colorScheme.background,
   floatingActionButtonTheme: _floatingActionButtonThemeData,
   dividerTheme: _dividerThemeData,
