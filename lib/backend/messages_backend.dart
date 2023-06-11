@@ -34,14 +34,11 @@ class MessagesBackend {
         .from('distinct_chats')
         .select('*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)');
 
-    print(distinctChats.map((e) => e['sender']));
-
     final List<Message> messages = <Message>[];
 
     for (Map<String, dynamic> chat in distinctChats) {
       final Message message = Message.fromMap(chat);
 
-      print(message.toString());
       final bool shouldAdd = !distinctChats.any(
         (Map<String, dynamic> element) {
           final bool chatExists = element['sender'] == message.receiver.id && element['receiver'] == message.sender.id;
@@ -56,8 +53,6 @@ class MessagesBackend {
         messages.add(message);
       }
     }
-
-    print(messages.map((e) => e.content));
 
     return BackendResponse(
       success: messages.isNotEmpty,

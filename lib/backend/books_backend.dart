@@ -23,11 +23,6 @@ class BooksBackend {
 
     final String pathToUpload = '/$userId/$currentTime.$imageExtension';
 
-    // final String? mimeType = lookupMimeType(image.path);
-    // if (mimeType != null) {
-    //   if (mimeType != 'image/jpeg' && mimeType != 'image/jpg' && mimeType != 'image/png') ;
-    // }
-
     await client.storage.from('book_covers').upload(
           pathToUpload,
           image,
@@ -58,7 +53,7 @@ class BooksBackend {
 
     final List<dynamic> response = await client.from('books').delete().eq('id', book.id).select();
 
-    await client.storage.from('book_covers').remove(
+    client.storage.from('book_covers').remove(
       [book.image_path],
     );
 
@@ -87,71 +82,28 @@ class BooksBackend {
 
   static Future<BackendResponse> getBooksCountInCommunity(Community community) async {
     final SupabaseClient client = Supabase.instance.client;
-    final String userId = client.auth.currentUser!.id;
 
-    final List<dynamic> membershipResponse = await client.from('memberships').select().match(
-      {
-        'community': community.id,
-        'accepted': true,
-      },
-    ).neq(
-      'member',
-      userId,
-    );
-
-    final List<String> listOfUserIDs = membershipResponse.map(
-      (element) {
-        return element['member'] as String;
-      },
-    ).toList();
-
-    final PostgrestResponse booksResponse = await client
-        .from('books')
-        .select(
-          '*, profiles(*)',
-          const FetchOptions(count: CountOption.exact, head: true),
-        )
-        .in_('owner', listOfUserIDs);
-
-    print(booksResponse.count);
+    final dynamic booksResponse = await client.rpc('get_books_count_community', params: {
+      'community_id': community.id,
+    }).select<dynamic>();
 
     return BackendResponse(
-      success: booksResponse.status == 200,
-      payload: booksResponse.count,
+      success: booksResponse > 0,
+      payload: booksResponse,
     );
   }
 
   static Future<BackendResponse> getBooksInCommunity(Community community, int index) async {
     final SupabaseClient client = Supabase.instance.client;
-    final String userId = client.auth.currentUser!.id;
 
-    final List<dynamic> membershipResponse = await client.from('memberships').select().match(
-      {
-        'community': community.id,
-        'accepted': true,
+    final List<dynamic> booksResponse = await client.rpc(
+      'get_books_community',
+      params: {
+        'community_id': community.id,
+        'offset_num': index * 10,
+        'limit_num': 10,
       },
-    ).neq(
-      'member',
-      userId,
-    );
-
-    final List<String> listOfUserIDs = membershipResponse.map(
-      (element) {
-        return element['member'] as String;
-      },
-    ).toList();
-
-    final List<dynamic> booksResponse = await client
-        .from('books')
-        .select(
-          '*, profiles(*)',
-        )
-        .in_('owner', listOfUserIDs)
-        .order('id')
-        .range(
-          index * 10,
-          index * 10 + 10,
-        );
+    ).select('*, profiles(*)');
 
     final List<Book> listOfBooks = booksResponse
         .map(

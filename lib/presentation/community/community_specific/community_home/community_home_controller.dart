@@ -21,9 +21,9 @@ class CommunityHomeController extends GetxController {
     super.onInit();
     firstLoad.value = true;
 
-    await loadBooks();
+    getTotalBooksCount();
 
-    await getTotalBooksCount();
+    await loadBooks();
 
     firstLoad.value = false;
   }
@@ -40,6 +40,9 @@ class CommunityHomeController extends GetxController {
     loadingIndex = 0;
     booksLoaded.clear();
     firstLoad.value = true;
+
+    getTotalBooksCount();
+
     await loadBooks();
     firstLoad.value = false;
   }

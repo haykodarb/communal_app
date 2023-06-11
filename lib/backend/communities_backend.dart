@@ -29,7 +29,7 @@ class CommunitiesBackend {
       'accepted': true,
     }).order(
       'joined_at',
-      ascending: true,
+      ascending: false,
     );
 
     if (response.isEmpty) {
