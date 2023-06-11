@@ -6,7 +6,7 @@ A community is thought of as any group of 2 to ~100 people that share location a
 
 It could be for example a group of neighbours, a college class, a reading club, a community center, a group of friends, members of an actual library, etc.
 
-The project is made for those of us who enjoy collecting books but who also wish to share them with the people around them.
+The project is made for those of us who enjoy collecting books but who also wish to share them with the people around us.
 
 Sharing is done between members of a community in order to promote sharing between people that know each other IRL and can trust each other with their books. If the community has leaders or organizers they should also be in charge of mediating transactions, inviting new people and kicking out anyone who doesn't follow rules and guidelines.
 
