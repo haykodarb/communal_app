@@ -80,6 +80,18 @@ class BooksBackend {
     );
   }
 
+  static Future<BackendResponse> getBookById(String id) async {
+    final SupabaseClient client = Supabase.instance.client;
+
+    final Map<String, dynamic>? response =
+        await client.from('books').select<Map<String, dynamic>?>('*, profiles(*)').eq('id', id).maybeSingle();
+
+    return BackendResponse(
+      success: response != null,
+      payload: response != null ? Book.fromMap(response) : null,
+    );
+  }
+
   static Future<BackendResponse> getBooksCountInCommunity(Community community) async {
     final SupabaseClient client = Supabase.instance.client;
 

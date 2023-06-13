@@ -2,6 +2,7 @@ import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/models/loan.dart';
+import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 enum LoansRequestType {
@@ -78,7 +79,7 @@ class LoansBackend {
     final PostgrestResponse response = await client
         .from('loans')
         .select(
-          '*,  books!inner(*, profiles(*))',
+          '*,  books(*, profiles(*))',
           const FetchOptions(
             count: CountOption.exact,
             // head: true,
@@ -87,6 +88,55 @@ class LoansBackend {
         .match(query);
 
     return BackendResponse(success: true, payload: response.count);
+  }
+
+  /// If book is already loaned to another user, returns false and that loan.
+  /// If book is not loaned and current user has already requested it, returns true and that loan.
+  /// Else returns false and no payload.
+  static Future<BackendResponse> getCurrentLoanForBook(Book book) async {
+    final SupabaseClient client = Supabase.instance.client;
+    final String userId = client.auth.currentUser!.id;
+
+    final List<dynamic> response = await client
+        .from('loans')
+        .select(
+          '*, communities(*), books(*, profiles(*)), profiles(*)',
+        )
+        .match(
+      {
+        'book': book.id,
+        'returned': false,
+      },
+    ).or('loanee.eq.$userId, accepted.eq.true');
+
+    final List<Loan> loans = response.map((element) => Loan.fromMap(element)).toList();
+
+    final Loan? loanMadeByAnotherUser = loans.firstWhereOrNull(
+      (element) => element.loanee.id != userId && element.accepted,
+    );
+
+    if (loanMadeByAnotherUser != null) {
+      print('Book is already loaned');
+      return BackendResponse(
+        success: true,
+        payload: loanMadeByAnotherUser,
+      );
+    }
+
+    final Loan? requestByCurrentUser = loans.firstWhereOrNull(
+      (element) => element.loanee.id == userId && !element.rejected,
+    );
+
+    if (requestByCurrentUser != null) {
+      print('Current user already requested this book.');
+    } else {
+      print('Book is available and user hasn\'t requested it yet');
+    }
+
+    return BackendResponse(
+      success: requestByCurrentUser != null,
+      payload: requestByCurrentUser,
+    );
   }
 
   static Future<BackendResponse> getLoansWhere(LoansRequestType requestType) async {
@@ -124,7 +174,7 @@ class LoansBackend {
     final List<dynamic> response = await client
         .from('loans')
         .select(
-          '*, communities(*), books!inner(*, profiles(*)), profiles(*)',
+          '*, communities(*), books(*, profiles(*)), profiles(*)',
         )
         .match(query);
 
@@ -135,35 +185,6 @@ class LoansBackend {
     final List<Loan> loanList = response.map((element) => Loan.fromMap(element)).toList();
 
     return BackendResponse(success: true, payload: loanList);
-  }
-
-  static Future<BackendResponse> hasBookBeenRequestedByCurrentUser(Book book) async {
-    final SupabaseClient client = Supabase.instance.client;
-
-    final String userId = client.auth.currentUser!.id;
-
-    final Map<String, dynamic>? response = await client
-        .from('loans')
-        .select(
-          '*, communities(*), books(*, profiles(*)), profiles(*)',
-        )
-        .match(
-      {
-        'book': book.id,
-        'loanee': userId,
-      },
-    ).maybeSingle();
-
-    if (response != null && response.isNotEmpty) {
-      final Loan loan = Loan.fromMap(response);
-
-      return BackendResponse(success: true, payload: loan);
-    }
-
-    return BackendResponse(
-      success: response != null && response.isNotEmpty,
-      payload: '',
-    );
   }
 
   static Future<BackendResponse> requestBookLoanInCommunity(Book book, Community community) async {

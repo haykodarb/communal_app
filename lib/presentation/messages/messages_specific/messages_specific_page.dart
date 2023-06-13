@@ -13,9 +13,6 @@ class MessagesSpecificPage extends StatelessWidget {
 
     final Message? nextMessage = index == 0 ? null : controller.messages[controller.messages.length - index];
 
-    print(index);
-    print('Current > ${message.sender.username} | Next > ${nextMessage?.sender.username}');
-
     final bool showTime = nextMessage == null || nextMessage.sender.id != message.sender.id;
 
     final bool isReceived = message.sender.id == controller.user.id;

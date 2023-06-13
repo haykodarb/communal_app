@@ -1,7 +1,6 @@
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/message.dart';
 import 'package:communal/models/profile.dart';
-import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MessagesBackend {

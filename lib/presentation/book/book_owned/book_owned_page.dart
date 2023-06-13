@@ -41,7 +41,12 @@ class BookOwnedPage extends StatelessWidget {
                             child: FutureBuilder(
                               future: BooksBackend.getBookCover(controller.book),
                               builder: (context, snapshot) {
-                                if (snapshot.hasData) return Image.memory(snapshot.data!);
+                                if (snapshot.hasData) {
+                                  return Image.memory(
+                                    snapshot.data!,
+                                    fit: BoxFit.cover,
+                                  );
+                                }
 
                                 return const CommonLoadingImage();
                               },

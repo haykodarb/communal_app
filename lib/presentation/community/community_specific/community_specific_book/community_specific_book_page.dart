@@ -1,7 +1,10 @@
 import 'package:communal/backend/books_backend.dart';
+import 'package:communal/backend/users_backend.dart';
+import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_book/community_specific_book_controller.dart';
+import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -103,73 +106,103 @@ class CommunitySpecificBookPage extends StatelessWidget {
     );
   }
 
-  Widget _loanInformation(CommunitySpecificBookController controller) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Get.theme.colorScheme.primary,
-          width: 0.5,
-        ),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      width: double.maxFinite,
-      height: 300,
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-      child: Obx(
-        () {
-          return CommonLoadingBody(
-            isLoading: controller.book.loading.value,
-            child: Obx(
-              () {
-                if (controller.existingLoan.value == null) {
-                  return Padding(
-                    padding: const EdgeInsets.all(60),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Book is available',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        const Divider(height: 50),
-                        ElevatedButton(
-                          onPressed: controller.requestLoan,
-                          child: const Text('Request'),
-                        ),
-                      ],
-                    ),
-                  );
-                }
+  static const Widget _alreadyLoanedOutIndicator = Center(
+    child: Text(
+      'Book has already\nbeen loaned out.',
+      textAlign: TextAlign.center,
+      style: TextStyle(fontSize: 20),
+    ),
+  );
 
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    const Text(
-                      'Book loan has been requested.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    Column(
-                      children: [
-                        Divider(color: Get.theme.colorScheme.primary),
-                        _tableRow(
-                          'Requested',
-                          DateFormat('HH:m - d MMM y').format(controller.existingLoan.value!.created_at),
-                        ),
-                        Divider(color: Get.theme.colorScheme.primary),
-                        _tableRow(
-                          'Status',
-                          controller.existingLoan.value!.accepted ? 'Accepted' : 'Pending',
-                        ),
-                      ],
-                    ),
-                  ],
-                );
-              },
+  Widget _existingRequestByUser(CommunitySpecificBookController controller, Loan loan) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        const Text(
+          'Book loan has been requested.',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 20),
+        ),
+        Column(
+          children: [
+            Divider(color: Get.theme.colorScheme.primary),
+            _tableRow(
+              'Requested',
+              DateFormat('HH:m - d MMM y').format(loan.created_at),
             ),
-          );
-        },
+            Divider(color: Get.theme.colorScheme.primary),
+            _tableRow(
+              'Status',
+              loan.accepted ? 'Accepted' : 'Pending',
+            ),
+            const Divider(),
+            Visibility(
+              visible: loan.accepted,
+              child: SizedBox(
+                width: 300,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Get.toNamed(
+                      RouteNames.messagesSpecificPage,
+                      arguments: {
+                        'user': controller.book.owner,
+                      },
+                    );
+                  },
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.chat),
+                      VerticalDivider(),
+                      Text('Chat'),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _bookAvailableForm(CommunitySpecificBookController controller) {
+    return Padding(
+      padding: const EdgeInsets.all(60),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            'Book is available',
+            style: TextStyle(fontSize: 20),
+          ),
+          const Divider(height: 50),
+          ElevatedButton(
+            onPressed: controller.requestLoan,
+            child: const Text('Request'),
+          ),
+        ],
       ),
+    );
+  }
+
+  Widget _loanInformation(CommunitySpecificBookController controller) {
+    return Obx(
+      () {
+        final Loan? existingLoan = controller.existingLoan.value;
+
+        if (existingLoan != null) {
+          final bool loanedBySomeoneElse = existingLoan.loanee.id != UsersBackend.getCurrentUserId();
+
+          if (loanedBySomeoneElse) {
+            return _alreadyLoanedOutIndicator;
+          } else {
+            return _existingRequestByUser(controller, existingLoan);
+          }
+        } else {
+          return _bookAvailableForm(controller);
+        }
+      },
     );
   }
 
@@ -194,15 +227,19 @@ class CommunitySpecificBookPage extends StatelessWidget {
                   const Divider(
                     height: 30,
                   ),
-                  _loanInformation(controller),
+                  SizedBox(
+                    height: 300,
+                    child: Obx(
+                      () {
+                        return CommonLoadingBody(
+                          isLoading: controller.book.loading.value,
+                          child: _loanInformation(controller),
+                        );
+                      },
+                    ),
+                  ),
                   const Divider(
                     height: 30,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      'Chat',
-                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(30),

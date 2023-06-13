@@ -1,3 +1,4 @@
+import 'package:communal/models/loan.dart';
 import 'package:communal/models/profile.dart';
 import 'package:get/get.dart';
 
@@ -16,8 +17,8 @@ class Book {
     required this.author,
     required this.title,
     required this.owner,
-    required this.is_loaned,
     required this.image_path,
+    required this.is_loaned,
   });
 
   Book.fromMap(Map<String, dynamic> map)

@@ -1,6 +1,3 @@
-import 'package:communal/backend/books_backend.dart';
-import 'package:communal/models/backend_response.dart';
-import 'package:communal/models/book.dart';
 import 'package:communal/models/community.dart';
 import 'package:get/get.dart';
 

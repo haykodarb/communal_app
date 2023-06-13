@@ -10,27 +10,29 @@ class CommunitySpecificBookController extends GetxController {
   final Community community = Get.arguments['community'];
 
   final RxString message = ''.obs;
+
   final Rxn<Loan> existingLoan = Rxn<Loan>();
 
   @override
-  void onReady() {
-    checkIfRequestAlreadyMade();
+  Future<void> onReady() async {
+    await checkLoanStatus();
     super.onReady();
   }
 
-  Future<void> checkIfRequestAlreadyMade() async {
+  Future<void> checkLoanStatus() async {
     book.loading.value = true;
-    message.value = '';
 
-    final BackendResponse response = await LoansBackend.hasBookBeenRequestedByCurrentUser(book);
+    final BackendResponse currentLoanResponse = await LoansBackend.getCurrentLoanForBook(book);
 
-    if (response.success) {
-      existingLoan.value = response.payload;
+    if (currentLoanResponse.success) {
+      existingLoan.value = currentLoanResponse.payload;
       message.value = '';
     }
 
     book.loading.value = false;
   }
+
+  Future<void> checkIfRequestAlreadyMade() async {}
 
   Future<void> requestLoan() async {
     book.loading.value = true;
