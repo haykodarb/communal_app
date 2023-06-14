@@ -109,7 +109,11 @@ class MessagesBackend {
     print(response);
   }
 
-  static RealtimeChannel subscribeToMessagesWithUser(Profile user, void Function(Message) callback) {
+  static RealtimeChannel subscribeToMessagesWithUser(
+    Profile user,
+    void Function(Message) insertCallback,
+    void Function(Message) updateCallback,
+  ) {
     final SupabaseClient client = Supabase.instance.client;
 
     RealtimeChannel channel = client
@@ -119,26 +123,32 @@ class MessagesBackend {
     )
         .on(
       RealtimeListenTypes.postgresChanges,
-      ChannelFilter(event: 'INSERT', schema: 'public', table: 'messages'),
+      ChannelFilter(event: '*', schema: 'public', table: 'messages'),
       (payload, [ref]) {
         final Map<String, dynamic> response = payload['new'];
 
-        callback(
-          Message(
-            id: response['id'],
-            created_at: DateTime.parse(response['created_at']),
-            content: response['content'],
-            sender: Profile(
-              id: response['sender'],
-              username: '',
-            ),
-            receiver: Profile(
-              id: response['receiver'],
-              username: '',
-            ),
-            is_read: response['is_read'],
+        print(payload);
+
+        final Message message = Message(
+          id: response['id'],
+          created_at: DateTime.parse(response['created_at']),
+          content: response['content'],
+          sender: Profile(
+            id: response['sender'],
+            username: '',
           ),
+          receiver: Profile(
+            id: response['receiver'],
+            username: '',
+          ),
+          is_read: response['is_read'],
         );
+
+        if (payload['eventType'] == 'INSERT') {
+          insertCallback(message);
+        } else if (payload['eventType'] == 'UPDATE') {
+          updateCallback(message);
+        }
       },
     );
 

@@ -6,7 +6,7 @@ class Message {
   final Profile sender;
   final Profile receiver;
   final String content;
-  final bool is_read;
+  bool is_read;
 
   Message({
     required this.id,

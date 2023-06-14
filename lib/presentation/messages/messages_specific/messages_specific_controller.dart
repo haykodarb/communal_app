@@ -1,4 +1,5 @@
 import 'package:communal/backend/messages_backend.dart';
+import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/message.dart';
 import 'package:communal/models/profile.dart';
@@ -26,7 +27,7 @@ class MessagesSpecificController extends GetxController {
 
     loading.value = true;
 
-    subscription ??= MessagesBackend.subscribeToMessagesWithUser(user, onNewMessageReceived);
+    subscription ??= MessagesBackend.subscribeToMessagesWithUser(user, onNewMessageReceived, onMessageUpdated);
 
     subscription!.subscribe();
 
@@ -55,6 +56,15 @@ class MessagesSpecificController extends GetxController {
 
   void onNewMessageReceived(Message message) {
     messages.add(message);
+
+    if (message.sender.id != UsersBackend.getCurrentUserId()) {
+      MessagesBackend.markMessagesWithUserAsRead(user);
+    }
+  }
+
+  void onMessageUpdated(Message message) {
+    messages.firstWhereOrNull((element) => element.id == message.id)?.is_read = true;
+    messages.refresh();
   }
 
   void onTypedMessageChanged(String? value) {
@@ -67,12 +77,12 @@ class MessagesSpecificController extends GetxController {
     if (typedMessage.value.isEmpty) return;
 
     sending.value = true;
-    final BackendResponse response = await MessagesBackend.submitMessage(user, typedMessage.value);
 
-    if (response.success) {
-      textEditingController.clear();
-      typedMessage.value = '';
-    }
+    textEditingController.clear();
+    typedMessage.value = '';
+
+    await MessagesBackend.submitMessage(user, typedMessage.value);
+
     sending.value = false;
   }
 }
