@@ -10,9 +10,9 @@ class MessagesSpecificPage extends StatelessWidget {
   const MessagesSpecificPage({super.key});
 
   Widget _messageBubble(MessagesSpecificController controller, int index) {
-    final Message message = controller.messages[controller.messages.length - index - 1];
+    final Message message = controller.messages[index];
 
-    final Message? nextMessage = index == 0 ? null : controller.messages[controller.messages.length - index];
+    final Message? nextMessage = index == 0 ? null : controller.messages[index - 1];
 
     final bool showTime = nextMessage == null || nextMessage.sender.id != message.sender.id;
 

@@ -1,7 +1,6 @@
 import 'package:communal/models/book.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/models/profile.dart';
-import 'package:get/get.dart';
 
 class Loan {
   String id;

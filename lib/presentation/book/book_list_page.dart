@@ -1,14 +1,11 @@
-import 'package:communal/backend/books_backend.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/presentation/common/common_book_card.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
-import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/book/book_list_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class BookListPage extends StatelessWidget {
   const BookListPage({super.key});

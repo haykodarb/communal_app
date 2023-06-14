@@ -116,7 +116,6 @@ class LoansBackend {
     );
 
     if (loanMadeByAnotherUser != null) {
-      print('Book is already loaned');
       return BackendResponse(
         success: true,
         payload: loanMadeByAnotherUser,
@@ -126,12 +125,6 @@ class LoansBackend {
     final Loan? requestByCurrentUser = loans.firstWhereOrNull(
       (element) => element.loanee.id == userId && !element.rejected,
     );
-
-    if (requestByCurrentUser != null) {
-      print('Current user already requested this book.');
-    } else {
-      print('Book is available and user hasn\'t requested it yet');
-    }
 
     return BackendResponse(
       success: requestByCurrentUser != null,

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:communal/backend/messages_backend.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
@@ -5,10 +6,11 @@ import 'package:communal/models/message.dart';
 import 'package:communal/models/profile.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MessagesSpecificController extends GetxController {
   final Profile user = Get.arguments['user'];
+
+  final Stream<Message> stream = Get.arguments['stream'];
 
   final TextEditingController textEditingController = TextEditingController();
 
@@ -19,7 +21,7 @@ class MessagesSpecificController extends GetxController {
   final RxBool sending = false.obs;
   final RxBool loading = false.obs;
 
-  RealtimeChannel? subscription;
+  StreamSubscription? subscription;
 
   @override
   Future<void> onInit() async {
@@ -27,9 +29,7 @@ class MessagesSpecificController extends GetxController {
 
     loading.value = true;
 
-    subscription ??= MessagesBackend.subscribeToMessagesWithUser(user, onNewMessageReceived, onMessageUpdated);
-
-    subscription!.subscribe();
+    subscription ??= stream.listen(onMessageReceived);
 
     final BackendResponse response = await MessagesBackend.getMessagesWithUser(user);
 
@@ -48,22 +48,29 @@ class MessagesSpecificController extends GetxController {
   }
 
   @override
-  void onClose() {
-    subscription?.unsubscribe();
-
+  Future<void> onClose() async {
+    await subscription?.cancel();
     super.onClose();
   }
 
-  void onNewMessageReceived(Message message) {
-    messages.add(message);
+  void onMessageReceived(Message message) {
+    final bool isCurrentChat = message.receiver.id == user.id && message.sender.id == UsersBackend.getCurrentUserId() ||
+        message.sender.id == user.id && message.receiver.id == UsersBackend.getCurrentUserId();
 
-    if (message.sender.id != UsersBackend.getCurrentUserId()) {
-      MessagesBackend.markMessagesWithUserAsRead(user);
+    if (!isCurrentChat) return;
+
+    final bool messageExists = messages.any((element) => element.id == message.id);
+
+    if (messageExists) {
+      messages.firstWhereOrNull((element) => element.id == message.id)?.is_read = true;
+    } else {
+      messages.insert(0, message);
+
+      if (message.sender.id != UsersBackend.getCurrentUserId()) {
+        MessagesBackend.markMessagesWithUserAsRead(user);
+      }
     }
-  }
 
-  void onMessageUpdated(Message message) {
-    messages.firstWhereOrNull((element) => element.id == message.id)?.is_read = true;
     messages.refresh();
   }
 
@@ -79,10 +86,10 @@ class MessagesSpecificController extends GetxController {
     sending.value = true;
 
     textEditingController.clear();
-    typedMessage.value = '';
 
     await MessagesBackend.submitMessage(user, typedMessage.value);
 
+    typedMessage.value = '';
     sending.value = false;
   }
 }

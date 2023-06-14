@@ -1,9 +1,7 @@
-import 'package:communal/backend/books_backend.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_book_card.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
-import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_book/community_specific_book_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';

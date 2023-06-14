@@ -4,7 +4,6 @@ import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/messages/messages_controller.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
-import 'package:communal/routes.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -12,20 +11,15 @@ import 'package:intl/intl.dart';
 class MessagesPage extends StatelessWidget {
   const MessagesPage({super.key});
 
-  Widget _chatCard(Message message, Profile chatter) {
-    final bool hightlightMessage = message.is_read || message.sender.id == UsersBackend.getCurrentUserId();
+  Widget _chatCard(MessagesController controller, Message message, Profile chatter) {
+    final bool hightlightMessage = !message.is_read && message.receiver.id == UsersBackend.getCurrentUserId();
 
     return InkWell(
-      onTap: () {
-        Get.toNamed(
-          RouteNames.messagesSpecificPage,
-          arguments: {'user': chatter},
-        );
-      },
+      onTap: () => controller.goToSpecificChat(chatter),
       splashColor: Colors.transparent,
       child: Card(
-        elevation: hightlightMessage ? 1 : 5,
-        shadowColor: hightlightMessage ? Get.theme.colorScheme.secondary : Get.theme.colorScheme.primary,
+        elevation: hightlightMessage ? 5 : 1,
+        shadowColor: hightlightMessage ? Get.theme.colorScheme.primary : Get.theme.colorScheme.secondary,
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Row(
@@ -33,7 +27,7 @@ class MessagesPage extends StatelessWidget {
               CircleAvatar(
                 minRadius: 20,
                 maxRadius: 30,
-                backgroundColor: hightlightMessage ? Get.theme.colorScheme.secondary : Get.theme.colorScheme.primary,
+                backgroundColor: hightlightMessage ? Get.theme.colorScheme.primary : Get.theme.colorScheme.secondary,
                 child: Text(
                   chatter.username.substring(0, 2).toUpperCase(),
                   style: const TextStyle(
@@ -114,7 +108,7 @@ class MessagesPage extends StatelessWidget {
                         final Profile chatter =
                             message.sender.id == UsersBackend.getCurrentUserId() ? message.receiver : message.sender;
 
-                        return _chatCard(message, chatter);
+                        return _chatCard(controller, message, chatter);
                       },
                     );
                   },

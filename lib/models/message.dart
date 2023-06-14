@@ -3,8 +3,8 @@ import 'package:communal/models/profile.dart';
 class Message {
   final String id;
   final DateTime created_at;
-  final Profile sender;
-  final Profile receiver;
+  Profile sender;
+  Profile receiver;
   final String content;
   bool is_read;
 

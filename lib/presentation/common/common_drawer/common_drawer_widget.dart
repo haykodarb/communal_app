@@ -155,6 +155,7 @@ class CommonDrawerWidget extends StatelessWidget {
                         text: 'Messages',
                         icon: Icons.sms,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.messagesPage),
+                        notifications: _commonDrawerController.messageNotifications,
                       ),
                       Divider(
                         thickness: 2,

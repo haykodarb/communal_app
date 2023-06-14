@@ -1,4 +1,3 @@
-import 'package:communal/models/loan.dart';
 import 'package:communal/models/profile.dart';
 import 'package:get/get.dart';
 

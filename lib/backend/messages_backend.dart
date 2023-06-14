@@ -73,7 +73,7 @@ class MessagesBackend {
         .limit(100)
         .order(
           'created_at',
-          ascending: true,
+          ascending: false,
         );
 
     final List<Message> listOfMessages = response.map(
@@ -89,15 +89,13 @@ class MessagesBackend {
   }
 
   static Future<void> markMessagesWithUserAsRead(Profile user) async {
-    print('Marking messages as read');
-
     final SupabaseClient client = Supabase.instance.client;
     final String currentUserId = client.auth.currentUser!.id;
 
     final String filter =
         'and(sender.eq.$currentUserId, receiver.eq.${user.id}), and(sender.eq.${user.id}, receiver.eq.$currentUserId)';
 
-    final List<dynamic> response = await client
+    final dynamic response = await client
         .from('messages')
         .update(
           {'is_read': true},
@@ -109,25 +107,43 @@ class MessagesBackend {
     print(response);
   }
 
-  static RealtimeChannel subscribeToMessagesWithUser(
-    Profile user,
-    void Function(Message) insertCallback,
-    void Function(Message) updateCallback,
+  static Future<BackendResponse> getMessageWithId(String uuid) async {
+    final SupabaseClient client = Supabase.instance.client;
+
+    final Map<String, dynamic>? response = await client
+        .from('messages')
+        .select('*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
+        .eq('id', uuid)
+        .maybeSingle();
+
+    if (response == null) {
+      return BackendResponse(success: false, payload: null);
+    }
+
+    return BackendResponse(
+      success: response.isNotEmpty,
+      payload: Message.fromMap(response),
+    );
+  }
+
+  static RealtimeChannel subscribeToMessages(
+    void Function(Message) callback,
   ) {
     final SupabaseClient client = Supabase.instance.client;
+    final String currentUserId = client.auth.currentUser!.id;
 
     RealtimeChannel channel = client
         .channel(
       'public:messages',
-      opts: const RealtimeChannelConfig(self: true),
+      opts: const RealtimeChannelConfig(
+        self: true,
+      ),
     )
         .on(
       RealtimeListenTypes.postgresChanges,
       ChannelFilter(event: '*', schema: 'public', table: 'messages'),
       (payload, [ref]) {
         final Map<String, dynamic> response = payload['new'];
-
-        print(payload);
 
         final Message message = Message(
           id: response['id'],
@@ -144,11 +160,9 @@ class MessagesBackend {
           is_read: response['is_read'],
         );
 
-        if (payload['eventType'] == 'INSERT') {
-          insertCallback(message);
-        } else if (payload['eventType'] == 'UPDATE') {
-          updateCallback(message);
-        }
+        if (message.receiver.id != currentUserId && message.sender.id != currentUserId) return;
+
+        callback(message);
       },
     );
 
