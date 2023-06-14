@@ -79,7 +79,7 @@ class LoansBackend {
     final PostgrestResponse response = await client
         .from('loans')
         .select(
-          '*,  books(*, profiles(*))',
+          '*,  books!inner(*, profiles(*))',
           const FetchOptions(
             count: CountOption.exact,
             // head: true,
@@ -100,7 +100,7 @@ class LoansBackend {
     final List<dynamic> response = await client
         .from('loans')
         .select(
-          '*, communities(*), books(*, profiles(*)), profiles(*)',
+          '*, communities(*), books!inner(*, profiles(*)), profiles(*)',
         )
         .match(
       {
@@ -174,7 +174,7 @@ class LoansBackend {
     final List<dynamic> response = await client
         .from('loans')
         .select(
-          '*, communities(*), books(*, profiles(*)), profiles(*)',
+          '*, communities(*), books!inner(*, profiles(*)), profiles(*)',
         )
         .match(query);
 
@@ -210,7 +210,7 @@ class LoansBackend {
             },
           )
           .select<Map<String, dynamic>?>(
-            '*, communities(*), books(*, profiles(*)), profiles(*)',
+            '*, communities(*), books!inner(*, profiles(*)), profiles(*)',
           )
           .maybeSingle();
 

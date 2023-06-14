@@ -13,7 +13,6 @@ class MessagesController extends GetxController {
     super.onInit();
 
     loadChats();
-    // MessagesBackend.getDistinctChats();
   }
 
   Future<void> loadChats() async {

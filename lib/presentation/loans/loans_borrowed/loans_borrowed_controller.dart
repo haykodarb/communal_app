@@ -23,11 +23,14 @@ class LoansBorrowedController extends GetxController {
     );
 
     if (confirm != null && confirm) {
-      loan.loading.value = true;
+      loan.book.loading.value = true;
+
       final BackendResponse response = await LoansBackend.deleteLoan(loan);
+
       if (response.success) {
         loans.remove(loan);
-        loan.loading.value = false;
+
+        loan.book.loading.value = false;
       } else {
         Get.dialog(
           const CommonAlertDialog(title: 'Could not remove request, please try again.'),

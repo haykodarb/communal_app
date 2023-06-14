@@ -13,6 +13,8 @@ class CommunitySpecificBookController extends GetxController {
 
   final Rxn<Loan> existingLoan = Rxn<Loan>();
 
+  final RxBool loading = false.obs;
+
   @override
   Future<void> onReady() async {
     await checkLoanStatus();
@@ -20,7 +22,7 @@ class CommunitySpecificBookController extends GetxController {
   }
 
   Future<void> checkLoanStatus() async {
-    book.loading.value = true;
+    loading.value = true;
 
     final BackendResponse currentLoanResponse = await LoansBackend.getCurrentLoanForBook(book);
 
@@ -29,13 +31,12 @@ class CommunitySpecificBookController extends GetxController {
       message.value = '';
     }
 
-    book.loading.value = false;
+    loading.value = false;
   }
 
   Future<void> checkIfRequestAlreadyMade() async {}
 
   Future<void> requestLoan() async {
-    book.loading.value = true;
     message.value = '';
 
     final BackendResponse response = await LoansBackend.requestBookLoanInCommunity(book, community);
@@ -46,7 +47,5 @@ class CommunitySpecificBookController extends GetxController {
     } else {
       message.value = response.payload;
     }
-
-    book.loading.value = false;
   }
 }

@@ -13,8 +13,6 @@ class Loan {
   bool rejected;
   bool returned;
 
-  RxBool loading = false.obs;
-
   Loan({
     required this.id,
     required this.created_at,

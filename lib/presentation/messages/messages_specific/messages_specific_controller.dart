@@ -40,6 +40,13 @@ class MessagesSpecificController extends GetxController {
   }
 
   @override
+  void onReady() {
+    super.onReady();
+
+    MessagesBackend.markMessagesWithUserAsRead(user);
+  }
+
+  @override
   void onClose() {
     subscription?.unsubscribe();
 
@@ -57,13 +64,14 @@ class MessagesSpecificController extends GetxController {
   }
 
   Future<void> onMessageSubmit() async {
+    if (typedMessage.value.isEmpty) return;
+
     sending.value = true;
     final BackendResponse response = await MessagesBackend.submitMessage(user, typedMessage.value);
 
     if (response.success) {
       textEditingController.clear();
       typedMessage.value = '';
-      // Get.focusScope?.unfocus();
     }
     sending.value = false;
   }

@@ -1,6 +1,7 @@
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/loan.dart';
+import 'package:communal/presentation/common/common_book_card.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_book/community_specific_book_controller.dart';
@@ -11,61 +12,6 @@ import 'package:intl/intl.dart';
 
 class CommunitySpecificBookPage extends StatelessWidget {
   const CommunitySpecificBookPage({super.key});
-
-  Widget _bookCard(CommunitySpecificBookController controller) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      clipBehavior: Clip.hardEdge,
-      child: SizedBox(
-        height: 200,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            AspectRatio(
-              aspectRatio: 3 / 4,
-              child: SizedBox(
-                child: FutureBuilder(
-                  future: BooksBackend.getBookCover(controller.book),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return const CommonLoadingImage();
-                    }
-
-                    return Image.memory(
-                      snapshot.data!,
-                      fit: BoxFit.cover,
-                    );
-                  },
-                ),
-              ),
-            ),
-            const VerticalDivider(),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      controller.book.title,
-                      style: const TextStyle(fontSize: 16, color: Colors.white),
-                    ),
-                    const Divider(),
-                    Text(controller.book.author),
-                    const Divider(),
-                    Text(controller.book.owner.username),
-                  ],
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _tableRow(String title, String text) {
     return Container(
@@ -223,7 +169,13 @@ class CommunitySpecificBookPage extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  _bookCard(controller),
+                  CommonBookCard(
+                    book: controller.book,
+                    textChildren: [
+                      Text(controller.book.author),
+                      Text(controller.book.owner.username),
+                    ],
+                  ),
                   const Divider(
                     height: 30,
                   ),
@@ -232,7 +184,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
                     child: Obx(
                       () {
                         return CommonLoadingBody(
-                          isLoading: controller.book.loading.value,
+                          isLoading: controller.loading.value,
                           child: _loanInformation(controller),
                         );
                       },

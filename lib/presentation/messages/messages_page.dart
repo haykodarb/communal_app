@@ -13,6 +13,8 @@ class MessagesPage extends StatelessWidget {
   const MessagesPage({super.key});
 
   Widget _chatCard(Message message, Profile chatter) {
+    final bool hightlightMessage = message.is_read || message.sender.id == UsersBackend.getCurrentUserId();
+
     return InkWell(
       onTap: () {
         Get.toNamed(
@@ -22,6 +24,8 @@ class MessagesPage extends StatelessWidget {
       },
       splashColor: Colors.transparent,
       child: Card(
+        elevation: hightlightMessage ? 1 : 5,
+        shadowColor: hightlightMessage ? Get.theme.colorScheme.secondary : Get.theme.colorScheme.primary,
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Row(
@@ -29,7 +33,7 @@ class MessagesPage extends StatelessWidget {
               CircleAvatar(
                 minRadius: 20,
                 maxRadius: 30,
-                backgroundColor: Get.theme.colorScheme.secondary,
+                backgroundColor: hightlightMessage ? Get.theme.colorScheme.secondary : Get.theme.colorScheme.primary,
                 child: Text(
                   chatter.username.substring(0, 2).toUpperCase(),
                   style: const TextStyle(

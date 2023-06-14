@@ -88,6 +88,27 @@ class MessagesBackend {
     );
   }
 
+  static Future<void> markMessagesWithUserAsRead(Profile user) async {
+    print('Marking messages as read');
+
+    final SupabaseClient client = Supabase.instance.client;
+    final String currentUserId = client.auth.currentUser!.id;
+
+    final String filter =
+        'and(sender.eq.$currentUserId, receiver.eq.${user.id}), and(sender.eq.${user.id}, receiver.eq.$currentUserId)';
+
+    final List<dynamic> response = await client
+        .from('messages')
+        .update(
+          {'is_read': true},
+        )
+        .or(filter)
+        .eq('is_read', false)
+        .select();
+
+    print(response);
+  }
+
   static RealtimeChannel subscribeToMessagesWithUser(Profile user, void Function(Message) callback) {
     final SupabaseClient client = Supabase.instance.client;
 

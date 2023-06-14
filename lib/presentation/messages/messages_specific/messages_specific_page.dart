@@ -1,3 +1,4 @@
+import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/message.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/messages/messages_specific/messages_specific_controller.dart';
@@ -16,6 +17,8 @@ class MessagesSpecificPage extends StatelessWidget {
     final bool showTime = nextMessage == null || nextMessage.sender.id != message.sender.id;
 
     final bool isReceived = message.sender.id == controller.user.id;
+
+    final bool isFirstMessage = index == 0;
 
     return Row(
       children: [
@@ -68,6 +71,17 @@ class MessagesSpecificPage extends StatelessWidget {
                   ),
                 ),
               ),
+              Visibility(
+                visible: isFirstMessage && message.is_read && message.sender.id == UsersBackend.getCurrentUserId(),
+                child: Text(
+                  'Seen',
+                  textAlign: isReceived ? TextAlign.left : TextAlign.right,
+                  style: TextStyle(
+                    color: Get.theme.colorScheme.onBackground.withOpacity(0.8),
+                    fontSize: 12,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -88,6 +102,7 @@ class MessagesSpecificPage extends StatelessWidget {
             Expanded(
               child: TextField(
                 onChanged: controller.onTypedMessageChanged,
+                onEditingComplete: controller.onMessageSubmit,
                 controller: controller.textEditingController,
                 maxLines: 3,
                 minLines: 1,
@@ -126,6 +141,7 @@ class MessagesSpecificPage extends StatelessWidget {
                     onTap: controller.sending.value ? null : controller.onMessageSubmit,
                     enableFeedback: false,
                     splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
                     child: SizedBox.expand(
                       child: Center(
                         child: Obx(
