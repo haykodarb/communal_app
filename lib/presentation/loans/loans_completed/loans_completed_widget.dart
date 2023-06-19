@@ -52,7 +52,7 @@ class LoansCompletedWidget extends StatelessWidget {
                       ),
                     )
                   : ListView.separated(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                       itemCount: controller.loans.length,
                       separatorBuilder: (context, index) {
                         return Divider(
@@ -65,27 +65,42 @@ class LoansCompletedWidget extends StatelessWidget {
                         final Loan loan = controller.loans[index];
                         return Column(
                           children: [
+                            SizedBox(
+                              height: 40,
+                              child: Row(
+                                children: [
+                                  const Text(
+                                    'Loaned ',
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  Text(
+                                    loan.loanee.id == UsersBackend.getCurrentUserId() ? 'from ' : 'to ',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: loan.loanee.id == UsersBackend.getCurrentUserId()
+                                          ? Get.theme.colorScheme.primary
+                                          : Get.theme.colorScheme.secondary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    loan.loanee.id == UsersBackend.getCurrentUserId()
+                                        ? loan.book.owner.username
+                                        : loan.loanee.username,
+                                    style: const TextStyle(fontSize: 18),
+                                  ),
+                                ],
+                              ),
+                            ),
                             CommonBookCard(
                               book: loan.book,
-                              height: 225,
                               textChildren: [
                                 Text(loan.book.author),
-                                Text(
-                                  loan.loanee.id == UsersBackend.getCurrentUserId()
-                                      ? loan.book.owner.username
-                                      : loan.loanee.username,
-                                ),
                                 Text(loan.community.name),
-                                Text(
-                                  'Loan completed',
-                                  style: TextStyle(
-                                    color: Get.theme.colorScheme.secondary,
-                                  ),
-                                ),
                               ],
                             ),
                             const Divider(),
-                            _actionButtons(controller, loan),
+                            // _actionButtons(controller, loan),
                           ],
                         );
                       },

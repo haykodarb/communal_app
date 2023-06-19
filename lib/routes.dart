@@ -1,8 +1,9 @@
+import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_topic_create/community_discussions_topic_create_page.dart';
+import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_topic_messages/community_discussions_topic_messages_page.dart';
 import 'package:communal/presentation/messages/messages_page.dart';
 import 'package:communal/presentation/community/community_invite/community_invite_page.dart';
 import 'package:communal/presentation/community/community_list_page.dart';
 import 'package:communal/presentation/community/community_create/community_create_page.dart';
-import 'package:communal/presentation/community/community_specific/community_members/community_members_page.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_book/community_specific_book_page.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_page.dart';
 import 'package:communal/presentation/invitations/invitations_page.dart';
@@ -30,7 +31,8 @@ class RouteNames {
   static const String communitySpecificPage = '/community/specific';
   static const String communitySpecificBookPage = '/community/specific/book';
   static const String communityInvitePage = '/community/invite';
-  static const String communityMembersPage = '/community/members';
+  static const String communityDiscussionsTopicCreate = '/community/discussions/topic/create';
+  static const String communityDiscussionsTopicMessages = '/community/discussions/topic/messages';
   static const String invitationsPage = '/invitations';
   static const String loansPage = '/loans';
   static const String messagesPage = '/messages';
@@ -100,9 +102,14 @@ final List<GetPage> routes = <GetPage>[
     page: () => const CommunityInvitePage(),
   ),
   GetPage<dynamic>(
-    name: RouteNames.communityMembersPage,
+    name: RouteNames.communityDiscussionsTopicCreate,
     transition: Transition.downToUp,
-    page: () => const CommunityMembersPage(),
+    page: () => const CommunityDiscussionsTopicCreatePage(),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.communityDiscussionsTopicMessages,
+    transition: Transition.downToUp,
+    page: () => const CommunityDiscussionsTopicMessagesPage(),
   ),
   GetPage<dynamic>(
     name: RouteNames.invitationsPage,

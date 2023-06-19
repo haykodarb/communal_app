@@ -30,7 +30,12 @@ class LoansBackend {
 
     final Map<String, dynamic>? response = await client
         .from('loans')
-        .update({parameter: true})
+        .update(
+          {
+            parameter: true,
+            '${parameter}_at': DateTime.now(),
+          },
+        )
         .eq('id', loan.id)
         .select<Map<String, dynamic>?>()
         .maybeSingle();

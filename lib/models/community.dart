@@ -21,6 +21,11 @@ class Community {
     return userId == owner;
   }
 
+  Community.fromMap(Map<String, dynamic> map)
+      : id = map['id'],
+        name = map['name'],
+        owner = map['owner'];
+
   Community.empty()
       : id = '',
         name = '',
