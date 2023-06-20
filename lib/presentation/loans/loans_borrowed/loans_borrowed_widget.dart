@@ -45,55 +45,51 @@ class LoansBorrowedWidget extends StatelessWidget {
     return GetBuilder(
       init: LoansBorrowedController(),
       builder: (LoansBorrowedController controller) {
-        return Obx(
-          () {
-            return CommonLoadingBody(
-              isLoading: controller.loading.value,
-              child: controller.loans.isEmpty
-                  ? const Center(
-                      child: Text(
-                        'You have not made\nany requests yet',
-                        style: TextStyle(fontSize: 16),
-                        textAlign: TextAlign.center,
-                      ),
-                    )
-                  : ListView.separated(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      itemCount: controller.loans.length,
-                      separatorBuilder: (context, index) {
-                        return Divider(
-                          color: Get.theme.colorScheme.primary,
-                          height: 50,
-                          thickness: 0.5,
-                        );
-                      },
-                      itemBuilder: (context, index) {
-                        final Loan loan = controller.loans[index];
-                        return Column(
-                          children: [
-                            CommonBookCard(
-                              book: loan.book,
-                              height: 225,
-                              textChildren: [
-                                Text(loan.book.author),
-                                Text(loan.book.owner.username),
-                                Text(loan.community.name),
-                                Text(
-                                  loan.accepted ? 'Loan approved' : 'Pending approval',
-                                  style: TextStyle(
-                                    color: Get.theme.colorScheme.secondary,
-                                  ),
-                                ),
-                              ],
+        return CommonLoadingBody(
+          loading: controller.loading,
+          child: controller.loans.isEmpty
+              ? const Center(
+                  child: Text(
+                    'You have not made\nany requests yet',
+                    style: TextStyle(fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              : ListView.separated(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  itemCount: controller.loans.length,
+                  separatorBuilder: (context, index) {
+                    return Divider(
+                      color: Get.theme.colorScheme.primary,
+                      height: 50,
+                      thickness: 0.5,
+                    );
+                  },
+                  itemBuilder: (context, index) {
+                    final Loan loan = controller.loans[index];
+                    return Column(
+                      children: [
+                        CommonBookCard(
+                          book: loan.book,
+                          height: 225,
+                          textChildren: [
+                            Text(loan.book.author),
+                            Text(loan.book.owner.username),
+                            Text(loan.community.name),
+                            Text(
+                              loan.accepted ? 'Loan approved' : 'Pending approval',
+                              style: TextStyle(
+                                color: Get.theme.colorScheme.secondary,
+                              ),
                             ),
-                            const Divider(),
-                            _actionButtons(controller, loan),
                           ],
-                        );
-                      },
-                    ),
-            );
-          },
+                        ),
+                        const Divider(),
+                        _actionButtons(controller, loan),
+                      ],
+                    );
+                  },
+                ),
         );
       },
     );

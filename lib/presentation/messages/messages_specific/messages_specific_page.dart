@@ -184,30 +184,26 @@ class MessagesSpecificPage extends StatelessWidget {
             child: Column(
               children: [
                 Expanded(
-                  child: Obx(
-                    () {
-                      return CommonLoadingBody(
-                        isLoading: controller.loading.value,
-                        child: Obx(
-                          () {
-                            return ListView.separated(
-                              reverse: true,
-                              itemCount: controller.messages.length,
-                              physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                              separatorBuilder: (context, index) {
-                                return const Divider(
-                                  height: 7.5,
-                                );
-                              },
-                              itemBuilder: (context, index) {
-                                return _messageBubble(controller, index);
-                              },
+                  child: CommonLoadingBody(
+                    loading: controller.loading,
+                    child: Obx(
+                      () {
+                        return ListView.separated(
+                          reverse: true,
+                          itemCount: controller.messages.length,
+                          physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                          separatorBuilder: (context, index) {
+                            return const Divider(
+                              height: 7.5,
                             );
                           },
-                        ),
-                      );
-                    },
+                          itemBuilder: (context, index) {
+                            return _messageBubble(controller, index);
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ),
                 _textInput(controller),

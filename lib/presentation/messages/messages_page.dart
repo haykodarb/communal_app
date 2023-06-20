@@ -91,30 +91,26 @@ class MessagesPage extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Messages'),
           ),
-          body: Obx(
-            () {
-              return CommonLoadingBody(
-                isLoading: controller.loading.value,
-                child: Obx(
-                  () {
-                    return ListView.separated(
-                      padding: const EdgeInsets.all(10),
-                      itemCount: controller.distinctChats.length,
-                      separatorBuilder: (context, index) {
-                        return const Divider();
-                      },
-                      itemBuilder: (context, index) {
-                        final Message message = controller.distinctChats[index];
-                        final Profile chatter =
-                            message.sender.id == UsersBackend.getCurrentUserId() ? message.receiver : message.sender;
-
-                        return _chatCard(controller, message, chatter);
-                      },
-                    );
+          body: CommonLoadingBody(
+            loading: controller.loading,
+            child: Obx(
+              () {
+                return ListView.separated(
+                  padding: const EdgeInsets.all(10),
+                  itemCount: controller.distinctChats.length,
+                  separatorBuilder: (context, index) {
+                    return const Divider();
                   },
-                ),
-              );
-            },
+                  itemBuilder: (context, index) {
+                    final Message message = controller.distinctChats[index];
+                    final Profile chatter =
+                        message.sender.id == UsersBackend.getCurrentUserId() ? message.receiver : message.sender;
+
+                    return _chatCard(controller, message, chatter);
+                  },
+                );
+              },
+            ),
           ),
         );
       },

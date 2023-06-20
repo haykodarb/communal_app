@@ -15,68 +15,66 @@ class CommunityMembersPage extends StatelessWidget {
         height: 70,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: Obx(
-            () => CommonLoadingBody(
-              isLoading: user.loading.value,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(user.username),
-                  Visibility(
-                    visible: user.is_admin,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                          20,
-                        ),
-                        border: Border.all(
-                          color: Get.theme.colorScheme.primary,
-                        ),
+          child: CommonLoadingBody(
+            loading: user.loading,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(user.username),
+                Visibility(
+                  visible: user.is_admin,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(
+                        20,
                       ),
-                      child: const Text('admin'),
+                      border: Border.all(
+                        color: Get.theme.colorScheme.primary,
+                      ),
                     ),
+                    child: const Text('admin'),
                   ),
-                  Builder(
-                    builder: (context) {
-                      if (user.id == UsersBackend.getCurrentUserId()) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                              20,
-                            ),
-                            border: Border.all(
-                              color: Get.theme.colorScheme.primary,
-                            ),
+                ),
+                Builder(
+                  builder: (context) {
+                    if (user.id == UsersBackend.getCurrentUserId()) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(
+                            20,
                           ),
-                          child: const Text('you'),
-                        );
-                      }
+                          border: Border.all(
+                            color: Get.theme.colorScheme.primary,
+                          ),
+                        ),
+                        child: const Text('you'),
+                      );
+                    }
 
-                      if (controller.community.isCurrentUserAdmin != null && controller.community.isCurrentUserAdmin!) {
-                        return PopupMenuButton(
-                          itemBuilder: (context) {
-                            return <PopupMenuEntry>[
-                              PopupMenuItem(
-                                onTap: () => controller.changeUserAdmin(user, !user.is_admin),
-                                child: Text(user.is_admin ? 'Remove as admin' : 'Make admin'),
-                              ),
-                              PopupMenuItem(
-                                onTap: () => controller.removeUser(user),
-                                child: const Text('Remove'),
-                              ),
-                            ];
-                          },
-                        );
-                      }
+                    if (controller.community.isCurrentUserAdmin != null && controller.community.isCurrentUserAdmin!) {
+                      return PopupMenuButton(
+                        itemBuilder: (context) {
+                          return <PopupMenuEntry>[
+                            PopupMenuItem(
+                              onTap: () => controller.changeUserAdmin(user, !user.is_admin),
+                              child: Text(user.is_admin ? 'Remove as admin' : 'Make admin'),
+                            ),
+                            PopupMenuItem(
+                              onTap: () => controller.removeUser(user),
+                              child: const Text('Remove'),
+                            ),
+                          ];
+                        },
+                      );
+                    }
 
-                      return const SizedBox.shrink();
-                    },
-                  ),
-                ],
-              ),
+                    return const SizedBox.shrink();
+                  },
+                ),
+              ],
             ),
           ),
         ),
@@ -103,30 +101,26 @@ class CommunityMembersPage extends StatelessWidget {
                   child: const Icon(Icons.add),
                 )
               : null,
-          body: Obx(
-            () {
-              return CommonLoadingBody(
-                isLoading: controller.loading.value,
-                child: RefreshIndicator(
-                  onRefresh: controller.loadUsers,
-                  child: Obx(
-                    () => ListView.separated(
-                      padding: const EdgeInsets.all(30),
-                      itemCount: controller.listOfMembers.length,
-                      separatorBuilder: (context, index) {
-                        return const Divider();
-                      },
-                      itemBuilder: (context, index) {
-                        return _userElement(
-                          controller,
-                          controller.listOfMembers[index],
-                        );
-                      },
-                    ),
-                  ),
+          body: CommonLoadingBody(
+            loading: controller.loading,
+            child: RefreshIndicator(
+              onRefresh: controller.loadUsers,
+              child: Obx(
+                () => ListView.separated(
+                  padding: const EdgeInsets.all(30),
+                  itemCount: controller.listOfMembers.length,
+                  separatorBuilder: (context, index) {
+                    return const Divider();
+                  },
+                  itemBuilder: (context, index) {
+                    return _userElement(
+                      controller,
+                      controller.listOfMembers[index],
+                    );
+                  },
                 ),
-              );
-            },
+              ),
+            ),
           ),
         );
       },

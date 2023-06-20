@@ -1,13 +1,64 @@
-import 'package:communal/backend/books_backend.dart';
 import 'package:communal/presentation/book/book_owned/book_owned_controller.dart';
 import 'package:communal/presentation/common/common_book_card.dart';
 import 'package:communal/presentation/common/common_confirmation_dialog.dart';
-import 'package:communal/presentation/common/common_loading_image.dart';
+import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 class BookOwnedPage extends StatelessWidget {
   const BookOwnedPage({super.key});
+
+  Widget _currentLoanIndicator(BookOwnedController controller) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 40),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Get.theme.colorScheme.primary,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        width: double.maxFinite,
+        child: !controller.book.is_loaned
+            ? const Center(
+                child: Text(
+                  'Book is available.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 24,
+                  ),
+                ),
+              )
+            : CommonLoadingBody(
+                loading: controller.loading,
+                child: controller.currentLoan == null
+                    ? const Center(
+                        child: Text(
+                          'Network error,\ncould not get current loan.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 24,
+                          ),
+                        ),
+                      )
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            '${controller.currentLoan?.loanee.username}',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      ),
+              ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,47 +86,16 @@ class BookOwnedPage extends StatelessWidget {
                   ],
                 ),
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 40),
-                    child: Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Get.theme.colorScheme.primary,
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      width: double.maxFinite,
-                      child: const Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Select Communities\nto share this book in',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  child: _currentLoanIndicator(controller),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     children: [
-                      Expanded(
+                      const Expanded(
                         child: ElevatedButton(
-                          onPressed: () => {},
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            minimumSize: const Size.fromHeight(60),
-                          ),
-                          child: const Text('Edit'),
+                          onPressed: null,
+                          child: Text('Edit'),
                         ),
                       ),
                       const VerticalDivider(),

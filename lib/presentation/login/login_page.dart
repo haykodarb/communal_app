@@ -39,18 +39,16 @@ class LoginPage extends StatelessWidget {
           const Divider(color: Colors.transparent),
           SizedBox(
             height: 70,
-            child: Obx(
-              () => CommonLoadingBody(
-                isLoading: controller.loading.value,
-                size: 40,
-                child: Obx(
-                  () => Text(
-                    controller.errorMessage.value,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).colorScheme.error,
-                      fontWeight: FontWeight.w500,
-                    ),
+            child: CommonLoadingBody(
+              loading: controller.loading,
+              size: 40,
+              child: Obx(
+                () => Text(
+                  controller.errorMessage.value,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.error,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),

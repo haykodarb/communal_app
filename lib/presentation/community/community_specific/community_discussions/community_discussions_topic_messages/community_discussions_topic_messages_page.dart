@@ -51,7 +51,7 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
                   message.sender.username.substring(0, 2).toUpperCase(),
                   style: TextStyle(
                     color: Get.theme.colorScheme.onBackground,
-                    fontSize: 12,
+                    fontSize: 16,
                   ),
                 ),
               ),
@@ -214,30 +214,26 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
             child: Column(
               children: [
                 Expanded(
-                  child: Obx(
-                    () {
-                      return CommonLoadingBody(
-                        isLoading: controller.loading.value,
-                        child: Obx(
-                          () {
-                            return ListView.separated(
-                              reverse: true,
-                              physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                              itemCount: controller.messages.length,
-                              separatorBuilder: (context, index) {
-                                return const Divider(
-                                  height: 7.5,
-                                );
-                              },
-                              itemBuilder: (context, index) {
-                                return _messageBubble(controller, index);
-                              },
+                  child: CommonLoadingBody(
+                    loading: controller.loading,
+                    child: Obx(
+                      () {
+                        return ListView.separated(
+                          reverse: true,
+                          physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                          itemCount: controller.messages.length,
+                          separatorBuilder: (context, index) {
+                            return const Divider(
+                              height: 7.5,
                             );
                           },
-                        ),
-                      );
-                    },
+                          itemBuilder: (context, index) {
+                            return _messageBubble(controller, index);
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ),
                 _textInput(controller),
