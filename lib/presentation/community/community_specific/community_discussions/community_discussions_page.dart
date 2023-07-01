@@ -21,51 +21,53 @@ class CommunityDiscussionsPage extends StatelessWidget {
             ),
           ),
           body: SafeArea(
-            child: CommonLoadingBody(
-              loading: controller.loading,
-              child: Obx(
-                () {
-                  return ListView.separated(
-                    itemCount: controller.topics.length,
-                    padding: const EdgeInsets.all(20),
-                    physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                    separatorBuilder: (context, index) {
-                      return const Divider();
-                    },
-                    itemBuilder: (context, index) {
-                      final DiscussionTopic topic = controller.topics[index];
-                      return InkWell(
-                        onTap: () => controller.goToTopicMessages(topic),
-                        child: Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  topic.name,
-                                  style: const TextStyle(fontSize: 20),
-                                ),
-                                const Divider(height: 30),
-                                Row(
-                                  children: [
-                                    const Text('Created by '),
-                                    Text(
-                                      topic.creator.username,
-                                      style: TextStyle(color: Get.theme.colorScheme.secondary),
-                                    ),
-                                    const Text(' on '),
-                                    Text(DateFormat.yMMMd().format(topic.created_at.toLocal()))
-                                  ],
-                                ),
-                              ],
+            child: Obx(
+              () => CommonLoadingBody(
+                loading: controller.loading.value,
+                child: Obx(
+                  () {
+                    return ListView.separated(
+                      itemCount: controller.topics.length,
+                      padding: const EdgeInsets.all(20),
+                      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                      separatorBuilder: (context, index) {
+                        return const Divider();
+                      },
+                      itemBuilder: (context, index) {
+                        final DiscussionTopic topic = controller.topics[index];
+                        return InkWell(
+                          onTap: () => controller.goToTopicMessages(topic),
+                          child: Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    topic.name,
+                                    style: const TextStyle(fontSize: 20),
+                                  ),
+                                  const Divider(height: 30),
+                                  Row(
+                                    children: [
+                                      const Text('Created by '),
+                                      Text(
+                                        topic.creator.username,
+                                        style: TextStyle(color: Get.theme.colorScheme.secondary),
+                                      ),
+                                      const Text(' on '),
+                                      Text(DateFormat.yMMMd().format(topic.created_at.toLocal()))
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  );
-                },
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
             ),
           ),

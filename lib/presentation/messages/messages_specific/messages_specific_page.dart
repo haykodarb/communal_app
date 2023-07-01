@@ -184,27 +184,28 @@ class MessagesSpecificPage extends StatelessWidget {
             child: Column(
               children: [
                 Expanded(
-                  child: CommonLoadingBody(
-                    loading: controller.loading,
-                    child: Obx(
-                      () {
-                        return ListView.separated(
-                          reverse: true,
-                          itemCount: controller.messages.length,
-                          controller: controller.scrollController,
-                          
-                          physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                          separatorBuilder: (context, index) {
-                            return const Divider(
-                              height: 7.5,
-                            );
-                          },
-                          itemBuilder: (context, index) {
-                            return _messageBubble(controller, index);
-                          },
-                        );
-                      },
+                  child: Obx(
+                    () => CommonLoadingBody(
+                      loading: controller.loading.value,
+                      child: Obx(
+                        () {
+                          return ListView.separated(
+                            reverse: true,
+                            itemCount: controller.messages.length,
+                            controller: controller.scrollController,
+                            physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                            separatorBuilder: (context, index) {
+                              return const Divider(
+                                height: 7.5,
+                              );
+                            },
+                            itemBuilder: (context, index) {
+                              return _messageBubble(controller, index);
+                            },
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),

@@ -179,9 +179,11 @@ class CommunitySpecificBookPage extends StatelessWidget {
                   ),
                   SizedBox(
                     height: 300,
-                    child: CommonLoadingBody(
-                      loading: controller.loading,
-                      child: _loanInformation(controller),
+                    child: Obx(
+                      () => CommonLoadingBody(
+                        loading: controller.loading.value,
+                        child: _loanInformation(controller),
+                      ),
                     ),
                   ),
                   const Divider(

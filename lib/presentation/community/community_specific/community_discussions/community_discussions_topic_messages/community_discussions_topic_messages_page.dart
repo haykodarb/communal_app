@@ -214,25 +214,27 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
             child: Column(
               children: [
                 Expanded(
-                  child: CommonLoadingBody(
-                    loading: controller.loading,
-                    child: Obx(
-                      () {
-                        return ListView.separated(
-                          reverse: true,
-                          physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                          itemCount: controller.messages.length,
-                          separatorBuilder: (context, index) {
-                            return const Divider(
-                              height: 7.5,
-                            );
-                          },
-                          itemBuilder: (context, index) {
-                            return _messageBubble(controller, index);
-                          },
-                        );
-                      },
+                  child: Obx(
+                    () => CommonLoadingBody(
+                      loading: controller.loading.value,
+                      child: Obx(
+                        () {
+                          return ListView.separated(
+                            reverse: true,
+                            physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                            itemCount: controller.messages.length,
+                            separatorBuilder: (context, index) {
+                              return const Divider(
+                                height: 7.5,
+                              );
+                            },
+                            itemBuilder: (context, index) {
+                              return _messageBubble(controller, index);
+                            },
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),

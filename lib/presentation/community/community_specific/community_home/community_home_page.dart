@@ -14,89 +14,91 @@ class CommunityHomePage extends StatelessWidget {
     return GetBuilder(
       init: CommunityHomeController(),
       builder: (controller) {
-        return CommonLoadingBody(
-          loading: controller.firstLoad,
-          child: RefreshIndicator(
-            onRefresh: controller.reloadPage,
-            child: Column(
-              children: [
-                Expanded(
-                  child: Obx(
-                    () {
-                      if (controller.booksLoaded.isEmpty) {
-                        return const CustomScrollView(
-                          slivers: [
-                            SliverFillRemaining(
-                              child: Center(
-                                child: Text(
-                                  'There are no books\nin this community yet.',
-                                  style: TextStyle(fontSize: 16),
-                                  textAlign: TextAlign.center,
+        return Obx(
+          () => CommonLoadingBody(
+            loading: controller.firstLoad.value,
+            child: RefreshIndicator(
+              onRefresh: controller.reloadPage,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Obx(
+                      () {
+                        if (controller.booksLoaded.isEmpty) {
+                          return const CustomScrollView(
+                            slivers: [
+                              SliverFillRemaining(
+                                child: Center(
+                                  child: Text(
+                                    'There are no books\nin this community yet.',
+                                    style: TextStyle(fontSize: 16),
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        );
-                      }
+                            ],
+                          );
+                        }
 
-                      return ListView.separated(
-                        itemCount: controller.booksLoaded.length + 1,
-                        padding: const EdgeInsets.all(20),
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(height: 20);
-                        },
-                        itemBuilder: (context, index) {
-                          if (index == controller.booksLoaded.length && index != 0) {
-                            return Center(
-                              child: Obx(
-                                () {
-                                  if (controller.booksLoaded.length == controller.totalBookCount.value) {
-                                    return const SizedBox.shrink();
-                                  }
+                        return ListView.separated(
+                          itemCount: controller.booksLoaded.length + 1,
+                          padding: const EdgeInsets.all(20),
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(height: 20);
+                          },
+                          itemBuilder: (context, index) {
+                            if (index == controller.booksLoaded.length && index != 0) {
+                              return Center(
+                                child: Obx(
+                                  () {
+                                    if (controller.booksLoaded.length == controller.totalBookCount.value) {
+                                      return const SizedBox.shrink();
+                                    }
 
-                                  return CommonLoadingBody(
-                                    loading: controller.loadingMore,
-                                    child: IconButton(
-                                      onPressed: controller.loadBooks,
-                                      alignment: Alignment.center,
-                                      icon: Icon(
-                                        Icons.more_horiz,
-                                        color: Get.theme.colorScheme.primary,
-                                        size: 50,
+                                    return CommonLoadingBody(
+                                      loading: controller.loadingMore.value,
+                                      child: IconButton(
+                                        onPressed: controller.loadBooks,
+                                        alignment: Alignment.center,
+                                        icon: Icon(
+                                          Icons.more_horiz,
+                                          color: Get.theme.colorScheme.primary,
+                                          size: 50,
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
+                                    );
+                                  },
+                                ),
+                              );
+                            }
+
+                            final Book book = controller.booksLoaded[index];
+
+                            return InkWell(
+                              onTap: () {
+                                Get.toNamed(
+                                  RouteNames.communitySpecificBookPage,
+                                  arguments: {
+                                    'book': book,
+                                    'community': controller.community,
+                                  },
+                                );
+                              },
+                              child: CommonBookCard(
+                                book: book,
+                                textChildren: [
+                                  Text(book.author),
+                                  Text(book.owner.username),
+                                ],
                               ),
                             );
-                          }
-
-                          final Book book = controller.booksLoaded[index];
-
-                          return InkWell(
-                            onTap: () {
-                              Get.toNamed(
-                                RouteNames.communitySpecificBookPage,
-                                arguments: {
-                                  'book': book,
-                                  'community': controller.community,
-                                },
-                              );
-                            },
-                            child: CommonBookCard(
-                              book: book,
-                              textChildren: [
-                                Text(book.author),
-                                Text(book.owner.username),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    },
+                          },
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );

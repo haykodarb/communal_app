@@ -48,54 +48,60 @@ class CommunityInvitePage extends StatelessWidget {
                       border: Border.all(color: Get.theme.colorScheme.primary),
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    child: CommonLoadingBody(
-                      loading: controller.loading,
-                      child: ListView.builder(
-                        itemCount: controller.foundProfiles.length,
-                        itemBuilder: (context, index) {
-                          return Obx(
-                            () {
-                              return TextButton(
-                                onPressed: () => controller.onSelectedIndexChanged(index),
-                                style: controller.selectedIndex.value == index
-                                    ? TextButton.styleFrom(
-                                        foregroundColor: Get.theme.colorScheme.onPrimary,
-                                        backgroundColor: Get.theme.colorScheme.primary,
-                                      )
-                                    : TextButton.styleFrom(
-                                        foregroundColor: Get.theme.colorScheme.onBackground,
-                                        backgroundColor: Get.theme.colorScheme.background,
+                    child: Obx(
+                      () {
+                        return CommonLoadingBody(
+                          loading: controller.loading.value,
+                          child: ListView.builder(
+                            itemCount: controller.foundProfiles.length,
+                            itemBuilder: (context, index) {
+                              return Obx(
+                                () {
+                                  return TextButton(
+                                    onPressed: () => controller.onSelectedIndexChanged(index),
+                                    style: controller.selectedIndex.value == index
+                                        ? TextButton.styleFrom(
+                                            foregroundColor: Get.theme.colorScheme.onPrimary,
+                                            backgroundColor: Get.theme.colorScheme.primary,
+                                          )
+                                        : TextButton.styleFrom(
+                                            foregroundColor: Get.theme.colorScheme.onBackground,
+                                            backgroundColor: Get.theme.colorScheme.background,
+                                          ),
+                                    child: Text(
+                                      controller.foundProfiles[index].username,
+                                      style: const TextStyle(
+                                        fontSize: 16,
                                       ),
-                                child: Text(
-                                  controller.foundProfiles[index].username,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                  ),
-                                ),
+                                    ),
+                                  );
+                                },
                               );
                             },
-                          );
-                        },
-                      ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),
                 const Divider(height: 15),
                 SizedBox(
                   height: 70,
-                  child: CommonLoadingBody(
-                    loading: controller.processingInvite,
-                    size: 40,
-                    child: Obx(
-                      () => Center(
-                        child: Text(
-                          controller.inviteError.value,
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Theme.of(context).colorScheme.error,
-                            fontWeight: FontWeight.w500,
+                  child: Obx(
+                    () => CommonLoadingBody(
+                      loading: controller.processingInvite.value,
+                      size: 40,
+                      child: Obx(
+                        () => Center(
+                          child: Text(
+                            controller.inviteError.value,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Theme.of(context).colorScheme.error,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
                         ),
                       ),
                     ),

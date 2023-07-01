@@ -31,30 +31,32 @@ class BookOwnedPage extends StatelessWidget {
                   ),
                 ),
               )
-            : CommonLoadingBody(
-                loading: controller.loading,
-                child: controller.currentLoan == null
-                    ? const Center(
-                        child: Text(
-                          'Network error,\ncould not get current loan.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 24,
-                          ),
-                        ),
-                      )
-                    : Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            '${controller.currentLoan?.loanee.username}',
+            : Obx(
+                () => CommonLoadingBody(
+                  loading: controller.loading.value,
+                  child: controller.currentLoan == null
+                      ? const Center(
+                          child: Text(
+                            'Network error,\ncould not get current loan.',
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 18,
+                            style: TextStyle(
+                              fontSize: 24,
                             ),
                           ),
-                        ],
-                      ),
+                        )
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '${controller.currentLoan?.loanee.username}',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+                          ],
+                        ),
+                ),
               ),
       ),
     );

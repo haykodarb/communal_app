@@ -39,75 +39,77 @@ class LoansCompletedWidget extends StatelessWidget {
     return GetBuilder(
       init: LoansCompletedController(),
       builder: (LoansCompletedController controller) {
-        return CommonLoadingBody(
-          loading: controller.loading,
-          child: Obx(
-            () {
-              if (controller.loans.isEmpty) {
-                return const Center(
-                  child: Text(
-                    'You have not\ncompleted any loans yet',
-                    style: TextStyle(fontSize: 16),
-                    textAlign: TextAlign.center,
-                  ),
-                );
-              } else {
-                return ListView.separated(
-                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                  itemCount: controller.loans.length,
-                  separatorBuilder: (context, index) {
-                    return Divider(
-                      color: Get.theme.colorScheme.primary,
-                      height: 50,
-                      thickness: 0.5,
-                    );
-                  },
-                  itemBuilder: (context, index) {
-                    final Loan loan = controller.loans[index];
-                    return Column(
-                      children: [
-                        SizedBox(
-                          height: 40,
-                          child: Row(
-                            children: [
-                              const Text(
-                                'Loaned ',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                              Text(
-                                loan.loanee.id == UsersBackend.getCurrentUserId() ? 'from ' : 'to ',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: loan.loanee.id == UsersBackend.getCurrentUserId()
-                                      ? Get.theme.colorScheme.primary
-                                      : Get.theme.colorScheme.secondary,
-                                  fontWeight: FontWeight.bold,
+        return Obx(
+          () => CommonLoadingBody(
+            loading: controller.loading.value,
+            child: Obx(
+              () {
+                if (controller.loans.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'You have not\ncompleted any loans yet',
+                      style: TextStyle(fontSize: 16),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                } else {
+                  return ListView.separated(
+                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                    itemCount: controller.loans.length,
+                    separatorBuilder: (context, index) {
+                      return Divider(
+                        color: Get.theme.colorScheme.primary,
+                        height: 50,
+                        thickness: 0.5,
+                      );
+                    },
+                    itemBuilder: (context, index) {
+                      final Loan loan = controller.loans[index];
+                      return Column(
+                        children: [
+                          SizedBox(
+                            height: 40,
+                            child: Row(
+                              children: [
+                                const Text(
+                                  'Loaned ',
+                                  style: TextStyle(fontSize: 18),
                                 ),
-                              ),
-                              Text(
-                                loan.loanee.id == UsersBackend.getCurrentUserId()
-                                    ? loan.book.owner.username
-                                    : loan.loanee.username,
-                                style: const TextStyle(fontSize: 18),
-                              ),
+                                Text(
+                                  loan.loanee.id == UsersBackend.getCurrentUserId() ? 'from ' : 'to ',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: loan.loanee.id == UsersBackend.getCurrentUserId()
+                                        ? Get.theme.colorScheme.primary
+                                        : Get.theme.colorScheme.secondary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  loan.loanee.id == UsersBackend.getCurrentUserId()
+                                      ? loan.book.owner.username
+                                      : loan.loanee.username,
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                              ],
+                            ),
+                          ),
+                          CommonBookCard(
+                            book: loan.book,
+                            textChildren: [
+                              Text(loan.book.author),
+                              Text(loan.community.name),
                             ],
                           ),
-                        ),
-                        CommonBookCard(
-                          book: loan.book,
-                          textChildren: [
-                            Text(loan.book.author),
-                            Text(loan.community.name),
-                          ],
-                        ),
-                        const Divider(),
-                        // _actionButtons(controller, loan),
-                      ],
-                    );
-                  },
-                );
-              }
-            },
+                          const Divider(),
+                          // _actionButtons(controller, loan),
+                        ],
+                      );
+                    },
+                  );
+                }
+              },
+            ),
           ),
         );
       },

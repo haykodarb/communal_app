@@ -23,31 +23,33 @@ class InvitationsPage extends StatelessWidget {
           children: [
             AspectRatio(
               aspectRatio: 16 / 9,
-              child: CommonLoadingBody(
-                loading: invitation.loading,
-                child: FutureBuilder(
-                  future: CommunitiesBackend.getCommunityAvatar(invitation.community),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return const CommonLoadingImage();
-                    }
+              child: Obx(
+                () => CommonLoadingBody(
+                  loading: invitation.loading.value,
+                  child: FutureBuilder(
+                    future: CommunitiesBackend.getCommunityAvatar(invitation.community),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const CommonLoadingImage();
+                      }
 
-                    if (snapshot.data!.isEmpty) {
-                      return Container(
-                        color: Get.theme.colorScheme.primary,
-                        child: Icon(
-                          Icons.groups,
-                          color: Get.theme.colorScheme.background,
-                          size: 150,
-                        ),
+                      if (snapshot.data!.isEmpty) {
+                        return Container(
+                          color: Get.theme.colorScheme.primary,
+                          child: Icon(
+                            Icons.groups,
+                            color: Get.theme.colorScheme.background,
+                            size: 150,
+                          ),
+                        );
+                      }
+
+                      return Image.memory(
+                        snapshot.data!,
+                        fit: BoxFit.cover,
                       );
-                    }
-
-                    return Image.memory(
-                      snapshot.data!,
-                      fit: BoxFit.cover,
-                    );
-                  },
+                    },
+                  ),
                 ),
               ),
             ),
@@ -103,39 +105,41 @@ class InvitationsPage extends StatelessWidget {
             title: const Text('Invitations'),
           ),
           drawer: CommonDrawerWidget(),
-          body: CommonLoadingBody(
-            loading: controller.loading,
-            child: RefreshIndicator(
-              onRefresh: controller.loadInvitations,
-              child: Obx(
-                () {
-                  if (controller.invitationsList.isEmpty) {
-                    return const CustomScrollView(
-                      slivers: [
-                        SliverFillRemaining(
-                          child: Center(
-                            child: Text(
-                              'You have not received\nany invitations yet.',
-                              style: TextStyle(fontSize: 16),
-                              textAlign: TextAlign.center,
+          body: Obx(
+            () => CommonLoadingBody(
+              loading: controller.loading.value,
+              child: RefreshIndicator(
+                onRefresh: controller.loadInvitations,
+                child: Obx(
+                  () {
+                    if (controller.invitationsList.isEmpty) {
+                      return const CustomScrollView(
+                        slivers: [
+                          SliverFillRemaining(
+                            child: Center(
+                              child: Text(
+                                'You have not received\nany invitations yet.',
+                                style: TextStyle(fontSize: 16),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    );
-                  }
+                        ],
+                      );
+                    }
 
-                  return ListView.separated(
-                    itemCount: controller.invitationsList.length,
-                    padding: const EdgeInsets.symmetric(vertical: 30),
-                    itemBuilder: (context, index) {
-                      return _invitationElement(controller, controller.invitationsList[index]);
-                    },
-                    separatorBuilder: (context, index) {
-                      return const Divider();
-                    },
-                  );
-                },
+                    return ListView.separated(
+                      itemCount: controller.invitationsList.length,
+                      padding: const EdgeInsets.symmetric(vertical: 30),
+                      itemBuilder: (context, index) {
+                        return _invitationElement(controller, controller.invitationsList[index]);
+                      },
+                      separatorBuilder: (context, index) {
+                        return const Divider();
+                      },
+                    );
+                  },
+                ),
               ),
             ),
           ),
