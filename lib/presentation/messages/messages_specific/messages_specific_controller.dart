@@ -21,6 +21,12 @@ class MessagesSpecificController extends GetxController {
   final RxBool sending = false.obs;
   final RxBool loading = false.obs;
 
+  final ScrollController scrollController = ScrollController();
+
+  bool loadingMore = false;
+
+  int currentIndex = 0;
+
   StreamSubscription? subscription;
 
   @override
@@ -31,7 +37,11 @@ class MessagesSpecificController extends GetxController {
 
     subscription ??= stream.listen(onMessageReceived);
 
-    final BackendResponse response = await MessagesBackend.getMessagesWithUser(user);
+    final BackendResponse response = await MessagesBackend.getMessagesWithUser(user, currentIndex);
+
+    currentIndex++;
+
+    scrollController.addListener(scrollControllerListener);
 
     if (response.success) {
       messages.value = response.payload;
@@ -51,6 +61,40 @@ class MessagesSpecificController extends GetxController {
   Future<void> onClose() async {
     await subscription?.cancel();
     super.onClose();
+  }
+
+  Future<void> scrollControllerListener() async {
+    if (scrollController.position.pixels > scrollController.position.maxScrollExtent * 0.9) {
+      if (loadingMore) return;
+
+      loadingMore = true;
+
+      final bool noMoreMessages = await getMoreMessages();
+
+      if (noMoreMessages) {
+        scrollController.removeListener(scrollControllerListener);
+      }
+
+      Future.delayed(
+        const Duration(milliseconds: 500),
+        () => loadingMore = false,
+      );
+    }
+  }
+
+  Future<bool> getMoreMessages() async {
+    final BackendResponse response = await MessagesBackend.getMessagesWithUser(user, currentIndex);
+
+    if (response.success) {
+      final List<Message> newMessages = response.payload;
+
+      messages.addAll(newMessages);
+      currentIndex++;
+
+      return newMessages.isEmpty;
+    }
+
+    return false;
   }
 
   void onMessageReceived(Message message) {

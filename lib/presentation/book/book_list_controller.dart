@@ -1,6 +1,7 @@
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
+import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/routes.dart';
 import 'package:get/get.dart';
 
@@ -18,10 +19,18 @@ class BookListController extends GetxController {
   Future<void> deleteBook(Book book) async {
     book.loading.value = true;
 
-    await BooksBackend.deleteBook(book);
+    final BackendResponse response = await BooksBackend.deleteBook(book);
 
-    userBooks.remove(book);
-    userBooks.refresh();
+    if (response.success) {
+      userBooks.remove(book);
+      userBooks.refresh();
+    } else {
+      book.loading.value = false;
+
+      Get.dialog(
+        CommonAlertDialog(title: '${response.payload}'),
+      );
+    }
   }
 
   Future<void> reloadBooks() async {

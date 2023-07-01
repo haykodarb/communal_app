@@ -51,13 +51,20 @@ class BooksBackend {
   static Future<BackendResponse> deleteBook(Book book) async {
     final SupabaseClient client = Supabase.instance.client;
 
-    final List<dynamic> response = await client.from('books').delete().eq('id', book.id).select();
+    try {
+      final List<dynamic> response = await client.from('books').delete().eq('id', book.id).select();
+      print(response);
 
-    client.storage.from('book_covers').remove(
-      [book.image_path],
-    );
+      if (response.isNotEmpty) {
+        client.storage.from('book_covers').remove(
+          [book.image_path],
+        );
+      }
 
-    return BackendResponse(success: response.isNotEmpty, payload: response);
+      return BackendResponse(success: response.isNotEmpty, payload: response);
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
+    }
   }
 
   static Future<BackendResponse> getAllBooksForUser() async {

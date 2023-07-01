@@ -191,6 +191,8 @@ class MessagesSpecificPage extends StatelessWidget {
                         return ListView.separated(
                           reverse: true,
                           itemCount: controller.messages.length,
+                          controller: controller.scrollController,
+                          
                           physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
                           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                           separatorBuilder: (context, index) {

@@ -71,6 +71,26 @@ class BookOwnedPage extends StatelessWidget {
               fit: BoxFit.fitWidth,
               child: Text(controller.book.title),
             ),
+            actions: [
+              IconButton(
+                onPressed: () async {
+                  final bool deleteConfirm = await Get.dialog<bool>(
+                        CommonConfirmationDialog(
+                          title: 'Delete book?',
+                          confirmCallback: () => Get.back<bool>(result: true),
+                          cancelCallback: () => Get.back<bool>(result: false),
+                        ),
+                      ) ??
+                      false;
+
+                  if (deleteConfirm) {
+                    controller.myBooksController.deleteBook(controller.book);
+                    Get.back();
+                  }
+                },
+                icon: const Icon(Icons.delete),
+              ),
+            ],
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
@@ -82,51 +102,11 @@ class BookOwnedPage extends StatelessWidget {
                   height: 250,
                   textChildren: [
                     Text(controller.book.author),
-                    Text(controller.book.is_loaned ? 'Available' : 'Loaned'),
+                    Text(controller.book.is_loaned ? 'Loaned' : 'Available'),
                   ],
                 ),
                 Expanded(
                   child: _currentLoanIndicator(controller),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    children: [
-                      const Expanded(
-                        child: ElevatedButton(
-                          onPressed: null,
-                          child: Text('Edit'),
-                        ),
-                      ),
-                      const VerticalDivider(),
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () async {
-                            final bool deleteConfirm = await Get.dialog<bool>(
-                                  CommonConfirmationDialog(
-                                    title: 'Confirm delete?',
-                                    confirmCallback: () => Get.back<bool>(result: true),
-                                    cancelCallback: () => Get.back<bool>(result: false),
-                                  ),
-                                ) ??
-                                false;
-
-                            if (deleteConfirm) {
-                              controller.myBooksController.deleteBook(controller.book);
-                              Get.back();
-                            }
-                          },
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Get.theme.colorScheme.error,
-                            side: BorderSide(
-                              color: Get.theme.colorScheme.error,
-                            ),
-                          ),
-                          child: const Text('Delete'),
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
               ],
             ),

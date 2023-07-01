@@ -59,7 +59,7 @@ class MessagesBackend {
     );
   }
 
-  static Future<BackendResponse> getMessagesWithUser(Profile user) async {
+  static Future<BackendResponse> getMessagesWithUser(Profile user, int currentIndex) async {
     final SupabaseClient client = Supabase.instance.client;
     final String currentUserId = client.auth.currentUser!.id;
 
@@ -70,11 +70,16 @@ class MessagesBackend {
         .from('messages')
         .select('*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
         .or(filter)
-        .limit(100)
+        .range(currentIndex * 100, currentIndex * 100 + 100 - 1)
         .order(
           'created_at',
           ascending: false,
-        );
+        )
+        .catchError(
+      () {
+        return BackendResponse(success: false, payload: 'Network error');
+      },
+    );
 
     final List<Message> listOfMessages = response.map(
       (element) {
@@ -83,7 +88,7 @@ class MessagesBackend {
     ).toList();
 
     return BackendResponse(
-      success: listOfMessages.isNotEmpty,
+      success: true,
       payload: listOfMessages,
     );
   }

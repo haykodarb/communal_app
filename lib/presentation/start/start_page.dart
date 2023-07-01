@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:communal/presentation/start/start_controller.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -34,25 +35,31 @@ class StartPage extends StatelessWidget {
       ],
     );
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 50,
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 50,
+      ),
+      child: ShaderMask(
+        blendMode: BlendMode.srcIn,
+        shaderCallback: (bounds) => gradient.createShader(
+          Rect.fromLTWH(0, 0, bounds.width, bounds.height),
         ),
-        child: ShaderMask(
-          blendMode: BlendMode.srcIn,
-          shaderCallback: (bounds) => gradient.createShader(
-            Rect.fromLTWH(0, 0, bounds.width, bounds.height),
-          ),
-          child: Text(
-            'Communal',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.russoOne(
-              fontSize: 50,
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.primary,
+        child: Column(
+          children: [
+            SvgPicture.asset(
+              'assets/crow.svg',
+              height: 300,
             ),
-          ),
+            Text(
+              'Communal',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.russoOne(
+                fontSize: 50,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -73,25 +80,14 @@ class StartPage extends StatelessWidget {
                 vertical: 50,
               ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Expanded(
-                    flex: 3,
-                    child: _logo(),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Center(child: _loginButton(controller)),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Center(child: _registerButton(controller)),
-                  ),
-                  const Expanded(
-                    flex: 3,
-                    child: SizedBox(),
-                  ),
+                  _logo(),
+                  Divider(height: 30),
+                  _loginButton(controller),
+                  Divider(height: 30),
+                  _registerButton(controller),
                 ],
               ),
             ),

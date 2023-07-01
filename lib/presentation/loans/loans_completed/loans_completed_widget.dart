@@ -41,15 +41,18 @@ class LoansCompletedWidget extends StatelessWidget {
       builder: (LoansCompletedController controller) {
         return CommonLoadingBody(
           loading: controller.loading,
-          child: controller.loans.isEmpty
-              ? const Center(
+          child: Obx(
+            () {
+              if (controller.loans.isEmpty) {
+                return const Center(
                   child: Text(
                     'You have not\ncompleted any loans yet',
                     style: TextStyle(fontSize: 16),
                     textAlign: TextAlign.center,
                   ),
-                )
-              : ListView.separated(
+                );
+              } else {
+                return ListView.separated(
                   padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                   itemCount: controller.loans.length,
                   separatorBuilder: (context, index) {
@@ -102,7 +105,10 @@ class LoansCompletedWidget extends StatelessWidget {
                       ],
                     );
                   },
-                ),
+                );
+              }
+            },
+          ),
         );
       },
     );

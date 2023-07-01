@@ -128,6 +128,8 @@ class CommonDrawerWidget extends StatelessWidget {
     return GetBuilder(
       init: _commonDrawerController,
       builder: (CommonDrawerController controller) {
+        final Color dividerColor = Get.theme.colorScheme.surface;
+
         return Drawer(
           elevation: 20,
           child: Container(
@@ -150,7 +152,16 @@ class CommonDrawerWidget extends StatelessWidget {
                       //   icon: Icons.person_rounded,
                       //   callback: () {},
                       // ),
+                      _drawerButton(
+                        text: 'Notifications',
+                        icon: Icons.notifications,
+                        callback: () {},
+                      ),
 
+                      Divider(
+                        thickness: 2,
+                        color: dividerColor,
+                      ),
                       _drawerButton(
                         text: 'Messages',
                         icon: Icons.sms,
@@ -159,7 +170,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       Divider(
                         thickness: 2,
-                        color: Get.theme.colorScheme.surface,
+                        color: dividerColor,
                       ),
                       _drawerButton(
                         text: 'Books',
@@ -168,7 +179,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       Divider(
                         thickness: 2,
-                        color: Get.theme.colorScheme.surface,
+                        color: dividerColor,
                       ),
                       _drawerButton(
                         text: 'Communities',
@@ -177,7 +188,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       Divider(
                         thickness: 2,
-                        color: Get.theme.colorScheme.surface,
+                        color: dividerColor,
                       ),
                       _drawerButton(
                         text: 'Invitations',
@@ -187,7 +198,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       Divider(
                         thickness: 2,
-                        color: Get.theme.colorScheme.surface,
+                        color: dividerColor,
                       ),
                       _drawerButton(
                         text: 'Loans',
@@ -197,13 +208,13 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       Divider(
                         thickness: 2,
-                        color: Get.theme.colorScheme.surface,
+                        color: dividerColor,
                       ),
                       const Expanded(child: SizedBox()),
 
                       Divider(
                         thickness: 2,
-                        color: Get.theme.colorScheme.surface,
+                        color: dividerColor,
                       ),
                       _drawerButton(
                         text: 'Logout',

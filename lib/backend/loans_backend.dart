@@ -114,6 +114,8 @@ class LoansBackend {
       },
     ).or('loanee.eq.$userId, accepted.eq.true');
 
+    print(response);
+
     final List<Loan> loans = response.map((element) => Loan.fromMap(element)).toList();
 
     final Loan? loanMadeByAnotherUser = loans.firstWhereOrNull(
@@ -175,6 +177,8 @@ class LoansBackend {
           '*, communities(*), books!inner(*, profiles(*)), profiles(*)',
         )
         .match(query);
+
+    print(response);
 
     if (response.isEmpty) {
       return BackendResponse(success: false, payload: 'No requests have been made for your books yet.');
