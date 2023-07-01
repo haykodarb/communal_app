@@ -28,7 +28,7 @@ class BookListPage extends StatelessWidget {
           ),
           body: Center(
             child: CommonLoadingBody(
-              loading: controller.loading,
+              loading: controller.loading.value,
               child: RefreshIndicator(
                 onRefresh: controller.reloadBooks,
                 child: Obx(
