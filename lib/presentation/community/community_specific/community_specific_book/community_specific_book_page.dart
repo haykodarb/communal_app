@@ -80,27 +80,24 @@ class CommunitySpecificBookPage extends StatelessWidget {
               loan.accepted ? 'Accepted' : 'Pending',
             ),
             const Divider(),
-            Visibility(
-              visible: loan.accepted,
-              child: SizedBox(
-                width: 300,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Get.toNamed(
-                      RouteNames.messagesSpecificPage,
-                      arguments: {
-                        'user': controller.book.owner,
-                      },
-                    );
-                  },
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.chat),
-                      VerticalDivider(),
-                      Text('Chat'),
-                    ],
-                  ),
+            SizedBox(
+              width: 300,
+              child: ElevatedButton(
+                onPressed: () {
+                  Get.toNamed(
+                    RouteNames.messagesSpecificPage,
+                    arguments: {
+                      'user': controller.book.owner,
+                    },
+                  );
+                },
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.chat),
+                    VerticalDivider(),
+                    Text('Chat'),
+                  ],
                 ),
               ),
             ),
