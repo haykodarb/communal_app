@@ -55,11 +55,10 @@ class LoansOwnedController extends GetxController {
 
       if (response.success) {
         loan.accepted = true;
-      }
-
-      if (!response.success) {
+        loans.refresh();
+      } else {
         Get.dialog(
-          const CommonAlertDialog(title: 'Could not approve of this loan, please try again.'),
+          CommonAlertDialog(title: response.payload),
         );
       }
 

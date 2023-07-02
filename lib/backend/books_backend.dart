@@ -53,7 +53,6 @@ class BooksBackend {
 
     try {
       final List<dynamic> response = await client.from('books').delete().eq('id', book.id).select();
-      print(response);
 
       if (response.isNotEmpty) {
         client.storage.from('book_covers').remove(

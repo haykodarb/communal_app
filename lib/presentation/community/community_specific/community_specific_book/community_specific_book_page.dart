@@ -52,7 +52,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
 
   static const Widget _alreadyLoanedOutIndicator = Center(
     child: Text(
-      'Book has already\nbeen loaned out.',
+      'Book is currently\n loaned out.',
       textAlign: TextAlign.center,
       style: TextStyle(fontSize: 20),
     ),
@@ -72,7 +72,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
             Divider(color: Get.theme.colorScheme.primary),
             _tableRow(
               'Requested',
-              DateFormat('HH:m - d MMM y').format(loan.created_at),
+              DateFormat('HH:mm - d MMM y').format(loan.created_at),
             ),
             Divider(color: Get.theme.colorScheme.primary),
             _tableRow(

@@ -129,31 +129,31 @@ class UsersBackend {
     );
   }
 
-  static Future<BackendResponse> makeUserAdminOfCommunity(Community community, Profile user, bool shouldBeAdmin) async {
+  static Future<BackendResponse> changeUserAdminStatus(Community community, Profile user, bool shouldBeAdmin) async {
     final SupabaseClient client = Supabase.instance.client;
 
-    final Map<String, dynamic>? updateMembershipResponse = await client
-        .from('memberships')
-        .update(
-          {
-            'is_admin': shouldBeAdmin,
-          },
-        )
-        .match(
-          {
-            'member': user.id,
-            'community': community.id,
-            'accepted': true,
-          },
-        )
-        .select()
-        .maybeSingle();
+    try {
+      final List<dynamic> updateMembershipResponse = await client.from('memberships').update(
+        {
+          'is_admin': shouldBeAdmin,
+        },
+      ).match(
+        {
+          'member': user.id,
+          'community': community.id,
+        },
+      ).select();
 
-    if (updateMembershipResponse == null) {
-      BackendResponse(success: false, payload: 'Failed to make user admin.');
+      return BackendResponse(
+        success: updateMembershipResponse.isNotEmpty,
+        payload: updateMembershipResponse,
+      );
+    } on PostgrestException catch (error) {
+      return BackendResponse(
+        success: false,
+        payload: error.message,
+      );
     }
-
-    return BackendResponse(success: updateMembershipResponse!.isNotEmpty, payload: updateMembershipResponse);
   }
 
   static Future<BackendResponse> inviteUserToCommunity(Community community, Profile user) async {
@@ -196,33 +196,24 @@ class UsersBackend {
   static Future<BackendResponse> removeUserFromCommunity(Community community, Profile user) async {
     final SupabaseClient client = Supabase.instance.client;
 
-    final Map<String, dynamic>? memberExistsResponse = await client.from('memberships').select().match({
-      'community': community.id,
-      'member': user.id,
-      'accepted': true,
-    }).maybeSingle();
+    try {
+      final List<dynamic> response = await client.from('memberships').delete().match(
+        {
+          'member': user.id,
+          'community': community.id,
+        },
+      ).select();
 
-    if (memberExistsResponse == null || memberExistsResponse.isEmpty) {
+      return BackendResponse(
+        success: response.isNotEmpty,
+        payload: response,
+      );
+    } on PostgrestException catch (error) {
       return BackendResponse(
         success: false,
-        payload: 'User does not exist in this community.',
+        payload: error.message,
       );
     }
-
-    final Map<String, dynamic> deleteMembershipResponse = await client
-        .from('memberships')
-        .delete()
-        .match(
-          {
-            'member': user.id,
-            'community': community.id,
-            'is_admin': false,
-          },
-        )
-        .select()
-        .single();
-
-    return BackendResponse(success: deleteMembershipResponse.isNotEmpty, payload: deleteMembershipResponse);
   }
 
   static Future<BackendResponse> removeCurrentUserFromCommunity(Community community) async {
@@ -262,10 +253,12 @@ class UsersBackend {
     final SupabaseClient client = Supabase.instance.client;
 
     final List<dynamic> membershipResponse =
-        await client.from('memberships').select('id, is_admin, profiles(id, username)').match({
-      'community': community.id,
-      'accepted': true,
-    });
+        await client.from('memberships').select('id, is_admin, profiles(id, username)').match(
+      {
+        'community': community.id,
+        'accepted': true,
+      },
+    );
 
     final List<Profile> listOfProfiles = membershipResponse
         .map(

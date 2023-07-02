@@ -9,31 +9,6 @@ import 'package:get/get.dart';
 class LoansCompletedWidget extends StatelessWidget {
   const LoansCompletedWidget({super.key});
 
-  Widget _actionButtons(LoansCompletedController controller, Loan loan) {
-    return SizedBox(
-      height: 40,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40),
-        child: OutlinedButton(
-          onPressed: () {},
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.info,
-              ),
-              VerticalDivider(width: 5),
-              Text(
-                'Info',
-                style: TextStyle(fontSize: 16),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return GetBuilder(

@@ -33,7 +33,6 @@ class LoansBackend {
         .update(
           {
             parameter: true,
-            '${parameter}_at': DateTime.now(),
           },
         )
         .eq('id', loan.id)
@@ -114,8 +113,6 @@ class LoansBackend {
       },
     ).or('loanee.eq.$userId, accepted.eq.true');
 
-    print(response);
-
     final List<Loan> loans = response.map((element) => Loan.fromMap(element)).toList();
 
     final Loan? loanMadeByAnotherUser = loans.firstWhereOrNull(
@@ -178,8 +175,6 @@ class LoansBackend {
         )
         .match(query);
 
-    print(response);
-
     if (response.isEmpty) {
       return BackendResponse(success: false, payload: 'No requests have been made for your books yet.');
     }
@@ -194,15 +189,8 @@ class LoansBackend {
 
     final String userId = client.auth.currentUser!.id;
 
-    final Map<String, dynamic>? loanAlreadyRequested = await client.from('loans').select().match(
-      {
-        'book': book.id,
-        'loanee': userId,
-      },
-    ).maybeSingle();
-
-    if (loanAlreadyRequested == null || loanAlreadyRequested.isEmpty) {
-      final Map<String, dynamic>? response = await client
+    try {
+      final Map<String, dynamic> response = await client
           .from('loans')
           .insert(
             {
@@ -211,23 +199,17 @@ class LoansBackend {
               'community': community.id,
             },
           )
-          .select<Map<String, dynamic>?>(
-            '*, communities(*), books!inner(*, profiles(*)), profiles(*)',
-          )
-          .maybeSingle();
-
-      if (response == null) {
-        return BackendResponse(success: false, payload: 'Could not request book, please try again.');
-      }
+          .select('*, communities(*), books!inner(*, profiles(*)), profiles(*)')
+          .single();
 
       return BackendResponse(
         success: true,
         payload: Loan.fromMap(response),
       );
-    } else {
+    } on PostgrestException catch (error) {
       return BackendResponse(
         success: false,
-        payload: 'You have already requested a loan on this book. Please wait for the owner to respond.',
+        payload: error.message,
       );
     }
   }

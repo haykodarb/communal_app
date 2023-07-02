@@ -6,11 +6,12 @@ import 'package:communal/models/message.dart';
 import 'package:communal/models/profile.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MessagesSpecificController extends GetxController {
   final Profile user = Get.arguments['user'];
 
-  final Stream<Message> stream = Get.arguments['stream'];
+  final Stream<Message>? stream = Get.arguments['stream'];
 
   final TextEditingController textEditingController = TextEditingController();
 
@@ -27,7 +28,9 @@ class MessagesSpecificController extends GetxController {
 
   int currentIndex = 0;
 
-  StreamSubscription? subscription;
+  StreamSubscription? streamSubscription;
+
+  RealtimeChannel? supabaseSubscription;
 
   @override
   Future<void> onInit() async {
@@ -35,7 +38,13 @@ class MessagesSpecificController extends GetxController {
 
     loading.value = true;
 
-    subscription ??= stream.listen(onMessageReceived);
+    streamSubscription ??= stream?.listen(onMessageReceived);
+
+    if (stream == null) {
+      supabaseSubscription ??= MessagesBackend.subscribeToMessages(onMessageReceived);
+
+      supabaseSubscription?.subscribe();
+    }
 
     final BackendResponse response = await MessagesBackend.getMessagesWithUser(user, currentIndex);
 
@@ -59,7 +68,9 @@ class MessagesSpecificController extends GetxController {
 
   @override
   Future<void> onClose() async {
-    await subscription?.cancel();
+    await streamSubscription?.cancel();
+    await supabaseSubscription?.unsubscribe();
+
     super.onClose();
   }
 

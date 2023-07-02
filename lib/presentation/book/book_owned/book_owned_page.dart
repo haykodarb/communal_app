@@ -69,9 +69,12 @@ class BookOwnedPage extends StatelessWidget {
       builder: (BookOwnedController controller) {
         return Scaffold(
           appBar: AppBar(
-            title: FittedBox(
-              fit: BoxFit.fitWidth,
-              child: Text(controller.book.title),
+            title: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Text(controller.book.title),
+              ),
             ),
             actions: [
               IconButton(

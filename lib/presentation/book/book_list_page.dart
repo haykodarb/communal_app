@@ -27,54 +27,56 @@ class BookListPage extends StatelessWidget {
             ),
           ),
           body: Center(
-            child: CommonLoadingBody(
-              loading: controller.loading.value,
-              child: RefreshIndicator(
-                onRefresh: controller.reloadBooks,
-                child: Obx(
-                  () {
-                    if (controller.userBooks.isEmpty) {
-                      return const Center(
-                        child: Text(
-                          'You haven\'t added\nany books yet.',
-                          style: TextStyle(
-                            fontSize: 18,
+            child: Obx(
+              () => CommonLoadingBody(
+                loading: controller.loading.value,
+                child: RefreshIndicator(
+                  onRefresh: controller.reloadBooks,
+                  child: Obx(
+                    () {
+                      if (controller.userBooks.isEmpty) {
+                        return const Center(
+                          child: Text(
+                            'You haven\'t added\nany books yet.',
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                      );
-                    } else {
-                      return ListView.separated(
-                        itemCount: controller.userBooks.length,
-                        padding: const EdgeInsets.all(20),
-                        separatorBuilder: (context, index) {
-                          return const SizedBox(
-                            height: 20,
-                          );
-                        },
-                        itemBuilder: (context, index) {
-                          final Book book = controller.userBooks[index];
+                        );
+                      } else {
+                        return ListView.separated(
+                          itemCount: controller.userBooks.length,
+                          padding: const EdgeInsets.all(20),
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(
+                              height: 20,
+                            );
+                          },
+                          itemBuilder: (context, index) {
+                            final Book book = controller.userBooks[index];
 
-                          return InkWell(
-                            onTap: () => Get.toNamed(
-                              RouteNames.bookOwnedPage,
-                              arguments: {
-                                'book': book,
-                                'controller': controller,
-                              },
-                            ),
-                            child: CommonBookCard(
-                              book: book,
-                              textChildren: [
-                                Text(book.author),
-                                Text(book.is_loaned ? 'Loaned' : 'Available'),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    }
-                  },
+                            return InkWell(
+                              onTap: () => Get.toNamed(
+                                RouteNames.bookOwnedPage,
+                                arguments: {
+                                  'book': book,
+                                  'controller': controller,
+                                },
+                              ),
+                              child: CommonBookCard(
+                                book: book,
+                                textChildren: [
+                                  Text(book.author),
+                                  Text(book.is_loaned ? 'Loaned' : 'Available'),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      }
+                    },
+                  ),
                 ),
               ),
             ),

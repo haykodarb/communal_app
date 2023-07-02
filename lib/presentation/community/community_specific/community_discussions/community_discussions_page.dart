@@ -38,6 +38,7 @@ class CommunityDiscussionsPage extends StatelessWidget {
                         return InkWell(
                           onTap: () => controller.goToTopicMessages(topic),
                           child: Card(
+                            shadowColor: Get.theme.colorScheme.secondary,
                             child: Padding(
                               padding: const EdgeInsets.all(20),
                               child: Column(

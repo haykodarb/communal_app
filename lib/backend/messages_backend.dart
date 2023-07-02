@@ -100,7 +100,7 @@ class MessagesBackend {
     final String filter =
         'and(sender.eq.$currentUserId, receiver.eq.${user.id}), and(sender.eq.${user.id}, receiver.eq.$currentUserId)';
 
-    final dynamic response = await client
+    await client
         .from('messages')
         .update(
           {'is_read': true},
@@ -108,8 +108,6 @@ class MessagesBackend {
         .or(filter)
         .eq('is_read', false)
         .select();
-
-    print(response);
   }
 
   static Future<BackendResponse> getMessageWithId(String uuid) async {

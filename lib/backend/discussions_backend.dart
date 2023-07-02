@@ -49,8 +49,6 @@ class DiscussionsBackend {
           community.id,
         );
 
-    print(response);
-
     final List<DiscussionTopic> topics = response.map((element) => DiscussionTopic.fromMap(element)).toList();
 
     return BackendResponse(
@@ -111,8 +109,6 @@ class DiscussionsBackend {
 
   static Future<BackendResponse> getDiscussionMessageById(String id) async {
     final SupabaseClient client = Supabase.instance.client;
-
-    final String userId = client.auth.currentUser!.id;
 
     final Map<String, dynamic>? response = await client
         .from('discussion_messages')

@@ -34,10 +34,9 @@ class CommunitySpecificBookController extends GetxController {
     loading.value = false;
   }
 
-  Future<void> checkIfRequestAlreadyMade() async {}
-
   Future<void> requestLoan() async {
     message.value = '';
+    loading.value = true;
 
     final BackendResponse response = await LoansBackend.requestBookLoanInCommunity(book, community);
 
@@ -47,5 +46,7 @@ class CommunitySpecificBookController extends GetxController {
     } else {
       message.value = response.payload;
     }
+
+    loading.value = false;
   }
 }

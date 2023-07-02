@@ -84,9 +84,9 @@ class StartPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   _logo(),
-                  Divider(height: 30),
+                  const Divider(height: 30),
                   _loginButton(controller),
-                  Divider(height: 30),
+                  const Divider(height: 30),
                   _registerButton(controller),
                 ],
               ),
