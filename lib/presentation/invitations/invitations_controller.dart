@@ -1,10 +1,10 @@
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
-import 'package:communal/models/invitation.dart';
+import 'package:communal/models/membership.dart';
 import 'package:get/get.dart';
 
 class InvitationsController extends GetxController {
-  final RxList<Invitation> invitationsList = <Invitation>[].obs;
+  final RxList<Membership> invitationsList = <Membership>[].obs;
 
   final RxBool loading = true.obs;
 
@@ -15,7 +15,7 @@ class InvitationsController extends GetxController {
     loadInvitations();
   }
 
-  Future<void> respondToInvitation(Invitation invitation, bool accept) async {
+  Future<void> respondToInvitation(Membership invitation, bool accept) async {
     invitation.loading.value = true;
 
     final BackendResponse response = await UsersBackend.respondToInvitation(invitation, accept);

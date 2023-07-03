@@ -8,22 +8,28 @@ class MessagesBackend {
     final SupabaseClient client = Supabase.instance.client;
     final String userId = client.auth.currentUser!.id;
 
-    final Map<String, dynamic> response = await client
-        .from('messages')
-        .insert(
-          {
-            'sender': userId,
-            'receiver': receiver.id,
-            'content': content,
-          },
-        )
-        .select()
-        .single();
+    try {
+      final Map<String, dynamic> response = await client
+          .from('messages')
+          .insert(
+            {
+              'sender': userId,
+              'receiver': receiver.id,
+              'content': content,
+            },
+          )
+          .select('*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
+          .single();
 
-    return BackendResponse(
-      success: response.isNotEmpty,
-      payload: response,
-    );
+      return BackendResponse(
+        success: true,
+        payload: Message.fromMap(response),
+      );
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
+    } catch (error) {
+      return BackendResponse(success: false, payload: error);
+    }
   }
 
   static Future<BackendResponse> getDistinctChats() async {
@@ -145,27 +151,18 @@ class MessagesBackend {
         .on(
       RealtimeListenTypes.postgresChanges,
       ChannelFilter(event: '*', schema: 'public', table: 'messages'),
-      (payload, [ref]) {
-        final Map<String, dynamic> response = payload['new'];
+      (payload, [ref]) async {
+        final Map<String, dynamic> newMessage = payload['new'];
 
-        final Message message = Message(
-          id: response['id'],
-          created_at: DateTime.parse(response['created_at']),
-          content: response['content'],
-          sender: Profile(
-            id: response['sender'],
-            username: '',
-          ),
-          receiver: Profile(
-            id: response['receiver'],
-            username: '',
-          ),
-          is_read: response['is_read'],
-        );
+        if (newMessage.isEmpty) return;
 
-        if (message.receiver.id != currentUserId && message.sender.id != currentUserId) return;
+        if (newMessage['receiver'] != currentUserId && newMessage['sender'] != currentUserId) return;
 
-        callback(message);
+        final BackendResponse response = await getMessageWithId(newMessage['id']);
+
+        if (!response.success) return;
+
+        callback(response.payload);
       },
     );
 

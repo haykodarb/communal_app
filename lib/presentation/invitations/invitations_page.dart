@@ -1,5 +1,5 @@
 import 'package:communal/backend/communities_backend.dart';
-import 'package:communal/models/invitation.dart';
+import 'package:communal/models/membership.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 class InvitationsPage extends StatelessWidget {
   const InvitationsPage({super.key});
 
-  Widget _invitationElement(InvitationsController controller, Invitation invitation) {
+  Widget _invitationElement(InvitationsController controller, Membership invitation) {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Card(

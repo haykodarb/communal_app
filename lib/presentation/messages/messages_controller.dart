@@ -4,6 +4,7 @@ import 'package:communal/backend/messages_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/message.dart';
 import 'package:communal/models/profile.dart';
+import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -13,52 +14,44 @@ class MessagesController extends GetxController {
 
   final RxBool loading = false.obs;
 
-  StreamController<Message> streamController = StreamController<Message>.broadcast();
-
   RealtimeChannel? subscription;
+
+  StreamSubscription? streamSubscription;
 
   @override
   void onInit() {
     super.onInit();
 
-    subscription ??= MessagesBackend.subscribeToMessages(newMessageReceived);
+    final Stream<Message> stream = Get.find<CommonDrawerController>().messagesStreamController.stream;
 
-    subscription?.subscribe();
+    streamSubscription = stream.listen(messagesChangeHandler);
 
     loadChats();
   }
 
   @override
-  void onClose() {
-    subscription?.unsubscribe();
+  Future<void> onClose() async {
+    await streamSubscription?.cancel();
     super.onClose();
   }
 
-  Future<void> newMessageReceived(Message message) async {
-    streamController.add(message);
-
+  Future<void> messagesChangeHandler(Message message) async {
     if (distinctChats.any((element) => element.id == message.id)) {
       distinctChats.firstWhereOrNull((element) => element.id == message.id)?.is_read = true;
       distinctChats.refresh();
       return;
     }
 
-    final BackendResponse response = await MessagesBackend.getMessageWithId(message.id);
-
-    if (!response.success) return;
-
-    final Message newMessage = response.payload;
-
     final int indexOfExisting = distinctChats.indexWhere(
       (element) =>
-          (element.receiver.id == newMessage.receiver.id && element.sender.id == newMessage.sender.id) ||
-          (element.sender.id == newMessage.receiver.id && element.receiver.id == newMessage.sender.id),
+          (element.receiver.id == message.receiver.id && element.sender.id == message.sender.id) ||
+          (element.sender.id == message.receiver.id && element.receiver.id == message.sender.id),
     );
 
     if (indexOfExisting >= 0) {
-      distinctChats[indexOfExisting] = newMessage;
+      distinctChats[indexOfExisting] = message;
     } else {
-      distinctChats.insert(0, newMessage);
+      distinctChats.insert(0, message);
     }
 
     distinctChats.refresh();
@@ -69,7 +62,6 @@ class MessagesController extends GetxController {
       RouteNames.messagesSpecificPage,
       arguments: {
         'user': chatter,
-        'stream': streamController.stream,
       },
     );
   }

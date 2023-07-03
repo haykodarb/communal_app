@@ -94,6 +94,27 @@ class LoansBackend {
     return BackendResponse(success: true, payload: response.count);
   }
 
+  static Future<BackendResponse> getLoanById(String id) async {
+    final SupabaseClient client = Supabase.instance.client;
+
+    try {
+      final Map<String, dynamic> response = await client
+          .from('loans')
+          .select(
+            '*, communities(*), books!inner(*, profiles(*)), profiles(*)',
+          )
+          .eq('id', id)
+          .single();
+
+      return BackendResponse(
+        success: response.isNotEmpty,
+        payload: response.isNotEmpty ? Loan.fromMap(response) : null,
+      );
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
+    }
+  }
+
   /// If book is already loaned to another user, returns false and that loan.
   /// If book is not loaned and current user has already requested it, returns true and that loan.
   /// Else returns false and no payload.
@@ -212,5 +233,32 @@ class LoansBackend {
         payload: error.message,
       );
     }
+  }
+
+  static RealtimeChannel subscribeToLoanChanges(void Function(Loan?) callback) {
+    final SupabaseClient client = Supabase.instance.client;
+    // final String currentUserId = client.auth.currentUser!.id;
+
+    RealtimeChannel channel = client.channel('public:loans').on(
+      RealtimeListenTypes.postgresChanges,
+      ChannelFilter(event: '*', schema: 'public', table: 'loans'),
+      (payload, [ref]) async {
+        final Map<String, dynamic> newLoan = payload['new'];
+
+        if (newLoan.isNotEmpty) {
+          final BackendResponse response = await getLoanById(newLoan['id']);
+
+          if (response.success) {
+            callback(response.payload);
+          }
+        }
+
+        if (payload['eventType'] == 'DELETE') {
+          callback(null);
+        }
+      },
+    );
+
+    return channel;
   }
 }

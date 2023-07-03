@@ -1,6 +1,6 @@
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/community.dart';
-import 'package:communal/models/invitation.dart';
+import 'package:communal/models/membership.dart';
 import 'package:communal/models/profile.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -45,7 +45,7 @@ class UsersBackend {
     );
   }
 
-  static Future<BackendResponse> respondToInvitation(Invitation invitation, bool accept) async {
+  static Future<BackendResponse> respondToInvitation(Membership invitation, bool accept) async {
     final SupabaseClient client = Supabase.instance.client;
 
     if (accept) {
@@ -65,6 +65,31 @@ class UsersBackend {
           await client.from('memberships').delete().eq('id', invitation.id).select<Map<String, dynamic>>().single();
 
       return BackendResponse(success: response.isNotEmpty, payload: response);
+    }
+  }
+
+  static Future<BackendResponse> getMembershipByID(String id) async {
+    try {
+      final SupabaseClient client = Supabase.instance.client;
+
+      final Map<String, dynamic> response = await client
+          .from('memberships')
+          .select(
+            '*, communities(*), profiles(*)',
+          )
+          .eq('id', id)
+          .single();
+
+      if (response.isNotEmpty) {
+        return BackendResponse(
+          success: true,
+          payload: Membership.fromMap(response),
+        );
+      } else {
+        return BackendResponse(success: false, payload: 'Could not find membership with this ID.');
+      }
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
     }
   }
 
@@ -101,25 +126,16 @@ class UsersBackend {
     final String userId = client.auth.currentUser!.id;
 
     final List<Map<String, dynamic>> unconfirmedMemberships =
-        await client.from('memberships').select<List<Map<String, dynamic>>>('*, communities(*)').match(
+        await client.from('memberships').select<List<Map<String, dynamic>>>('*, communities(*), profiles(*)').match(
       {
         'member': userId,
         'accepted': false,
       },
     );
 
-    final List<Invitation> invitationsList = unconfirmedMemberships
+    final List<Membership> invitationsList = unconfirmedMemberships
         .map(
-          (element) => Invitation(
-            id: element['id'],
-            community: Community(
-              id: element['communities']['id'],
-              name: element['communities']['name'],
-              image_path: element['communities']['image_path'],
-              owner: element['communities']['owner'],
-            ),
-            userId: userId,
-          ),
+          (element) => Membership.fromMap(element),
         )
         .toList();
 
@@ -156,6 +172,7 @@ class UsersBackend {
     }
   }
 
+  // TODO: Build the checking logic in the backend and remove the first half of this function.
   static Future<BackendResponse> inviteUserToCommunity(Community community, Profile user) async {
     final SupabaseClient client = Supabase.instance.client;
 
@@ -274,5 +291,32 @@ class UsersBackend {
       success: listOfProfiles.isNotEmpty,
       payload: listOfProfiles,
     );
+  }
+
+  static RealtimeChannel subscribeToMemberships(void Function(Membership?) callback) {
+    final SupabaseClient client = Supabase.instance.client;
+    // final String currentUserId = client.auth.currentUser!.id;
+
+    RealtimeChannel channel = client.channel('public:memberships').on(
+      RealtimeListenTypes.postgresChanges,
+      ChannelFilter(event: '*', schema: 'public', table: 'memberships'),
+      (payload, [ref]) async {
+        final Map<String, dynamic> newMembership = payload['new'];
+
+        if (newMembership.isNotEmpty) {
+          final BackendResponse response = await getMembershipByID(newMembership['id']);
+
+          if (response.success) {
+            callback(response.payload);
+          }
+        }
+
+        if (payload['eventType'] == 'DELETE') {
+          callback(null);
+        }
+      },
+    );
+
+    return channel;
   }
 }

@@ -1,3 +1,4 @@
+import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -33,7 +34,11 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Kaits',
       theme: theme,
-      onInit: () async {},
+      onInit: () async {
+        if (Supabase.instance.client.auth.currentUser != null) {
+          Get.put(CommonDrawerController());
+        }
+      },
       getPages: routes,
       color: Theme.of(context).colorScheme.background,
       initialRoute:

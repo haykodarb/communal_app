@@ -6,10 +6,7 @@ import 'package:get/get.dart';
 class CommonDrawerWidget extends StatelessWidget {
   CommonDrawerWidget({Key? key}) : super(key: key);
 
-  final CommonDrawerController _commonDrawerController = Get.put(
-    CommonDrawerController(),
-    tag: 'CustomDrawerController',
-  );
+  final CommonDrawerController _commonDrawerController = Get.find<CommonDrawerController>();
 
   Widget _drawerButton({
     required IconData icon,
@@ -152,16 +149,16 @@ class CommonDrawerWidget extends StatelessWidget {
                       //   icon: Icons.person_rounded,
                       //   callback: () {},
                       // ),
-                      _drawerButton(
-                        text: 'Notifications',
-                        icon: Icons.notifications,
-                        callback: () {},
-                      ),
+                      // _drawerButton(
+                      //   text: 'Notifications',
+                      //   icon: Icons.notifications,
+                      //   callback: () {},
+                      // ),
 
-                      Divider(
-                        thickness: 2,
-                        color: dividerColor,
-                      ),
+                      // Divider(
+                      //   thickness: 2,
+                      //   color: dividerColor,
+                      // ),
                       _drawerButton(
                         text: 'Messages',
                         icon: Icons.sms,
