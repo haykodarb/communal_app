@@ -1,3 +1,4 @@
+import 'package:communal/backend/realtime_backend.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
       theme: theme,
       onInit: () async {
         if (Supabase.instance.client.auth.currentUser != null) {
-          Get.put(CommonDrawerController());
+          RealtimeBackend.subscribeToDatabaseChanges();
         }
       },
       getPages: routes,
