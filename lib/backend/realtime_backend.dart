@@ -20,29 +20,14 @@ class RealtimeBackend {
       RealtimeListenTypes.postgresChanges,
       ChannelFilter(event: '*', schema: 'public'),
       (payload, [ref]) {
-        switch (payload['eventType']) {
-          case 'INSERT':
-          case 'UPDATE':
-            final RealtimeMessage message = RealtimeMessage(
-              table: payload['table'],
-              rowId: payload['new']['id'],
-              eventType: payload['eventType'],
-            );
+        if (payload.isNotEmpty) {
+          final RealtimeMessage realtimeMessage = RealtimeMessage(
+            table: payload['table'],
+            new_row: payload['new'],
+            eventType: payload['eventType'],
+          );
 
-            streamController.add(message);
-            break;
-
-          case 'DELETE':
-            final RealtimeMessage message = RealtimeMessage(
-              table: payload['table'],
-              rowId: payload['old']['id'],
-              eventType: payload['eventType'],
-            );
-
-            streamController.add(message);
-            break;
-          default:
-            break;
+          streamController.add(realtimeMessage);
         }
       },
     );

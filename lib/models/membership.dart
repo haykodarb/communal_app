@@ -8,7 +8,7 @@ class Membership {
   final DateTime? joined_at;
   final Profile member;
   final Community community;
-  final bool accepted;
+  final bool? accepted;
   final bool is_admin;
 
   final RxBool loading = false.obs;

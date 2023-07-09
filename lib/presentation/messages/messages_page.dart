@@ -12,7 +12,7 @@ class MessagesPage extends StatelessWidget {
   const MessagesPage({super.key});
 
   Widget _chatCard(MessagesController controller, Message message, Profile chatter) {
-    final bool hightlightMessage = !message.is_read && message.receiver.id == UsersBackend.getCurrentUserId();
+    final bool hightlightMessage = !message.is_read && message.receiver.id == UsersBackend.currentUserId;
 
     return InkWell(
       onTap: () => controller.goToSpecificChat(chatter),
@@ -105,7 +105,7 @@ class MessagesPage extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final Message message = controller.distinctChats[index];
                       final Profile chatter =
-                          message.sender.id == UsersBackend.getCurrentUserId() ? message.receiver : message.sender;
+                          message.sender.id == UsersBackend.currentUserId ? message.receiver : message.sender;
 
                       return _chatCard(controller, message, chatter);
                     },

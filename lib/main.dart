@@ -37,7 +37,9 @@ class MyApp extends StatelessWidget {
       theme: theme,
       onInit: () async {
         if (Supabase.instance.client.auth.currentUser != null) {
-          RealtimeBackend.subscribeToDatabaseChanges();
+          Get.put(CommonDrawerController());
+
+          await RealtimeBackend.subscribeToDatabaseChanges();
         }
       },
       getPages: routes,

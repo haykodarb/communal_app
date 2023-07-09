@@ -5,7 +5,7 @@ import 'package:communal/models/profile.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class UsersBackend {
-  static String getCurrentUserId() {
+  static get currentUserId {
     final GoTrueClient client = Supabase.instance.client.auth;
 
     return client.currentUser!.id;
@@ -48,24 +48,17 @@ class UsersBackend {
   static Future<BackendResponse> respondToInvitation(Membership invitation, bool accept) async {
     final SupabaseClient client = Supabase.instance.client;
 
-    if (accept) {
-      final Map<String, dynamic> response = await client
-          .from('memberships')
-          .update({
-            'accepted': true,
-            'joined_at': 'now()',
-          })
-          .eq('id', invitation.id)
-          .select<Map<String, dynamic>>()
-          .single();
+    final Map<String, dynamic> response = await client
+        .from('memberships')
+        .update({
+          'accepted': accept,
+          'joined_at': 'now()',
+        })
+        .eq('id', invitation.id)
+        .select<Map<String, dynamic>>()
+        .single();
 
-      return BackendResponse(success: response.isNotEmpty, payload: response);
-    } else {
-      final Map<String, dynamic> response =
-          await client.from('memberships').delete().eq('id', invitation.id).select<Map<String, dynamic>>().single();
-
-      return BackendResponse(success: response.isNotEmpty, payload: response);
-    }
+    return BackendResponse(success: response.isNotEmpty, payload: response);
   }
 
   static Future<BackendResponse> getMembershipByID(String id) async {
@@ -107,12 +100,8 @@ class UsersBackend {
             count: CountOption.exact,
           ),
         )
-        .match(
-      {
-        'member': userId,
-        'accepted': false,
-      },
-    );
+        .eq('member', userId)
+        .is_('accepted', null);
 
     return BackendResponse(
       success: response.status == 200,
@@ -125,13 +114,11 @@ class UsersBackend {
 
     final String userId = client.auth.currentUser!.id;
 
-    final List<Map<String, dynamic>> unconfirmedMemberships =
-        await client.from('memberships').select<List<Map<String, dynamic>>>('*, communities(*), profiles(*)').match(
-      {
-        'member': userId,
-        'accepted': false,
-      },
-    );
+    final List<Map<String, dynamic>> unconfirmedMemberships = await client
+        .from('memberships')
+        .select<List<Map<String, dynamic>>>('*, communities(*), profiles(*)')
+        .eq('member', userId)
+        .is_('accepted', null);
 
     final List<Membership> invitationsList = unconfirmedMemberships
         .map(
@@ -190,7 +177,7 @@ class UsersBackend {
       } else {
         return BackendResponse(
           success: false,
-          payload: 'User already has a pending invitation from this community.',
+          payload: 'User has already been invited to this community.',
         );
       }
     }
@@ -291,32 +278,5 @@ class UsersBackend {
       success: listOfProfiles.isNotEmpty,
       payload: listOfProfiles,
     );
-  }
-
-  static RealtimeChannel subscribeToMemberships(void Function(Membership?) callback) {
-    final SupabaseClient client = Supabase.instance.client;
-    // final String currentUserId = client.auth.currentUser!.id;
-
-    RealtimeChannel channel = client.channel('public:memberships').on(
-      RealtimeListenTypes.postgresChanges,
-      ChannelFilter(event: '*', schema: 'public', table: 'memberships'),
-      (payload, [ref]) async {
-        final Map<String, dynamic> newMembership = payload['new'];
-
-        if (newMembership.isNotEmpty) {
-          final BackendResponse response = await getMembershipByID(newMembership['id']);
-
-          if (response.success) {
-            callback(response.payload);
-          }
-        }
-
-        if (payload['eventType'] == 'DELETE') {
-          callback(null);
-        }
-      },
-    );
-
-    return channel;
   }
 }

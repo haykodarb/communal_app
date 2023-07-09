@@ -23,7 +23,7 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
 
     final bool showAvatar = nextMessage == null || nextMessage.sender.id != message.sender.id;
 
-    final bool isReceived = message.sender.id != UsersBackend.getCurrentUserId();
+    final bool isReceived = message.sender.id != UsersBackend.currentUserId;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,

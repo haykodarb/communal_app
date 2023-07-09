@@ -234,31 +234,4 @@ class LoansBackend {
       );
     }
   }
-
-  static RealtimeChannel subscribeToLoanChanges(void Function(Loan?) callback) {
-    final SupabaseClient client = Supabase.instance.client;
-    // final String currentUserId = client.auth.currentUser!.id;
-
-    RealtimeChannel channel = client.channel('public:loans').on(
-      RealtimeListenTypes.postgresChanges,
-      ChannelFilter(event: '*', schema: 'public', table: 'loans'),
-      (payload, [ref]) async {
-        final Map<String, dynamic> newLoan = payload['new'];
-
-        if (newLoan.isNotEmpty) {
-          final BackendResponse response = await getLoanById(newLoan['id']);
-
-          if (response.success) {
-            callback(response.payload);
-          }
-        }
-
-        if (payload['eventType'] == 'DELETE') {
-          callback(null);
-        }
-      },
-    );
-
-    return channel;
-  }
 }

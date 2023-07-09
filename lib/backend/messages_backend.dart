@@ -134,38 +134,4 @@ class MessagesBackend {
       payload: Message.fromMap(response),
     );
   }
-
-  static RealtimeChannel subscribeToMessages(
-    void Function(Message) callback,
-  ) {
-    final SupabaseClient client = Supabase.instance.client;
-    final String currentUserId = client.auth.currentUser!.id;
-
-    RealtimeChannel channel = client
-        .channel(
-      'public:messages',
-      opts: const RealtimeChannelConfig(
-        self: true,
-      ),
-    )
-        .on(
-      RealtimeListenTypes.postgresChanges,
-      ChannelFilter(event: '*', schema: 'public', table: 'messages'),
-      (payload, [ref]) async {
-        final Map<String, dynamic> newMessage = payload['new'];
-
-        if (newMessage.isEmpty) return;
-
-        if (newMessage['receiver'] != currentUserId && newMessage['sender'] != currentUserId) return;
-
-        final BackendResponse response = await getMessageWithId(newMessage['id']);
-
-        if (!response.success) return;
-
-        callback(response.payload);
-      },
-    );
-
-    return channel;
-  }
 }

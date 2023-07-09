@@ -1,4 +1,3 @@
-import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/models/discussion.dart';
@@ -126,40 +125,5 @@ class DiscussionsBackend {
       success: true,
       payload: DiscussionMessage.fromMap(response),
     );
-  }
-
-  static RealtimeChannel subscribeToTopicMessages(
-    void Function(DiscussionMessage) callback,
-    DiscussionTopic topic,
-  ) {
-    final SupabaseClient client = Supabase.instance.client;
-
-    RealtimeChannel channel = client
-        .channel(
-      'public:discussion_messages',
-    )
-        .on(
-      RealtimeListenTypes.postgresChanges,
-      ChannelFilter(event: '*', schema: 'public', table: 'discussion_messages'),
-      (payload, [ref]) async {
-        final Map<String, dynamic> newMessage = payload['new'];
-
-        if (newMessage.isEmpty) return;
-
-        if (newMessage['topic'] != topic.id) return;
-
-        if (newMessage['sender'] == UsersBackend.getCurrentUserId()) return;
-
-        final BackendResponse response = await DiscussionsBackend.getDiscussionMessageById(
-          newMessage['id'],
-        );
-
-        if (response.success) {
-          callback(response.payload);
-        }
-      },
-    );
-
-    return channel;
   }
 }

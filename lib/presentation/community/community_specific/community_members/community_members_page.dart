@@ -40,7 +40,7 @@ class CommunityMembersPage extends StatelessWidget {
                   ),
                   Builder(
                     builder: (context) {
-                      if (user.id == UsersBackend.getCurrentUserId()) {
+                      if (user.id == UsersBackend.currentUserId) {
                         return Container(
                           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                           decoration: BoxDecoration(

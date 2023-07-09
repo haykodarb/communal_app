@@ -1,10 +1,10 @@
 import 'dart:async';
-
 import 'package:communal/backend/messages_backend.dart';
+import 'package:communal/backend/realtime_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/message.dart';
 import 'package:communal/models/profile.dart';
-import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
+import 'package:communal/models/realtime_message.dart';
 import 'package:communal/routes.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -22,9 +22,9 @@ class MessagesController extends GetxController {
   void onInit() {
     super.onInit();
 
-    final Stream<Message> stream = Get.find<CommonDrawerController>().messagesStreamController.stream;
+    final Stream<RealtimeMessage> stream = RealtimeBackend.streamController.stream;
 
-    streamSubscription = stream.listen(messagesChangeHandler);
+    streamSubscription = stream.listen(_realtimeListener);
 
     loadChats();
   }
@@ -35,12 +35,32 @@ class MessagesController extends GetxController {
     super.onClose();
   }
 
-  Future<void> messagesChangeHandler(Message message) async {
-    if (distinctChats.any((element) => element.id == message.id)) {
-      distinctChats.firstWhereOrNull((element) => element.id == message.id)?.is_read = true;
+  Future<void> _realtimeListener(RealtimeMessage realtimeMessage) async {
+    if (realtimeMessage.table != 'messages') return;
+
+    if (realtimeMessage.eventType != 'INSERT' && realtimeMessage.eventType != 'UPDATE') return;
+
+    final Message unfetchedMessage = Message(
+      id: realtimeMessage.new_row['id'],
+      created_at: DateTime.parse(realtimeMessage.new_row['created_at']),
+      sender: Profile(id: realtimeMessage.new_row['sender'], username: ''),
+      receiver: Profile(id: realtimeMessage.new_row['receiver'], username: ''),
+      content: realtimeMessage.new_row['content'],
+      is_read: realtimeMessage.new_row['is_read'],
+    );
+
+    if (distinctChats.any((element) => element.id == unfetchedMessage.id)) {
+      distinctChats.firstWhereOrNull((element) => element.id == unfetchedMessage.id)?.is_read =
+          unfetchedMessage.is_read;
       distinctChats.refresh();
       return;
     }
+
+    final BackendResponse response = await MessagesBackend.getMessageWithId(unfetchedMessage.id);
+
+    if (!response.success) return;
+
+    final Message message = response.payload;
 
     final int indexOfExisting = distinctChats.indexWhere(
       (element) =>

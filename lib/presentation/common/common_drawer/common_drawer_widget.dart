@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 class CommonDrawerWidget extends StatelessWidget {
   CommonDrawerWidget({Key? key}) : super(key: key);
 
-  final CommonDrawerController _commonDrawerController = Get.put(CommonDrawerController());
+  final CommonDrawerController _commonDrawerController = Get.find<CommonDrawerController>();
 
   Widget _drawerButton({
     required IconData icon,

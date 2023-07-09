@@ -133,7 +133,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
         final Loan? existingLoan = controller.existingLoan.value;
 
         if (existingLoan != null) {
-          final bool loanedBySomeoneElse = existingLoan.loanee.id != UsersBackend.getCurrentUserId();
+          final bool loanedBySomeoneElse = existingLoan.loanee.id != UsersBackend.currentUserId;
 
           if (loanedBySomeoneElse) {
             return _alreadyLoanedOutIndicator;

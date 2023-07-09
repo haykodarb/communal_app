@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'package:communal/backend/messages_backend.dart';
+import 'package:communal/backend/realtime_backend.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/message.dart';
 import 'package:communal/models/profile.dart';
+import 'package:communal/models/realtime_message.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
-import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
@@ -35,7 +36,7 @@ class MessagesSpecificController extends GetxController {
 
     loading.value = true;
 
-    final Stream<Message> stream = Get.find<CommonDrawerController>().messagesStreamController.stream;
+    final Stream<RealtimeMessage> stream = RealtimeBackend.streamController.stream;
 
     streamSubscription = stream.listen(messageChangeHandler);
 
@@ -100,9 +101,22 @@ class MessagesSpecificController extends GetxController {
     return false;
   }
 
-  void messageChangeHandler(Message message) {
-    final bool isCurrentChat = message.receiver.id == user.id && message.sender.id == UsersBackend.getCurrentUserId() ||
-        message.sender.id == user.id && message.receiver.id == UsersBackend.getCurrentUserId();
+  void messageChangeHandler(RealtimeMessage realtimeMessage) {
+    if (realtimeMessage.table != 'messages') return;
+
+    if (realtimeMessage.eventType != 'INSERT' && realtimeMessage.eventType != 'UPDATE') return;
+
+    final Message message = Message(
+      id: realtimeMessage.new_row['id'],
+      created_at: DateTime.parse(realtimeMessage.new_row['created_at']),
+      sender: Profile(id: realtimeMessage.new_row['sender'], username: ''),
+      receiver: Profile(id: realtimeMessage.new_row['receiver'], username: ''),
+      content: realtimeMessage.new_row['content'],
+      is_read: realtimeMessage.new_row['is_read'],
+    );
+
+    final bool isCurrentChat = message.receiver.id == user.id && message.sender.id == UsersBackend.currentUserId ||
+        message.sender.id == user.id && message.receiver.id == UsersBackend.currentUserId;
 
     if (!isCurrentChat) return;
 
@@ -111,7 +125,7 @@ class MessagesSpecificController extends GetxController {
     if (messageExists) {
       messages.firstWhereOrNull((element) => element.id == message.id)?.is_read = true;
     } else {
-      if (message.sender.id != UsersBackend.getCurrentUserId()) {
+      if (message.sender.id != UsersBackend.currentUserId) {
         messages.insert(0, message);
         MessagesBackend.markMessagesWithUserAsRead(user);
       }
@@ -139,7 +153,7 @@ class MessagesSpecificController extends GetxController {
       id: randomID,
       created_at: DateTime.now(),
       sender: Profile(
-        id: UsersBackend.getCurrentUserId(),
+        id: UsersBackend.currentUserId,
         username: UsersBackend.getCurrentUsername(),
       ),
       receiver: user,

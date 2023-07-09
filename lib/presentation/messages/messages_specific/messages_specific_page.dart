@@ -72,7 +72,7 @@ class MessagesSpecificPage extends StatelessWidget {
                 ),
               ),
               Visibility(
-                visible: isFirstMessage && message.is_read && message.sender.id == UsersBackend.getCurrentUserId(),
+                visible: isFirstMessage && message.is_read && message.sender.id == UsersBackend.currentUserId,
                 child: Text(
                   'Seen',
                   textAlign: isReceived ? TextAlign.left : TextAlign.right,

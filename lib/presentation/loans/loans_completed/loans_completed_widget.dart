@@ -51,17 +51,17 @@ class LoansCompletedWidget extends StatelessWidget {
                                   style: TextStyle(fontSize: 18),
                                 ),
                                 Text(
-                                  loan.loanee.id == UsersBackend.getCurrentUserId() ? 'from ' : 'to ',
+                                  loan.loanee.id == UsersBackend.currentUserId ? 'from ' : 'to ',
                                   style: TextStyle(
                                     fontSize: 18,
-                                    color: loan.loanee.id == UsersBackend.getCurrentUserId()
+                                    color: loan.loanee.id == UsersBackend.currentUserId
                                         ? Get.theme.colorScheme.primary
                                         : Get.theme.colorScheme.secondary,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 Text(
-                                  loan.loanee.id == UsersBackend.getCurrentUserId()
+                                  loan.loanee.id == UsersBackend.currentUserId
                                       ? loan.book.owner.username
                                       : loan.loanee.username,
                                   style: const TextStyle(fontSize: 18),

@@ -1,11 +1,11 @@
 class RealtimeMessage {
   final String table;
-  final String rowId;
+  final Map<String, dynamic> new_row;
   final String eventType;
 
   RealtimeMessage({
     required this.table,
-    required this.rowId,
+    required this.new_row,
     required this.eventType,
   });
 }
