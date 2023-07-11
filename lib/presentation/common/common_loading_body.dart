@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class CommonLoadingBody extends StatelessWidget {
@@ -19,11 +18,11 @@ class CommonLoadingBody extends StatelessWidget {
     if (loading) {
       return Center(
         // child: LoadingAnimationWidget.flickr(
-        //   leftDotColor: Get.theme.colorScheme.primary,
-        //   rightDotColor: Get.theme.colorScheme.secondary,
+        //   leftDotColor: Theme.of(context).colorScheme.primary,
+        //   rightDotColor: Theme.of(context).colorScheme.secondary,
         //   size: size,
         // ),
-        child: LoadingAnimationWidget.threeArchedCircle(color: Get.theme.colorScheme.primary, size: size),
+        child: LoadingAnimationWidget.threeArchedCircle(color: Theme.of(context).colorScheme.primary, size: size),
       );
     }
 

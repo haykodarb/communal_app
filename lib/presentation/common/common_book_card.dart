@@ -18,15 +18,19 @@ class CommonBookCard extends StatelessWidget {
   final double height;
 
   Widget _loadingBookIndicator() {
-    return Center(
-      child: SizedBox(
-        height: 50,
-        width: 50,
-        child: LoadingAnimationWidget.threeArchedCircle(
-          color: Get.theme.colorScheme.primary,
-          size: 50,
-        ),
-      ),
+    return Builder(
+      builder: (context) {
+        return Center(
+          child: SizedBox(
+            height: 50,
+            width: 50,
+            child: LoadingAnimationWidget.threeArchedCircle(
+              color: Theme.of(context).colorScheme.primary,
+              size: 50,
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -66,14 +70,18 @@ class CommonBookCard extends StatelessWidget {
                 const VerticalDivider(),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           book.title,
-                          style: const TextStyle(fontSize: 16, color: Colors.white),
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Theme.of(context).colorScheme.onSurface,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

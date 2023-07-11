@@ -38,7 +38,7 @@ class CommunityDiscussionsPage extends StatelessWidget {
                         return InkWell(
                           onTap: () => controller.goToTopicMessages(topic),
                           child: Card(
-                            shadowColor: Get.theme.colorScheme.secondary,
+                            shadowColor: Theme.of(context).colorScheme.primary,
                             child: Padding(
                               padding: const EdgeInsets.all(20),
                               child: Column(
@@ -54,7 +54,7 @@ class CommunityDiscussionsPage extends StatelessWidget {
                                       const Text('Created by '),
                                       Text(
                                         topic.creator.username,
-                                        style: TextStyle(color: Get.theme.colorScheme.secondary),
+                                        style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
                                       ),
                                       const Text(' on '),
                                       Text(DateFormat.yMMMd().format(topic.created_at.toLocal()))

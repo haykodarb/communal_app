@@ -37,7 +37,7 @@ class CommunityInvitePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    suffixIconColor: Get.theme.colorScheme.primary,
+                    suffixIconColor: Theme.of(context).colorScheme.primary,
                   ),
                 ),
                 const Divider(height: 30),
@@ -45,7 +45,7 @@ class CommunityInvitePage extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     decoration: BoxDecoration(
-                      border: Border.all(color: Get.theme.colorScheme.primary),
+                      border: Border.all(color: Theme.of(context).colorScheme.primary),
                       borderRadius: BorderRadius.circular(5),
                     ),
                     child: Obx(
@@ -61,12 +61,12 @@ class CommunityInvitePage extends StatelessWidget {
                                     onPressed: () => controller.onSelectedIndexChanged(index),
                                     style: controller.selectedIndex.value == index
                                         ? TextButton.styleFrom(
-                                            foregroundColor: Get.theme.colorScheme.onPrimary,
-                                            backgroundColor: Get.theme.colorScheme.primary,
+                                            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                                            backgroundColor: Theme.of(context).colorScheme.primary,
                                           )
                                         : TextButton.styleFrom(
-                                            foregroundColor: Get.theme.colorScheme.onBackground,
-                                            backgroundColor: Get.theme.colorScheme.background,
+                                            foregroundColor: Theme.of(context).colorScheme.onBackground,
+                                            backgroundColor: Theme.of(context).colorScheme.background,
                                           ),
                                     child: Text(
                                       controller.foundProfiles[index].username,

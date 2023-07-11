@@ -14,27 +14,53 @@ class LoansBorrowedWidget extends StatelessWidget {
       height: 40,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40),
-        child: OutlinedButton(
-          onPressed: loan.accepted
-              ? () {
+        child: Row(
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
                   Get.toNamed(RouteNames.messagesSpecificPage, arguments: {
                     'user': loan.book.owner,
                   });
-                }
-              : () => controller.deleteLoan(loan),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                loan.accepted ? Icons.chat : Icons.close,
+                },
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.chat,
+                    ),
+                    VerticalDivider(width: 5),
+                    Text(
+                      'Chat',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
               ),
-              const VerticalDivider(width: 5),
-              Text(
-                loan.accepted ? 'Chat' : 'Withdraw',
-                style: const TextStyle(fontSize: 16),
+            ),
+            const VerticalDivider(width: 20),
+            Expanded(
+              child: Visibility(
+                visible: !loan.accepted,
+                child: OutlinedButton(
+                  onPressed: () => controller.deleteLoan(loan),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.close,
+                      ),
+                      VerticalDivider(width: 5),
+                      Text(
+                        'Withdraw',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -61,7 +87,7 @@ class LoansBorrowedWidget extends StatelessWidget {
                     itemCount: controller.loans.length,
                     separatorBuilder: (context, index) {
                       return Divider(
-                        color: Get.theme.colorScheme.primary,
+                        color: Theme.of(context).colorScheme.primary,
                         height: 50,
                         thickness: 0.5,
                       );
@@ -80,7 +106,7 @@ class LoansBorrowedWidget extends StatelessWidget {
                               Text(
                                 loan.accepted ? 'Loan approved' : 'Pending approval',
                                 style: TextStyle(
-                                  color: Get.theme.colorScheme.secondary,
+                                  color: Theme.of(context).colorScheme.tertiary,
                                 ),
                               ),
                             ],

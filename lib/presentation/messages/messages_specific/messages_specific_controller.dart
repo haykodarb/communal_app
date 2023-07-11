@@ -123,7 +123,7 @@ class MessagesSpecificController extends GetxController {
     final bool messageExists = messages.any((element) => element.id == message.id);
 
     if (messageExists) {
-      messages.firstWhereOrNull((element) => element.id == message.id)?.is_read = true;
+      messages.firstWhereOrNull((element) => element.id == message.id)?.is_read = message.is_read;
     } else {
       if (message.sender.id != UsersBackend.currentUserId) {
         messages.insert(0, message);

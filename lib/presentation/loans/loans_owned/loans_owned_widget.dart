@@ -137,7 +137,7 @@ class LoansOwnedWidget extends StatelessWidget {
                     itemCount: controller.loans.length,
                     separatorBuilder: (context, index) {
                       return Divider(
-                        color: Get.theme.colorScheme.primary,
+                        color: Theme.of(context).colorScheme.primary,
                         height: 50,
                         thickness: 0.5,
                       );
@@ -156,7 +156,7 @@ class LoansOwnedWidget extends StatelessWidget {
                               Text(
                                 loan.accepted ? 'Loan approved' : 'Pending approval',
                                 style: TextStyle(
-                                  color: Get.theme.colorScheme.secondary,
+                                  color: Theme.of(context).colorScheme.tertiary,
                                 ),
                               ),
                             ],

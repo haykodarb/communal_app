@@ -14,7 +14,7 @@ class CommunityMembersPage extends StatelessWidget {
       child: SizedBox(
         height: 70,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Obx(
             () => CommonLoadingBody(
               loading: user.loading.value,
@@ -25,17 +25,21 @@ class CommunityMembersPage extends StatelessWidget {
                   Text(user.username),
                   Visibility(
                     visible: user.is_admin,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                          20,
-                        ),
-                        border: Border.all(
-                          color: Get.theme.colorScheme.primary,
-                        ),
-                      ),
-                      child: const Text('admin'),
+                    child: Builder(
+                      builder: (context) {
+                        return Container(
+                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                              20,
+                            ),
+                            border: Border.all(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                          child: const Text('admin'),
+                        );
+                      },
                     ),
                   ),
                   Builder(
@@ -48,7 +52,7 @@ class CommunityMembersPage extends StatelessWidget {
                               20,
                             ),
                             border: Border.all(
-                              color: Get.theme.colorScheme.primary,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
                           child: const Text('you'),
@@ -110,15 +114,47 @@ class CommunityMembersPage extends StatelessWidget {
                 onRefresh: controller.loadUsers,
                 child: Obx(
                   () => ListView.separated(
-                    padding: const EdgeInsets.all(30),
+                    padding: const EdgeInsets.all(10),
                     itemCount: controller.listOfMembers.length,
                     separatorBuilder: (context, index) {
                       return const Divider();
                     },
                     itemBuilder: (context, index) {
-                      return _userElement(
-                        controller,
-                        controller.listOfMembers[index],
+                      final Profile member = controller.listOfMembers[index];
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: _userElement(
+                              controller,
+                              member,
+                            ),
+                          ),
+                          Visibility(
+                            visible: member.id != UsersBackend.currentUserId,
+                            child: const VerticalDivider(),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            height: 70,
+                            child: Visibility(
+                              visible: member.id != UsersBackend.currentUserId,
+                              child: IconButton(
+                                onPressed: () {
+                                  Get.toNamed(RouteNames.messagesSpecificPage, arguments: {
+                                    'user': member,
+                                  });
+                                },
+                                icon: Icon(
+                                  Icons.chat,
+                                  color: Theme.of(context).colorScheme.background,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       );
                     },
                   ),

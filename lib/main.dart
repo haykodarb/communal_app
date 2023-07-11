@@ -1,10 +1,11 @@
 import 'package:communal/backend/realtime_backend.dart';
+import 'package:communal/dark_theme.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:communal/routes.dart';
-import 'package:communal/theme.dart';
+import 'package:communal/light_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -34,7 +35,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Kaits',
-      theme: theme,
+      theme: lightTheme,
+      darkTheme: darkTheme,
       onInit: () async {
         if (Supabase.instance.client.auth.currentUser != null) {
           Get.put(CommonDrawerController());
@@ -42,6 +44,7 @@ class MyApp extends StatelessWidget {
           await RealtimeBackend.subscribeToDatabaseChanges();
         }
       },
+      themeMode: ThemeMode.light,
       getPages: routes,
       color: Theme.of(context).colorScheme.background,
       initialRoute:

@@ -19,8 +19,10 @@ class MessagesController extends GetxController {
   StreamSubscription? streamSubscription;
 
   @override
-  void onInit() {
-    super.onInit();
+  void onReady() {
+    super.onReady();
+
+    print('This runs');
 
     final Stream<RealtimeMessage> stream = RealtimeBackend.streamController.stream;
 

@@ -62,7 +62,7 @@ class CommunityHomePage extends StatelessWidget {
                                         alignment: Alignment.center,
                                         icon: Icon(
                                           Icons.more_horiz,
-                                          color: Get.theme.colorScheme.primary,
+                                          color: Theme.of(context).colorScheme.primary,
                                           size: 50,
                                         ),
                                       ),

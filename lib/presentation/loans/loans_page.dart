@@ -20,7 +20,8 @@ class LoansPage extends StatelessWidget {
             appBar: AppBar(
               title: const Text('Loans'),
               bottom: TabBar(
-                indicatorColor: Get.theme.colorScheme.primary,
+                indicatorColor: Theme.of(context).colorScheme.primary,
+                labelColor: Theme.of(context).colorScheme.onSurface,
                 tabs: const <Widget>[
                   Tab(text: 'Owned'),
                   Tab(text: 'Borrowed'),

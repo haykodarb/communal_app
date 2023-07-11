@@ -33,7 +33,7 @@ class LoansCompletedWidget extends StatelessWidget {
                     itemCount: controller.loans.length,
                     separatorBuilder: (context, index) {
                       return Divider(
-                        color: Get.theme.colorScheme.primary,
+                        color: Theme.of(context).colorScheme.primary,
                         height: 50,
                         thickness: 0.5,
                       );
@@ -55,8 +55,8 @@ class LoansCompletedWidget extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 18,
                                     color: loan.loanee.id == UsersBackend.currentUserId
-                                        ? Get.theme.colorScheme.primary
-                                        : Get.theme.colorScheme.secondary,
+                                        ? Theme.of(context).colorScheme.primary
+                                        : Theme.of(context).colorScheme.secondary,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),

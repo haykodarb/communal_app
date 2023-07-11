@@ -8,14 +8,14 @@ import 'package:flutter/material.dart';
 class BookOwnedPage extends StatelessWidget {
   const BookOwnedPage({super.key});
 
-  Widget _currentLoanIndicator(BookOwnedController controller) {
+  Widget _currentLoanIndicator(BookOwnedController controller, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 40),
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           border: Border.all(
-            color: Get.theme.colorScheme.primary,
+            color: Theme.of(context).colorScheme.primary,
             width: 1,
           ),
           borderRadius: BorderRadius.circular(10),
@@ -111,7 +111,7 @@ class BookOwnedPage extends StatelessWidget {
                   ],
                 ),
                 Expanded(
-                  child: _currentLoanIndicator(controller),
+                  child: _currentLoanIndicator(controller, context),
                 ),
               ],
             ),

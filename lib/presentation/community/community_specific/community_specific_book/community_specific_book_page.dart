@@ -12,41 +12,45 @@ class CommunitySpecificBookPage extends StatelessWidget {
   const CommunitySpecificBookPage({super.key});
 
   Widget _tableRow(String title, String text) {
-    return Container(
-      height: 70,
-      decoration: BoxDecoration(
-        color: Get.theme.colorScheme.background,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              flex: 2,
-              child: Text(
-                title,
-                textAlign: TextAlign.end,
-                style: TextStyle(
-                  color: Get.theme.colorScheme.onBackground,
-                  fontSize: 16,
+    return Builder(
+      builder: (context) {
+        return Container(
+          height: 70,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.background,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    title,
+                    textAlign: TextAlign.end,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onBackground,
+                      fontSize: 16,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            const VerticalDivider(width: 20),
-            Expanded(
-              flex: 3,
-              child: Text(
-                text,
-                style: TextStyle(
-                  color: Get.theme.colorScheme.onBackground,
-                  fontSize: 16,
+                const VerticalDivider(width: 20),
+                Expanded(
+                  flex: 3,
+                  child: Text(
+                    text,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onBackground,
+                      fontSize: 16,
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -67,41 +71,45 @@ class CommunitySpecificBookPage extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 20),
         ),
-        Column(
-          children: [
-            Divider(color: Get.theme.colorScheme.primary),
-            _tableRow(
-              'Requested',
-              DateFormat('HH:mm - d MMM y').format(loan.created_at),
-            ),
-            Divider(color: Get.theme.colorScheme.primary),
-            _tableRow(
-              'Status',
-              loan.accepted ? 'Accepted' : 'Pending',
-            ),
-            const Divider(),
-            SizedBox(
-              width: 300,
-              child: ElevatedButton(
-                onPressed: () {
-                  Get.toNamed(
-                    RouteNames.messagesSpecificPage,
-                    arguments: {
-                      'user': controller.book.owner,
-                    },
-                  );
-                },
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.chat),
-                    VerticalDivider(),
-                    Text('Chat'),
-                  ],
+        Builder(
+          builder: (context) {
+            return Column(
+              children: [
+                Divider(color: Theme.of(context).colorScheme.primary),
+                _tableRow(
+                  'Requested',
+                  DateFormat('HH:mm - d MMM y').format(loan.created_at),
                 ),
-              ),
-            ),
-          ],
+                Divider(color: Theme.of(context).colorScheme.primary),
+                _tableRow(
+                  'Status',
+                  loan.accepted ? 'Accepted' : 'Pending',
+                ),
+                const Divider(),
+                SizedBox(
+                  width: 300,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Get.toNamed(
+                        RouteNames.messagesSpecificPage,
+                        arguments: {
+                          'user': controller.book.owner,
+                        },
+                      );
+                    },
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.chat),
+                        VerticalDivider(),
+                        Text('Chat'),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ],
     );
@@ -194,7 +202,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
                           controller.message.value,
                           style: TextStyle(
                             fontSize: 16,
-                            color: Get.theme.colorScheme.error,
+                            color: Theme.of(context).colorScheme.error,
                           ),
                           textAlign: TextAlign.justify,
                         );

@@ -30,6 +30,9 @@ class CommunitySpecificPage extends StatelessWidget {
             () => BottomNavigationBar(
               currentIndex: controller.selectedIndex.value,
               onTap: controller.onBottomNavBarIndexChanged,
+              showUnselectedLabels: false,
+              elevation: 10,
+              useLegacyColorScheme: false,
               items: const <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: Icon(Icons.home),

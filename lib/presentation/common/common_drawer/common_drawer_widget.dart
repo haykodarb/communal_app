@@ -1,3 +1,4 @@
+import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
@@ -22,57 +23,61 @@ class CommonDrawerWidget extends StatelessWidget {
           splashColor: Colors.transparent,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(
-                  icon,
-                  color: Get.theme.colorScheme.onBackground,
-                ),
-                const VerticalDivider(),
-                Expanded(
-                  flex: 4,
-                  child: Container(
-                    alignment: Alignment.centerLeft,
-                    height: 50,
-                    child: Text(
-                      text,
-                      style: TextStyle(
-                        color: Get.theme.colorScheme.onBackground,
-                        fontWeight: FontWeight.w600,
+            child: Builder(
+              builder: (context) {
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(
+                      icon,
+                      color: Theme.of(context).colorScheme.onBackground,
+                    ),
+                    const VerticalDivider(),
+                    Expanded(
+                      flex: 4,
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        height: 50,
+                        child: Text(
+                          text,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onBackground,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                Builder(builder: (context) {
-                  if (notifications == null) return const SizedBox();
-                  return Obx(
-                    () {
-                      if (notifications.value != 0) {
-                        return Container(
-                          width: 25,
-                          height: 25,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            // color: Get.theme.colorScheme.secondary,
-                            border: Border.all(color: Get.theme.colorScheme.secondary),
-                          ),
-                          child: Text(
-                            notifications.value.toString(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Get.theme.colorScheme.secondary,
-                            ),
-                          ),
-                        );
-                      }
-                      return const SizedBox.shrink();
-                    },
-                  );
-                }),
-              ],
+                    Builder(builder: (context) {
+                      if (notifications == null) return const SizedBox();
+                      return Obx(
+                        () {
+                          if (notifications.value != 0) {
+                            return Container(
+                              width: 25,
+                              height: 25,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                // color: Theme.of(context).colorScheme.secondary,
+                                border: Border.all(color: Theme.of(context).colorScheme.secondary),
+                              ),
+                              child: Text(
+                                notifications.value.toString(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.secondary,
+                                ),
+                              ),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      );
+                    }),
+                  ],
+                );
+              },
             ),
           ),
         ),
@@ -86,35 +91,28 @@ class CommonDrawerWidget extends StatelessWidget {
       child: DrawerHeader(
         margin: EdgeInsets.zero,
         padding: EdgeInsets.zero,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-          width: double.maxFinite,
-          color: Get.theme.colorScheme.surface,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              CircleAvatar(
-                minRadius: 20,
-                maxRadius: 40,
-                backgroundColor: Get.theme.colorScheme.secondary,
-                child: Text(
-                  _commonDrawerController.username.substring(0, 2).toUpperCase(),
-                  style: const TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+        child: Builder(
+          builder: (context) {
+            return Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+              width: double.maxFinite,
+              color: Theme.of(context).colorScheme.surface,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  CommonCircularAvatar(username: _commonDrawerController.username, radius: 40),
+                  const VerticalDivider(),
+                  Text(
+                    _commonDrawerController.username,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontSize: 18,
+                    ),
+                  )
+                ],
               ),
-              const VerticalDivider(),
-              Text(
-                _commonDrawerController.username,
-                style: TextStyle(
-                  color: Get.theme.colorScheme.onSurface,
-                  fontSize: 18,
-                ),
-              )
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
@@ -125,12 +123,12 @@ class CommonDrawerWidget extends StatelessWidget {
     return GetBuilder(
       init: _commonDrawerController,
       builder: (CommonDrawerController controller) {
-        final Color dividerColor = Get.theme.colorScheme.surface;
+        final Color dividerColor = Theme.of(context).colorScheme.surface;
 
         return Drawer(
           elevation: 20,
           child: Container(
-            color: Get.theme.colorScheme.background,
+            color: Theme.of(context).colorScheme.background,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -207,8 +205,14 @@ class CommonDrawerWidget extends StatelessWidget {
                         thickness: 2,
                         color: dividerColor,
                       ),
+                      _drawerButton(
+                        icon: Get.isDarkMode ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+                        text: Get.isDarkMode ? 'Light' : 'Dark',
+                        callback: () async {
+                          Get.changeThemeMode(Get.isDarkMode ? ThemeMode.light : ThemeMode.dark);
+                        },
+                      ),
                       const Expanded(child: SizedBox()),
-
                       Divider(
                         thickness: 2,
                         color: dividerColor,

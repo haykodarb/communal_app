@@ -32,10 +32,10 @@ class CommunityListPage extends StatelessWidget {
 
                   if (snapshot.data!.isEmpty) {
                     return Container(
-                      color: Get.theme.colorScheme.primary,
+                      color: Theme.of(context).colorScheme.primary,
                       child: Icon(
                         Icons.groups,
-                        color: Get.theme.colorScheme.background,
+                        color: Theme.of(context).colorScheme.background,
                         size: 150,
                       ),
                     );

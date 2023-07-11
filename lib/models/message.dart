@@ -1,7 +1,7 @@
 import 'package:communal/models/profile.dart';
 
 class Message {
-  final String id;
+  String id;
   final DateTime created_at;
   Profile sender;
   Profile receiver;
