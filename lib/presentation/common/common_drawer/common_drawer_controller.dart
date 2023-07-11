@@ -4,11 +4,13 @@ import 'package:communal/backend/loans_backend.dart';
 import 'package:communal/backend/login_backend.dart';
 import 'package:communal/backend/messages_backend.dart';
 import 'package:communal/backend/realtime_backend.dart';
+import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/message.dart';
 import 'package:communal/models/realtime_message.dart';
 import 'package:communal/routes.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CommonDrawerController extends GetxController {
@@ -95,6 +97,14 @@ class CommonDrawerController extends GetxController {
 
       messageNotifications.value = unreadCount;
     }
+  }
+
+  Future<void> changeThemeMode() async {
+    final ThemeMode newThemeMode = Get.isDarkMode ? ThemeMode.light : ThemeMode.dark;
+
+    Get.changeThemeMode(newThemeMode);
+
+    UserPreferences.setSelectedThemeMode(newThemeMode);
   }
 
   void handleLogout() {

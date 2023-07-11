@@ -208,9 +208,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       _drawerButton(
                         icon: Get.isDarkMode ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
                         text: Get.isDarkMode ? 'Light' : 'Dark',
-                        callback: () async {
-                          Get.changeThemeMode(Get.isDarkMode ? ThemeMode.light : ThemeMode.dark);
-                        },
+                        callback: _commonDrawerController.changeThemeMode,
                       ),
                       const Expanded(child: SizedBox()),
                       Divider(

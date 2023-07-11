@@ -1,4 +1,5 @@
 import 'package:communal/backend/realtime_backend.dart';
+import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/dark_theme.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
 import 'package:flutter/material.dart';
@@ -19,17 +20,25 @@ void main() async {
   );
 
   const loader = SvgAssetLoader('assets/crow.svg');
+
   svg.cache.putIfAbsent(loader.cacheKey(null), () => loader.loadBytes(null));
 
   GoogleFonts.config.allowRuntimeFetching = false;
 
-  runApp(const MyApp());
+  runApp(
+    MyApp(
+      themeMode: await UserPreferences.getSelectedThemeMode(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({
     Key? key,
+    required this.themeMode,
   }) : super(key: key);
+
+  final ThemeMode themeMode;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +53,7 @@ class MyApp extends StatelessWidget {
           await RealtimeBackend.subscribeToDatabaseChanges();
         }
       },
-      themeMode: ThemeMode.light,
+      themeMode: themeMode,
       getPages: routes,
       color: Theme.of(context).colorScheme.background,
       initialRoute:
