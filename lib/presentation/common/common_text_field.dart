@@ -9,7 +9,7 @@ class CommonTextField extends StatefulWidget {
     required this.validator,
     this.minLines = 1,
     this.maxLines = 1,
-    this.maxLength = 30,
+    this.maxLength = 60,
   }) : super(key: key);
 
   final void Function(String) callback;

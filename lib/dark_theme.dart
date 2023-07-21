@@ -16,14 +16,14 @@ const ColorScheme _darkScheme = ColorScheme.dark(
 );
 
 final BottomNavigationBarThemeData _bottomNavigationBarTheme = BottomNavigationBarThemeData(
-  selectedItemColor: _darkScheme.onSurface,
-  unselectedItemColor: _darkScheme.surface,
+  type: BottomNavigationBarType.fixed,
+  selectedItemColor: _darkScheme.primary,
+  unselectedItemColor: _darkScheme.onPrimary,
   elevation: 10,
-  unselectedLabelStyle: TextStyle(color: _darkScheme.surface),
-  selectedLabelStyle: TextStyle(color: _darkScheme.onSurface),
-  type: BottomNavigationBarType.shifting,
-  showUnselectedLabels: true,
-  showSelectedLabels: true,
+  unselectedLabelStyle: TextStyle(color: _darkScheme.onPrimary),
+  selectedLabelStyle: TextStyle(color: _darkScheme.primary),
+  showUnselectedLabels: false,
+  showSelectedLabels: false,
 );
 
 final AppBarTheme _appBarTheme = AppBarTheme(
@@ -150,7 +150,7 @@ final ThemeData darkTheme = ThemeData(
   iconTheme: _iconThemeData,
   appBarTheme: _appBarTheme,
   cardTheme: _cardTheme,
-  canvasColor: _darkScheme.primary,
+  canvasColor: _darkScheme.background,
   disabledColor: _darkScheme.onBackground,
   scaffoldBackgroundColor: _darkScheme.background,
   floatingActionButtonTheme: _floatingActionButtonThemeData,

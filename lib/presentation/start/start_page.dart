@@ -88,6 +88,28 @@ class StartPage extends StatelessWidget {
                   _loginButton(controller),
                   const Divider(height: 30),
                   _registerButton(controller),
+                  const Divider(height: 20),
+                  TextButton(
+                    child: const Text(
+                      'Forgot password?',
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                    onPressed: () {},
+                  ),
+                  // const Divider(height: 20),
+                  TextButton(
+                    child: const Text(
+                      'Resend confirmation',
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                    onPressed: () {},
+                  ),
                 ],
               ),
             ),

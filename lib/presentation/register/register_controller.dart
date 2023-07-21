@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:communal/backend/register_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/register_form.dart';
-import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:string_validator/string_validator.dart';
 
@@ -14,6 +13,8 @@ class RegisterController extends GetxController {
   ).obs;
 
   final RxBool loading = false.obs;
+
+  final RxBool submitted = false.obs;
 
   final RxString errorMessage = ''.obs;
 
@@ -93,7 +94,7 @@ class RegisterController extends GetxController {
       loading.value = false;
 
       if (response.success) {
-        Get.offAllNamed(RouteNames.startPage);
+        submitted.value = true;
       } else {
         errorMessage.value = response.payload;
       }

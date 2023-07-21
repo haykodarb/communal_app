@@ -8,7 +8,7 @@ const ColorScheme _lightScheme = ColorScheme.light(
   secondary: Color(0xFFebbcba),
   tertiary: Color(0xFFEC9B98),
   onBackground: Color(0xFF0F1F1B),
-  onPrimary: Color(0xFFffffff),
+  onPrimary: Color(0xFF0F1F1B),
   onSecondary: Color(0xFF0F1F1B),
   onTertiary: Color(0xFF0F1F1B),
   onSurface: Color(0xFF0F1F1B),
@@ -16,15 +16,15 @@ const ColorScheme _lightScheme = ColorScheme.light(
 );
 
 final BottomNavigationBarThemeData _bottomNavigationBarTheme = BottomNavigationBarThemeData(
-  selectedItemColor: _lightScheme.background,
-  unselectedItemColor: _lightScheme.onSurface,
+  type: BottomNavigationBarType.fixed,
+  selectedItemColor: _lightScheme.primary,
+  unselectedItemColor: _lightScheme.onPrimary,
   backgroundColor: _lightScheme.primary,
   elevation: 10,
-  unselectedLabelStyle: TextStyle(color: _lightScheme.onBackground),
-  selectedLabelStyle: TextStyle(color: _lightScheme.background),
-  type: BottomNavigationBarType.shifting,
-  showUnselectedLabels: true,
-  showSelectedLabels: true,
+  unselectedLabelStyle: TextStyle(color: _lightScheme.onPrimary),
+  selectedLabelStyle: TextStyle(color: _lightScheme.primary),
+  showUnselectedLabels: false,
+  showSelectedLabels: false,
 );
 
 final AppBarTheme _appBarTheme = AppBarTheme(
@@ -154,7 +154,7 @@ final ThemeData lightTheme = ThemeData(
   iconTheme: _iconThemeData,
   appBarTheme: _appBarTheme,
   cardTheme: _cardTheme,
-  canvasColor: _lightScheme.primary,
+  canvasColor: _lightScheme.background,
   disabledColor: _lightScheme.onBackground,
   scaffoldBackgroundColor: _lightScheme.background,
   floatingActionButtonTheme: _floatingActionButtonThemeData,
