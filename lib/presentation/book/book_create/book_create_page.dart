@@ -1,14 +1,147 @@
 import 'dart:io';
-
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/book/book_create/book_create_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 class BookCreatePage extends StatelessWidget {
   const BookCreatePage({super.key});
+
+  Widget _availableForLoansPrompt(BookCreateController controller) {
+    return Builder(
+      builder: (context) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Available for loans?',
+              style: TextStyle(fontSize: 16),
+            ),
+            const Divider(),
+            ToggleSwitch(
+              minWidth: 60,
+              minHeight: 40,
+              cornerRadius: 4,
+              borderColor: [Theme.of(context).colorScheme.onBackground],
+              borderWidth: 0.75,
+              activeBgColors: [
+                [Theme.of(context).colorScheme.primary],
+                [Theme.of(context).colorScheme.error]
+              ],
+              activeFgColor: Theme.of(context).colorScheme.onBackground,
+              inactiveBgColor: Theme.of(context).colorScheme.surface,
+              inactiveFgColor: Theme.of(context).colorScheme.onBackground,
+              initialLabelIndex: 0,
+              totalSwitches: 2,
+              iconSize: 60,
+              icons: const [Icons.check, Icons.close],
+              radiusStyle: true,
+              onToggle: controller.onAvailableChange,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _alreadyReadPrompt(BookCreateController controller) {
+    return Builder(
+      builder: (context) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Already read?',
+              style: TextStyle(fontSize: 16),
+            ),
+            const Divider(),
+            ToggleSwitch(
+              minWidth: 60,
+              minHeight: 40,
+              cornerRadius: 4,
+              borderColor: [Theme.of(context).colorScheme.onBackground],
+              borderWidth: 0.75,
+              activeBgColors: [
+                [Theme.of(context).colorScheme.primary],
+                [Theme.of(context).colorScheme.error]
+              ],
+              activeFgColor: Theme.of(context).colorScheme.onBackground,
+              inactiveBgColor: Theme.of(context).colorScheme.surface,
+              inactiveFgColor: Theme.of(context).colorScheme.onBackground,
+              initialLabelIndex: 1,
+              totalSwitches: 2,
+              iconSize: 60,
+              icons: const [Icons.check, Icons.close],
+              radiusStyle: true,
+              onToggle: controller.onReadChange,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _addReviewPrompt(BookCreateController controller) {
+    return Obx(
+      () => Visibility(
+        visible: controller.allowReview.value,
+        child: Builder(
+          builder: (context) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Add a review?',
+                  style: TextStyle(fontSize: 16),
+                ),
+                const Divider(),
+                ToggleSwitch(
+                  minWidth: 60,
+                  minHeight: 40,
+                  cornerRadius: 4,
+                  borderColor: [Theme.of(context).colorScheme.onBackground],
+                  borderWidth: 0.75,
+                  activeBgColors: [
+                    [Theme.of(context).colorScheme.primary],
+                    [Theme.of(context).colorScheme.error]
+                  ],
+                  activeFgColor: Theme.of(context).colorScheme.onBackground,
+                  inactiveBgColor: Theme.of(context).colorScheme.surface,
+                  inactiveFgColor: Theme.of(context).colorScheme.onBackground,
+                  initialLabelIndex: 1,
+                  totalSwitches: 2,
+                  iconSize: 60,
+                  icons: const [Icons.check, Icons.close],
+                  radiusStyle: true,
+                  onToggle: controller.onAddReviewChange,
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _reviewTextInput(BookCreateController controller) {
+    return Obx(
+      () {
+        return Visibility(
+          visible: controller.addingReview.value,
+          child: CommonTextField(
+            callback: controller.onReviewTextChange,
+            label: 'Review',
+            validator: (String? value) => controller.stringValidator(value, 10),
+            maxLength: 100,
+            maxLines: 4,
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +164,7 @@ class BookCreatePage extends StatelessWidget {
                     children: [
                       Container(
                         padding: EdgeInsets.zero,
-                        height: 300,
+                        height: 250,
                         child: Row(
                           children: [
                             Expanded(
@@ -53,7 +186,7 @@ class BookCreatePage extends StatelessWidget {
                                             padding: EdgeInsets.all(8.0),
                                             child: Center(
                                               child: Text(
-                                                'Add\nimage',
+                                                'No\nimage',
                                                 style: TextStyle(fontSize: 20),
                                                 textAlign: TextAlign.center,
                                               ),
@@ -96,7 +229,7 @@ class BookCreatePage extends StatelessWidget {
                       CommonTextField(
                         callback: controller.onTitleChange,
                         label: 'Title',
-                        validator: controller.stringValidator,
+                        validator: (String? value) => controller.stringValidator(value, 3),
                         maxLength: 100,
                         maxLines: 2,
                       ),
@@ -104,31 +237,27 @@ class BookCreatePage extends StatelessWidget {
                       CommonTextField(
                         callback: controller.onAuthorChange,
                         label: 'Author',
-                        validator: controller.stringValidator,
+                        validator: (String? value) => controller.stringValidator(value, 3),
                       ),
                       const Divider(),
-                      SizedBox(
-                        height: 70,
-                        child: Obx(
-                          () => CommonLoadingBody(
+                      _availableForLoansPrompt(controller),
+                      const Divider(),
+                      _alreadyReadPrompt(controller),
+                      const Divider(),
+                      _addReviewPrompt(controller),
+                      const Divider(),
+                      _reviewTextInput(controller),
+                      const Divider(height: 30),
+                      Obx(
+                        () {
+                          return CommonLoadingBody(
                             loading: controller.loading.value,
-                            size: 40,
-                            child: Obx(
-                              () => Text(
-                                controller.errorMessage.value,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Theme.of(context).colorScheme.error,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
+                            child: ElevatedButton(
+                              onPressed: controller.onSubmitButton,
+                              child: const Text('Add'),
                             ),
-                          ),
-                        ),
-                      ),
-                      ElevatedButton(
-                        onPressed: controller.onSubmitButton,
-                        child: const Text('Add'),
+                          );
+                        },
                       ),
                     ],
                   ),

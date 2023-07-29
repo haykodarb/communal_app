@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
+import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,7 +10,9 @@ import 'package:image_picker/image_picker.dart';
 class BookCreateController extends GetxController {
   final Rx<Book> bookForm = Book.empty().obs;
 
-  final RxString errorMessage = ''.obs;
+  final RxBool allowReview = false.obs;
+  final RxBool addingReview = false.obs;
+
   final RxBool loading = false.obs;
 
   final ImagePicker imagePicker = ImagePicker();
@@ -20,6 +23,8 @@ class BookCreateController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
+
+    bookForm.value.available = true;
   }
 
   Future<void> takePicture(ImageSource source) async {
@@ -34,6 +39,46 @@ class BookCreateController extends GetxController {
     if (pickedImage == null) return;
 
     selectedFile.value = File(pickedImage.path);
+  }
+
+  void onAddReviewChange(int? index) {
+    if (index == 0) {
+      addingReview.value = true;
+    } else {
+      addingReview.value = false;
+
+      bookForm.update(
+        (Book? val) {
+          val!.review = null;
+        },
+      );
+    }
+  }
+
+  void onReviewTextChange(String? value) {
+    bookForm.update(
+      (Book? val) {
+        val!.review = value;
+      },
+    );
+  }
+
+  void onAvailableChange(int? index) {
+    bookForm.update(
+      (Book? val) {
+        val!.available = index == 0 ? true : false;
+      },
+    );
+  }
+
+  void onReadChange(int? index) {
+    allowReview.value = index == 0;
+
+    bookForm.update(
+      (Book? val) {
+        val!.read = index == 0 ? true : false;
+      },
+    );
   }
 
   void onTitleChange(String value) {
@@ -52,13 +97,13 @@ class BookCreateController extends GetxController {
     );
   }
 
-  String? stringValidator(String? value) {
+  String? stringValidator(String? value, int length) {
     if (value == null || value.isEmpty) {
       return 'Please enter something.';
     }
 
-    if (value.length < 4) {
-      return 'Must be at least 4 characters long.';
+    if (value.length < length) {
+      return 'Must be at least $length characters long.';
     }
 
     return null;
@@ -67,10 +112,9 @@ class BookCreateController extends GetxController {
   Future<void> onSubmitButton() async {
     if (formKey.currentState!.validate()) {
       loading.value = true;
-      errorMessage.value = '';
 
       if (selectedFile.value == null) {
-        errorMessage.value = 'Please add a book cover image.';
+        Get.dialog(const CommonAlertDialog(title: 'Please add a book cover image.'));
         loading.value = false;
         return;
       }
@@ -83,13 +127,11 @@ class BookCreateController extends GetxController {
       loading.value = false;
 
       if (response.success) {
-        errorMessage.value = 'Book added.';
-
         Get.back<Book>(
           result: response.payload,
         );
       } else {
-        errorMessage.value = 'Adding book failed.';
+        Get.dialog(const CommonAlertDialog(title: 'Network error, please try again.'));
       }
     }
   }

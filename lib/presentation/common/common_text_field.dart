@@ -42,11 +42,14 @@ class _CustomTextFieldState extends State<CommonTextField> {
       maxLines: widget.maxLines,
       maxLength: widget.maxLength,
       decoration: InputDecoration(
+        counter: const SizedBox.shrink(),
         suffixIcon: widget.isPassword
             ? IconButton(
                 icon: Icon(
                   isVisible ? Icons.visibility : Icons.visibility_off,
-                  color: isVisible ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.primary,
+                  color: isVisible
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.primary,
                 ),
                 onPressed: () {
                   setState(

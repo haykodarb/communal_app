@@ -9,8 +9,6 @@ class RegisterPage extends StatelessWidget {
   const RegisterPage({Key? key}) : super(key: key);
 
   Widget _registerForm(RegisterController controller) {
-    final BuildContext context = Get.context!;
-
     return Form(
       key: controller.formKey,
       child: Column(
@@ -21,42 +19,49 @@ class RegisterPage extends StatelessWidget {
             callback: controller.onEmailChange,
             label: 'Email',
           ),
-          const Divider(color: Colors.transparent),
+          const Divider(),
           CommonTextField(
             validator: controller.usernameValidator,
             callback: controller.onUsernameChange,
             label: 'Username',
           ),
-          const Divider(color: Colors.transparent),
+          const Divider(),
           CommonTextField(
             validator: controller.passwordValidator,
             callback: controller.onPasswordChange,
             label: 'Password',
             isPassword: true,
           ),
-          const Divider(color: Colors.transparent),
-          SizedBox(
-            height: 70,
-            child: Obx(
-              () => CommonLoadingBody(
-                loading: controller.loading.value,
-                size: 40,
-                child: Obx(
-                  () => Text(
-                    controller.errorMessage.value,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).colorScheme.error,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+          const Divider(),
+          Container(
+            alignment: Alignment.centerRight,
+            height: 50,
+            width: double.maxFinite,
+            child: TextButton(
+              child: Text(
+                'Resend confirmation',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: Theme.of(Get.context!).colorScheme.onBackground,
                 ),
+                textAlign: TextAlign.right,
               ),
+              onPressed: () {
+                Get.toNamed(RouteNames.registerResendPage);
+              },
             ),
           ),
-          ElevatedButton(
-            onPressed: controller.onSubmitButton,
-            child: const Text('Register'),
+          const Divider(),
+          Obx(
+            () => CommonLoadingBody(
+              loading: controller.loading.value,
+              size: 40,
+              child: ElevatedButton(
+                onPressed: controller.onSubmitButton,
+                child: const Text('Register'),
+              ),
+            ),
           ),
         ],
       ),
@@ -113,12 +118,14 @@ class RegisterPage extends StatelessWidget {
                           const Divider(height: 20),
                           TextButton(
                             child: const Text(
-                              'Resend email',
+                              'Resend confirmation',
                               style: TextStyle(
                                 fontSize: 20,
                               ),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Get.toNamed(RouteNames.registerResendPage);
+                            },
                           ),
                         ],
                       ),

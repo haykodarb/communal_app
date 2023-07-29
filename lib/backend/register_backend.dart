@@ -7,8 +7,11 @@ class RegisterBackend {
     try {
       final SupabaseClient client = Supabase.instance.client;
 
-      final Map<String, dynamic>? foundUsername =
-          await client.from('profiles').select<Map<String, dynamic>?>().eq('username', form.username).maybeSingle();
+      final Map<String, dynamic>? foundUsername = await client
+          .from('profiles')
+          .select<Map<String, dynamic>?>()
+          .eq('username', form.username)
+          .maybeSingle();
 
       if (foundUsername != null) {
         return BackendResponse(
@@ -41,11 +44,14 @@ class RegisterBackend {
     try {
       final SupabaseClient client = Supabase.instance.client;
 
-      await client.auth.resend(type: OtpType.email, email: email);
+      final ResendResponse response = await client.auth.resend(
+        type: OtpType.email,
+        email: email,
+      );
 
-      return BackendResponse(success: true, payload: null);
-    } catch (e) {
-      return BackendResponse(success: false, payload: e);
+      return BackendResponse(success: true, payload: response.messageId);
+    } catch (error) {
+      return BackendResponse(success: false, payload: error);
     }
   }
 }

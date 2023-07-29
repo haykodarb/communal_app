@@ -7,18 +7,7 @@ import 'package:communal/presentation/login/login_controller.dart';
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
 
-  Widget _loginButton(LoginController controller) {
-    return ElevatedButton(
-      onPressed: controller.loginButtonCallback,
-      child: const Text(
-        'Login',
-      ),
-    );
-  }
-
   Widget _loginForm(LoginController controller) {
-    final BuildContext context = Get.context!;
-
     return Form(
       key: controller.formKey,
       child: Column(
@@ -36,27 +25,35 @@ class LoginPage extends StatelessWidget {
             label: 'Password',
             isPassword: true,
           ),
-          const Divider(color: Colors.transparent),
-          SizedBox(
-            height: 70,
-            child: Obx(
-              () => CommonLoadingBody(
-                loading: controller.loading.value,
-                size: 40,
-                child: Obx(
-                  () => Text(
-                    controller.errorMessage.value,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).colorScheme.error,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+          const Divider(),
+          Container(
+            alignment: Alignment.centerRight,
+            height: 50,
+            width: double.maxFinite,
+            child: TextButton(
+              child: Text(
+                'Forgot password?',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: Theme.of(Get.context!).colorScheme.onBackground,
                 ),
+                textAlign: TextAlign.right,
+              ),
+              onPressed: () {},
+            ),
+          ),
+          const Divider(),
+          Obx(
+            () => CommonLoadingBody(
+              loading: controller.loading.value,
+              size: 40,
+              child: ElevatedButton(
+                onPressed: controller.loginButtonCallback,
+                child: const Text('Login'),
               ),
             ),
           ),
-          _loginButton(controller),
         ],
       ),
     );

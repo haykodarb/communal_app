@@ -68,7 +68,9 @@ class BookListPage extends StatelessWidget {
                                 book: book,
                                 textChildren: [
                                   Text(book.author),
-                                  Text(book.is_loaned ? 'Loaned' : 'Available'),
+                                  Text(
+                                    book.available ? 'Available' : 'Unavailable',
+                                  ),
                                 ],
                               ),
                             );

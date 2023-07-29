@@ -1,3 +1,4 @@
+import 'package:communal/backend/user_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -80,36 +81,41 @@ class StartPage extends StatelessWidget {
                 vertical: 50,
               ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  Row(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          final ThemeMode newThemeMode = Get.isDarkMode ? ThemeMode.light : ThemeMode.dark;
+
+                          Get.changeThemeMode(newThemeMode);
+
+                          UserPreferences.setSelectedThemeMode(newThemeMode);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Get.isDarkMode ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+                              ),
+                              const VerticalDivider(),
+                              Text(Get.isDarkMode ? 'Light Theme' : 'Dark Theme'),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Divider(height: 30),
                   _logo(),
                   const Divider(height: 30),
                   _loginButton(controller),
                   const Divider(height: 30),
                   _registerButton(controller),
-                  const Divider(height: 20),
-                  TextButton(
-                    child: const Text(
-                      'Forgot password?',
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                      textAlign: TextAlign.right,
-                    ),
-                    onPressed: () {},
-                  ),
-                  // const Divider(height: 20),
-                  TextButton(
-                    child: const Text(
-                      'Resend confirmation',
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                      textAlign: TextAlign.right,
-                    ),
-                    onPressed: () {},
-                  ),
+                  const Expanded(child: SizedBox()),
                 ],
               ),
             ),

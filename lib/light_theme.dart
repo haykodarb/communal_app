@@ -8,7 +8,7 @@ const ColorScheme _lightScheme = ColorScheme.light(
   secondary: Color(0xFFebbcba),
   tertiary: Color(0xFFEC9B98),
   onBackground: Color(0xFF0F1F1B),
-  onPrimary: Color(0xFF0F1F1B),
+  onPrimary: Color(0xFFffffff),
   onSecondary: Color(0xFF0F1F1B),
   onTertiary: Color(0xFF0F1F1B),
   onSurface: Color(0xFF0F1F1B),

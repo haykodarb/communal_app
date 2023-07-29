@@ -6,8 +6,10 @@ class Book {
   String author;
   String title;
   String image_path;
+  String? review;
   Profile owner;
-  bool is_loaned;
+  bool available;
+  bool read;
 
   RxBool loading = false.obs;
 
@@ -17,7 +19,9 @@ class Book {
     required this.title,
     required this.owner,
     required this.image_path,
-    required this.is_loaned,
+    required this.available,
+    required this.read,
+    required this.review,
   });
 
   Book.fromMap(Map<String, dynamic> map)
@@ -28,7 +32,9 @@ class Book {
           username: map['profiles']['username'],
           id: map['profiles']['id'],
         ),
-        is_loaned = map['is_loaned'],
+        available = map['available'],
+        read = map['read'],
+        review = map['review'],
         image_path = map['image_path'];
 
   Book.empty()
@@ -36,6 +42,7 @@ class Book {
         title = '',
         author = '',
         image_path = '',
-        is_loaned = false,
+        available = false,
+        read = false,
         owner = Profile(username: '', id: '');
 }

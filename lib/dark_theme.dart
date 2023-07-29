@@ -2,25 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 const ColorScheme _darkScheme = ColorScheme.dark(
-  background: Color(0xFF191724),
-  surface: Color(0xFF1f1d2e),
-  primary: Color(0xFF92BFB1),
+  // background: Color(0xFF191724),
+  // surface: Color(0xFF1f1d2e),
+  background: Color(0xFF0F0F19),
+  surface: Color(0xFF141422),
+  primary: Color(0xFF84BDAB),
   secondary: Color(0xFFebbcba),
   tertiary: Color(0xFFEC9B98),
+  error: Color(0xFFeb6f92),
   onBackground: Color(0xFFFFFFFF),
-  onPrimary: Color(0xFFFFFFFF),
+  onPrimary: Color(0xFF0F0F19),
   onSecondary: Color(0xFFFFFFFF),
   onTertiary: Color(0xFFFFFFFF),
   onSurface: Color(0xFFFFFFFF),
-  error: Color(0xFFeb6f92),
+  onError: Color(0xFFFFFFFF),
 );
 
 final BottomNavigationBarThemeData _bottomNavigationBarTheme = BottomNavigationBarThemeData(
   type: BottomNavigationBarType.fixed,
   selectedItemColor: _darkScheme.primary,
-  unselectedItemColor: _darkScheme.onPrimary,
+  unselectedItemColor: _darkScheme.onBackground,
   elevation: 10,
-  unselectedLabelStyle: TextStyle(color: _darkScheme.onPrimary),
+  unselectedLabelStyle: TextStyle(color: _darkScheme.onBackground),
   selectedLabelStyle: TextStyle(color: _darkScheme.primary),
   showUnselectedLabels: false,
   showSelectedLabels: false,

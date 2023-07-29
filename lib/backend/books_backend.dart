@@ -37,6 +37,9 @@ class BooksBackend {
             'author': book.author,
             'owner': client.auth.currentUser!.id,
             'image_path': pathToUpload,
+            'available': book.available,
+            'read': book.read,
+            'review': book.review,
           },
         )
         .select('*, profiles(*)')

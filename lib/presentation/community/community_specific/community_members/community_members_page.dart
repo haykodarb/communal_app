@@ -14,7 +14,7 @@ class CommunityMembersPage extends StatelessWidget {
       child: SizedBox(
         height: 70,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.only(left: 20, right: user.id == UsersBackend.currentUserId ? 20 : 10),
           child: Obx(
             () => CommonLoadingBody(
               loading: user.loading.value,
@@ -59,7 +59,8 @@ class CommunityMembersPage extends StatelessWidget {
                         );
                       }
 
-                      if (controller.community.isCurrentUserAdmin != null && controller.community.isCurrentUserAdmin!) {
+                      if (controller.community.isCurrentUserAdmin != null &&
+                          controller.community.isCurrentUserAdmin!) {
                         return PopupMenuButton(
                           itemBuilder: (context) {
                             return <PopupMenuEntry>[
@@ -131,25 +132,28 @@ class CommunityMembersPage extends StatelessWidget {
                           ),
                           Visibility(
                             visible: member.id != UsersBackend.currentUserId,
-                            child: const VerticalDivider(),
+                            child: const VerticalDivider(width: 10),
                           ),
                           Container(
                             decoration: BoxDecoration(
-                              shape: BoxShape.circle,
                               color: Theme.of(context).colorScheme.primary,
+                              borderRadius: BorderRadius.circular(5),
                             ),
                             height: 70,
                             child: Visibility(
                               visible: member.id != UsersBackend.currentUserId,
                               child: IconButton(
                                 onPressed: () {
-                                  Get.toNamed(RouteNames.messagesSpecificPage, arguments: {
-                                    'user': member,
-                                  });
+                                  Get.toNamed(
+                                    RouteNames.messagesSpecificPage,
+                                    arguments: {
+                                      'user': member,
+                                    },
+                                  );
                                 },
                                 icon: Icon(
-                                  Icons.chat,
-                                  color: Theme.of(context).colorScheme.background,
+                                  Icons.chat_outlined,
+                                  color: Theme.of(context).colorScheme.surface,
                                 ),
                               ),
                             ),

@@ -14,6 +14,7 @@ import 'package:communal/presentation/book/book_owned/book_owned_page.dart';
 import 'package:communal/presentation/book/book_list_page.dart';
 import 'package:communal/presentation/messages/messages_specific/messages_specific_page.dart';
 import 'package:communal/presentation/register/register_page.dart';
+import 'package:communal/presentation/register/register_resend/register_resend_page.dart';
 import 'package:communal/presentation/start/start_page.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
@@ -22,6 +23,7 @@ class RouteNames {
   static const String startPage = '/start';
   static const String loginPage = '/login';
   static const String registerPage = '/register';
+  static const String registerResendPage = '/register/resend';
   static const String dashboardPage = '/dashboard';
   static const String bookListPage = '/book';
   static const String bookCreatePage = '/book/create';
@@ -56,6 +58,14 @@ final List<GetPage> routes = <GetPage>[
   GetPage<dynamic>(
     name: RouteNames.registerPage,
     page: () => const RegisterPage(),
+    transition: Transition.downToUp,
+    transitionDuration: const Duration(
+      milliseconds: 300,
+    ),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.registerResendPage,
+    page: () => const RegisterResendPage(),
     transition: Transition.downToUp,
     transitionDuration: const Duration(
       milliseconds: 300,

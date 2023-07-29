@@ -11,11 +11,13 @@ class CommonBookCard extends StatelessWidget {
     required this.book,
     required this.textChildren,
     this.height = 200,
+    this.elevation,
   });
 
   final Book book;
   final List<Text> textChildren;
   final double height;
+  final double? elevation;
 
   Widget _loadingBookIndicator() {
     return Builder(
@@ -38,6 +40,7 @@ class CommonBookCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       clipBehavior: Clip.hardEdge,
+      elevation: elevation,
       child: SizedBox(
         height: height,
         child: Obx(
