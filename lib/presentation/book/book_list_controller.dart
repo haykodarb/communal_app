@@ -33,6 +33,15 @@ class BookListController extends GetxController {
     }
   }
 
+  Future<void> updateBook(Book book) async {
+    final int indexOfBook = userBooks.indexWhere((element) => element.id == book.id);
+
+    if (indexOfBook >= 0) {
+      userBooks[indexOfBook] = book;
+      userBooks.refresh();
+    }
+  }
+
   Future<void> reloadBooks() async {
     loading.value = true;
     final BackendResponse response = await BooksBackend.getAllBooksForUser();

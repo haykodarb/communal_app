@@ -54,26 +54,42 @@ class CommonBookCard extends StatelessWidget {
               children: [
                 AspectRatio(
                   aspectRatio: 3 / 4,
-                  child: SizedBox(
-                    child: FutureBuilder(
-                      future: BooksBackend.getBookCover(book),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return const CommonLoadingImage();
-                        }
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      FutureBuilder(
+                        future: BooksBackend.getBookCover(book),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return const CommonLoadingImage();
+                          }
 
-                        return Image.memory(
-                          snapshot.data!,
-                          fit: BoxFit.cover,
-                        );
-                      },
-                    ),
+                          return Image.memory(
+                            snapshot.data!,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.transparent,
+                              Theme.of(context).colorScheme.surface,
+                            ],
+                            begin: const Alignment(0.25, 0),
+                            end: const Alignment(1, 0),
+                            stops: const [0, 1],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const VerticalDivider(),
+                const VerticalDivider(width: 10),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,7 +97,7 @@ class CommonBookCard extends StatelessWidget {
                         Text(
                           book.title,
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 18,
                             color: Theme.of(context).colorScheme.onSurface,
                             fontWeight: FontWeight.bold,
                           ),

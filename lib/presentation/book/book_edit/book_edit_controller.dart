@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-class BookCreateController extends GetxController {
+class BookEditController extends GetxController {
+  final Book inheritedBook = Get.arguments['book'];
+
   final Rx<Book> bookForm = Book.empty().obs;
 
   final RxBool allowReview = false.obs;
@@ -24,7 +26,12 @@ class BookCreateController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
 
-    bookForm.value.available = true;
+    bookForm.value = inheritedBook;
+
+    allowReview.value = inheritedBook.read;
+    addingReview.value = inheritedBook.review != null;
+
+    bookForm.refresh();
   }
 
   Future<void> takePicture(ImageSource source) async {
@@ -117,15 +124,9 @@ class BookCreateController extends GetxController {
     if (formKey.currentState!.validate()) {
       loading.value = true;
 
-      if (selectedFile.value == null) {
-        Get.dialog(const CommonAlertDialog(title: 'Please add a book cover image.'));
-        loading.value = false;
-        return;
-      }
-
-      final BackendResponse response = await BooksBackend.addBook(
+      final BackendResponse response = await BooksBackend.updateBook(
         bookForm.value,
-        File(selectedFile.value!.path),
+        selectedFile.value == null ? null : File(selectedFile.value!.path),
       );
 
       loading.value = false;

@@ -116,6 +116,24 @@ class LoansOwnedWidget extends StatelessWidget {
     );
   }
 
+  Widget _loanCard(Loan loan) {
+    return Builder(
+      builder: (BuildContext context) {
+        return InkWell(
+          child: Card(
+            child: Padding(
+              padding: EdgeInsets.all(15),
+              child: Column(children: [
+                Text(loan.book.title),
+                Text('Requested by ${loan.loanee.username}'),
+              ]),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
@@ -146,21 +164,22 @@ class LoansOwnedWidget extends StatelessWidget {
                       final Loan loan = controller.loans[index];
                       return Column(
                         children: [
-                          CommonBookCard(
-                            book: loan.book,
-                            height: 225,
-                            textChildren: [
-                              Text(loan.book.author),
-                              Text(loan.loanee.username),
-                              Text(loan.community.name),
-                              Text(
-                                loan.accepted ? 'Loan approved' : 'Pending approval',
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.tertiary,
-                                ),
-                              ),
-                            ],
-                          ),
+                          _loanCard(loan),
+                          // CommonBookCard(
+                          //   book: loan.book,
+                          //   height: 225,
+                          //   textChildren: [
+                          //     Text(loan.book.author),
+                          //     Text(loan.loanee.username),
+                          //     Text(loan.community.name),
+                          //     Text(
+                          //       loan.accepted ? 'Loan approved' : 'Pending approval',
+                          //       style: TextStyle(
+                          //         color: Theme.of(context).colorScheme.tertiary,
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
                           const Divider(),
                           _actionButtons(controller, loan),
                         ],

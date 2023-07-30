@@ -59,8 +59,7 @@ class CommunityMembersPage extends StatelessWidget {
                         );
                       }
 
-                      if (controller.community.isCurrentUserAdmin != null &&
-                          controller.community.isCurrentUserAdmin!) {
+                      if (controller.community.isCurrentUserAdmin != null && controller.community.isCurrentUserAdmin!) {
                         return PopupMenuButton(
                           itemBuilder: (context) {
                             return <PopupMenuEntry>[
@@ -153,7 +152,7 @@ class CommunityMembersPage extends StatelessWidget {
                                 },
                                 icon: Icon(
                                   Icons.chat_outlined,
-                                  color: Theme.of(context).colorScheme.surface,
+                                  color: Theme.of(context).colorScheme.onPrimary,
                                 ),
                               ),
                             ),

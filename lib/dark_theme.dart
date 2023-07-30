@@ -5,14 +5,14 @@ const ColorScheme _darkScheme = ColorScheme.dark(
   // background: Color(0xFF191724),
   // surface: Color(0xFF1f1d2e),
   background: Color(0xFF0F0F19),
-  surface: Color(0xFF141422),
+  surface: Color(0xFF1f1d2e),
   primary: Color(0xFF84BDAB),
   secondary: Color(0xFFebbcba),
   tertiary: Color(0xFFEC9B98),
   error: Color(0xFFeb6f92),
   onBackground: Color(0xFFFFFFFF),
   onPrimary: Color(0xFF0F0F19),
-  onSecondary: Color(0xFFFFFFFF),
+  onSecondary: Color(0xFF0F0F19),
   onTertiary: Color(0xFFFFFFFF),
   onSurface: Color(0xFFFFFFFF),
   onError: Color(0xFFFFFFFF),
@@ -30,7 +30,8 @@ final BottomNavigationBarThemeData _bottomNavigationBarTheme = BottomNavigationB
 );
 
 final AppBarTheme _appBarTheme = AppBarTheme(
-  backgroundColor: _darkScheme.surface,
+  backgroundColor: _darkScheme.background,
+  elevation: 1,
   iconTheme: const IconThemeData(
     size: 30,
   ),

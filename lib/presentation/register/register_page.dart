@@ -39,7 +39,7 @@ class RegisterPage extends StatelessWidget {
             width: double.maxFinite,
             child: TextButton(
               child: Text(
-                'Resend confirmation',
+                'Resend confirmation?',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
@@ -118,7 +118,7 @@ class RegisterPage extends StatelessWidget {
                           const Divider(height: 20),
                           TextButton(
                             child: const Text(
-                              'Resend confirmation',
+                              'Resend confirmation?',
                               style: TextStyle(
                                 fontSize: 20,
                               ),

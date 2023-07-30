@@ -14,6 +14,55 @@ class BooksBackend {
     return bytes;
   }
 
+  static Future<BackendResponse> updateBook(Book book, File? image) async {
+    try {
+      final SupabaseClient client = Supabase.instance.client;
+
+      final String userId = client.auth.currentUser!.id;
+      final String currentTime = DateTime.now().millisecondsSinceEpoch.toString();
+
+      String fileName;
+
+      if (image != null) {
+        final String imageExtension = image.path.split('.').last;
+
+        fileName = '/$userId/$currentTime.$imageExtension';
+
+        await client.storage.from('book_covers').upload(
+              fileName,
+              image,
+              retryAttempts: 5,
+            );
+      } else {
+        fileName = book.image_path;
+      }
+
+      final Map<String, dynamic> response = await client
+          .from('books')
+          .update(
+            {
+              'title': book.title,
+              'author': book.author,
+              'owner': client.auth.currentUser!.id,
+              'image_path': fileName,
+              'available': book.available,
+              'read': book.read,
+              'review': book.review,
+            },
+          )
+          .eq('id', book.id)
+          .select('*, profiles(*)')
+          .single();
+
+      return BackendResponse(
+        success: response.isNotEmpty,
+        payload: response.isNotEmpty ? Book.fromMap(response) : 'Could not update book. Please try again.',
+      );
+    } catch (error) {
+      return BackendResponse(success: false, payload: error);
+    }
+  }
+
   static Future<BackendResponse> addBook(Book book, File image) async {
     final SupabaseClient client = Supabase.instance.client;
 

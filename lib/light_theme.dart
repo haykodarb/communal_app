@@ -18,17 +18,18 @@ const ColorScheme _lightScheme = ColorScheme.light(
 final BottomNavigationBarThemeData _bottomNavigationBarTheme = BottomNavigationBarThemeData(
   type: BottomNavigationBarType.fixed,
   selectedItemColor: _lightScheme.primary,
-  unselectedItemColor: _lightScheme.onPrimary,
+  unselectedItemColor: _lightScheme.onBackground,
   backgroundColor: _lightScheme.primary,
   elevation: 10,
-  unselectedLabelStyle: TextStyle(color: _lightScheme.onPrimary),
+  unselectedLabelStyle: TextStyle(color: _lightScheme.onBackground),
   selectedLabelStyle: TextStyle(color: _lightScheme.primary),
   showUnselectedLabels: false,
   showSelectedLabels: false,
 );
 
 final AppBarTheme _appBarTheme = AppBarTheme(
-  backgroundColor: _lightScheme.surface,
+  backgroundColor: _lightScheme.background,
+  elevation: 1,
   iconTheme: const IconThemeData(
     size: 30,
   ),

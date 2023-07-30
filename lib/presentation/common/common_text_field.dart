@@ -10,6 +10,7 @@ class CommonTextField extends StatefulWidget {
     this.minLines = 1,
     this.maxLines = 1,
     this.maxLength = 60,
+    this.initialValue,
   }) : super(key: key);
 
   final void Function(String) callback;
@@ -17,6 +18,7 @@ class CommonTextField extends StatefulWidget {
   final int minLines;
   final int maxLines;
   final int? maxLength;
+  final String? initialValue;
   final String label;
   final bool isPassword;
 
@@ -26,12 +28,12 @@ class CommonTextField extends StatefulWidget {
 }
 
 class _CustomTextFieldState extends State<CommonTextField> {
-  final TextEditingController controller = TextEditingController();
-
   bool isVisible = false;
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController controller = TextEditingController(text: widget.initialValue);
+
     return TextFormField(
       validator: widget.validator,
       cursorColor: Theme.of(context).colorScheme.primary,
@@ -47,9 +49,7 @@ class _CustomTextFieldState extends State<CommonTextField> {
             ? IconButton(
                 icon: Icon(
                   isVisible ? Icons.visibility : Icons.visibility_off,
-                  color: isVisible
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.primary,
+                  color: isVisible ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.primary,
                 ),
                 onPressed: () {
                   setState(

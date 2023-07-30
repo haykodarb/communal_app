@@ -1,3 +1,4 @@
+import 'package:communal/presentation/book/book_edit/book_edit_page.dart';
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_topic_create/community_discussions_topic_create_page.dart';
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_topic_messages/community_discussions_topic_messages_page.dart';
 import 'package:communal/presentation/messages/messages_page.dart';
@@ -28,6 +29,7 @@ class RouteNames {
   static const String bookListPage = '/book';
   static const String bookCreatePage = '/book/create';
   static const String bookOwnedPage = '/book/owned';
+  static const String bookEditPage = '/book/edit';
   static const String communityListPage = '/community';
   static const String communityCreatePage = '/community/create';
   static const String communitySpecificPage = '/community/specific';
@@ -80,6 +82,11 @@ final List<GetPage> routes = <GetPage>[
     name: RouteNames.bookCreatePage,
     transition: Transition.downToUp,
     page: () => const BookCreatePage(),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.bookEditPage,
+    transition: Transition.rightToLeft,
+    page: () => const BookEditPage(),
   ),
   GetPage<dynamic>(
     name: RouteNames.bookOwnedPage,

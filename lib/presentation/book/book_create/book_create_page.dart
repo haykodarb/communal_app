@@ -225,7 +225,7 @@ class BookCreatePage extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const Divider(),
+                      const Divider(height: 30),
                       CommonTextField(
                         callback: controller.onTitleChange,
                         label: 'Title',
