@@ -58,15 +58,6 @@ class CommonDrawerController extends GetxController {
         }
         break;
 
-      case 'loans':
-        if (realtimeMessage.eventType == 'INSERT') {
-          loanNotifications.value = (await LoansBackend.getLoanCountWhere(LoansRequestType.userIsOwner)).payload;
-        }
-
-        if (realtimeMessage.eventType == 'UPDATE' && realtimeMessage.new_row['loanee'] == UsersBackend.currentUserId) {
-          loanNotifications.value = (await LoansBackend.getLoanCountWhere(LoansRequestType.userIsOwner)).payload;
-        }
-        break;
       case 'memberships':
         if (realtimeMessage.eventType != 'INSERT' && realtimeMessage.eventType != 'UPDATE') return;
 
@@ -97,6 +88,10 @@ class CommonDrawerController extends GetxController {
 
       messageNotifications.value = unreadCount;
     }
+  }
+
+  Future<void> getPendingLoans() async {
+    loanNotifications.value = (await LoansBackend.getLoanCountWhere(LoansRequestType.userIsOwner)).payload;
   }
 
   Future<void> changeThemeMode() async {

@@ -1,10 +1,10 @@
 import 'package:communal/models/loan.dart';
-import 'package:communal/presentation/common/common_book_card.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/loans/loans_owned/loans_owned_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class LoansOwnedWidget extends StatelessWidget {
   const LoansOwnedWidget({super.key});
@@ -116,17 +116,118 @@ class LoansOwnedWidget extends StatelessWidget {
     );
   }
 
-  Widget _loanCard(Loan loan) {
+  Widget _loanCard(LoansOwnedController controller, Loan loan) {
+    final DateTime dateToShow = loan.accepted_at ?? loan.created_at;
+
     return Builder(
       builder: (BuildContext context) {
         return InkWell(
-          child: Card(
-            child: Padding(
-              padding: EdgeInsets.all(15),
-              child: Column(children: [
-                Text(loan.book.title),
-                Text('Requested by ${loan.loanee.username}'),
-              ]),
+          child: SizedBox(
+            width: double.maxFinite,
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          loan.book.title,
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Theme.of(context).colorScheme.onSurface,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        PopupMenuButton(
+                          padding: EdgeInsets.zero,
+                          color: Theme.of(context).colorScheme.background,
+                          icon: Icon(
+                            Icons.more_vert,
+                            color: Theme.of(context).colorScheme.onBackground,
+                          ),
+                          onSelected: (value) {
+                            if (value == 0) {
+                              Get.toNamed(RouteNames.messagesSpecificPage, arguments: {
+                                'user': loan.loanee,
+                              });
+                            }
+
+                            if (value == 1) {
+                              controller.acceptLoan(loan);
+                            }
+
+                            if (value == 2) {
+                              controller.rejectLoan(loan);
+                            }
+
+                            if (value == 3) {
+                              controller.markAsReturned(loan);
+                            }
+                          },
+                          itemBuilder: (context) {
+                            if (loan.accepted) {
+                              return <PopupMenuEntry>[
+                                const PopupMenuItem(
+                                  value: 0,
+                                  child: Text('Chat'),
+                                ),
+                                const PopupMenuItem(
+                                  value: 3,
+                                  child: Text('Mark returned'),
+                                ),
+                              ];
+                            } else {
+                              return <PopupMenuEntry>[
+                                const PopupMenuItem(
+                                  value: 0,
+                                  child: Text('Chat'),
+                                ),
+                                const PopupMenuItem(
+                                  value: 1,
+                                  child: Text('Accept'),
+                                ),
+                                const PopupMenuItem(
+                                  value: 2,
+                                  child: Text('Reject'),
+                                ),
+                              ];
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                    const Divider(height: 10),
+                    Text('Requested by ${loan.loanee.username}'),
+                    const Divider(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          loan.accepted ? 'Loan approved' : 'Pending approval',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                        Text(
+                          DateFormat.MMMEd().format(
+                            dateToShow.toLocal(),
+                          ),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Divider(height: 10),
+                  ],
+                ),
+              ),
             ),
           ),
         );
@@ -154,36 +255,13 @@ class LoansOwnedWidget extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                     itemCount: controller.loans.length,
                     separatorBuilder: (context, index) {
-                      return Divider(
-                        color: Theme.of(context).colorScheme.primary,
-                        height: 50,
-                        thickness: 0.5,
+                      return const Divider(
+                        height: 20,
                       );
                     },
                     itemBuilder: (context, index) {
                       final Loan loan = controller.loans[index];
-                      return Column(
-                        children: [
-                          _loanCard(loan),
-                          // CommonBookCard(
-                          //   book: loan.book,
-                          //   height: 225,
-                          //   textChildren: [
-                          //     Text(loan.book.author),
-                          //     Text(loan.loanee.username),
-                          //     Text(loan.community.name),
-                          //     Text(
-                          //       loan.accepted ? 'Loan approved' : 'Pending approval',
-                          //       style: TextStyle(
-                          //         color: Theme.of(context).colorScheme.tertiary,
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
-                          const Divider(),
-                          _actionButtons(controller, loan),
-                        ],
-                      );
+                      return _loanCard(controller, loan);
                     },
                   ),
           ),

@@ -54,36 +54,36 @@ class CommonBookCard extends StatelessWidget {
               children: [
                 AspectRatio(
                   aspectRatio: 3 / 4,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      FutureBuilder(
-                        future: BooksBackend.getBookCover(book),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
-                            return const CommonLoadingImage();
-                          }
+                  child: FutureBuilder(
+                    future: BooksBackend.getBookCover(book),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const CommonLoadingImage();
+                      }
 
-                          return Image.memory(
+                      return Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Image.memory(
                             snapshot.data!,
                             fit: BoxFit.cover,
-                          );
-                        },
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.transparent,
-                              Theme.of(context).colorScheme.surface,
-                            ],
-                            begin: const Alignment(0.25, 0),
-                            end: const Alignment(1, 0),
-                            stops: const [0, 1],
                           ),
-                        ),
-                      ),
-                    ],
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.transparent,
+                                  Theme.of(context).colorScheme.surface,
+                                ],
+                                begin: const Alignment(0.75, 0),
+                                end: const Alignment(1, 0),
+                                stops: const [0, 1],
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
                 const VerticalDivider(width: 10),

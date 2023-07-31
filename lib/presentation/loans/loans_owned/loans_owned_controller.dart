@@ -3,6 +3,7 @@ import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/presentation/common/common_confirmation_dialog.dart';
+import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
 import 'package:get/get.dart';
 
 class LoansOwnedController extends GetxController {
@@ -29,6 +30,8 @@ class LoansOwnedController extends GetxController {
 
       if (response.success) {
         loans.remove(loan);
+
+        Get.find<CommonDrawerController>().getPendingLoans();
       }
 
       if (!response.success) {
@@ -56,6 +59,8 @@ class LoansOwnedController extends GetxController {
       if (response.success) {
         loan.accepted = true;
         loans.refresh();
+
+        Get.find<CommonDrawerController>().getPendingLoans();
       } else {
         Get.dialog(
           CommonAlertDialog(title: response.payload),
@@ -80,6 +85,8 @@ class LoansOwnedController extends GetxController {
 
       if (response.success) {
         loans.remove(loan);
+
+        Get.find<CommonDrawerController>().getPendingLoans();
       } else {
         Get.dialog(
           const CommonAlertDialog(title: 'Could not mark book as returned, please try again.'),
