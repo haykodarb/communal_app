@@ -4,126 +4,142 @@ import 'package:communal/models/discussion.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DiscussionsBackend {
+  static final SupabaseClient _client = Supabase.instance.client;
+
   static Future<BackendResponse> createDiscussionTopic({
     required String name,
     required Community community,
   }) async {
-    final SupabaseClient client = Supabase.instance.client;
+    try {
+      final String userId = _client.auth.currentUser!.id;
 
-    final String userId = client.auth.currentUser!.id;
+      final Map<String, dynamic>? response = await _client
+          .from('discussion_topics')
+          .insert({
+            'creator': userId,
+            'community': community.id,
+            'name': name,
+          })
+          .select('*, profiles(*), communities(*)')
+          .maybeSingle();
 
-    final Map<String, dynamic>? response = await client
-        .from('discussion_topics')
-        .insert({
-          'creator': userId,
-          'community': community.id,
-          'name': name,
-        })
-        .select('*, profiles(*), communities(*)')
-        .maybeSingle();
+      if (response == null || response.isEmpty) {
+        return BackendResponse(
+          success: false,
+          payload: 'Could not create topic.',
+        );
+      }
 
-    if (response == null || response.isEmpty) {
       return BackendResponse(
-        success: false,
-        payload: 'Could not create topic.',
+        success: true,
+        payload: DiscussionTopic.fromMap(response),
       );
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
     }
-
-    return BackendResponse(
-      success: true,
-      payload: DiscussionTopic.fromMap(response),
-    );
   }
 
   static Future<BackendResponse> getDiscussionTopicsForCommunity(Community community) async {
-    final SupabaseClient client = Supabase.instance.client;
+    try {
+      final List<dynamic> response = await _client
+          .from('discussion_topics')
+          .select(
+            '*, profiles(*), communities(*)',
+          )
+          .eq(
+            'community',
+            community.id,
+          );
 
-    final List<dynamic> response = await client
-        .from('discussion_topics')
-        .select(
-          '*, profiles(*), communities(*)',
-        )
-        .eq(
-          'community',
-          community.id,
-        );
+      final List<DiscussionTopic> topics = response.map((element) => DiscussionTopic.fromMap(element)).toList();
 
-    final List<DiscussionTopic> topics = response.map((element) => DiscussionTopic.fromMap(element)).toList();
+      if (response.isEmpty) {
+        return BackendResponse(success: false, payload: 'This community has no discussions yet');
+      }
 
-    return BackendResponse(
-      success: response.isNotEmpty,
-      payload: topics,
-    );
+      return BackendResponse(
+        success: response.isNotEmpty,
+        payload: topics,
+      );
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
+    }
   }
 
   static Future<BackendResponse> getDiscussionMessagesForTopic(DiscussionTopic topic) async {
-    final SupabaseClient client = Supabase.instance.client;
+    try {
+      final List<dynamic> response = await _client
+          .from('discussion_messages')
+          .select(
+            '*, profiles(*), discussion_topics(*, profiles(*), communities(*))',
+          )
+          .eq('topic', topic.id)
+          .order(
+            'created_at',
+            ascending: false,
+          );
 
-    final List<dynamic> response = await client
-        .from('discussion_messages')
-        .select(
-          '*, profiles(*), discussion_topics(*, profiles(*), communities(*))',
-        )
-        .eq('topic', topic.id)
-        .order(
-          'created_at',
-          ascending: false,
-        );
+      if (response.isEmpty) {
+        return BackendResponse(success: false, payload: 'No messages in topic');
+      }
 
-    if (response.isEmpty) {
-      return BackendResponse(success: false, payload: []);
+      final List<DiscussionMessage> messages = response.map((element) => DiscussionMessage.fromMap(element)).toList();
+
+      return BackendResponse(
+        success: messages.isNotEmpty,
+        payload: messages,
+      );
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
     }
-
-    final List<DiscussionMessage> messages = response.map((element) => DiscussionMessage.fromMap(element)).toList();
-
-    return BackendResponse(
-      success: messages.isNotEmpty,
-      payload: messages,
-    );
   }
 
   static Future<BackendResponse> insertDiscussionMessageInTopic(DiscussionTopic topic, String content) async {
-    final SupabaseClient client = Supabase.instance.client;
+    try {
+      final String userId = _client.auth.currentUser!.id;
 
-    final String userId = client.auth.currentUser!.id;
+      final Map<String, dynamic>? response = await _client
+          .from('discussion_messages')
+          .insert({
+            'sender': userId,
+            'topic': topic.id,
+            'content': content,
+          })
+          .select(
+            '*, profiles(*), discussion_topics(*, profiles(*), communities(*))',
+          )
+          .maybeSingle();
 
-    final Map<String, dynamic>? response = await client
-        .from('discussion_messages')
-        .insert({
-          'sender': userId,
-          'topic': topic.id,
-          'content': content,
-        })
-        .select(
-          '*, profiles(*), discussion_topics(*, profiles(*), communities(*))',
-        )
-        .maybeSingle();
+      if (response == null || response.isEmpty) {
+        return BackendResponse(success: false, payload: 'Could not send message, please try again');
+      }
 
-    if (response == null || response.isEmpty) {
-      return BackendResponse(success: false, payload: 'Could not send message');
+      return BackendResponse(success: true, payload: DiscussionMessage.fromMap(response));
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
     }
-
-    return BackendResponse(success: true, payload: DiscussionMessage.fromMap(response));
   }
 
   static Future<BackendResponse> getDiscussionMessageById(String id) async {
-    final SupabaseClient client = Supabase.instance.client;
+    try {
+      final Map<String, dynamic>? response = await _client
+          .from('discussion_messages')
+          .select(
+            '*, profiles(*), discussion_topics(*, profiles(*), communities(*))',
+          )
+          .eq('id', id)
+          .maybeSingle();
 
-    final Map<String, dynamic>? response = await client
-        .from('discussion_messages')
-        .select(
-          '*, profiles(*), discussion_topics(*, profiles(*), communities(*))',
-        )
-        .eq('id', id)
-        .maybeSingle();
+      if (response == null || response.isEmpty) {
+        return BackendResponse(success: false, payload: '');
+      }
 
-    if (response == null || response.isEmpty) {
-      return BackendResponse(success: false, payload: '');
+      return BackendResponse(
+        success: true,
+        payload: DiscussionMessage.fromMap(response),
+      );
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
     }
-
-    return BackendResponse(
-      success: true,
-      payload: DiscussionMessage.fromMap(response),
-    );
   }
 }

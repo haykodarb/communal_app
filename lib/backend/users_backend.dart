@@ -169,7 +169,7 @@ class UsersBackend {
     }).maybeSingle();
 
     if (memberExistsResponse != null) {
-      if (memberExistsResponse['accepted']) {
+      if (memberExistsResponse['accepted'] != null && memberExistsResponse['accepted']) {
         return BackendResponse(
           success: false,
           payload: 'User is already a member in this community.',

@@ -122,7 +122,7 @@ final FloatingActionButtonThemeData _floatingActionButtonThemeData = FloatingAct
 );
 
 final CardTheme _cardTheme = CardTheme(
-  color: _lightScheme.surface,
+  color: _lightScheme.background,
   shadowColor: _lightScheme.primary,
   elevation: 2,
 );

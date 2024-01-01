@@ -35,6 +35,7 @@ final AppBarTheme _appBarTheme = AppBarTheme(
   iconTheme: const IconThemeData(
     size: 30,
   ),
+  surfaceTintColor: Colors.transparent,
   centerTitle: true,
   titleTextStyle: GoogleFonts.scada(
     fontWeight: FontWeight.w600,
@@ -125,9 +126,11 @@ final FloatingActionButtonThemeData _floatingActionButtonThemeData = FloatingAct
 );
 
 final CardTheme _cardTheme = CardTheme(
-  color: _darkScheme.surface,
+  color: _darkScheme.background,
   shadowColor: _darkScheme.primary,
-  elevation: 2,
+  elevation: 1,
+  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+  surfaceTintColor: _darkScheme.primary.withOpacity(0.5),
 );
 
 final PopupMenuThemeData _popupMenuTheme = PopupMenuThemeData(
@@ -142,6 +145,7 @@ final PopupMenuThemeData _popupMenuTheme = PopupMenuThemeData(
 );
 
 final ThemeData darkTheme = ThemeData(
+  useMaterial3: true,
   colorScheme: _darkScheme,
   textTheme: GoogleFonts.interTextTheme().apply(
     displayColor: _darkScheme.onSurface,
@@ -161,4 +165,5 @@ final ThemeData darkTheme = ThemeData(
   dividerTheme: _dividerThemeData,
   popupMenuTheme: _popupMenuTheme,
   bottomNavigationBarTheme: _bottomNavigationBarTheme,
+  applyElevationOverlayColor: true,
 );

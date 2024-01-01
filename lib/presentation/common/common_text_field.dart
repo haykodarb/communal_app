@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
-class CommonTextField extends StatefulWidget {
+class CommonTextField extends StatelessWidget {
   const CommonTextField({
     Key? key,
     required this.callback,
     required this.label,
-    this.isPassword = false,
     required this.validator,
     this.minLines = 1,
     this.maxLines = 1,
@@ -20,46 +19,79 @@ class CommonTextField extends StatefulWidget {
   final int? maxLength;
   final String? initialValue;
   final String label;
-  final bool isPassword;
 
   @override
-  // ignore: library_private_types_in_public_api
-  _CustomTextFieldState createState() => _CustomTextFieldState();
+  Widget build(BuildContext context) {
+    final TextEditingController controller = TextEditingController(text: initialValue);
+
+    return TextFormField(
+      validator: validator,
+      cursorColor: Theme.of(context).colorScheme.primary,
+      onChanged: callback,
+      controller: controller,
+      minLines: minLines,
+      maxLines: maxLines,
+      maxLength: maxLength,
+      decoration: InputDecoration(
+        counter: const SizedBox.shrink(),
+        label: Text(
+          label,
+        ),
+        alignLabelWithHint: true,
+      ),
+    );
+  }
 }
 
-class _CustomTextFieldState extends State<CommonTextField> {
+class CommonPasswordField extends StatefulWidget {
+  const CommonPasswordField({
+    Key? key,
+    required this.callback,
+    required this.label,
+    required this.validator,
+    this.minLines = 1,
+    this.maxLines = 1,
+    this.maxLength = 60,
+  }) : super(key: key);
+
+  final void Function(String) callback;
+  final String? Function(String?) validator;
+  final int minLines;
+  final int maxLines;
+  final int? maxLength;
+  final String label;
+  @override
+  State<CommonPasswordField> createState() => _CommonPasswordFieldState();
+}
+
+class _CommonPasswordFieldState extends State<CommonPasswordField> {
   bool isVisible = false;
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController controller = TextEditingController(text: widget.initialValue);
-
     return TextFormField(
       validator: widget.validator,
       cursorColor: Theme.of(context).colorScheme.primary,
       onChanged: widget.callback,
-      controller: controller,
-      obscureText: widget.isPassword && !isVisible,
+      obscureText: !isVisible,
       minLines: widget.minLines,
       maxLines: widget.maxLines,
       maxLength: widget.maxLength,
       decoration: InputDecoration(
         counter: const SizedBox.shrink(),
-        suffixIcon: widget.isPassword
-            ? IconButton(
-                icon: Icon(
-                  isVisible ? Icons.visibility : Icons.visibility_off,
-                  color: isVisible ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.primary,
-                ),
-                onPressed: () {
-                  setState(
-                    () {
-                      isVisible = !isVisible;
-                    },
-                  );
-                },
-              )
-            : null,
+        suffixIcon: IconButton(
+          icon: Icon(
+            isVisible ? Icons.visibility : Icons.visibility_off,
+            color: isVisible ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.primary,
+          ),
+          onPressed: () {
+            setState(
+              () {
+                isVisible = !isVisible;
+              },
+            );
+          },
+        ),
         label: Text(
           widget.label,
         ),

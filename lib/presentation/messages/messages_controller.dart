@@ -22,8 +22,6 @@ class MessagesController extends GetxController {
   void onReady() {
     super.onReady();
 
-    print('This runs');
-
     final Stream<RealtimeMessage> stream = RealtimeBackend.streamController.stream;
 
     streamSubscription = stream.listen(_realtimeListener);

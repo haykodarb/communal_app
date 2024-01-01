@@ -10,7 +10,7 @@ class CommonBookCard extends StatelessWidget {
     super.key,
     required this.book,
     required this.textChildren,
-    this.height = 200,
+    this.height = 225,
     this.elevation,
   });
 
@@ -61,27 +61,9 @@ class CommonBookCard extends StatelessWidget {
                         return const CommonLoadingImage();
                       }
 
-                      return Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          Image.memory(
-                            snapshot.data!,
-                            fit: BoxFit.cover,
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.transparent,
-                                  Theme.of(context).colorScheme.surface,
-                                ],
-                                begin: const Alignment(0.75, 0),
-                                end: const Alignment(1, 0),
-                                stops: const [0, 1],
-                              ),
-                            ),
-                          ),
-                        ],
+                      return Image.memory(
+                        snapshot.data!,
+                        fit: BoxFit.cover,
                       );
                     },
                   ),
@@ -89,7 +71,7 @@ class CommonBookCard extends StatelessWidget {
                 const VerticalDivider(width: 10),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.only(top: 10, right: 10),
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,

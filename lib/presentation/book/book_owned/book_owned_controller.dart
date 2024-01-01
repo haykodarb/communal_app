@@ -63,7 +63,6 @@ class BookOwnedController extends GetxController {
     );
 
     if (response != null) {
-      print(response.title);
       book.value = response;
       book.refresh();
     }

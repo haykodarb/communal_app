@@ -7,11 +7,8 @@ class RegisterBackend {
     try {
       final SupabaseClient client = Supabase.instance.client;
 
-      final Map<String, dynamic>? foundUsername = await client
-          .from('profiles')
-          .select<Map<String, dynamic>?>()
-          .eq('username', form.username)
-          .maybeSingle();
+      final Map<String, dynamic>? foundUsername =
+          await client.from('profiles').select<Map<String, dynamic>?>().eq('username', form.username).maybeSingle();
 
       if (foundUsername != null) {
         return BackendResponse(

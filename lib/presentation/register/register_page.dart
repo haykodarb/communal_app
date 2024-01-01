@@ -26,11 +26,10 @@ class RegisterPage extends StatelessWidget {
             label: 'Username',
           ),
           const Divider(),
-          CommonTextField(
+          CommonPasswordField(
             validator: controller.passwordValidator,
             callback: controller.onPasswordChange,
             label: 'Password',
-            isPassword: true,
           ),
           const Divider(),
           Container(
