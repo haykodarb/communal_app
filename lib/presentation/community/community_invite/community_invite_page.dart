@@ -71,7 +71,7 @@ class CommunityInvitePage extends StatelessWidget {
                                     child: Text(
                                       controller.foundProfiles[index].username,
                                       style: const TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 14,
                                       ),
                                     ),
                                   );
@@ -96,7 +96,7 @@ class CommunityInvitePage extends StatelessWidget {
                           child: Text(
                             controller.inviteError.value,
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 16,
                               color: Theme.of(context).colorScheme.error,
                               fontWeight: FontWeight.w500,
                             ),

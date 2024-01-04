@@ -30,7 +30,7 @@ class LoansBorrowedWidget extends StatelessWidget {
                         Text(
                           loan.book.title,
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 18,
                             color: Theme.of(context).colorScheme.onSurface,
                             fontWeight: FontWeight.bold,
                           ),
@@ -89,7 +89,7 @@ class LoansBorrowedWidget extends StatelessWidget {
                             dateToShow.toLocal(),
                           ),
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 12,
                             color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                           ),
                         ),
@@ -118,7 +118,7 @@ class LoansBorrowedWidget extends StatelessWidget {
                 ? const Center(
                     child: Text(
                       'You have not made\nany requests yet',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 14),
                       textAlign: TextAlign.center,
                     ),
                   )

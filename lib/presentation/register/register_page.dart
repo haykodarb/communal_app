@@ -40,7 +40,7 @@ class RegisterPage extends StatelessWidget {
               child: Text(
                 'Resend confirmation?',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.w400,
                   color: Theme.of(Get.context!).colorScheme.onBackground,
                 ),
@@ -86,7 +86,7 @@ class RegisterPage extends StatelessWidget {
                         children: [
                           const Text(
                             'A confirmation link\nhas been sent to:',
-                            style: TextStyle(fontSize: 20),
+                            style: TextStyle(fontSize: 18),
                             textAlign: TextAlign.center,
                           ),
                           const Divider(height: 20),
@@ -94,7 +94,7 @@ class RegisterPage extends StatelessWidget {
                             controller.form.value.email,
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                               color: Theme.of(context).colorScheme.tertiary,
                               fontWeight: FontWeight.bold,
                             ),
@@ -103,7 +103,7 @@ class RegisterPage extends StatelessWidget {
                           const Text(
                             'Please validate your\nemail and then login.',
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -119,7 +119,7 @@ class RegisterPage extends StatelessWidget {
                             child: const Text(
                               'Resend confirmation?',
                               style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 18,
                               ),
                             ),
                             onPressed: () {

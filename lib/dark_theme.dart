@@ -39,7 +39,7 @@ final AppBarTheme _appBarTheme = AppBarTheme(
   centerTitle: true,
   titleTextStyle: GoogleFonts.poppins(
     fontWeight: FontWeight.w600,
-    fontSize: 20,
+    fontSize: 18,
     color: _darkScheme.onBackground,
   ),
 );
@@ -51,7 +51,7 @@ final ElevatedButtonThemeData _elevatedButtonThemeData = ElevatedButtonThemeData
     foregroundColor: _darkScheme.onPrimary,
     disabledBackgroundColor: _darkScheme.onSurface,
     textStyle: GoogleFonts.poppins(
-      fontSize: 20,
+      fontSize: 18,
     ),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10),
@@ -70,7 +70,7 @@ final OutlinedButtonThemeData _outlinedButtonThemeData = OutlinedButtonThemeData
       width: 2,
     ),
     textStyle: GoogleFonts.poppins(
-      fontSize: 20,
+      fontSize: 18,
     ),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10),

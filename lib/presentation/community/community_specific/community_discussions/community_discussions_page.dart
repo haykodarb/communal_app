@@ -46,7 +46,7 @@ class CommunityDiscussionsPage extends StatelessWidget {
                                 children: [
                                   Text(
                                     topic.name,
-                                    style: const TextStyle(fontSize: 20),
+                                    style: const TextStyle(fontSize: 18),
                                   ),
                                   const Divider(height: 30),
                                   Row(

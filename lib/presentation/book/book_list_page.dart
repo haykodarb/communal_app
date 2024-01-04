@@ -39,7 +39,7 @@ class BookListPage extends StatelessWidget {
                           child: Text(
                             'You haven\'t added\nany books yet.',
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 16,
                             ),
                             textAlign: TextAlign.center,
                           ),

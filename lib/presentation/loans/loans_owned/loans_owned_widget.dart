@@ -30,7 +30,7 @@ class LoansOwnedWidget extends StatelessWidget {
                         VerticalDivider(width: 5),
                         Text(
                           'Returned',
-                          style: TextStyle(fontSize: 16),
+                          style: TextStyle(fontSize: 14),
                         ),
                       ],
                     ),
@@ -53,7 +53,7 @@ class LoansOwnedWidget extends StatelessWidget {
                         VerticalDivider(width: 5),
                         Text(
                           'Chat',
-                          style: TextStyle(fontSize: 16),
+                          style: TextStyle(fontSize: 14),
                         ),
                       ],
                     ),
@@ -81,7 +81,7 @@ class LoansOwnedWidget extends StatelessWidget {
                           VerticalDivider(width: 5),
                           Text(
                             'Approve',
-                            style: TextStyle(fontSize: 16),
+                            style: TextStyle(fontSize: 14),
                           ),
                         ],
                       ),
@@ -100,7 +100,7 @@ class LoansOwnedWidget extends StatelessWidget {
                           VerticalDivider(width: 5),
                           Text(
                             'Reject',
-                            style: TextStyle(fontSize: 16),
+                            style: TextStyle(fontSize: 14),
                           ),
                         ],
                       ),
@@ -137,7 +137,7 @@ class LoansOwnedWidget extends StatelessWidget {
                         Text(
                           loan.book.title,
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 18,
                             color: Theme.of(context).colorScheme.onSurface,
                             fontWeight: FontWeight.bold,
                           ),
@@ -218,7 +218,7 @@ class LoansOwnedWidget extends StatelessWidget {
                             dateToShow.toLocal(),
                           ),
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 12,
                             color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                           ),
                         ),
@@ -247,7 +247,7 @@ class LoansOwnedWidget extends StatelessWidget {
                 ? const Center(
                     child: Text(
                       'You currently have no\noutgoing loans or requests',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 14),
                       textAlign: TextAlign.center,
                     ),
                   )

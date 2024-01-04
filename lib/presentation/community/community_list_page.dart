@@ -53,7 +53,7 @@ class CommunityListPage extends StatelessWidget {
               child: Center(
                 child: Text(
                   community.name,
-                  style: const TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 14),
                 ),
               ),
             ),
@@ -107,7 +107,7 @@ class CommunityListPage extends StatelessWidget {
                                   child: Center(
                                     child: Text(
                                       'You have not joined\nany communities yet.',
-                                      style: TextStyle(fontSize: 16),
+                                      style: TextStyle(fontSize: 14),
                                       textAlign: TextAlign.center,
                                     ),
                                   ),

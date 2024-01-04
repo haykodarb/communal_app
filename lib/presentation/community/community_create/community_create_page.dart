@@ -50,7 +50,7 @@ class CommunityCreatePage extends StatelessWidget {
                                         child: Center(
                                           child: Text(
                                             'Add\nimage',
-                                            style: TextStyle(fontSize: 20),
+                                            style: TextStyle(fontSize: 18),
                                             textAlign: TextAlign.center,
                                           ),
                                         ),
@@ -105,7 +105,7 @@ class CommunityCreatePage extends StatelessWidget {
                           () => Text(
                             controller.errorMessage.value,
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               color: Theme.of(context).colorScheme.error,
                               fontWeight: FontWeight.w500,
                             ),

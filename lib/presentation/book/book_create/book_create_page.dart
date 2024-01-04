@@ -18,7 +18,7 @@ class BookCreatePage extends StatelessWidget {
           children: [
             const Text(
               'Available for loans?',
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 14),
             ),
             const Divider(),
             ToggleSwitch(
@@ -55,7 +55,7 @@ class BookCreatePage extends StatelessWidget {
           children: [
             const Text(
               'Already read?',
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 14),
             ),
             const Divider(),
             ToggleSwitch(
@@ -95,7 +95,7 @@ class BookCreatePage extends StatelessWidget {
               children: [
                 const Text(
                   'Add a review?',
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 14),
                 ),
                 const Divider(),
                 ToggleSwitch(
@@ -187,7 +187,7 @@ class BookCreatePage extends StatelessWidget {
                                             child: Center(
                                               child: Text(
                                                 'No\nimage',
-                                                style: TextStyle(fontSize: 20),
+                                                style: TextStyle(fontSize: 18),
                                                 textAlign: TextAlign.center,
                                               ),
                                             ),

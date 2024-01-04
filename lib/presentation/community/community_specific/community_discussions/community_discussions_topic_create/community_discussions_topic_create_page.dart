@@ -45,7 +45,7 @@ class CommunityDiscussionsTopicCreatePage extends StatelessWidget {
                           () => Text(
                             controller.errorMessage.value,
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               color: Theme.of(context).colorScheme.error,
                               fontWeight: FontWeight.w500,
                             ),

@@ -33,7 +33,7 @@ class LoginPage extends StatelessWidget {
               child: Text(
                 'Forgot password?',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.w400,
                   color: Theme.of(Get.context!).colorScheme.onBackground,
                 ),

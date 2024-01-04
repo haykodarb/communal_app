@@ -106,7 +106,7 @@ class CommonDrawerWidget extends StatelessWidget {
                     _commonDrawerController.username,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.onSurface,
-                      fontSize: 18,
+                      fontSize: 16,
                     ),
                   )
                 ],

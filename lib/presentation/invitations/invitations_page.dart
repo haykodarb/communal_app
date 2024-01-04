@@ -58,7 +58,7 @@ class InvitationsPage extends StatelessWidget {
               child: Center(
                 child: Text(
                   invitation.community.name,
-                  style: const TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 14),
                 ),
               ),
             ),
@@ -119,7 +119,7 @@ class InvitationsPage extends StatelessWidget {
                             child: Center(
                               child: Text(
                                 'You have not received\nany invitations yet.',
-                                style: TextStyle(fontSize: 16),
+                                style: TextStyle(fontSize: 14),
                                 textAlign: TextAlign.center,
                               ),
                             ),

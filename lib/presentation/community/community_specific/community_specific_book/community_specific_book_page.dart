@@ -31,7 +31,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
                     textAlign: TextAlign.end,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.onBackground,
-                      fontSize: 16,
+                      fontSize: 14,
                     ),
                   ),
                 ),
@@ -42,7 +42,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
                     text,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.onBackground,
-                      fontSize: 16,
+                      fontSize: 14,
                     ),
                   ),
                 ),
@@ -58,7 +58,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
     child: Text(
       'Book is currently\n loaned out.',
       textAlign: TextAlign.center,
-      style: TextStyle(fontSize: 20),
+      style: TextStyle(fontSize: 18),
     ),
   );
 
@@ -69,7 +69,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
         const Text(
           'Book loan has been requested.',
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 20),
+          style: TextStyle(fontSize: 18),
         ),
         Builder(
           builder: (context) {
@@ -123,7 +123,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
         children: [
           const Text(
             'Book is available',
-            style: TextStyle(fontSize: 20),
+            style: TextStyle(fontSize: 18),
           ),
           const Divider(height: 50),
           ElevatedButton(
@@ -201,7 +201,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
                         return Text(
                           controller.message.value,
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 14,
                             color: Theme.of(context).colorScheme.error,
                           ),
                           textAlign: TextAlign.justify,

@@ -31,7 +31,7 @@ class CommunityHomePage extends StatelessWidget {
                                 child: Center(
                                   child: Text(
                                     'There are no books\nin this community yet.',
-                                    style: TextStyle(fontSize: 16),
+                                    style: TextStyle(fontSize: 14),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),

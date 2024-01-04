@@ -23,7 +23,7 @@ class LoansCompletedWidget extends StatelessWidget {
                   return const Center(
                     child: Text(
                       'You have not\ncompleted any loans yet',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 14),
                       textAlign: TextAlign.center,
                     ),
                   );
@@ -48,12 +48,12 @@ class LoansCompletedWidget extends StatelessWidget {
                               children: [
                                 const Text(
                                   'Loaned ',
-                                  style: TextStyle(fontSize: 18),
+                                  style: TextStyle(fontSize: 16),
                                 ),
                                 Text(
                                   loan.loanee.id == UsersBackend.currentUserId ? 'from ' : 'to ',
                                   style: TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 16,
                                     color: loan.loanee.id == UsersBackend.currentUserId
                                         ? Theme.of(context).colorScheme.primary
                                         : Theme.of(context).colorScheme.secondary,
@@ -64,7 +64,7 @@ class LoansCompletedWidget extends StatelessWidget {
                                   loan.loanee.id == UsersBackend.currentUserId
                                       ? loan.book.owner.username
                                       : loan.loanee.username,
-                                  style: const TextStyle(fontSize: 18),
+                                  style: const TextStyle(fontSize: 16),
                                 ),
                               ],
                             ),

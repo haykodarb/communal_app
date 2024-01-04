@@ -139,7 +139,7 @@ class CommunitySettingsPage extends StatelessWidget {
                 children: [
                   const Text(
                     'Select new avatar',
-                    style: TextStyle(fontSize: 18),
+                    style: TextStyle(fontSize: 16),
                   ),
                   const VerticalDivider(),
                   IconButton(

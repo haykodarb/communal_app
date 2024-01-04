@@ -20,7 +20,7 @@ class BookEditPage extends StatelessWidget {
           children: [
             const Text(
               'Available for loans?',
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 14),
             ),
             const Divider(),
             ToggleSwitch(
@@ -57,7 +57,7 @@ class BookEditPage extends StatelessWidget {
           children: [
             const Text(
               'Already read?',
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 14),
             ),
             const Divider(),
             ToggleSwitch(
@@ -97,7 +97,7 @@ class BookEditPage extends StatelessWidget {
               children: [
                 const Text(
                   'Add a review?',
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: 14),
                 ),
                 const Divider(),
                 ToggleSwitch(

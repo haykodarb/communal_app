@@ -79,7 +79,7 @@ class CommonBookCard extends StatelessWidget {
                         Text(
                           book.title,
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 16,
                             color: Theme.of(context).colorScheme.onSurface,
                             fontWeight: FontWeight.bold,
                           ),

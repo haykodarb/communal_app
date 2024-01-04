@@ -43,7 +43,7 @@ class MessagesPage extends StatelessWidget {
                             Text(
                               chatter.username,
                               style: const TextStyle(
-                                fontSize: 20,
+                                fontSize: 18,
                               ),
                             ),
                             Text(
@@ -51,7 +51,7 @@ class MessagesPage extends StatelessWidget {
                                 message.created_at.toLocal(),
                               ),
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: 12,
                                 color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
                               ),
                             ),
@@ -63,7 +63,7 @@ class MessagesPage extends StatelessWidget {
                           child: Text(
                             message.content,
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 12,
                               overflow: TextOverflow.ellipsis,
                               color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
                             ),
