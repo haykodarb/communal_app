@@ -6,7 +6,7 @@ import 'package:communal/presentation/start/start_controller.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class StartPage extends StatelessWidget {
-  const StartPage({Key? key}) : super(key: key);
+  const StartPage({super.key});
 
   Widget _loginButton(StartController controller) {
     return ElevatedButton(

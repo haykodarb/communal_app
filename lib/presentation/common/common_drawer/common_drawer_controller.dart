@@ -12,6 +12,7 @@ import 'package:communal/models/realtime_message.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CommonDrawerController extends GetxController {
   final RxInt messageNotifications = 0.obs;
@@ -51,7 +52,8 @@ class CommonDrawerController extends GetxController {
   Future<void> realtimeChangeHandler(RealtimeMessage realtimeMessage) async {
     switch (realtimeMessage.table) {
       case 'messages':
-        if (realtimeMessage.eventType == 'INSERT' || realtimeMessage.eventType == 'UPDATE') {
+        if (realtimeMessage.eventType == PostgresChangeEvent.insert ||
+            realtimeMessage.eventType == PostgresChangeEvent.update) {
           if (realtimeMessage.new_row['receiver'] == UsersBackend.currentUserId) {
             getUnreadChats();
           }
@@ -59,7 +61,8 @@ class CommonDrawerController extends GetxController {
         break;
 
       case 'memberships':
-        if (realtimeMessage.eventType != 'INSERT' && realtimeMessage.eventType != 'UPDATE') return;
+        if (realtimeMessage.eventType != PostgresChangeEvent.insert &&
+            realtimeMessage.eventType != PostgresChangeEvent.update) return;
 
         if (realtimeMessage.new_row['member'] != UsersBackend.currentUserId) return;
 

@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
 class RegisterResendPage extends StatelessWidget {
-  const RegisterResendPage({Key? key}) : super(key: key);
+  const RegisterResendPage({super.key});
 
   Widget _resendForm(RegisterResendController controller) {
     return Form(

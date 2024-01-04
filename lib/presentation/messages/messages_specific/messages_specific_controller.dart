@@ -9,6 +9,7 @@ import 'package:communal/models/realtime_message.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MessagesSpecificController extends GetxController {
   final Profile user = Get.arguments['user'];
@@ -104,7 +105,8 @@ class MessagesSpecificController extends GetxController {
   void messageChangeHandler(RealtimeMessage realtimeMessage) {
     if (realtimeMessage.table != 'messages') return;
 
-    if (realtimeMessage.eventType != 'INSERT' && realtimeMessage.eventType != 'UPDATE') return;
+    if (realtimeMessage.eventType != PostgresChangeEvent.insert &&
+        realtimeMessage.eventType != PostgresChangeEvent.update) return;
 
     final Message message = Message(
       id: realtimeMessage.new_row['id'],

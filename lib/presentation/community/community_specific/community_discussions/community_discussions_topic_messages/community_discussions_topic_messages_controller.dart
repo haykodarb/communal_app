@@ -9,6 +9,7 @@ import 'package:communal/models/realtime_message.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CommunityDiscussionsTopicMessagesController extends GetxController {
   final RxList<DiscussionMessage> messages = <DiscussionMessage>[].obs;
@@ -44,7 +45,7 @@ class CommunityDiscussionsTopicMessagesController extends GetxController {
   Future<void> _realtimeListener(RealtimeMessage realtimeMessage) async {
     if (realtimeMessage.table != 'discussion_messages') return;
 
-    if (realtimeMessage.eventType != 'INSERT') return;
+    if (realtimeMessage.eventType != PostgresChangeEvent.insert) return;
 
     if (realtimeMessage.new_row['sender'] == UsersBackend.currentUserId) return;
 

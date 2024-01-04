@@ -5,7 +5,7 @@ import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/login/login_controller.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   Widget _loginForm(LoginController controller) {
     return Form(

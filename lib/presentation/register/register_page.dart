@@ -6,7 +6,7 @@ import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/register/register_controller.dart';
 
 class RegisterPage extends StatelessWidget {
-  const RegisterPage({Key? key}) : super(key: key);
+  const RegisterPage({super.key});
 
   Widget _registerForm(RegisterController controller) {
     return Form(

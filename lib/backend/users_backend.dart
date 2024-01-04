@@ -26,12 +26,8 @@ class UsersBackend {
 
     final String userId = client.auth.currentUser!.id;
 
-    final List<Map<String, dynamic>> response = await client
-        .from('profiles')
-        .select<List<Map<String, dynamic>>>()
-        .neq('id', userId)
-        .like('username', '%$query%')
-        .limit(10);
+    final List<Map<String, dynamic>> response =
+        await client.from('profiles').select().neq('id', userId).like('username', '%$query%').limit(10);
 
     final List<Profile> profiles = response
         .map(
@@ -55,7 +51,7 @@ class UsersBackend {
           'joined_at': 'now()',
         })
         .eq('id', invitation.id)
-        .select<Map<String, dynamic>>()
+        .select()
         .single();
 
     return BackendResponse(success: response.isNotEmpty, payload: response);
@@ -91,20 +87,15 @@ class UsersBackend {
 
     final String userId = client.auth.currentUser!.id;
 
-    final PostgrestResponse response = await client
+    final PostgrestResponse<PostgrestList> response = await client
         .from('memberships')
-        .select(
-          '*',
-          const FetchOptions(
-            head: true,
-            count: CountOption.exact,
-          ),
-        )
+        .select('*')
         .eq('member', userId)
-        .is_('accepted', null);
+        .isFilter('accepted', null)
+        .count(CountOption.exact);
 
     return BackendResponse(
-      success: response.status == 200,
+      success: true,
       payload: response.count,
     );
   }
@@ -116,9 +107,9 @@ class UsersBackend {
 
     final List<Map<String, dynamic>> unconfirmedMemberships = await client
         .from('memberships')
-        .select<List<Map<String, dynamic>>>('*, communities(*), profiles(*)')
+        .select('*, communities(*), profiles(*)')
         .eq('member', userId)
-        .is_('accepted', null);
+        .isFilter('accepted', null);
 
     final List<Membership> invitationsList = unconfirmedMemberships
         .map(

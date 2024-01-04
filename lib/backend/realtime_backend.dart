@@ -11,26 +11,25 @@ class RealtimeBackend {
 
     final RealtimeChannel channel = client
         .channel(
-      'postgres_changes',
-      opts: const RealtimeChannelConfig(
-        self: true,
-      ),
-    )
-        .on(
-      RealtimeListenTypes.postgresChanges,
-      ChannelFilter(event: '*', schema: 'public'),
-      (payload, [ref]) {
-        if (payload.isNotEmpty) {
-          final RealtimeMessage realtimeMessage = RealtimeMessage(
-            table: payload['table'],
-            new_row: payload['new'],
-            eventType: payload['eventType'],
-          );
+          'postgres_changes',
+          opts: const RealtimeChannelConfig(
+            self: true,
+          ),
+        )
+        .onPostgresChanges(
+          event: PostgresChangeEvent.all,
+          callback: (PostgresChangePayload payload) {
+            if (payload.newRecord.isNotEmpty || payload.oldRecord.isNotEmpty) {
+              final RealtimeMessage realtimeMessage = RealtimeMessage(
+                table: payload.table,
+                new_row: payload.newRecord,
+                eventType: payload.eventType,
+              );
 
-          streamController.add(realtimeMessage);
-        }
-      },
-    );
+              streamController.add(realtimeMessage);
+            }
+          },
+        );
 
     channel.subscribe();
   }

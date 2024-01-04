@@ -1,5 +1,3 @@
-import 'package:communal/backend/register_backend.dart';
-import 'package:communal/models/backend_response.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,9 +16,7 @@ class RegisterResendController extends GetxController {
     final bool? validForm = formKey.currentState?.validate();
 
     if (validForm != null && validForm) {
-      final BackendResponse response = await RegisterBackend.resendEmail(email: email.value);
-
-      print(response.payload);
+      // final BackendResponse response = await RegisterBackend.resendEmail(email: email.value);
     }
   }
 

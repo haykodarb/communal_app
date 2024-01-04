@@ -125,7 +125,7 @@ class BooksBackend {
       final String userId = _client.auth.currentUser!.id;
 
       final List<Map<String, dynamic>> response =
-          await _client.from('books').select<List<Map<String, dynamic>>>('*, profiles(*)').eq('owner', userId);
+          await _client.from('books').select('*, profiles(*)').eq('owner', userId);
 
       final List<Book> bookList = response
           .map(
@@ -145,7 +145,7 @@ class BooksBackend {
   static Future<BackendResponse> getBookById(String id) async {
     try {
       final Map<String, dynamic>? response =
-          await _client.from('books').select<Map<String, dynamic>?>('*, profiles(*)').eq('id', id).maybeSingle();
+          await _client.from('books').select('*, profiles(*)').eq('id', id).maybeSingle();
 
       return BackendResponse(
         success: response != null,
@@ -158,16 +158,18 @@ class BooksBackend {
 
   static Future<BackendResponse> getBooksCountInCommunity(Community community) async {
     try {
-      final dynamic booksResponse = await _client.rpc('get_books_count_community', params: {
+      final int booksResponse = await _client.rpc('get_books_count_community', params: {
         'community_id': community.id,
-      }).select<dynamic>();
+      });
 
       return BackendResponse(
-        success: booksResponse > 0,
+        success: true,
         payload: booksResponse,
       );
     } on PostgrestException catch (error) {
       return BackendResponse(success: false, payload: error.message);
+    } catch (error) {
+      return BackendResponse(success: false, payload: error);
     }
   }
 

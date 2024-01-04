@@ -34,7 +34,7 @@ final AppBarTheme _appBarTheme = AppBarTheme(
     size: 30,
   ),
   centerTitle: true,
-  titleTextStyle: GoogleFonts.scada(
+  titleTextStyle: GoogleFonts.poppins(
     fontWeight: FontWeight.w600,
     fontSize: 20,
     color: _lightScheme.onBackground,
@@ -47,7 +47,7 @@ final ElevatedButtonThemeData _elevatedButtonThemeData = ElevatedButtonThemeData
     backgroundColor: _lightScheme.primary,
     foregroundColor: _lightScheme.onPrimary,
     disabledBackgroundColor: _lightScheme.onSurface,
-    textStyle: GoogleFonts.scada(
+    textStyle: GoogleFonts.poppins(
       fontSize: 20,
     ),
     shape: RoundedRectangleBorder(
@@ -66,7 +66,7 @@ final OutlinedButtonThemeData _outlinedButtonThemeData = OutlinedButtonThemeData
       color: _lightScheme.primary,
       width: 2,
     ),
-    textStyle: GoogleFonts.scada(
+    textStyle: GoogleFonts.poppins(
       fontSize: 20,
     ),
     shape: RoundedRectangleBorder(
@@ -140,7 +140,7 @@ final PopupMenuThemeData _popupMenuTheme = PopupMenuThemeData(
 
 final ThemeData lightTheme = ThemeData(
   colorScheme: _lightScheme,
-  textTheme: GoogleFonts.interTextTheme().apply(
+  textTheme: GoogleFonts.poppinsTextTheme().apply(
     displayColor: _lightScheme.onSurface,
     bodyColor: _lightScheme.onBackground,
     decorationColor: _lightScheme.onBackground,

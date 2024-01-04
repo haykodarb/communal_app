@@ -38,7 +38,8 @@ class MessagesController extends GetxController {
   Future<void> _realtimeListener(RealtimeMessage realtimeMessage) async {
     if (realtimeMessage.table != 'messages') return;
 
-    if (realtimeMessage.eventType != 'INSERT' && realtimeMessage.eventType != 'UPDATE') return;
+    if (realtimeMessage.eventType != PostgresChangeEvent.insert &&
+        realtimeMessage.eventType != PostgresChangeEvent.update) return;
 
     final Message unfetchedMessage = Message(
       id: realtimeMessage.new_row['id'],

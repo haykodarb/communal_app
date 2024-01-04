@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CommonDrawerWidget extends StatelessWidget {
-  CommonDrawerWidget({Key? key}) : super(key: key);
+  CommonDrawerWidget({super.key});
 
   final CommonDrawerController _commonDrawerController = Get.find<CommonDrawerController>();
 

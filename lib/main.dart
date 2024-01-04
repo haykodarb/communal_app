@@ -34,9 +34,9 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({
-    Key? key,
+    super.key,
     required this.themeMode,
-  }) : super(key: key);
+  });
 
   final ThemeMode themeMode;
 

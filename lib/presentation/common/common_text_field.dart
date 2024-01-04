@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CommonTextField extends StatelessWidget {
   const CommonTextField({
-    Key? key,
+    super.key,
     required this.callback,
     required this.label,
     required this.validator,
@@ -10,7 +10,7 @@ class CommonTextField extends StatelessWidget {
     this.maxLines = 1,
     this.maxLength = 60,
     this.initialValue,
-  }) : super(key: key);
+  });
 
   final void Function(String) callback;
   final String? Function(String?) validator;
@@ -45,14 +45,14 @@ class CommonTextField extends StatelessWidget {
 
 class CommonPasswordField extends StatefulWidget {
   const CommonPasswordField({
-    Key? key,
+    super.key,
     required this.callback,
     required this.label,
     required this.validator,
     this.minLines = 1,
     this.maxLines = 1,
     this.maxLength = 60,
-  }) : super(key: key);
+  });
 
   final void Function(String) callback;
   final String? Function(String?) validator;

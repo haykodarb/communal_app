@@ -15,8 +15,7 @@ class LoansBackend {
   static Future<BackendResponse> deleteLoan(Loan loan) async {
     final SupabaseClient client = Supabase.instance.client;
 
-    final Map<String, dynamic>? response =
-        await client.from('loans').delete().eq('id', loan.id).select<Map<String, dynamic>?>().maybeSingle();
+    final Map<String, dynamic>? response = await client.from('loans').delete().eq('id', loan.id).select().maybeSingle();
 
     if (response == null || response.isEmpty) {
       return BackendResponse(success: false, payload: 'No requests have been made for your books yet.');
@@ -36,7 +35,7 @@ class LoansBackend {
           },
         )
         .eq('id', loan.id)
-        .select<Map<String, dynamic>?>()
+        .select()
         .maybeSingle();
 
     if (response == null || response.isEmpty) {
@@ -80,16 +79,13 @@ class LoansBackend {
         break;
     }
 
-    final PostgrestResponse response = await client
+    final PostgrestResponse<PostgrestList> response = await client
         .from('loans')
         .select(
           '*,  books!inner(*, profiles(*))',
-          const FetchOptions(
-            count: CountOption.exact,
-            // head: true,
-          ),
         )
-        .match(query);
+        .match(query)
+        .count(CountOption.exact);
 
     return BackendResponse(success: true, payload: response.count);
   }
