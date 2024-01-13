@@ -9,113 +9,6 @@ import 'package:intl/intl.dart';
 class LoansOwnedWidget extends StatelessWidget {
   const LoansOwnedWidget({super.key});
 
-  Widget _actionButtons(LoansOwnedController controller, Loan loan) {
-    return SizedBox(
-      height: 40,
-      child: Builder(
-        builder: (context) {
-          if (loan.accepted) {
-            return Row(
-              children: [
-                const VerticalDivider(width: 20),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => controller.markAsReturned(loan),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.done,
-                        ),
-                        VerticalDivider(width: 5),
-                        Text(
-                          'Returned',
-                          style: TextStyle(fontSize: 14),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const VerticalDivider(width: 20),
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () {
-                      Get.toNamed(RouteNames.messagesSpecificPage, arguments: {
-                        'user': loan.loanee,
-                      });
-                    },
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.chat,
-                        ),
-                        VerticalDivider(width: 5),
-                        Text(
-                          'Chat',
-                          style: TextStyle(fontSize: 14),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const VerticalDivider(width: 20),
-              ],
-            );
-          } else {
-            return SizedBox(
-              height: 30,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const VerticalDivider(width: 20),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => controller.acceptLoan(loan),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.done,
-                          ),
-                          VerticalDivider(width: 5),
-                          Text(
-                            'Approve',
-                            style: TextStyle(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const VerticalDivider(width: 20),
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => controller.rejectLoan(loan),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.close,
-                          ),
-                          VerticalDivider(width: 5),
-                          Text(
-                            'Reject',
-                            style: TextStyle(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const VerticalDivider(width: 20),
-                ],
-              ),
-            );
-          }
-        },
-      ),
-    );
-  }
-
   Widget _loanCard(LoansOwnedController controller, Loan loan) {
     final DateTime dateToShow = loan.accepted_at ?? loan.created_at;
 
@@ -144,7 +37,6 @@ class LoansOwnedWidget extends StatelessWidget {
                         ),
                         PopupMenuButton(
                           padding: EdgeInsets.zero,
-                          color: Theme.of(context).colorScheme.background,
                           icon: Icon(
                             Icons.more_vert,
                             color: Theme.of(context).colorScheme.onBackground,
@@ -201,18 +93,22 @@ class LoansOwnedWidget extends StatelessWidget {
                       ],
                     ),
                     const Divider(height: 10),
-                    Text('Requested by ${loan.loanee.username}'),
+                    Row(
+                      children: [
+                        const Text('Requested by '),
+                        Text(
+                          loan.loanee.username,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      ],
+                    ),
                     const Divider(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          loan.accepted ? 'Loan approved' : 'Pending approval',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
+                        Text(loan.accepted ? 'Loan approved' : 'Pending approval'),
                         Text(
                           DateFormat.MMMEd().format(
                             dateToShow.toLocal(),

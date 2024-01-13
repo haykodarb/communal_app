@@ -26,30 +26,37 @@ class CommunitySpecificPage extends StatelessWidget {
           appBar: AppBar(
             title: Text(controller.community.name),
           ),
-          bottomNavigationBar: Obx(
-            () => BottomNavigationBar(
-              currentIndex: controller.selectedIndex.value,
-              onTap: controller.onBottomNavBarIndexChanged,
-              fixedColor: Theme.of(context).colorScheme.primary,
-              backgroundColor: Theme.of(context).colorScheme.background,
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.message),
-                  label: 'Discussions',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.people),
-                  label: 'Members',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.settings),
-                  label: 'Settings',
-                ),
-              ],
+          bottomNavigationBar: Theme(
+            data: Theme.of(context).copyWith(
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
+            ),
+            child: Obx(
+              () => BottomNavigationBar(
+                currentIndex: controller.selectedIndex.value,
+                onTap: controller.onBottomNavBarIndexChanged,
+                enableFeedback: false,
+                fixedColor: Theme.of(context).colorScheme.primary,
+                backgroundColor: Theme.of(context).colorScheme.background,
+                items: const <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home),
+                    label: 'Home',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.forum_outlined),
+                    label: 'Discussions',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.people),
+                    label: 'Members',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.settings),
+                    label: 'Settings',
+                  ),
+                ],
+              ),
             ),
           ),
           body: Obx(() => _pages[controller.selectedIndex.value]),

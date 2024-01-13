@@ -1,13 +1,100 @@
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/loan.dart';
-import 'package:communal/presentation/common/common_book_card.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/loans/loans_completed/loans_completed_controller.dart';
+import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class LoansCompletedWidget extends StatelessWidget {
   const LoansCompletedWidget({super.key});
+
+  Widget _loanCard(LoansCompletedController controller, Loan loan) {
+    final DateTime dateToShow = loan.returned_at ?? DateTime.now();
+    final bool is_loaned = loan.loanee.id == UsersBackend.currentUserId;
+
+    return Builder(
+      builder: (BuildContext context) {
+        return InkWell(
+          child: SizedBox(
+            width: double.maxFinite,
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          loan.book.title,
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Theme.of(context).colorScheme.onSurface,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        PopupMenuButton(
+                          padding: EdgeInsets.zero,
+                          icon: Icon(
+                            Icons.more_vert,
+                            color: Theme.of(context).colorScheme.onBackground,
+                          ),
+                          onSelected: (value) {
+                            if (value == 0) {
+                              Get.toNamed(
+                                RouteNames.messagesSpecificPage,
+                                arguments: {
+                                  'user': loan.book.owner,
+                                },
+                              );
+                            }
+                          },
+                          itemBuilder: (context) {
+                            return <PopupMenuEntry>[
+                              const PopupMenuItem(
+                                value: 0,
+                                child: Text('Chat'),
+                              ),
+                              const PopupMenuItem(
+                                value: 1,
+                                child: Text('View'),
+                              ),
+                            ];
+                          },
+                        ),
+                      ],
+                    ),
+                    const Divider(height: 10),
+                    Row(
+                      children: [
+                        Text('Loaned ${is_loaned ? 'from' : 'to'} '),
+                        Text(
+                          loan.book.owner.username,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Divider(height: 10),
+                    Text(
+                      'Returned ${DateFormat.MMMEd().format(dateToShow.toLocal())}',
+                    ),
+                    const Divider(height: 10),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,57 +116,16 @@ class LoansCompletedWidget extends StatelessWidget {
                   );
                 } else {
                   return ListView.separated(
-                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                     itemCount: controller.loans.length,
                     separatorBuilder: (context, index) {
-                      return Divider(
-                        color: Theme.of(context).colorScheme.primary,
-                        height: 50,
-                        thickness: 0.5,
+                      return const Divider(
+                        height: 20,
                       );
                     },
                     itemBuilder: (context, index) {
                       final Loan loan = controller.loans[index];
-                      return Column(
-                        children: [
-                          SizedBox(
-                            height: 40,
-                            child: Row(
-                              children: [
-                                const Text(
-                                  'Loaned ',
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                                Text(
-                                  loan.loanee.id == UsersBackend.currentUserId ? 'from ' : 'to ',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: loan.loanee.id == UsersBackend.currentUserId
-                                        ? Theme.of(context).colorScheme.primary
-                                        : Theme.of(context).colorScheme.secondary,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  loan.loanee.id == UsersBackend.currentUserId
-                                      ? loan.book.owner.username
-                                      : loan.loanee.username,
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                              ],
-                            ),
-                          ),
-                          CommonBookCard(
-                            book: loan.book,
-                            textChildren: [
-                              Text(loan.book.author),
-                              Text(loan.community.name),
-                            ],
-                          ),
-                          const Divider(),
-                          // _actionButtons(controller, loan),
-                        ],
-                      );
+                      return _loanCard(controller, loan);
                     },
                   );
                 }

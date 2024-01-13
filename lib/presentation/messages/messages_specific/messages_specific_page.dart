@@ -46,7 +46,7 @@ class MessagesSpecificPage extends StatelessWidget {
                               shape: BoxShape.rectangle,
                               borderRadius: BorderRadius.circular(15),
                               color: isReceived
-                                  ? Theme.of(context).colorScheme.secondary.withOpacity(0.5)
+                                  ? Theme.of(context).colorScheme.secondary.withOpacity(0.6)
                                   : Theme.of(context).colorScheme.primary.withOpacity(0.5),
                             ),
                             child: Text(

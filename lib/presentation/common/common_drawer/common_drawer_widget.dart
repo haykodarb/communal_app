@@ -59,14 +59,14 @@ class CommonDrawerWidget extends StatelessWidget {
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                // color: Theme.of(context).colorScheme.secondary,
-                                border: Border.all(color: Theme.of(context).colorScheme.secondary),
+                                // color: Theme.of(context).colorScheme.primary,
+                                border: Border.all(color: Theme.of(context).colorScheme.primary),
                               ),
                               child: Text(
                                 notifications.value.toString(),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  color: Theme.of(context).colorScheme.secondary,
+                                  color: Theme.of(context).colorScheme.primary,
                                 ),
                               ),
                             );
@@ -159,7 +159,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       // ),
                       _drawerButton(
                         text: 'Messages',
-                        icon: Icons.sms,
+                        icon: Icons.chat_sharp,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.messagesPage),
                         notifications: _commonDrawerController.messageNotifications,
                       ),
@@ -168,7 +168,7 @@ class CommonDrawerWidget extends StatelessWidget {
                         color: dividerColor,
                       ),
                       _drawerButton(
-                        text: 'Books',
+                        text: 'My Books',
                         icon: Icons.menu_book,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.bookListPage),
                       ),

@@ -14,16 +14,16 @@ class BookOwnedController extends GetxController {
 
   final RxBool loading = false.obs;
 
-  Loan? currentLoan;
+  Rxn<Loan> currentLoan = Rxn<Loan>();
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
 
     book.value = Get.arguments['book'];
     book.refresh();
 
-    loadCurrentLoan();
+    await loadCurrentLoan();
   }
 
   Future<void> deleteBook() async {
@@ -48,7 +48,8 @@ class BookOwnedController extends GetxController {
     final BackendResponse response = await LoansBackend.getCurrentLoanForBook(book.value);
 
     if (response.success) {
-      currentLoan = response.payload;
+      currentLoan.value = response.payload;
+      currentLoan.refresh();
     }
 
     loading.value = false;

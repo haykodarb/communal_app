@@ -148,16 +148,34 @@ class BookEditPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Edit book',
-        ),
-      ),
-      body: GetBuilder(
-        init: BookEditController(),
-        builder: (controller) {
-          return SingleChildScrollView(
+    return GetBuilder(
+      init: BookEditController(),
+      builder: (controller) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text(
+              'Edit book',
+            ),
+            actions: [
+              Obx(
+                () => controller.loading.value
+                    ? SizedBox(
+                        width: 30,
+                        height: 30,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Theme.of(context).colorScheme.onBackground,
+                        ),
+                      )
+                    : IconButton(
+                        onPressed: controller.onSubmitButton,
+                        icon: const Icon(Icons.done),
+                      ),
+              ),
+              const VerticalDivider(),
+            ],
+          ),
+          body: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
               child: Form(
@@ -165,75 +183,79 @@ class BookEditPage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Container(
-                      padding: EdgeInsets.zero,
-                      height: 250,
-                      child: Row(
+                    SizedBox(
+                      width: 300,
+                      height: 400,
+                      child: Stack(
                         children: [
-                          Expanded(
-                            child: AspectRatio(
-                              aspectRatio: 3 / 4,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(5),
-                                child: Obx(
-                                  () {
-                                    if (controller.selectedFile.value != null) {
-                                      return Image.file(
-                                        File(controller.selectedFile.value!.path),
-                                        fit: BoxFit.cover,
-                                      );
-                                    } else {
-                                      return FutureBuilder(
-                                        future: BooksBackend.getBookCover(controller.inheritedBook),
-                                        builder: (context, snapshot) {
-                                          if (!snapshot.hasData) {
-                                            return const CommonLoadingImage();
-                                          }
+                          AspectRatio(
+                            aspectRatio: 3 / 4,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(5),
+                              child: Obx(
+                                () {
+                                  if (controller.selectedFile.value != null) {
+                                    return Image.file(
+                                      File(controller.selectedFile.value!.path),
+                                      fit: BoxFit.cover,
+                                    );
+                                  } else {
+                                    return FutureBuilder(
+                                      future: BooksBackend.getBookCover(controller.inheritedBook),
+                                      builder: (context, snapshot) {
+                                        if (!snapshot.hasData) {
+                                          return const CommonLoadingImage();
+                                        }
 
-                                          if (snapshot.data!.isEmpty) {
-                                            return Container(
-                                              color: Theme.of(context).colorScheme.primary,
-                                              child: Icon(
-                                                Icons.groups,
-                                                color: Theme.of(context).colorScheme.background,
-                                                size: 150,
-                                              ),
-                                            );
-                                          }
-
-                                          return Image.memory(
-                                            snapshot.data!,
-                                            fit: BoxFit.cover,
+                                        if (snapshot.data!.isEmpty) {
+                                          return Container(
+                                            color: Theme.of(context).colorScheme.primary,
+                                            child: Icon(
+                                              Icons.groups,
+                                              color: Theme.of(context).colorScheme.background,
+                                              size: 150,
+                                            ),
                                           );
-                                        },
-                                      );
-                                    }
-                                  },
-                                ),
+                                        }
+
+                                        return Image.memory(
+                                          snapshot.data!,
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                    );
+                                  }
+                                },
                               ),
                             ),
                           ),
-                          SizedBox(
-                            width: 100,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                  onPressed: () => controller.takePicture(ImageSource.camera),
-                                  icon: const Icon(
-                                    Icons.camera_alt,
-                                    size: 30,
+                          Container(
+                            width: double.maxFinite,
+                            alignment: Alignment.bottomCenter,
+                            child: Container(
+                              color: Colors.black.withOpacity(0.5),
+                              width: double.maxFinite,
+                              height: 75,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                    onPressed: () => controller.takePicture(ImageSource.camera),
+                                    icon: const Icon(
+                                      Icons.camera_alt,
+                                      size: 40,
+                                    ),
                                   ),
-                                ),
-                                const Divider(),
-                                IconButton(
-                                  onPressed: () => controller.takePicture(ImageSource.gallery),
-                                  icon: const Icon(
-                                    Icons.image,
-                                    size: 30,
+                                  IconButton(
+                                    onPressed: () => controller.takePicture(ImageSource.gallery),
+                                    icon: const Icon(
+                                      Icons.image,
+                                      size: 40,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -265,25 +287,13 @@ class BookEditPage extends StatelessWidget {
                     _addReviewPrompt(controller),
                     const Divider(),
                     _reviewTextInput(controller),
-                    const Divider(height: 30),
-                    Obx(
-                      () {
-                        return CommonLoadingBody(
-                          loading: controller.loading.value,
-                          child: ElevatedButton(
-                            onPressed: controller.onSubmitButton,
-                            child: const Text('Save'),
-                          ),
-                        );
-                      },
-                    ),
                   ],
                 ),
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

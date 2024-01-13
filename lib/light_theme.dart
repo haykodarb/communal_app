@@ -5,8 +5,9 @@ const ColorScheme _lightScheme = ColorScheme.light(
   background: Color(0xFFffffff),
   surface: Color(0xFFdeedea),
   primary: Color(0xFF92BFB1),
-  secondary: Color(0xFFebbcba),
-  tertiary: Color(0xFFEC9B98),
+  secondary: Color(0xFFEC9B98),
+  // secondary: Color(0xFFebbcba),
+  tertiary: Color(0xFFebbcba),
   onBackground: Color(0xFF0F1F1B),
   onPrimary: Color(0xFFffffff),
   onSecondary: Color(0xFF0F1F1B),
@@ -124,7 +125,8 @@ final FloatingActionButtonThemeData _floatingActionButtonThemeData = FloatingAct
 final CardTheme _cardTheme = CardTheme(
   color: _lightScheme.background,
   shadowColor: _lightScheme.primary,
-  elevation: 2,
+  elevation: 1,
+  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
 );
 
 final PopupMenuThemeData _popupMenuTheme = PopupMenuThemeData(

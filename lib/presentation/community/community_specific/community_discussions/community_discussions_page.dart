@@ -54,7 +54,7 @@ class CommunityDiscussionsPage extends StatelessWidget {
                                       const Text('Created by '),
                                       Text(
                                         topic.creator.username,
-                                        style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
+                                        style: TextStyle(color: Theme.of(context).colorScheme.primary),
                                       ),
                                       const Text(' on '),
                                       Text(DateFormat.yMMMd().format(topic.created_at.toLocal()))

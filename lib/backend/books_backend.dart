@@ -41,7 +41,6 @@ class BooksBackend {
             {
               'title': book.title,
               'author': book.author,
-              'owner': _client.auth.currentUser!.id,
               'image_path': fileName,
               'available': book.available,
               'read': book.read,
@@ -52,6 +51,8 @@ class BooksBackend {
           .select('*, profiles(*)')
           .single();
 
+      print(response);
+
       return BackendResponse(
         success: response.isNotEmpty,
         payload: response.isNotEmpty ? Book.fromMap(response) : 'Could not update book. Please try again.',
@@ -60,6 +61,9 @@ class BooksBackend {
       return BackendResponse(success: false, payload: error.message);
     } on PostgrestException catch (error) {
       return BackendResponse(success: false, payload: error.message);
+    } catch (error) {
+      print(error);
+      return BackendResponse(success: false, payload: error);
     }
   }
 

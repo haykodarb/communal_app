@@ -37,7 +37,6 @@ class LoansBorrowedWidget extends StatelessWidget {
                         ),
                         PopupMenuButton(
                           padding: EdgeInsets.zero,
-                          color: Theme.of(context).colorScheme.background,
                           icon: Icon(
                             Icons.more_vert,
                             color: Theme.of(context).colorScheme.onBackground,
@@ -72,18 +71,22 @@ class LoansBorrowedWidget extends StatelessWidget {
                       ],
                     ),
                     const Divider(height: 10),
-                    Text('Requested from ${loan.book.owner.username}'),
+                    Row(
+                      children: [
+                        const Text('Requested from '),
+                        Text(
+                          loan.book.owner.username,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      ],
+                    ),
                     const Divider(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          loan.accepted ? 'Loan approved' : 'Pending approval',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
+                        Text(loan.accepted ? 'Loan approved' : 'Pending approval'),
                         Text(
                           DateFormat.MMMEd().format(
                             dateToShow.toLocal(),

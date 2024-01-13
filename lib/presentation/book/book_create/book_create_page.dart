@@ -145,126 +145,137 @@ class BookCreatePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Add Book',
-        ),
-      ),
-      body: GetBuilder(
-          init: BookCreateController(),
-          builder: (controller) {
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-                child: Form(
-                  key: controller.formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.zero,
-                        height: 250,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: AspectRatio(
-                                aspectRatio: 3 / 4,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(5),
-                                  child: Obx(
-                                    () {
-                                      if (controller.selectedFile.value != null) {
-                                        return Image.file(
-                                          File(controller.selectedFile.value!.path),
-                                          fit: BoxFit.cover,
-                                        );
-                                      } else {
-                                        return Card(
-                                          color: Theme.of(context).colorScheme.surface,
-                                          child: const Padding(
-                                            padding: EdgeInsets.all(8.0),
-                                            child: Center(
-                                              child: Text(
-                                                'No\nimage',
-                                                style: TextStyle(fontSize: 18),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                            ),
+    return GetBuilder(
+      init: BookCreateController(),
+      builder: (controller) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text(
+              'Add Book',
+            ),
+            actions: [
+              Obx(
+                () => controller.loading.value
+                    ? SizedBox(
+                        width: 30,
+                        height: 30,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Theme.of(context).colorScheme.onBackground,
+                        ),
+                      )
+                    : IconButton(
+                        onPressed: controller.onSubmitButton,
+                        icon: const Icon(Icons.done),
+                      ),
+              ),
+              const VerticalDivider(),
+            ],
+          ),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+              child: Form(
+                key: controller.formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    SizedBox(
+                      width: 300,
+                      height: 400,
+                      child: Stack(
+                        children: [
+                          AspectRatio(
+                            aspectRatio: 3 / 4,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(5),
+                              child: Obx(
+                                () {
+                                  if (controller.selectedFile.value != null) {
+                                    return Image.file(
+                                      File(controller.selectedFile.value!.path),
+                                      fit: BoxFit.cover,
+                                    );
+                                  } else {
+                                    return Card(
+                                      color: Theme.of(context).colorScheme.surface,
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Center(
+                                          child: Text(
+                                            'No\nimage',
+                                            style: TextStyle(fontSize: 18),
+                                            textAlign: TextAlign.center,
                                           ),
-                                        );
-                                      }
-                                    },
-                                  ),
-                                ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
                               ),
                             ),
-                            SizedBox(
-                              width: 100,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                          ),
+                          Container(
+                            width: double.maxFinite,
+                            alignment: Alignment.bottomCenter,
+                            child: Container(
+                              color: Colors.black.withOpacity(0.5),
+                              width: double.maxFinite,
+                              height: 75,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   IconButton(
                                     onPressed: () => controller.takePicture(ImageSource.camera),
                                     icon: const Icon(
                                       Icons.camera_alt,
-                                      size: 30,
+                                      size: 40,
                                     ),
                                   ),
-                                  const Divider(),
                                   IconButton(
                                     onPressed: () => controller.takePicture(ImageSource.gallery),
                                     icon: const Icon(
                                       Icons.image,
-                                      size: 30,
+                                      size: 40,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      const Divider(height: 30),
-                      CommonTextField(
-                        callback: controller.onTitleChange,
-                        label: 'Title',
-                        validator: (String? value) => controller.stringValidator(value, 3),
-                        maxLength: 100,
-                        maxLines: 2,
-                      ),
-                      const Divider(),
-                      CommonTextField(
-                        callback: controller.onAuthorChange,
-                        label: 'Author',
-                        validator: (String? value) => controller.stringValidator(value, 3),
-                      ),
-                      const Divider(),
-                      _availableForLoansPrompt(controller),
-                      const Divider(),
-                      _alreadyReadPrompt(controller),
-                      const Divider(),
-                      _addReviewPrompt(controller),
-                      const Divider(),
-                      _reviewTextInput(controller),
-                      const Divider(height: 30),
-                      Obx(
-                        () {
-                          return CommonLoadingBody(
-                            loading: controller.loading.value,
-                            child: ElevatedButton(
-                              onPressed: controller.onSubmitButton,
-                              child: const Text('Add'),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+                    ),
+                    const Divider(height: 30),
+                    CommonTextField(
+                      callback: controller.onTitleChange,
+                      label: 'Title',
+                      validator: (String? value) => controller.stringValidator(value, 3),
+                      maxLength: 100,
+                      maxLines: 2,
+                    ),
+                    const Divider(),
+                    CommonTextField(
+                      callback: controller.onAuthorChange,
+                      label: 'Author',
+                      validator: (String? value) => controller.stringValidator(value, 3),
+                    ),
+                    const Divider(),
+                    _availableForLoansPrompt(controller),
+                    const Divider(),
+                    _alreadyReadPrompt(controller),
+                    const Divider(),
+                    _addReviewPrompt(controller),
+                    const Divider(),
+                    _reviewTextInput(controller),
+                  ],
                 ),
               ),
-            );
-          }),
+            ),
+          ),
+        );
+      },
     );
   }
 }

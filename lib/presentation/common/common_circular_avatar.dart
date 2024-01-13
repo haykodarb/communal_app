@@ -16,13 +16,13 @@ class CommonCircularAvatar extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: Theme.of(context).colorScheme.secondary,
+          color: Theme.of(context).colorScheme.primary,
           width: 2,
         ),
       ),
       child: CircleAvatar(
         radius: radius,
-        backgroundColor: Theme.of(context).colorScheme.secondary,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         child: FittedBox(
           fit: BoxFit.scaleDown,
           child: Padding(
@@ -30,7 +30,7 @@ class CommonCircularAvatar extends StatelessWidget {
             child: Text(
               username.substring(0, 2).toUpperCase(),
               style: TextStyle(
-                color: Theme.of(context).colorScheme.onSecondary,
+                color: Theme.of(context).colorScheme.onPrimary,
                 fontSize: 30,
               ),
             ),

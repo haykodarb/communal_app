@@ -8,7 +8,7 @@ const ColorScheme _darkScheme = ColorScheme.dark(
   surface: Color(0xFF1f1d2e),
   primary: Color(0xFF84BDAB),
   secondary: Color(0xFFebbcba),
-  tertiary: Color(0xFFEC9B98),
+  tertiary: Color(0xFFc4a7e7),
   error: Color(0xFFeb6f92),
   onBackground: Color(0xFFFFFFFF),
   onPrimary: Color(0xFF0F0F19),
@@ -26,7 +26,7 @@ final BottomNavigationBarThemeData _bottomNavigationBarTheme = BottomNavigationB
   unselectedLabelStyle: TextStyle(color: _darkScheme.onBackground),
   selectedLabelStyle: TextStyle(color: _darkScheme.primary),
   showUnselectedLabels: false,
-  showSelectedLabels: false,
+  showSelectedLabels: true,
 );
 
 final AppBarTheme _appBarTheme = AppBarTheme(
@@ -126,15 +126,16 @@ final FloatingActionButtonThemeData _floatingActionButtonThemeData = FloatingAct
 );
 
 final CardTheme _cardTheme = CardTheme(
-  color: _darkScheme.background,
+  color: _darkScheme.surface,
   shadowColor: _darkScheme.primary,
   elevation: 1,
   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-  surfaceTintColor: _darkScheme.primary.withOpacity(0.5),
+  surfaceTintColor: Colors.transparent,
 );
 
 final PopupMenuThemeData _popupMenuTheme = PopupMenuThemeData(
-  color: _darkScheme.surface,
+  color: _darkScheme.background,
+  surfaceTintColor: Colors.transparent,
   shape: RoundedRectangleBorder(
     side: BorderSide(
       color: _darkScheme.primary,

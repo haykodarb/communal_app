@@ -136,7 +136,7 @@ class BookEditController extends GetxController {
           result: response.payload,
         );
       } else {
-        Get.dialog(const CommonAlertDialog(title: 'Network error, please try again.'));
+        Get.dialog(CommonAlertDialog(title: response.payload));
       }
     }
   }
