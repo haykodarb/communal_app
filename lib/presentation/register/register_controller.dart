@@ -1,3 +1,4 @@
+import 'package:communal/backend/users_backend.dart';
 import 'package:get/get.dart';
 import 'package:communal/backend/register_backend.dart';
 import 'package:communal/models/backend_response.dart';
@@ -27,6 +28,20 @@ class RegisterController extends GetxController {
 
     if (!value.isEmail) {
       return 'Input must be a valid email.';
+    }
+
+    return null;
+  }
+
+  Future<String?> asyncUsernameValidator(String? value) async {
+    if (value == null) {
+      return 'Input can\'t be empty';
+    }
+
+    final bool available = await UsersBackend.validateUsername(value);
+
+    if (!available) {
+      return 'Username is already taken.';
     }
 
     return null;

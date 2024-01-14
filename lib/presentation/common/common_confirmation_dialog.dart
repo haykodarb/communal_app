@@ -40,7 +40,7 @@ class CommonConfirmationDialog extends StatelessWidget {
               child: Text(
                 title,
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 14),
+                style: const TextStyle(fontSize: 18),
               ),
             ),
             Row(

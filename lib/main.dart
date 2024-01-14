@@ -52,7 +52,6 @@ class MyApp extends StatelessWidget {
           Get.put(CommonDrawerController());
 
           await RealtimeBackend.subscribeToDatabaseChanges();
-          await UsersBackend.updateCurrentUserProfile();
         }
       },
       themeMode: themeMode,

@@ -199,24 +199,7 @@ class ProfileOwnEditPage extends StatelessWidget {
                         callback: controller.onUsernameChanged,
                         label: 'Username',
                         duration: const Duration(milliseconds: 500),
-                        asyncValidator: (value) async {
-                          if (value == null) {
-                            return 'Input can\'t be empty';
-                          }
-
-                          print('Value: $value');
-                          print('Inherited: ${controller.inheritedProfile.username}');
-
-                          if (value == controller.inheritedProfile.username) return null;
-
-                          final bool available = await UsersBackend.validateUsername(value);
-
-                          if (!available) {
-                            return 'Username is already taken.';
-                          }
-
-                          return null;
-                        },
+                        asyncValidator: controller.asyncUsernameValidator,
                         syncValidator: controller.usernameValidator,
                         initialValue: controller.inheritedProfile.username,
                       ),

@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:communal/backend/loans_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/models/loan.dart';
+import 'package:communal/presentation/common/common_alert_dialog.dart';
+import 'package:communal/presentation/common/common_confirmation_dialog.dart';
 import 'package:get/get.dart';
 
 class CommunitySpecificBookController extends GetxController {
@@ -35,18 +39,26 @@ class CommunitySpecificBookController extends GetxController {
   }
 
   Future<void> requestLoan() async {
-    message.value = '';
-    loading.value = true;
+    final bool? confirm = await Get.dialog(
+      const CommonConfirmationDialog(
+        title: 'Request loan for this book?',
+      ),
+    );
 
-    final BackendResponse response = await LoansBackend.requestBookLoanInCommunity(book, community);
+    if (confirm != null && confirm) {
+      loading.value = true;
 
-    if (response.success) {
-      message.value = 'Book requested, please wait for user to confirm and contact them.';
-      existingLoan.value = response.payload;
-    } else {
-      message.value = response.payload;
+      final BackendResponse response = await LoansBackend.requestBookLoanInCommunity(book, community);
+
+      if (response.success) {
+        existingLoan.value = response.payload;
+      } else {
+        Get.dialog(
+          CommonAlertDialog(title: response.payload),
+        );
+      }
+
+      loading.value = false;
     }
-
-    loading.value = false;
   }
 }

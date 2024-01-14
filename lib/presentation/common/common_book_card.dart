@@ -9,13 +9,13 @@ class CommonBookCard extends StatelessWidget {
   const CommonBookCard({
     super.key,
     required this.book,
-    required this.textChildren,
+    required this.children,
     this.height = 225,
     this.elevation,
   });
 
   final Book book;
-  final List<Text> textChildren;
+  final List<Widget> children;
   final double height;
   final double? elevation;
 
@@ -86,8 +86,8 @@ class CommonBookCard extends StatelessWidget {
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: textChildren.map(
-                            (Text element) {
+                          children: children.map(
+                            (Widget element) {
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [

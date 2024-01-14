@@ -1,6 +1,7 @@
 import 'package:communal/models/book.dart';
 import 'package:communal/presentation/common/common_book_card.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_text_info.dart';
 import 'package:communal/presentation/community/community_specific/community_home/community_home_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
@@ -86,9 +87,9 @@ class CommunityHomePage extends StatelessWidget {
                               },
                               child: CommonBookCard(
                                 book: book,
-                                textChildren: [
-                                  Text(book.author),
-                                  Text(book.owner.username),
+                                children: [
+                                  CommonTextInfo(label: 'Author', text: book.author, size: 13),
+                                  CommonTextInfo(label: 'Owner', text: book.owner.username, size: 13),
                                 ],
                               ),
                             );

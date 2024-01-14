@@ -14,6 +14,7 @@ import 'package:communal/presentation/book/book_create/book_create_page.dart';
 import 'package:communal/presentation/book/book_owned/book_owned_page.dart';
 import 'package:communal/presentation/book/book_list_page.dart';
 import 'package:communal/presentation/messages/messages_specific/messages_specific_page.dart';
+import 'package:communal/presentation/profiles/profile_other/profile_other_page.dart';
 import 'package:communal/presentation/profiles/profile_own/profile_own_edit/profile_own_edit_page.dart';
 import 'package:communal/presentation/profiles/profile_own/profile_own_page.dart';
 import 'package:communal/presentation/register/register_page.dart';
@@ -162,5 +163,10 @@ final List<GetPage> routes = <GetPage>[
     name: RouteNames.profileOwnEditPage,
     transition: Transition.noTransition,
     page: () => const ProfileOwnEditPage(),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.profileOtherPage,
+    transition: Transition.noTransition,
+    page: () => const ProfileOtherPage(),
   ),
 ];

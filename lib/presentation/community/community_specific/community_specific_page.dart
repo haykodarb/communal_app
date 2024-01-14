@@ -44,7 +44,7 @@ class CommunitySpecificPage extends StatelessWidget {
                     label: 'Home',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.forum_outlined),
+                    icon: Icon(Icons.forum_rounded),
                     label: 'Discussions',
                   ),
                   BottomNavigationBarItem(

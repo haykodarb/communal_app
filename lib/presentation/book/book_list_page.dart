@@ -66,7 +66,7 @@ class BookListPage extends StatelessWidget {
                               ),
                               child: CommonBookCard(
                                 book: book,
-                                textChildren: [
+                                children: [
                                   Text(book.author),
                                   Text(
                                     book.available ? 'Available' : 'Unavailable',

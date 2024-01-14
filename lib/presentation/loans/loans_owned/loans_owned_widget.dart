@@ -1,5 +1,6 @@
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_username_button.dart';
 import 'package:communal/presentation/loans/loans_owned/loans_owned_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
@@ -96,12 +97,7 @@ class LoansOwnedWidget extends StatelessWidget {
                     Row(
                       children: [
                         const Text('Requested by '),
-                        Text(
-                          loan.loanee.username,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
+                        CommonUsernameButton(user: loan.loanee),
                       ],
                     ),
                     const Divider(height: 10),

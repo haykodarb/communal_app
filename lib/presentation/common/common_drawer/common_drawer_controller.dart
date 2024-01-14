@@ -31,6 +31,8 @@ class CommonDrawerController extends GetxController {
   Future<void> onReady() async {
     super.onReady();
 
+    await UsersBackend.updateCurrentUserProfile();
+
     loanNotifications.value = (await LoansBackend.getLoanCountWhere(LoansRequestType.userIsOwner)).payload;
 
     invitationsNotifications.value = (await UsersBackend.getInvitationsCountForUser()).payload;

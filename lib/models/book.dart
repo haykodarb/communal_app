@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 class Book {
   String id;
+  DateTime created_at;
   String author;
   String title;
   String image_path;
@@ -15,6 +16,7 @@ class Book {
 
   Book({
     required this.id,
+    required this.created_at,
     required this.author,
     required this.title,
     required this.owner,
@@ -26,6 +28,7 @@ class Book {
 
   Book.fromMap(Map<String, dynamic> map)
       : id = map['id'],
+        created_at = DateTime.parse(map['created_at']),
         title = map['title'],
         author = map['author'],
         owner = Profile.fromMap(map['profiles']),
@@ -36,6 +39,7 @@ class Book {
 
   Book.empty()
       : id = '',
+        created_at = DateTime.now(),
         title = '',
         author = '',
         image_path = '',

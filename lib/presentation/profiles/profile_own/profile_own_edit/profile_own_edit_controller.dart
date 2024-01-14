@@ -38,8 +38,8 @@ class ProfileOwnEditController extends GetxController {
     XFile? pickedImage = await imagePicker.pickImage(
       source: source,
       imageQuality: 80,
-      maxHeight: 250,
-      maxWidth: 250,
+      maxHeight: 750,
+      maxWidth: 750,
       preferredCameraDevice: CameraDevice.rear,
     );
 
@@ -73,6 +73,22 @@ class ProfileOwnEditController extends GetxController {
     if (value == null) return;
 
     addBio.value = value == 0;
+  }
+
+  Future<String?> asyncUsernameValidator(String? value) async {
+    if (value == null) {
+      return 'Input can\'t be empty';
+    }
+
+    if (value == inheritedProfile.username) return null;
+
+    final bool available = await UsersBackend.validateUsername(value);
+
+    if (!available) {
+      return 'Username is already taken.';
+    }
+
+    return null;
   }
 
   String? usernameValidator(String? value) {
@@ -124,8 +140,8 @@ class ProfileOwnEditController extends GetxController {
       return 'Please enter something.';
     }
 
-    if (value.length < 6) {
-      return 'Bio must be at least 6 characters long';
+    if (value.length < 20) {
+      return 'Bio must be at least 20 characters long';
     }
 
     if (value.length > 1000) {

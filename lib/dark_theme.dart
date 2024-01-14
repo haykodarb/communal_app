@@ -145,6 +145,14 @@ final PopupMenuThemeData _popupMenuTheme = PopupMenuThemeData(
   ),
 );
 
+final TextButtonThemeData _textButtonTheme = TextButtonThemeData(
+  style: TextButton.styleFrom(
+    padding: EdgeInsets.zero,
+    minimumSize: Size.zero,
+    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+  ),
+);
+
 final ThemeData darkTheme = ThemeData(
   useMaterial3: true,
   colorScheme: _darkScheme,
@@ -158,6 +166,7 @@ final ThemeData darkTheme = ThemeData(
   inputDecorationTheme: _inputDecorationTheme,
   iconTheme: _iconThemeData,
   appBarTheme: _appBarTheme,
+  textButtonTheme: _textButtonTheme,
   cardTheme: _cardTheme,
   canvasColor: _darkScheme.background,
   disabledColor: _darkScheme.onBackground,

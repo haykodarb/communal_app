@@ -1,3 +1,4 @@
+import 'package:communal/presentation/common/common_async_text_field.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
@@ -20,10 +21,12 @@ class RegisterPage extends StatelessWidget {
             label: 'Email',
           ),
           const Divider(),
-          CommonTextField(
-            validator: controller.usernameValidator,
+          CommonAsyncTextField(
             callback: controller.onUsernameChange,
             label: 'Username',
+            duration: const Duration(milliseconds: 500),
+            asyncValidator: controller.asyncUsernameValidator,
+            syncValidator: controller.usernameValidator,
           ),
           const Divider(),
           CommonPasswordField(

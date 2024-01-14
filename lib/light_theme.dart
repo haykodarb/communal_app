@@ -28,6 +28,14 @@ final BottomNavigationBarThemeData _bottomNavigationBarTheme = BottomNavigationB
   showSelectedLabels: false,
 );
 
+final TextButtonThemeData _textButtonTheme = TextButtonThemeData(
+  style: TextButton.styleFrom(
+    padding: EdgeInsets.zero,
+    minimumSize: Size.zero,
+    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+  ),
+);
+
 final AppBarTheme _appBarTheme = AppBarTheme(
   backgroundColor: _lightScheme.background,
   elevation: 1,
@@ -149,6 +157,7 @@ final ThemeData lightTheme = ThemeData(
   ),
   primaryColor: _lightScheme.primary,
   secondaryHeaderColor: _lightScheme.secondary,
+  textButtonTheme: _textButtonTheme,
   dialogBackgroundColor: _lightScheme.background,
   cardColor: _lightScheme.surface,
   elevatedButtonTheme: _elevatedButtonThemeData,

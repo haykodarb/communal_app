@@ -1,34 +1,30 @@
-import 'package:communal/backend/users_backend.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
-import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_text_info.dart';
-import 'package:communal/presentation/profiles/profile_own/profile_own_controller.dart';
+import 'package:communal/presentation/profiles/profile_other/profile_other_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ProfileOwnPage extends StatelessWidget {
-  const ProfileOwnPage({super.key});
+class ProfileOtherPage extends StatelessWidget {
+  const ProfileOtherPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: ProfileOwnController(),
-      builder: (ProfileOwnController controller) {
+      init: ProfileOtherController(),
+      builder: (ProfileOtherController controller) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Profile'),
             actions: [
               IconButton(
-                onPressed: () => Get.toNamed(RouteNames.profileOwnEditPage, arguments: {
-                  'profile': UsersBackend.currentUserProfile.value,
+                onPressed: () => Get.toNamed(RouteNames.messagesSpecificPage, arguments: {
+                  'user': controller.profile.value,
                 }),
-                icon: const Icon(Icons.edit),
+                icon: const Icon(Icons.chat_bubble_outline_rounded),
               ),
             ],
           ),
-          drawer: CommonDrawerWidget(),
           body: Obx(
             () => CommonLoadingBody(
               loading: controller.loading.value,
@@ -40,11 +36,11 @@ class ProfileOwnPage extends StatelessWidget {
                     Row(
                       // mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Obx(() => CommonCircularAvatar(profile: UsersBackend.currentUserProfile.value, radius: 80)),
+                        Obx(() => CommonCircularAvatar(profile: controller.profile.value, radius: 80)),
                         const VerticalDivider(width: 25),
                         Obx(
                           () => Text(
-                            UsersBackend.currentUserProfile.value.username,
+                            controller.profile.value.username,
                             textAlign: TextAlign.left,
                             style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                           ),
@@ -54,13 +50,13 @@ class ProfileOwnPage extends StatelessWidget {
                     const Divider(),
                     Obx(
                       () {
-                        if (UsersBackend.currentUserProfile.value.email == null) {
+                        if (controller.profile.value.email == null) {
                           return const SizedBox.shrink();
                         }
 
                         return CommonTextInfo(
                           label: 'Email',
-                          text: UsersBackend.currentUserProfile.value.email!,
+                          text: controller.profile.value.email!,
                           size: 16,
                         );
                       },
@@ -68,13 +64,13 @@ class ProfileOwnPage extends StatelessWidget {
                     const Divider(),
                     Obx(
                       () {
-                        if (UsersBackend.currentUserProfile.value.bio == null) {
+                        if (controller.profile.value.bio == null) {
                           return const SizedBox.shrink();
                         }
 
                         return CommonTextInfo(
                           label: 'Bio',
-                          text: UsersBackend.currentUserProfile.value.bio ?? '',
+                          text: controller.profile.value.bio ?? '',
                           size: 16,
                         );
                       },

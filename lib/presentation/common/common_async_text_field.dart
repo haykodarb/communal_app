@@ -44,7 +44,6 @@ class CommonAsyncTextField extends StatelessWidget {
         return Obx(
           () {
             final bool isValidating = controller.isValidating.value;
-            final bool isWaiting = controller.isWaiting.value;
             final String? asyncValidationMessage = controller.asyncValidationMessage.value;
 
             return TextFormField(
@@ -54,7 +53,7 @@ class CommonAsyncTextField extends StatelessWidget {
                 if (syncValidationMessage != null) return syncValidationMessage;
 
                 if (isValidating) {
-                  return null;
+                  return 'Checking username...';
                 }
 
                 if (asyncValidationMessage != null) {
@@ -97,6 +96,21 @@ class CommonAsyncTextField extends StatelessWidget {
               maxLength: maxLength,
               decoration: InputDecoration(
                 counter: const SizedBox.shrink(),
+                suffixIcon: Visibility(
+                  visible: isValidating,
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 20,
+                    width: 20,
+                    child: const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    ),
+                  ),
+                ),
                 label: Text(
                   label,
                 ),

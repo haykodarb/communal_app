@@ -1,6 +1,7 @@
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_username_button.dart';
 import 'package:communal/presentation/loans/loans_completed/loans_completed_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ class LoansCompletedWidget extends StatelessWidget {
 
   Widget _loanCard(LoansCompletedController controller, Loan loan) {
     final DateTime dateToShow = loan.returned_at ?? DateTime.now();
-    final bool is_loaned = loan.loanee.id == UsersBackend.currentUserId;
+    final bool is_borrowed = loan.loanee.id == UsersBackend.currentUserId;
 
     return Builder(
       builder: (BuildContext context) {
@@ -71,14 +72,8 @@ class LoansCompletedWidget extends StatelessWidget {
                     const Divider(height: 10),
                     Row(
                       children: [
-                        Text('Loaned ${is_loaned ? 'from' : 'to'} '),
-                        Text(
-                          loan.book.owner.username,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                        Text('Loaned ${is_borrowed ? 'from' : 'to'} '),
+                        CommonUsernameButton(user: is_borrowed ? loan.book.owner : loan.loanee),
                       ],
                     ),
                     const Divider(height: 10),
