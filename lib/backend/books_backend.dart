@@ -51,8 +51,6 @@ class BooksBackend {
           .select('*, profiles(*)')
           .single();
 
-      print(response);
-
       return BackendResponse(
         success: response.isNotEmpty,
         payload: response.isNotEmpty ? Book.fromMap(response) : 'Could not update book. Please try again.',
@@ -62,7 +60,6 @@ class BooksBackend {
     } on PostgrestException catch (error) {
       return BackendResponse(success: false, payload: error.message);
     } catch (error) {
-      print(error);
       return BackendResponse(success: false, payload: error);
     }
   }

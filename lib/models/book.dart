@@ -28,10 +28,7 @@ class Book {
       : id = map['id'],
         title = map['title'],
         author = map['author'],
-        owner = Profile(
-          username: map['profiles']['username'],
-          id: map['profiles']['id'],
-        ),
+        owner = Profile.fromMap(map['profiles']),
         available = map['available'],
         read = map['read'],
         review = map['review'],
@@ -44,5 +41,5 @@ class Book {
         image_path = '',
         available = false,
         read = false,
-        owner = Profile(username: '', id: '');
+        owner = Profile.empty();
 }

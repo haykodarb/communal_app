@@ -29,7 +29,7 @@ class MessagesPage extends StatelessWidget {
               padding: const EdgeInsets.all(15),
               child: Row(
                 children: [
-                  CommonCircularAvatar(username: chatter.username, radius: 30),
+                  CommonCircularAvatar(profile: chatter, radius: 30),
                   const VerticalDivider(width: 20),
                   Expanded(
                     child: Column(

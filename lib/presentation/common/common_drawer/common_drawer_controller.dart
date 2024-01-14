@@ -21,8 +21,6 @@ class CommonDrawerController extends GetxController {
 
   StreamSubscription? realtimeSubscription;
 
-  final String username = UsersBackend.getCurrentUsername();
-
   void goToRoute(String routeName) {
     if (Get.currentRoute != routeName) {
       Get.offAllNamed(routeName);

@@ -14,6 +14,8 @@ import 'package:communal/presentation/book/book_create/book_create_page.dart';
 import 'package:communal/presentation/book/book_owned/book_owned_page.dart';
 import 'package:communal/presentation/book/book_list_page.dart';
 import 'package:communal/presentation/messages/messages_specific/messages_specific_page.dart';
+import 'package:communal/presentation/profiles/profile_own/profile_own_edit/profile_own_edit_page.dart';
+import 'package:communal/presentation/profiles/profile_own/profile_own_page.dart';
 import 'package:communal/presentation/register/register_page.dart';
 import 'package:communal/presentation/register/register_resend/register_resend_page.dart';
 import 'package:communal/presentation/start/start_page.dart';
@@ -26,6 +28,9 @@ class RouteNames {
   static const String registerPage = '/register';
   static const String registerResendPage = '/register/resend';
   static const String dashboardPage = '/dashboard';
+  static const String profileOwnPage = '/profile/own';
+  static const String profileOwnEditPage = '/profile/own/edit';
+  static const String profileOtherPage = '/profile/other';
   static const String bookListPage = '/book';
   static const String bookCreatePage = '/book/create';
   static const String bookOwnedPage = '/book/owned';
@@ -147,5 +152,15 @@ final List<GetPage> routes = <GetPage>[
     name: RouteNames.messagesSpecificPage,
     transition: Transition.noTransition,
     page: () => const MessagesSpecificPage(),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.profileOwnPage,
+    transition: Transition.noTransition,
+    page: () => const ProfileOwnPage(),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.profileOwnEditPage,
+    transition: Transition.noTransition,
+    page: () => const ProfileOwnEditPage(),
   ),
 ];

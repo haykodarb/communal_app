@@ -1,9 +1,8 @@
 import 'package:communal/backend/books_backend.dart';
-import 'package:communal/models/book.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/book/book_owned/book_owned_controller.dart';
-import 'package:communal/presentation/common/common_book_card.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
+import 'package:communal/presentation/common/common_text_info.dart';
 import 'package:communal/routes.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -12,38 +11,15 @@ import 'package:intl/intl.dart';
 class BookOwnedPage extends StatelessWidget {
   const BookOwnedPage({super.key});
 
-  Widget _textInfo({required String label, required String text}) {
-    return Builder(
-      builder: (context) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-            ),
-            Container(
-              child: Text(
-                text,
-                style: const TextStyle(
-                  fontSize: 14,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   Widget _bookReview(BookOwnedController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Obx(
         () {
-          return _textInfo(
+          return CommonTextInfo(
             label: 'Your Review',
             text: controller.book.value.review ?? 'You have not reviewed this book yet.',
+            size: 14,
           );
         },
       ),
@@ -100,20 +76,28 @@ class BookOwnedPage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Obx(
         () => controller.loading.value
-            ? SizedBox.shrink()
+            ? const SizedBox.shrink()
             : Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Obx(
-                    () => _textInfo(label: 'Read', text: controller.book.value.read ? 'Yes' : 'No'),
+                    () => CommonTextInfo(
+                      label: 'Read',
+                      text: controller.book.value.read ? 'Yes' : 'No',
+                      size: 14,
+                    ),
                   ),
                   const Divider(height: 20),
                   controller.currentLoan.value != null
                       ? Obx(
                           () => _existingLoan(controller.currentLoan.value!),
                         )
-                      : _textInfo(label: 'Available', text: controller.book.value.available ? 'Yes' : 'No'),
+                      : CommonTextInfo(
+                          label: 'Available',
+                          text: controller.book.value.available ? 'Yes' : 'No',
+                          size: 14,
+                        ),
                 ],
               ),
       ),

@@ -88,6 +88,7 @@ class CommunityDiscussionsTopicMessagesController extends GetxController {
       sender: Profile(
         id: UsersBackend.currentUserId,
         username: UsersBackend.getCurrentUsername(),
+        show_email: false,
       ),
       content: typedMessage,
       topic: topic,

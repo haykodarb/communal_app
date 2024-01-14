@@ -18,12 +18,12 @@ class BookOwnedController extends GetxController {
 
   @override
   Future<void> onInit() async {
-    super.onInit();
-
     book.value = Get.arguments['book'];
     book.refresh();
 
     await loadCurrentLoan();
+
+    super.onInit();
   }
 
   Future<void> deleteBook() async {

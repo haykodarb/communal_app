@@ -1,3 +1,4 @@
+import 'package:communal/backend/users_backend.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
 import 'package:communal/routes.dart';
@@ -100,15 +101,17 @@ class CommonDrawerWidget extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  CommonCircularAvatar(username: _commonDrawerController.username, radius: 40),
+                  Obx(() => CommonCircularAvatar(profile: UsersBackend.currentUserProfile.value, radius: 40)),
                   const VerticalDivider(),
-                  Text(
-                    _commonDrawerController.username,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurface,
-                      fontSize: 16,
+                  Obx(
+                    () => Text(
+                      UsersBackend.currentUserProfile.value.username,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 16,
+                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
             );
@@ -139,27 +142,22 @@ class CommonDrawerWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const Divider(
-                        thickness: 2,
+                        thickness: 0,
                         color: Colors.transparent,
+                        height: 10,
                       ),
-                      // _drawerButton(
-                      //   text: 'Profile',
-                      //   icon: Icons.person_rounded,
-                      //   callback: () {},
-                      // ),
-                      // _drawerButton(
-                      //   text: 'Notifications',
-                      //   icon: Icons.notifications,
-                      //   callback: () {},
-                      // ),
-
-                      // Divider(
-                      //   thickness: 2,
-                      //   color: dividerColor,
-                      // ),
+                      _drawerButton(
+                        text: 'Profile',
+                        icon: Icons.person,
+                        callback: () => _commonDrawerController.goToRoute(RouteNames.profileOwnPage),
+                      ),
+                      Divider(
+                        thickness: 2,
+                        color: dividerColor,
+                      ),
                       _drawerButton(
                         text: 'Messages',
-                        icon: Icons.chat_sharp,
+                        icon: Icons.chat_bubble_outline,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.messagesPage),
                         notifications: _commonDrawerController.messageNotifications,
                       ),
@@ -220,7 +218,6 @@ class CommonDrawerWidget extends StatelessWidget {
                         icon: Icons.logout,
                         callback: _commonDrawerController.handleLogout,
                       ),
-
                       const Divider(height: 10),
                     ],
                   ),

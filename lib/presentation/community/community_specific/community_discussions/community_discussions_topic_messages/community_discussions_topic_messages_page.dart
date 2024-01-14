@@ -40,7 +40,7 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
             visible: showAvatar && isReceived,
             child: CommonCircularAvatar(
               radius: 25,
-              username: message.sender.username,
+              profile: message.sender,
             ),
           ),
         ),

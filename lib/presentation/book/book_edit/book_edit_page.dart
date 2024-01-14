@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/presentation/book/book_edit/book_edit_controller.dart';
-import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:flutter/material.dart';

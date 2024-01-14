@@ -111,8 +111,8 @@ class MessagesSpecificController extends GetxController {
     final Message message = Message(
       id: realtimeMessage.new_row['id'],
       created_at: DateTime.parse(realtimeMessage.new_row['created_at']),
-      sender: Profile(id: realtimeMessage.new_row['sender'], username: ''),
-      receiver: Profile(id: realtimeMessage.new_row['receiver'], username: ''),
+      sender: Profile(id: realtimeMessage.new_row['sender'], username: '', show_email: false),
+      receiver: Profile(id: realtimeMessage.new_row['receiver'], username: '', show_email: false),
       content: realtimeMessage.new_row['content'],
       is_read: realtimeMessage.new_row['is_read'],
     );
@@ -157,6 +157,7 @@ class MessagesSpecificController extends GetxController {
       sender: Profile(
         id: UsersBackend.currentUserId,
         username: UsersBackend.getCurrentUsername(),
+        show_email: false,
       ),
       receiver: user,
       content: typedMessage.value,

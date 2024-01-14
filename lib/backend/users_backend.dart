@@ -1,33 +1,123 @@
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/models/membership.dart';
 import 'package:communal/models/profile.dart';
+import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class UsersBackend {
-  static get currentUserId {
-    final GoTrueClient client = Supabase.instance.client.auth;
+  static final SupabaseClient _client = Supabase.instance.client;
+  static Rx<Profile> currentUserProfile = Profile.empty().obs;
 
-    return client.currentUser!.id;
+  static get currentUserId {
+    return _client.auth.currentUser!.id;
+  }
+
+  static Future<bool> validateUsername(String username) async {
+    final Map<String, dynamic>? foundUsername =
+        await _client.from('profiles').select().eq('username', username).maybeSingle();
+
+    print('Username: $username');
+    print('Found: ${foundUsername.toString()}');
+
+    return foundUsername == null || foundUsername.isEmpty;
+  }
+
+  static Future<void> updateCurrentUserProfile() async {
+    final BackendResponse response = await getUserProfile(currentUserId);
+
+    if (response.success) {
+      currentUserProfile.value = response.payload;
+      currentUserProfile.refresh();
+    }
+  }
+
+  static Future<Uint8List> getProfileAvatar(Profile profile) async {
+    Uint8List bytes = await _client.storage.from('profile_avatars').download(profile.avatar_path!);
+
+    return bytes;
+  }
+
+  static Future<BackendResponse> updateProfile(Profile profile, File? image) async {
+    try {
+      final String userId = _client.auth.currentUser!.id;
+      final String currentTime = DateTime.now().millisecondsSinceEpoch.toString();
+
+      String? fileName;
+
+      if (image != null) {
+        final String imageExtension = image.path.split('.').last;
+
+        fileName = '/$userId/$currentTime.$imageExtension';
+
+        await _client.storage.from('profile_avatars').upload(
+              fileName,
+              image,
+              retryAttempts: 5,
+            );
+      } else {
+        fileName = profile.avatar_path;
+      }
+
+      final Map<String, dynamic> response = await _client
+          .from('profiles')
+          .update(
+            {
+              'username': profile.username,
+              'show_email': profile.show_email,
+              'bio': profile.bio,
+              'avatar_path': fileName,
+            },
+          )
+          .eq('id', profile.id)
+          .select('*')
+          .single();
+
+      if (response.isNotEmpty && profile.id == currentUserId) {
+        currentUserProfile.value = Profile.fromMap(response);
+      }
+
+      return BackendResponse(
+        success: response.isNotEmpty,
+        payload: response.isNotEmpty ? Profile.fromMap(response) : 'Could not update profile. Please try again.',
+      );
+    } on StorageException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
+    } catch (error) {
+      return BackendResponse(success: false, payload: error);
+    }
   }
 
   static String getCurrentUsername() {
-    final GoTrueClient client = Supabase.instance.client.auth;
+    if (_client.auth.currentUser == null &&
+        _client.auth.currentUser!.userMetadata == null &&
+        _client.auth.currentUser!.userMetadata!['username'] == null) return 'No user';
 
-    if (client.currentUser == null &&
-        client.currentUser!.userMetadata == null &&
-        client.currentUser!.userMetadata!['username'] == null) return 'No user';
+    return _client.auth.currentUser!.userMetadata!['username'];
+  }
 
-    return client.currentUser!.userMetadata!['username'];
+  static Future<BackendResponse> getUserProfile(String id) async {
+    try {
+      final Map<String, dynamic> response = await _client.from('profiles').select().eq('id', id).single();
+
+      return BackendResponse(
+        success: response.isNotEmpty,
+        payload: Profile.fromMap(response),
+      );
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
+    }
   }
 
   static Future<BackendResponse> searchUsers(String query) async {
-    final SupabaseClient client = Supabase.instance.client;
-
-    final String userId = client.auth.currentUser!.id;
+    final String userId = _client.auth.currentUser!.id;
 
     final List<Map<String, dynamic>> response =
-        await client.from('profiles').select().neq('id', userId).like('username', '%$query%').limit(10);
+        await _client.from('profiles').select().neq('id', userId).like('username', '%$query%').limit(10);
 
     final List<Profile> profiles = response
         .map(
@@ -42,9 +132,7 @@ class UsersBackend {
   }
 
   static Future<BackendResponse> respondToInvitation(Membership invitation, bool accept) async {
-    final SupabaseClient client = Supabase.instance.client;
-
-    final Map<String, dynamic> response = await client
+    final Map<String, dynamic> response = await _client
         .from('memberships')
         .update({
           'accepted': accept,
@@ -59,9 +147,7 @@ class UsersBackend {
 
   static Future<BackendResponse> getMembershipByID(String id) async {
     try {
-      final SupabaseClient client = Supabase.instance.client;
-
-      final Map<String, dynamic> response = await client
+      final Map<String, dynamic> response = await _client
           .from('memberships')
           .select(
             '*, communities(*), profiles(*)',
@@ -83,11 +169,9 @@ class UsersBackend {
   }
 
   static Future<BackendResponse> getInvitationsCountForUser() async {
-    final SupabaseClient client = Supabase.instance.client;
+    final String userId = _client.auth.currentUser!.id;
 
-    final String userId = client.auth.currentUser!.id;
-
-    final PostgrestResponse<PostgrestList> response = await client
+    final PostgrestResponse<PostgrestList> response = await _client
         .from('memberships')
         .select('*')
         .eq('member', userId)
@@ -101,11 +185,9 @@ class UsersBackend {
   }
 
   static Future<BackendResponse> getInvitationsForUser() async {
-    final SupabaseClient client = Supabase.instance.client;
+    final String userId = _client.auth.currentUser!.id;
 
-    final String userId = client.auth.currentUser!.id;
-
-    final List<Map<String, dynamic>> unconfirmedMemberships = await client
+    final List<Map<String, dynamic>> unconfirmedMemberships = await _client
         .from('memberships')
         .select('*, communities(*), profiles(*)')
         .eq('member', userId)
@@ -124,10 +206,8 @@ class UsersBackend {
   }
 
   static Future<BackendResponse> changeUserAdminStatus(Community community, Profile user, bool shouldBeAdmin) async {
-    final SupabaseClient client = Supabase.instance.client;
-
     try {
-      final List<dynamic> updateMembershipResponse = await client.from('memberships').update(
+      final List<dynamic> updateMembershipResponse = await _client.from('memberships').update(
         {
           'is_admin': shouldBeAdmin,
         },
@@ -152,9 +232,7 @@ class UsersBackend {
 
   // TODO: Build the checking logic in the backend and remove the first half of this function.
   static Future<BackendResponse> inviteUserToCommunity(Community community, Profile user) async {
-    final SupabaseClient client = Supabase.instance.client;
-
-    final Map<String, dynamic>? memberExistsResponse = await client.from('memberships').select().match({
+    final Map<String, dynamic>? memberExistsResponse = await _client.from('memberships').select().match({
       'community': community.id,
       'member': user.id,
     }).maybeSingle();
@@ -173,7 +251,7 @@ class UsersBackend {
       }
     }
 
-    final Map<String, dynamic> createMembershipResponse = await client
+    final Map<String, dynamic> createMembershipResponse = await _client
         .from('memberships')
         .insert(
           {
@@ -189,10 +267,8 @@ class UsersBackend {
   }
 
   static Future<BackendResponse> removeUserFromCommunity(Community community, Profile user) async {
-    final SupabaseClient client = Supabase.instance.client;
-
     try {
-      final List<dynamic> response = await client.from('memberships').delete().match(
+      final List<dynamic> response = await _client.from('memberships').delete().match(
         {
           'member': user.id,
           'community': community.id,
@@ -212,10 +288,9 @@ class UsersBackend {
   }
 
   static Future<BackendResponse> removeCurrentUserFromCommunity(Community community) async {
-    final SupabaseClient client = Supabase.instance.client;
-    final String userId = client.auth.currentUser!.id;
+    final String userId = _client.auth.currentUser!.id;
 
-    final Map<String, dynamic>? memberExistsResponse = await client.from('memberships').select().match({
+    final Map<String, dynamic>? memberExistsResponse = await _client.from('memberships').select().match({
       'community': community.id,
       'member': userId,
       'accepted': true,
@@ -228,7 +303,7 @@ class UsersBackend {
       );
     }
 
-    final Map<String, dynamic> deleteMembershipResponse = await client
+    final Map<String, dynamic> deleteMembershipResponse = await _client
         .from('memberships')
         .delete()
         .match(
@@ -245,10 +320,8 @@ class UsersBackend {
   }
 
   static Future<BackendResponse<List<Profile>>> getUsersInCommunity(Community community) async {
-    final SupabaseClient client = Supabase.instance.client;
-
     final List<dynamic> membershipResponse =
-        await client.from('memberships').select('id, is_admin, profiles(id, username)').match(
+        await _client.from('memberships').select('id, is_admin, profiles(id, username, show_email)').match(
       {
         'community': community.id,
         'accepted': true,
@@ -257,11 +330,7 @@ class UsersBackend {
 
     final List<Profile> listOfProfiles = membershipResponse
         .map(
-          (e) => Profile(
-            username: e['profiles']['username'],
-            id: e['profiles']['id'],
-            is_admin: e['is_admin'],
-          ),
+          (e) => Profile.fromMap(e['profiles']),
         )
         .toList();
 
