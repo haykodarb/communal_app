@@ -5,7 +5,9 @@ import 'package:communal/models/community.dart';
 import 'package:communal/models/membership.dart';
 import 'package:communal/models/profile.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class UsersBackend {
   static final SupabaseClient _client = Supabase.instance.client;
@@ -19,9 +21,6 @@ class UsersBackend {
     final Map<String, dynamic>? foundUsername =
         await _client.from('profiles').select().eq('username', username).maybeSingle();
 
-    print('Username: $username');
-    print('Found: ${foundUsername.toString()}');
-
     return foundUsername == null || foundUsername.isEmpty;
   }
 
@@ -34,10 +33,24 @@ class UsersBackend {
     }
   }
 
-  static Future<Uint8List> getProfileAvatar(Profile profile) async {
-    Uint8List bytes = await _client.storage.from('profile_avatars').download(profile.avatar_path!);
+  static Future<Uint8List?> getProfileAvatar(Profile profile) async {
+    if (profile.avatar_path != null) {
+      FileInfo? file = await DefaultCacheManager().getFileFromCache(profile.avatar_path!);
 
-    return bytes;
+      Uint8List bytes;
+
+      if (file != null) {
+        bytes = await file.file.openRead().toBytes();
+      } else {
+        bytes = await _client.storage.from('profile_avatars').download(profile.avatar_path!);
+
+        await DefaultCacheManager().putFile(profile.avatar_path!, bytes, key: profile.avatar_path!);
+      }
+
+      return bytes;
+    }
+
+    return null;
   }
 
   static Future<BackendResponse> updateProfile(Profile profile, File? image) async {
@@ -117,7 +130,7 @@ class UsersBackend {
     final String userId = _client.auth.currentUser!.id;
 
     final List<Map<String, dynamic>> response =
-        await _client.from('profiles').select().neq('id', userId).like('username', '%$query%').limit(10);
+        await _client.from('profiles').select().neq('id', userId).ilike('username', '%$query%').limit(10);
 
     final List<Profile> profiles = response
         .map(
@@ -126,7 +139,7 @@ class UsersBackend {
         .toList();
 
     return BackendResponse(
-      success: response.isNotEmpty,
+      success: true,
       payload: profiles,
     );
   }

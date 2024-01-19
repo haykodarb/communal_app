@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
@@ -15,6 +17,8 @@ class CommunityHomeController extends GetxController {
   final RxInt totalBookCount = 0.obs;
 
   int loadingIndex = 0;
+
+  Timer? debounceTimer;
 
   @override
   Future<void> onInit() async {
@@ -47,10 +51,33 @@ class CommunityHomeController extends GetxController {
     firstLoad.value = false;
   }
 
+  Future<void> searchBooks(String string_query) async {
+    debounceTimer?.cancel();
+
+    print(string_query);
+
+    debounceTimer = Timer(
+      const Duration(milliseconds: 500),
+      () async {
+        firstLoad.value = true;
+
+        final BackendResponse response = await BooksBackend.getBooksInCommunity(community, 0, string_query);
+
+        if (response.success) {
+          booksLoaded.value = response.payload;
+          booksLoaded.refresh();
+          loadingIndex++;
+        }
+
+        firstLoad.value = false;
+      },
+    );
+  }
+
   Future<void> loadBooks() async {
     loadingMore.value = true;
 
-    final BackendResponse response = await BooksBackend.getBooksInCommunity(community, loadingIndex);
+    final BackendResponse response = await BooksBackend.getBooksInCommunity(community, loadingIndex, 'moro');
 
     if (response.success) {
       booksLoaded.addAll(response.payload);

@@ -7,7 +7,7 @@ const ColorScheme _lightScheme = ColorScheme.light(
   primary: Color(0xFF92BFB1),
   secondary: Color(0xFFEC9B98),
   // secondary: Color(0xFFebbcba),
-  tertiary: Color(0xFFebbcba),
+  tertiary: Color(0xFF907aa9),
   onBackground: Color(0xFF0F1F1B),
   onPrimary: Color(0xFFffffff),
   onSecondary: Color(0xFF0F1F1B),
@@ -132,7 +132,8 @@ final FloatingActionButtonThemeData _floatingActionButtonThemeData = FloatingAct
 
 final CardTheme _cardTheme = CardTheme(
   color: _lightScheme.background,
-  shadowColor: _lightScheme.primary,
+  shadowColor: _lightScheme.tertiary,
+  surfaceTintColor: _lightScheme.tertiary,
   elevation: 1,
   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
 );

@@ -26,6 +26,5 @@ class CommonUsernameButton extends StatelessWidget {
         ),
       ),
     );
-    ;
   }
 }

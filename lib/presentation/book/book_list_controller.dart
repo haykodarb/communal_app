@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
@@ -8,6 +10,7 @@ import 'package:get/get.dart';
 class BookListController extends GetxController {
   final RxList<Book> userBooks = <Book>[].obs;
   final RxBool loading = true.obs;
+  Timer? debounceTimer;
 
   @override
   Future<void> onReady() async {
@@ -31,6 +34,23 @@ class BookListController extends GetxController {
         CommonAlertDialog(title: '${response.payload}'),
       );
     }
+  }
+
+  Future<void> searchBooks(String query) async {
+    debounceTimer?.cancel();
+
+    debounceTimer = Timer(const Duration(milliseconds: 500), () async {
+      loading.value = true;
+
+      final BackendResponse response = await BooksBackend.searchOwnerBooksByQuery(query);
+
+      if (response.success) {
+        userBooks.value = response.payload;
+        userBooks.refresh();
+      }
+
+      loading.value = false;
+    });
   }
 
   Future<void> updateBook(Book book) async {

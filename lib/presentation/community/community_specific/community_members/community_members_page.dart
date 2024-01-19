@@ -11,75 +11,91 @@ class CommunityMembersPage extends StatelessWidget {
 
   Widget _userElement(CommunityMembersController controller, Profile user) {
     return Card(
-      child: SizedBox(
-        height: 70,
-        child: Padding(
-          padding: EdgeInsets.only(left: 20, right: user.id == UsersBackend.currentUserId ? 20 : 10),
-          child: Obx(
-            () => CommonLoadingBody(
-              loading: user.loading.value,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(user.username),
-                  Visibility(
-                    visible: user.is_admin,
-                    child: Builder(
+      child: InkWell(
+        onTap: user.id == UsersBackend.currentUserId
+            ? null
+            : () {
+                Get.toNamed(
+                  RouteNames.profileOtherPage,
+                  arguments: {
+                    'user': user,
+                  },
+                );
+              },
+        enableFeedback: false,
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        child: SizedBox(
+          height: 70,
+          child: Padding(
+            padding: EdgeInsets.only(left: 20, right: user.id == UsersBackend.currentUserId ? 20 : 10),
+            child: Obx(
+              () => CommonLoadingBody(
+                loading: user.loading.value,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(user.username),
+                    Visibility(
+                      visible: user.is_admin,
+                      child: Builder(
+                        builder: (context) {
+                          return Container(
+                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                20,
+                              ),
+                              border: Border.all(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                            child: const Text('admin'),
+                          );
+                        },
+                      ),
+                    ),
+                    Builder(
                       builder: (context) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                              20,
+                        if (user.id == UsersBackend.currentUserId) {
+                          return Container(
+                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                20,
+                              ),
+                              border: Border.all(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
                             ),
-                            border: Border.all(
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                          ),
-                          child: const Text('admin'),
-                        );
+                            child: const Text('you'),
+                          );
+                        }
+
+                        if (controller.community.isCurrentUserAdmin != null &&
+                            controller.community.isCurrentUserAdmin!) {
+                          return PopupMenuButton(
+                            itemBuilder: (context) {
+                              return <PopupMenuEntry>[
+                                PopupMenuItem(
+                                  onTap: () => controller.changeUserAdmin(user, !user.is_admin),
+                                  child: Text(user.is_admin ? 'Remove as admin' : 'Make admin'),
+                                ),
+                                PopupMenuItem(
+                                  onTap: () => controller.removeUser(user),
+                                  child: const Text('Remove'),
+                                ),
+                              ];
+                            },
+                          );
+                        }
+
+                        return const SizedBox.shrink();
                       },
                     ),
-                  ),
-                  Builder(
-                    builder: (context) {
-                      if (user.id == UsersBackend.currentUserId) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                              20,
-                            ),
-                            border: Border.all(
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                          ),
-                          child: const Text('you'),
-                        );
-                      }
-
-                      if (controller.community.isCurrentUserAdmin != null && controller.community.isCurrentUserAdmin!) {
-                        return PopupMenuButton(
-                          itemBuilder: (context) {
-                            return <PopupMenuEntry>[
-                              PopupMenuItem(
-                                onTap: () => controller.changeUserAdmin(user, !user.is_admin),
-                                child: Text(user.is_admin ? 'Remove as admin' : 'Make admin'),
-                              ),
-                              PopupMenuItem(
-                                onTap: () => controller.removeUser(user),
-                                child: const Text('Remove'),
-                              ),
-                            ];
-                          },
-                        );
-                      }
-
-                      return const SizedBox.shrink();
-                    },
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -151,7 +167,7 @@ class CommunityMembersPage extends StatelessWidget {
                                   );
                                 },
                                 icon: Icon(
-                                  Icons.chat_outlined,
+                                  Icons.chat_bubble_outline_rounded,
                                   color: Theme.of(context).colorScheme.onPrimary,
                                 ),
                               ),

@@ -1,6 +1,5 @@
 import 'package:communal/backend/realtime_backend.dart';
 import 'package:communal/backend/user_preferences.dart';
-import 'package:communal/backend/users_backend.dart';
 import 'package:communal/dark_theme.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
 import 'package:flutter/material.dart';

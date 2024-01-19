@@ -3,6 +3,7 @@ import 'package:communal/presentation/common/common_book_card.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/book/book_list_controller.dart';
+import 'package:communal/presentation/common/common_text_info.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,7 +19,53 @@ class BookListPage extends StatelessWidget {
         return Scaffold(
           drawer: CommonDrawerWidget(),
           appBar: AppBar(
-            title: const Text('Books'),
+            elevation: 10,
+            title: const Text('My Books'),
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(60),
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Theme.of(context).colorScheme.surface,
+                ),
+                child: TextField(
+                  onChanged: controller.searchBooks,
+                  cursorColor: Theme.of(context).colorScheme.onBackground,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                    border: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                    focusedErrorBorder: InputBorder.none,
+                    labelStyle: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontSize: 14,
+                    ),
+                    label: const Text(
+                      'Search...',
+                      textAlign: TextAlign.center,
+                    ),
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                  ),
+                ),
+              ),
+            ),
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: controller.goToAddBookPage,
@@ -26,59 +73,58 @@ class BookListPage extends StatelessWidget {
               Icons.add,
             ),
           ),
-          body: Center(
-            child: Obx(
-              () => CommonLoadingBody(
-                loading: controller.loading.value,
-                child: RefreshIndicator(
-                  onRefresh: controller.reloadBooks,
-                  child: Obx(
-                    () {
-                      if (controller.userBooks.isEmpty) {
-                        return const Center(
-                          child: Text(
-                            'You haven\'t added\nany books yet.',
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
-                            textAlign: TextAlign.center,
+          body: Obx(
+            () => CommonLoadingBody(
+              loading: controller.loading.value,
+              child: RefreshIndicator(
+                onRefresh: controller.reloadBooks,
+                child: Obx(
+                  () {
+                    if (controller.userBooks.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          'You haven\'t added\nany books yet.',
+                          style: TextStyle(
+                            fontSize: 16,
                           ),
-                        );
-                      } else {
-                        return ListView.separated(
-                          itemCount: controller.userBooks.length,
-                          padding: const EdgeInsets.all(20),
-                          separatorBuilder: (context, index) {
-                            return const SizedBox(
-                              height: 20,
-                            );
-                          },
-                          itemBuilder: (context, index) {
-                            final Book book = controller.userBooks[index];
+                          textAlign: TextAlign.center,
+                        ),
+                      );
+                    } else {
+                      return ListView.separated(
+                        itemCount: controller.userBooks.length,
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
+                        separatorBuilder: (context, index) {
+                          return const SizedBox(
+                            height: 20,
+                          );
+                        },
+                        itemBuilder: (context, index) {
+                          final Book book = controller.userBooks[index];
 
-                            return InkWell(
-                              onTap: () => Get.toNamed(
-                                RouteNames.bookOwnedPage,
-                                arguments: {
-                                  'book': book,
-                                  'controller': controller,
-                                },
-                              ),
-                              child: CommonBookCard(
-                                book: book,
-                                children: [
-                                  Text(book.author),
-                                  Text(
-                                    book.available ? 'Available' : 'Unavailable',
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        );
-                      }
-                    },
-                  ),
+                          return InkWell(
+                            highlightColor: Colors.transparent,
+                            splashColor: Colors.transparent,
+                            onTap: () => Get.toNamed(
+                              RouteNames.bookOwnedPage,
+                              arguments: {
+                                'book': book,
+                                'controller': controller,
+                              },
+                            ),
+                            child: CommonBookCard(
+                              book: book,
+                              height: 200,
+                              children: [
+                                CommonTextInfo(label: 'Author', text: book.author, size: 13),
+                                CommonTextInfo(label: 'Available', text: book.available ? 'Yes' : 'No', size: 13),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    }
+                  },
                 ),
               ),
             ),

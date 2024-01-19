@@ -68,7 +68,7 @@ class CommonBookCard extends StatelessWidget {
                     },
                   ),
                 ),
-                const VerticalDivider(width: 10),
+                const VerticalDivider(width: 20),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(top: 10, right: 10),

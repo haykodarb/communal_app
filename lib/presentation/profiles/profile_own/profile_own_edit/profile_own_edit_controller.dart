@@ -108,30 +108,6 @@ class ProfileOwnEditController extends GetxController {
       return 'Username should only include ASCII characters';
     }
 
-    bool available = true;
-
-    if (debounce?.isActive ?? false) {
-      debounce?.cancel();
-    }
-
-    debounce = Timer(
-      const Duration(milliseconds: 500),
-      () async {
-        // if (value == inheritedProfile.username) {
-        //   available = true;
-        //   return;
-        // }
-
-        final bool usernameAvailable = await UsersBackend.validateUsername(value);
-
-        available = usernameAvailable;
-      },
-    );
-
-    if (!available) {
-      return 'Username is not available';
-    }
-
     return null;
   }
 

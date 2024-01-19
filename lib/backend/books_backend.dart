@@ -3,13 +3,25 @@ import 'dart:typed_data';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/community.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class BooksBackend {
   static final SupabaseClient _client = Supabase.instance.client;
 
   static Future<Uint8List> getBookCover(Book book) async {
-    Uint8List bytes = await _client.storage.from('book_covers').download(book.image_path);
+    FileInfo? file = await DefaultCacheManager().getFileFromCache(book.image_path);
+
+    Uint8List bytes;
+
+    if (file != null) {
+      bytes = await file.file.openRead().toBytes();
+    } else {
+      bytes = await _client.storage.from('book_covers').download(book.image_path);
+
+      await DefaultCacheManager().putFile(book.image_path, bytes, key: book.image_path);
+    }
 
     return bytes;
   }
@@ -121,12 +133,39 @@ class BooksBackend {
     }
   }
 
+  static Future<BackendResponse> searchOwnerBooksByQuery(String query) async {
+    try {
+      final String userId = _client.auth.currentUser!.id;
+
+      final List<Map<String, dynamic>> response = await _client
+          .from('books')
+          .select('*, profiles(*)')
+          .or('title.ilike.%$query%, author.ilike.%$query%')
+          .eq('owner', userId)
+          .limit(10)
+          .order('created_at');
+
+      final List<Book> bookList = response
+          .map(
+            (Map<String, dynamic> element) => Book.fromMap(element),
+          )
+          .toList();
+
+      return BackendResponse(
+        success: true,
+        payload: bookList,
+      );
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
+    }
+  }
+
   static Future<BackendResponse> getAllBooksForUser() async {
     try {
       final String userId = _client.auth.currentUser!.id;
 
       final List<Map<String, dynamic>> response =
-          await _client.from('books').select('*, profiles(*)').eq('owner', userId);
+          await _client.from('books').select('*, profiles(*)').eq('owner', userId).limit(10).order('created_at');
 
       final List<Book> bookList = response
           .map(
@@ -159,9 +198,12 @@ class BooksBackend {
 
   static Future<BackendResponse> getBooksCountInCommunity(Community community) async {
     try {
-      final int booksResponse = await _client.rpc('get_books_count_community', params: {
-        'community_id': community.id,
-      });
+      final int booksResponse = await _client.rpc(
+        'get_books_count_community',
+        params: {
+          'community_id': community.id,
+        },
+      );
 
       return BackendResponse(
         success: true,
@@ -174,16 +216,21 @@ class BooksBackend {
     }
   }
 
-  static Future<BackendResponse> getBooksInCommunity(Community community, int index) async {
+  static Future<BackendResponse> getBooksInCommunity(Community community, int index, String query) async {
     try {
-      final List<dynamic> booksResponse = await _client.rpc(
-        'get_books_community',
-        params: {
-          'community_id': community.id,
-          'offset_num': index * 10,
-          'limit_num': 10,
-        },
-      ).select('*, profiles(*)');
+      final List<dynamic> booksResponse = await _client
+          .rpc(
+            'get_books_community',
+            params: {
+              'community_id': community.id,
+              'offset_num': index * 10,
+              'limit_num': 10,
+              'search_query': query,
+            },
+          )
+          .select('*, profiles(*)')
+          .limit(10)
+          .order('created_at');
 
       final List<Book> listOfBooks = booksResponse
           .map(
@@ -192,7 +239,7 @@ class BooksBackend {
           .toList();
 
       return BackendResponse(
-        success: listOfBooks.isNotEmpty,
+        success: true,
         payload: listOfBooks,
       );
     } on PostgrestException catch (error) {

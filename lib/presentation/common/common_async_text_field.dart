@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 class CommonAsyncTextFieldController extends GetxController {
   Timer? debounce;
   RxBool isValidating = false.obs;
-  RxBool isWaiting = false.obs;
   RxnString asyncValidationMessage = RxnString();
 }
 
@@ -73,17 +72,11 @@ class CommonAsyncTextField extends StatelessWidget {
 
                 controller.isValidating.value = true;
 
-                if (controller.debounce?.isActive ?? false) {
-                  controller.debounce?.cancel();
-                }
-
-                controller.isWaiting.value = true;
+                controller.debounce?.cancel();
 
                 controller.debounce = Timer(
                   duration,
                   () async {
-                    controller.isWaiting.value = false;
-
                     controller.isValidating.value = true;
                     controller.asyncValidationMessage.value = await asyncValidator(value);
                     controller.isValidating.value = false;

@@ -15,7 +15,6 @@ class CommunityInvitePage extends StatelessWidget {
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
             title: const Text('Invite user'),
-            automaticallyImplyLeading: false,
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 20),
@@ -27,14 +26,11 @@ class CommunityInvitePage extends StatelessWidget {
                   onEditingComplete: controller.onSearch,
                   decoration: InputDecoration(
                     label: const Text('Search...'),
-                    suffixIcon: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: IconButton(
-                        onPressed: controller.onSearch,
-                        icon: const Icon(
-                          Icons.search,
-                          size: 30,
-                        ),
+                    suffixIcon: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Icon(
+                        Icons.search,
+                        size: 30,
                       ),
                     ),
                     suffixIconColor: Theme.of(context).colorScheme.primary,
@@ -54,6 +50,8 @@ class CommunityInvitePage extends StatelessWidget {
                           loading: controller.loading.value,
                           child: ListView.builder(
                             itemCount: controller.foundProfiles.length,
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            physics: const AlwaysScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
                               return Obx(
                                 () {
@@ -62,10 +60,12 @@ class CommunityInvitePage extends StatelessWidget {
                                     style: controller.selectedIndex.value == index
                                         ? TextButton.styleFrom(
                                             foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                                            minimumSize: const Size.fromHeight(50),
                                             backgroundColor: Theme.of(context).colorScheme.primary,
                                           )
                                         : TextButton.styleFrom(
                                             foregroundColor: Theme.of(context).colorScheme.onBackground,
+                                            minimumSize: const Size.fromHeight(50),
                                             backgroundColor: Theme.of(context).colorScheme.background,
                                           ),
                                     child: Text(
@@ -84,9 +84,9 @@ class CommunityInvitePage extends StatelessWidget {
                     ),
                   ),
                 ),
-                const Divider(height: 15),
+                const Divider(),
                 SizedBox(
-                  height: 70,
+                  height: 50,
                   child: Obx(
                     () => CommonLoadingBody(
                       loading: controller.processingInvite.value,
@@ -97,7 +97,7 @@ class CommunityInvitePage extends StatelessWidget {
                             controller.inviteError.value,
                             style: TextStyle(
                               fontSize: 16,
-                              color: Theme.of(context).colorScheme.error,
+                              color: Theme.of(context).colorScheme.secondary,
                               fontWeight: FontWeight.w500,
                             ),
                             textAlign: TextAlign.center,
@@ -107,7 +107,7 @@ class CommunityInvitePage extends StatelessWidget {
                     ),
                   ),
                 ),
-                const Divider(height: 15),
+                const Divider(),
                 ElevatedButton(
                   onPressed: controller.onSubmit,
                   child: const Text('Invite'),

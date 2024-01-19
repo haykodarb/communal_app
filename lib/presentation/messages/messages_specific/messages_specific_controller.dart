@@ -22,10 +22,12 @@ class MessagesSpecificController extends GetxController {
 
   final RxBool sending = false.obs;
   final RxBool loading = false.obs;
+  final RxBool showLoadingMore = false.obs;
+  bool loadingMore = false;
 
   final ScrollController scrollController = ScrollController();
 
-  bool loadingMore = false;
+  Timer? debounceTimer;
 
   int currentIndex = 0;
 
@@ -70,8 +72,11 @@ class MessagesSpecificController extends GetxController {
 
   Future<void> scrollControllerListener() async {
     if (scrollController.position.pixels > scrollController.position.maxScrollExtent * 0.9) {
-      if (loadingMore) return;
+      if (loadingMore) {
+        return;
+      }
 
+      showLoadingMore.value = true;
       loadingMore = true;
 
       final bool noMoreMessages = await getMoreMessages();
@@ -80,9 +85,13 @@ class MessagesSpecificController extends GetxController {
         scrollController.removeListener(scrollControllerListener);
       }
 
-      Future.delayed(
+      showLoadingMore.value = false;
+
+      debounceTimer = Timer(
         const Duration(milliseconds: 500),
-        () => loadingMore = false,
+        () {
+          loadingMore = false;
+        },
       );
     }
   }

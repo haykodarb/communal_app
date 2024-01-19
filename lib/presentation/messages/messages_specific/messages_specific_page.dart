@@ -5,6 +5,7 @@ import 'package:communal/presentation/messages/messages_specific/messages_specif
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class MessagesSpecificPage extends StatelessWidget {
   const MessagesSpecificPage({super.key});
@@ -14,7 +15,15 @@ class MessagesSpecificPage extends StatelessWidget {
 
     final Message? nextMessage = index == 0 ? null : controller.messages[index - 1];
 
-    final bool showTime = nextMessage == null || nextMessage.sender.id != message.sender.id;
+    bool showTime = nextMessage == null || nextMessage.sender.id != message.sender.id;
+
+    if (nextMessage != null) {
+      final int differenceMinutes = nextMessage.created_at.difference(message.created_at).inMinutes;
+
+      if (differenceMinutes > 10) {
+        showTime = true;
+      }
+    }
 
     final bool isReceived = message.sender.id == controller.user.id;
 
@@ -193,6 +202,18 @@ class MessagesSpecificPage extends StatelessWidget {
           body: SafeArea(
             child: Column(
               children: [
+                Obx(
+                  () => Visibility(
+                    visible: controller.showLoadingMore.value,
+                    child: Container(
+                      color: Colors.transparent,
+                      child: LoadingAnimationWidget.horizontalRotatingDots(
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 30,
+                      ),
+                    ),
+                  ),
+                ),
                 Expanded(
                   child: Obx(
                     () => CommonLoadingBody(
@@ -203,7 +224,7 @@ class MessagesSpecificPage extends StatelessWidget {
                             reverse: true,
                             itemCount: controller.messages.length,
                             controller: controller.scrollController,
-                            physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                            physics: const AlwaysScrollableScrollPhysics(),
                             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                             separatorBuilder: (context, index) {
                               return const Divider(

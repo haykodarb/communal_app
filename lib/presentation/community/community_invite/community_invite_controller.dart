@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/community.dart';
@@ -14,10 +15,21 @@ class CommunityInviteController extends GetxController {
   final RxBool processingInvite = false.obs;
   final RxString inviteError = ''.obs;
 
+  Timer? debounceTimer;
+
   final RxString query = ''.obs;
 
   void onQueryChanged(String value) {
     query.value = value;
+
+    debounceTimer?.cancel();
+
+    debounceTimer = Timer(
+      const Duration(milliseconds: 500),
+      () {
+        onSearch();
+      },
+    );
   }
 
   void onSelectedIndexChanged(int newIndex) {
@@ -36,7 +48,7 @@ class CommunityInviteController extends GetxController {
 
     final bool confirm = await Get.dialog(
       CommonConfirmationDialog(
-        title: 'Add user ${selectedProfile.username} to ${community.name}?',
+        title: 'Invite user ${selectedProfile.username} to ${community.name}?',
         confirmCallback: () {
           Get.back(result: true);
         },

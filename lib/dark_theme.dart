@@ -5,7 +5,7 @@ const ColorScheme _darkScheme = ColorScheme.dark(
   // background: Color(0xFF191724),
   // surface: Color(0xFF1f1d2e),
   background: Color(0xFF0F0F19),
-  surface: Color(0xFF1f1d2e),
+  surface: Color(0xFF21202e),
   primary: Color(0xFF84BDAB),
   secondary: Color(0xFFebbcba),
   tertiary: Color(0xFFc4a7e7),
@@ -13,6 +13,7 @@ const ColorScheme _darkScheme = ColorScheme.dark(
   onBackground: Color(0xFFFFFFFF),
   onPrimary: Color(0xFF0F0F19),
   onSecondary: Color(0xFF0F0F19),
+  onSurfaceVariant: Color(0xFFBBBBBB),
   onTertiary: Color(0xFFFFFFFF),
   onSurface: Color(0xFFFFFFFF),
   onError: Color(0xFFFFFFFF),
@@ -126,11 +127,11 @@ final FloatingActionButtonThemeData _floatingActionButtonThemeData = FloatingAct
 );
 
 final CardTheme _cardTheme = CardTheme(
-  color: _darkScheme.surface,
-  shadowColor: _darkScheme.primary,
+  color: _darkScheme.background,
+  shadowColor: _darkScheme.tertiary,
+  surfaceTintColor: _darkScheme.tertiary,
   elevation: 1,
   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-  surfaceTintColor: Colors.transparent,
 );
 
 final PopupMenuThemeData _popupMenuTheme = PopupMenuThemeData(

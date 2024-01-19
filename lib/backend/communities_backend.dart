@@ -2,6 +2,8 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/community.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CommunitiesBackend {
@@ -10,7 +12,18 @@ class CommunitiesBackend {
   static Future<Uint8List?> getCommunityAvatar(Community community) async {
     try {
       if (community.image_path != null) {
-        Uint8List bytes = await _client.storage.from('community_avatars').download(community.image_path!);
+        FileInfo? file = await DefaultCacheManager().getFileFromCache(community.image_path!);
+
+        Uint8List bytes;
+
+        if (file != null) {
+          bytes = await file.file.openRead().toBytes();
+        } else {
+          bytes = await _client.storage.from('community_avatars').download(community.image_path!);
+
+          await DefaultCacheManager().putFile(community.image_path!, bytes, key: community.image_path!);
+        }
+
         return bytes;
       }
 

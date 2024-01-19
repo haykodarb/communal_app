@@ -1,4 +1,4 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:communal/backend/users_backend.dart';
 
 class Community {
   String id;
@@ -16,15 +16,14 @@ class Community {
   });
 
   bool get isCurrentUserOwner {
-    final String userId = Supabase.instance.client.auth.currentUser!.id;
-
-    return userId == owner;
+    return UsersBackend.currentUserId == owner;
   }
 
   Community.fromMap(Map<String, dynamic> map)
       : id = map['id'],
         name = map['name'],
-        owner = map['owner'];
+        owner = map['owner'],
+        image_path = map['image_path'];
 
   Community.empty()
       : id = '',
