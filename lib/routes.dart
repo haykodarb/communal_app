@@ -1,6 +1,7 @@
 import 'package:communal/presentation/book/book_edit/book_edit_page.dart';
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_topic_create/community_discussions_topic_create_page.dart';
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_topic_messages/community_discussions_topic_messages_page.dart';
+import 'package:communal/presentation/loans/loan_info/loan_info_page.dart';
 import 'package:communal/presentation/messages/messages_page.dart';
 import 'package:communal/presentation/community/community_invite/community_invite_page.dart';
 import 'package:communal/presentation/community/community_list_page.dart';
@@ -45,6 +46,7 @@ class RouteNames {
   static const String communityDiscussionsTopicMessages = '/community/discussions/topic/messages';
   static const String invitationsPage = '/invitations';
   static const String loansPage = '/loans';
+  static const String loanInfoPage = '/loans/info';
   static const String messagesPage = '/messages';
   static const String messagesSpecificPage = '/messages/specific';
 }
@@ -143,6 +145,11 @@ final List<GetPage> routes = <GetPage>[
     name: RouteNames.loansPage,
     transition: Transition.noTransition,
     page: () => const LoansPage(),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.loanInfoPage,
+    transition: Transition.noTransition,
+    page: () => const LoanInfoPage(),
   ),
   GetPage<dynamic>(
     name: RouteNames.messagesPage,

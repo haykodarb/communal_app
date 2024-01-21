@@ -33,6 +33,11 @@ class UsersBackend {
     }
   }
 
+  static void removeCurrentUserProfile() {
+    currentUserProfile.value = Profile.empty();
+    currentUserProfile.refresh();
+  }
+
   static Future<Uint8List?> getProfileAvatar(Profile profile) async {
     if (profile.avatar_path != null) {
       FileInfo? file = await DefaultCacheManager().getFileFromCache(profile.avatar_path!);

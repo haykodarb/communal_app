@@ -195,7 +195,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       _drawerButton(
                         text: 'Loans',
-                        icon: Icons.outbox,
+                        icon: Icons.sync_alt_rounded,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.loansPage),
                         notifications: _commonDrawerController.loanNotifications,
                       ),

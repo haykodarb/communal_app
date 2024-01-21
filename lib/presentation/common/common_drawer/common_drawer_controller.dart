@@ -44,6 +44,8 @@ class CommonDrawerController extends GetxController {
 
   @override
   Future<void> onClose() async {
+    UsersBackend.removeCurrentUserProfile();
+
     await realtimeSubscription?.cancel();
 
     super.onClose();
@@ -107,6 +109,7 @@ class CommonDrawerController extends GetxController {
 
   void handleLogout() {
     LoginBackend.logout();
+    Get.deleteAll();
     Get.offAllNamed(RouteNames.startPage);
   }
 }

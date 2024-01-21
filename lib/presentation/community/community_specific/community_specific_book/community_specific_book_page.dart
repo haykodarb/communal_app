@@ -1,11 +1,17 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/book.dart';
+import 'package:communal/models/community.dart';
 import 'package:communal/models/loan.dart';
+import 'package:communal/presentation/common/common_circular_avatar.dart';
+import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_text_info.dart';
+import 'package:communal/presentation/common/common_username_button.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_book/community_specific_book_controller.dart';
 import 'package:communal/routes.dart';
+import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -46,7 +52,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
     );
   }
 
-  Widget _bottomInformation(CommunitySpecificBookController controller) {
+  Widget _ownerReview(CommunitySpecificBookController controller) {
     return Builder(
       builder: (context) {
         return SizedBox(
@@ -55,8 +61,8 @@ class CommunitySpecificBookPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CommonTextInfo(
-                label: 'Review',
-                text: controller.book.review ?? 'Owner has not reviewed this book yet.',
+                label: 'Owner\'s Review',
+                text: controller.book.review ?? 'User has not reviewed this book yet.',
                 size: 14,
               ),
             ],
@@ -64,6 +70,133 @@ class CommunitySpecificBookPage extends StatelessWidget {
         );
       },
     );
+  }
+
+  Widget _reviewCard(CommunitySpecificBookController controller, int index) {
+    final Loan loan = controller.completedLoans[index];
+    return SizedBox(
+      width: double.maxFinite,
+      child: InkWell(
+        onTap: () {
+          controller.expandCarouselItem.value = !controller.expandCarouselItem.value;
+        },
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    CommonCircularAvatar(
+                      profile: loan.loanee,
+                      radius: 20,
+                      clickable: true,
+                    ),
+                    const VerticalDivider(width: 10),
+                    CommonUsernameButton(user: loan.loanee),
+                  ],
+                ),
+                const Divider(),
+                Obx(
+                  () => Text(
+                    loan.review ?? '',
+                    overflow: controller.expandCarouselItem.value ? TextOverflow.visible : TextOverflow.ellipsis,
+                    maxLines: controller.expandCarouselItem.value ? null : 5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _borrowersReviews(CommunitySpecificBookController controller) {
+    return Builder(builder: (context) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: double.maxFinite,
+            child: Text(
+              'Borrowers\' Reviews',
+              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+            ),
+          ),
+          Obx(
+            () {
+              if (controller.loadingCarousel.value) {
+                return SizedBox(
+                  height: 100,
+                  width: double.maxFinite,
+                  child: LoadingAnimationWidget.threeArchedCircle(
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 30,
+                  ),
+                );
+              }
+
+              if (controller.completedLoans.isEmpty) {
+                return const Text('No other reviews available.');
+              }
+
+              return Column(
+                children: [
+                  const Divider(),
+                  ExpandablePageView.builder(
+                    itemCount: controller.completedLoans.length,
+                    onPageChanged: (value) {
+                      controller.carouselIndex.value = value;
+                    },
+                    itemBuilder: (context, index) {
+                      return LayoutBuilder(
+                        builder: (context, constraints) {
+                          return Align(
+                            alignment: Alignment.topCenter,
+                            child: _reviewCard(controller, index),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  const Divider(),
+                  Visibility(
+                    visible: controller.completedLoans.length > 1,
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 10,
+                      width: double.maxFinite,
+                      child: ListView.builder(
+                        itemCount: controller.completedLoans.length,
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return Obx(
+                            () => Container(
+                              height: 30,
+                              width: 30,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: index == controller.carouselIndex.value
+                                    ? Theme.of(context).colorScheme.tertiary
+                                    : Theme.of(context).colorScheme.tertiary.withOpacity(0.1),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+          const Divider(),
+        ],
+      );
+    });
   }
 
   Widget _sideInformation(CommunitySpecificBookController controller) {
@@ -109,26 +242,53 @@ class CommunitySpecificBookPage extends StatelessWidget {
                         );
                       }
 
-                      if (!book.available) return const SizedBox.shrink();
+                      final Loan? currentLoan = controller.currentLoan.value;
 
-                      final Loan? existingLoan = controller.existingLoan.value;
+                      if (currentLoan != null) {
+                        final bool loanedByCurrentUser = currentLoan.loanee.id == UsersBackend.currentUserId;
 
-                      if (existingLoan != null) {
-                        final bool loanedBySomeoneElse = existingLoan.loanee.id != UsersBackend.currentUserId;
+                        if (!loanedByCurrentUser) {
+                          return const SizedBox.shrink();
+                        }
 
-                        if (!loanedBySomeoneElse) {
+                        if (loanedByCurrentUser && currentLoan.accepted) {
                           return CommonTextInfo(
                             label: 'Status',
-                            text: 'Requested ${DateFormat.yMMMd().format(existingLoan.created_at)}',
+                            text: 'Borrowed ${DateFormat.yMMMd().format(currentLoan.accepted_at!)}',
+                            size: 14,
+                          );
+                        }
+
+                        if (loanedByCurrentUser) {
+                          return CommonTextInfo(
+                            label: 'Status',
+                            text: 'Requested ${DateFormat.yMMMd().format(currentLoan.created_at)}',
                             size: 14,
                           );
                         } else {
                           return const SizedBox.shrink();
                         }
                       } else {
-                        return TextButton(
+                        return MaterialButton(
                           onPressed: controller.requestLoan,
-                          child: const Text('Request loan'),
+                          color: Theme.of(context).colorScheme.primary,
+                          padding: const EdgeInsets.all(8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.arrow_circle_down,
+                                color: Theme.of(context).colorScheme.onPrimary,
+                              ),
+                              const VerticalDivider(width: 5),
+                              Text(
+                                'Request',
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onPrimary,
+                                ),
+                              ),
+                            ],
+                          ),
                         );
                       }
                     },
@@ -189,7 +349,9 @@ class CommunitySpecificBookPage extends StatelessWidget {
                       ],
                     ),
                     const Divider(height: 30),
-                    _bottomInformation(controller),
+                    _ownerReview(controller),
+                    const Divider(height: 30),
+                    _borrowersReviews(controller),
                   ],
                 ),
               ),

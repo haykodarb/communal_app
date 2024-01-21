@@ -1,7 +1,10 @@
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
+import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 class CommonCircularAvatar extends StatelessWidget {
   const CommonCircularAvatar({
@@ -9,11 +12,13 @@ class CommonCircularAvatar extends StatelessWidget {
     required this.profile,
     required this.radius,
     this.image,
+    this.clickable = false,
   });
 
   final Image? image;
   final Profile profile;
   final double radius;
+  final bool clickable;
 
   Widget _imageAvatar() {
     return FutureBuilder(
@@ -105,15 +110,23 @@ class CommonCircularAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: Theme.of(context).colorScheme.primary,
-          width: 2,
+    return InkWell(
+      onTap: clickable
+          ? () {
+              Get.toNamed(
+                RouteNames.profileOtherPage,
+                arguments: {
+                  'user': profile,
+                },
+              );
+            }
+          : null,
+      child: Container(
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
         ),
+        child: (profile.avatar_path == null && image == null) ? _textAvatar() : _imageAvatar(),
       ),
-      child: (profile.avatar_path == null && image == null) ? _textAvatar() : _imageAvatar(),
     );
   }
 }

@@ -65,38 +65,54 @@ class MessagesBackend {
     );
   }
 
+  static Future<BackendResponse> deleteMessagesWithUser(Profile user) async {
+    try {
+      final SupabaseClient client = Supabase.instance.client;
+
+      final dynamic response = await client.rpc(
+        'delete_chat_for_user',
+        params: {
+          'chatter_id': user.id,
+        },
+      );
+
+      return BackendResponse(success: true, payload: response);
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
+    }
+  }
+
   static Future<BackendResponse> getMessagesWithUser(Profile user, int currentIndex) async {
-    final SupabaseClient client = Supabase.instance.client;
-    final String currentUserId = client.auth.currentUser!.id;
+    try {
+      final SupabaseClient client = Supabase.instance.client;
+      final String currentUserId = client.auth.currentUser!.id;
 
-    final String filter =
-        'and(sender.eq.$currentUserId, receiver.eq.${user.id}), and(sender.eq.${user.id}, receiver.eq.$currentUserId)';
+      final String filter =
+          'and(sender.eq.$currentUserId, receiver.eq.${user.id}), and(sender.eq.${user.id}, receiver.eq.$currentUserId)';
 
-    final List<dynamic> response = await client
-        .from('messages')
-        .select('*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
-        .or(filter)
-        .range(currentIndex * 100, currentIndex * 100 + 100 - 1)
-        .order(
-          'created_at',
-          ascending: false,
-        )
-        .catchError(
-      () {
-        return BackendResponse(success: false, payload: 'Network error');
-      },
-    );
+      final List<dynamic> response = await client
+          .from('messages')
+          .select('*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
+          .or(filter)
+          .range(currentIndex * 100, currentIndex * 100 + 100 - 1)
+          .order(
+            'created_at',
+            ascending: false,
+          );
 
-    final List<Message> listOfMessages = response.map(
-      (element) {
-        return Message.fromMap(element);
-      },
-    ).toList();
+      final List<Message> listOfMessages = response.map(
+        (element) {
+          return Message.fromMap(element);
+        },
+      ).toList();
 
-    return BackendResponse(
-      success: true,
-      payload: listOfMessages,
-    );
+      return BackendResponse(
+        success: true,
+        payload: listOfMessages,
+      );
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
+    }
   }
 
   static Future<void> markMessagesWithUserAsRead(Profile user) async {
@@ -108,11 +124,10 @@ class MessagesBackend {
 
     await client
         .from('messages')
-        .update(
-          {'is_read': true},
-        )
+        .update({'is_read': true})
         .or(filter)
         .eq('is_read', false)
+        .eq('receiver', currentUserId)
         .select();
   }
 

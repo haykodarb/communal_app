@@ -1,5 +1,6 @@
 import 'package:communal/models/discussion.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_username_button.dart';
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -35,10 +36,10 @@ class CommunityDiscussionsPage extends StatelessWidget {
                       },
                       itemBuilder: (context, index) {
                         final DiscussionTopic topic = controller.topics[index];
+
                         return InkWell(
                           onTap: () => controller.goToTopicMessages(topic),
                           child: Card(
-                            shadowColor: Theme.of(context).colorScheme.primary,
                             child: Padding(
                               padding: const EdgeInsets.all(20),
                               child: Column(
@@ -52,10 +53,7 @@ class CommunityDiscussionsPage extends StatelessWidget {
                                   Row(
                                     children: [
                                       const Text('Created by '),
-                                      Text(
-                                        topic.creator.username,
-                                        style: TextStyle(color: Theme.of(context).colorScheme.primary),
-                                      ),
+                                      CommonUsernameButton(user: topic.creator),
                                       const Text(' on '),
                                       Text(DateFormat.yMMMd().format(topic.created_at.toLocal()))
                                     ],

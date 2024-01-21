@@ -15,13 +15,30 @@ class CommunitySpecificBookController extends GetxController {
 
   final RxString message = ''.obs;
 
-  final Rxn<Loan> existingLoan = Rxn<Loan>();
+  final Rxn<Loan> currentLoan = Rxn<Loan>();
 
-  final RxBool loading = false.obs;
+  final RxBool loading = true.obs;
+
+  final RxInt carouselIndex = 0.obs;
+  final RxBool loadingCarousel = false.obs;
+  final RxList<Loan> completedLoans = <Loan>[].obs;
+
+  final RxBool expandCarouselItem = false.obs;
 
   @override
   Future<void> onReady() async {
-    await checkLoanStatus();
+    checkLoanStatus();
+
+    loadingCarousel.value = true;
+
+    completedLoans.clear();
+    final BackendResponse response = await LoansBackend.getCompletedLoansForBook(book);
+
+    if (response.success) {
+      completedLoans.addAll(response.payload);
+    }
+    loadingCarousel.value = false;
+
     super.onReady();
   }
 
@@ -31,7 +48,7 @@ class CommunitySpecificBookController extends GetxController {
     final BackendResponse currentLoanResponse = await LoansBackend.getCurrentLoanForBook(book);
 
     if (currentLoanResponse.success) {
-      existingLoan.value = currentLoanResponse.payload;
+      currentLoan.value = currentLoanResponse.payload;
       message.value = '';
     }
 
@@ -51,7 +68,7 @@ class CommunitySpecificBookController extends GetxController {
       final BackendResponse response = await LoansBackend.requestBookLoanInCommunity(book, community);
 
       if (response.success) {
-        existingLoan.value = response.payload;
+        currentLoan.value = response.payload;
       } else {
         Get.dialog(
           CommonAlertDialog(title: response.payload),

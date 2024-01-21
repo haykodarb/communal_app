@@ -5,6 +5,7 @@ import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/message.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/models/realtime_message.dart';
+import 'package:communal/presentation/common/common_confirmation_dialog.dart';
 import 'package:communal/routes.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -85,6 +86,25 @@ class MessagesController extends GetxController {
         'user': chatter,
       },
     );
+  }
+
+  Future<void> deleteChatsWithUsers(Profile chatter) async {
+    final bool deleteConfirm = await Get.dialog<bool>(
+          CommonConfirmationDialog(
+            title: 'Delete chat?',
+            confirmCallback: () => Get.back<bool>(result: true),
+            cancelCallback: () => Get.back<bool>(result: false),
+          ),
+        ) ??
+        false;
+
+    if (deleteConfirm) {
+      final BackendResponse response = await MessagesBackend.deleteMessagesWithUser(chatter);
+
+      if (response.success) {
+        distinctChats.removeWhere((element) => element.sender.id == chatter.id || element.receiver.id == chatter.id);
+      }
+    }
   }
 
   Future<void> loadChats() async {

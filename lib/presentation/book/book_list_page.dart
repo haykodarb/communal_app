@@ -27,7 +27,7 @@ class BookListPage extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(horizontal: 10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Theme.of(context).colorScheme.surface,
+                  color: Theme.of(context).colorScheme.tertiary.withOpacity(0.1),
                 ),
                 child: TextField(
                   onChanged: controller.searchBooks,

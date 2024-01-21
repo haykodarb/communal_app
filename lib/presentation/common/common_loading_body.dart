@@ -7,21 +7,19 @@ class CommonLoadingBody extends StatelessWidget {
     required this.child,
     required this.loading,
     this.size = 50,
+    this.alignment = Alignment.center,
   });
 
   final Widget child;
   final bool loading;
   final double size;
+  final Alignment alignment;
 
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return Center(
-        // child: LoadingAnimationWidget.flickr(
-        //   leftDotColor: Theme.of(context).colorScheme.primary,
-        //   rightDotColor: Theme.of(context).colorScheme.secondary,
-        //   size: size,
-        // ),
+      return Align(
+        alignment: alignment,
         child: LoadingAnimationWidget.threeArchedCircle(color: Theme.of(context).colorScheme.primary, size: size),
       );
     }

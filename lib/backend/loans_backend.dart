@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/community.dart';
@@ -24,25 +26,48 @@ class LoansBackend {
     return BackendResponse(success: true, payload: 'Loan deleted successfully.');
   }
 
-  static Future<BackendResponse> setLoanParameterTrue(Loan loan, String parameter) async {
-    final SupabaseClient client = Supabase.instance.client;
+  static Future<BackendResponse> updateLoanReview(Loan loan, String? review) async {
+    try {
+      final SupabaseClient client = Supabase.instance.client;
 
-    final Map<String, dynamic>? response = await client
-        .from('loans')
-        .update(
-          {
-            parameter: true,
-          },
-        )
-        .eq('id', loan.id)
-        .select()
-        .maybeSingle();
+      final Map<String, dynamic>? response =
+          await client.from('loans').update({'review': review}).eq('id', loan.id).select().maybeSingle();
 
-    if (response == null || response.isEmpty) {
-      return BackendResponse(success: false, payload: '');
+      if (response == null || response.isEmpty) {
+        return BackendResponse(success: false, payload: 'Could not update review.');
+      }
+
+      return BackendResponse(success: true, payload: review);
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
     }
+  }
 
-    return BackendResponse(success: true, payload: '');
+  static Future<BackendResponse> setLoanParameterTrue(Loan loan, String parameter) async {
+    try {
+      final SupabaseClient client = Supabase.instance.client;
+
+      final Map<String, dynamic>? response = await client
+          .from('loans')
+          .update(
+            {
+              parameter: true,
+            },
+          )
+          .eq('id', loan.id)
+          .select()
+          .maybeSingle();
+
+      if (response == null || response.isEmpty) {
+        return BackendResponse(success: false, payload: '');
+      }
+
+      return BackendResponse(success: true, payload: '');
+    } on PostgrestException catch (error) {
+      Map<String, dynamic> json = jsonDecode(error.message);
+
+      return BackendResponse(success: false, payload: json['message']);
+    }
   }
 
   static Future<BackendResponse> getLoanCountWhere(LoansRequestType requestType) async {
@@ -199,6 +224,27 @@ class LoansBackend {
     final List<Loan> loanList = response.map((element) => Loan.fromMap(element)).toList();
 
     return BackendResponse(success: true, payload: loanList);
+  }
+
+  static Future<BackendResponse> getCompletedLoansForBook(Book book) async {
+    try {
+      final SupabaseClient client = Supabase.instance.client;
+
+      final List<Map<String, dynamic>> response = await client
+          .from('loans')
+          .select(
+            '*, communities(*), books!inner(*, profiles(*)), profiles(*)',
+          )
+          .eq('book', book.id)
+          .eq('accepted', true)
+          .not('review', 'is', null);
+
+      final List<Loan> loanList = response.map((element) => Loan.fromMap(element)).toList();
+
+      return BackendResponse(success: true, payload: loanList);
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
+    }
   }
 
   static Future<BackendResponse> requestBookLoanInCommunity(Book book, Community community) async {

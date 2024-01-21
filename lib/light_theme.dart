@@ -4,14 +4,14 @@ import 'package:google_fonts/google_fonts.dart';
 const ColorScheme _lightScheme = ColorScheme.light(
   background: Color(0xFFffffff),
   surface: Color(0xFFdeedea),
-  primary: Color(0xFF92BFB1),
-  secondary: Color(0xFFEC9B98),
+  primary: Color(0xFF56949f),
+  secondary: Color(0xFFd7827e),
   // secondary: Color(0xFFebbcba),
   tertiary: Color(0xFF907aa9),
   onBackground: Color(0xFF0F1F1B),
   onPrimary: Color(0xFFffffff),
-  onSecondary: Color(0xFF0F1F1B),
-  onTertiary: Color(0xFF0F1F1B),
+  onSecondary: Color(0xFFffffff),
+  onTertiary: Color(0xFFffffff),
   onSurface: Color(0xFF0F1F1B),
   error: Color(0xFFeb6f92),
 );
@@ -25,7 +25,7 @@ final BottomNavigationBarThemeData _bottomNavigationBarTheme = BottomNavigationB
   unselectedLabelStyle: TextStyle(color: _lightScheme.onBackground),
   selectedLabelStyle: TextStyle(color: _lightScheme.primary),
   showUnselectedLabels: false,
-  showSelectedLabels: false,
+  showSelectedLabels: true,
 );
 
 final TextButtonThemeData _textButtonTheme = TextButtonThemeData(
@@ -39,6 +39,7 @@ final TextButtonThemeData _textButtonTheme = TextButtonThemeData(
 final AppBarTheme _appBarTheme = AppBarTheme(
   backgroundColor: _lightScheme.background,
   elevation: 1,
+  surfaceTintColor: Colors.transparent,
   iconTheme: const IconThemeData(
     size: 30,
   ),

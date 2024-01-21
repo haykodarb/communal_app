@@ -10,6 +10,7 @@ class Loan {
   Community community;
   Book book;
   Profile loanee;
+  String? review;
   bool accepted;
   bool rejected;
   bool returned;
@@ -32,6 +33,7 @@ class Loan {
         created_at = DateTime.parse(map['created_at']).toLocal(),
         accepted_at = DateTime.tryParse(map['accepted_at'] ?? '')?.toLocal(),
         returned_at = DateTime.tryParse(map['returned_at'] ?? '')?.toLocal(),
+        review = map['review'],
         community = Community(
           id: map['communities']['id'],
           name: map['communities']['name'],
@@ -43,4 +45,14 @@ class Loan {
         accepted = map['accepted'],
         rejected = map['rejected'],
         returned = map['returned'];
+
+  Loan.empty()
+      : id = '',
+        created_at = DateTime.now(),
+        community = Community.empty(),
+        book = Book.empty(),
+        loanee = Profile.empty(),
+        accepted = false,
+        rejected = false,
+        returned = false;
 }

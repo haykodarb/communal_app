@@ -16,6 +16,13 @@ class LoansOwnedWidget extends StatelessWidget {
     return Builder(
       builder: (BuildContext context) {
         return InkWell(
+          onTap: () => Get.toNamed(
+            RouteNames.loanInfoPage,
+            arguments: {
+              'loan': loan,
+              'loansOwnedController': controller,
+            },
+          ),
           child: SizedBox(
             width: double.maxFinite,
             child: Card(

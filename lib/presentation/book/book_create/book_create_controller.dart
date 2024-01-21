@@ -30,9 +30,9 @@ class BookCreateController extends GetxController {
   Future<void> takePicture(ImageSource source) async {
     XFile? pickedImage = await imagePicker.pickImage(
       source: source,
-      imageQuality: 80,
-      maxHeight: 640,
-      maxWidth: 480,
+      imageQuality: 100,
+      maxHeight: 1280,
+      maxWidth: 960,
       preferredCameraDevice: CameraDevice.rear,
     );
 

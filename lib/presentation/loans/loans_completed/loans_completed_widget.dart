@@ -18,6 +18,7 @@ class LoansCompletedWidget extends StatelessWidget {
     return Builder(
       builder: (BuildContext context) {
         return InkWell(
+          onTap: () => controller.goToBookPage(loan),
           child: SizedBox(
             width: double.maxFinite,
             child: Card(
@@ -59,10 +60,6 @@ class LoansCompletedWidget extends StatelessWidget {
                               const PopupMenuItem(
                                 value: 0,
                                 child: Text('Chat'),
-                              ),
-                              const PopupMenuItem(
-                                value: 1,
-                                child: Text('View'),
                               ),
                             ];
                           },

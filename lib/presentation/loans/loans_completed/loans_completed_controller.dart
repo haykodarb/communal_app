@@ -1,6 +1,7 @@
 import 'package:communal/backend/loans_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/loan.dart';
+import 'package:communal/routes.dart';
 import 'package:get/get.dart';
 
 class LoansCompletedController extends GetxController {
@@ -11,6 +12,15 @@ class LoansCompletedController extends GetxController {
   void onReady() {
     super.onReady();
     loadLoans();
+  }
+
+  void goToBookPage(Loan loan) {
+    Get.toNamed(
+      RouteNames.loanInfoPage,
+      arguments: {
+        'loan': loan,
+      },
+    );
   }
 
   Future<void> loadLoans() async {

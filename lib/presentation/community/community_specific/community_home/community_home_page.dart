@@ -27,7 +27,7 @@ class CommunityHomePage extends StatelessWidget {
                     margin: const EdgeInsets.only(bottom: 10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: Theme.of(context).colorScheme.surface,
+                      color: Theme.of(context).colorScheme.tertiary.withOpacity(0.1),
                     ),
                     child: TextField(
                       onChanged: controller.searchBooks,
@@ -78,7 +78,7 @@ class CommunityHomePage extends StatelessWidget {
                                 SliverFillRemaining(
                                   child: Center(
                                     child: Text(
-                                      'There are no books\nin this community yet.',
+                                      'No books found.',
                                       style: TextStyle(fontSize: 14),
                                       textAlign: TextAlign.center,
                                     ),

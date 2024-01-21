@@ -19,12 +19,12 @@ class MessagesPage extends StatelessWidget {
       builder: (context) {
         return InkWell(
           onTap: () => controller.goToSpecificChat(chatter),
+          onLongPress: () => controller.deleteChatsWithUsers(chatter),
           splashColor: Colors.transparent,
           child: Card(
             elevation: hightlightMessage ? 5 : 1,
-            shadowColor:
-                hightlightMessage ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surface,
-            color: hightlightMessage ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surface,
+            shadowColor: hightlightMessage ? Theme.of(context).colorScheme.primary : null,
+            color: Theme.of(context).colorScheme.background,
             child: Padding(
               padding: const EdgeInsets.all(15),
               child: Row(

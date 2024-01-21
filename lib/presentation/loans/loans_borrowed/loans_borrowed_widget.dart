@@ -16,6 +16,13 @@ class LoansBorrowedWidget extends StatelessWidget {
     return Builder(
       builder: (BuildContext context) {
         return InkWell(
+          onTap: () => Get.toNamed(
+            RouteNames.loanInfoPage,
+            arguments: {
+              'loan': loan,
+              'loansBorrowedController': controller,
+            },
+          ),
           child: SizedBox(
             width: double.maxFinite,
             child: Card(
@@ -36,38 +43,52 @@ class LoansBorrowedWidget extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        PopupMenuButton(
-                          padding: EdgeInsets.zero,
-                          icon: Icon(
-                            Icons.more_vert,
-                            color: Theme.of(context).colorScheme.onBackground,
-                          ),
-                          onSelected: (value) {
-                            if (value == 0) {
-                              Get.toNamed(
-                                RouteNames.messagesSpecificPage,
-                                arguments: {
-                                  'user': loan.book.owner,
-                                },
-                              );
-                            }
+                        Obx(
+                          () => CommonLoadingBody(
+                            loading: loan.book.loading.value,
+                            size: 30,
+                            child: PopupMenuButton(
+                              padding: EdgeInsets.zero,
+                              icon: Icon(
+                                Icons.more_vert,
+                                color: Theme.of(context).colorScheme.onBackground,
+                              ),
+                              onSelected: (value) {
+                                if (value == 0) {
+                                  Get.toNamed(
+                                    RouteNames.messagesSpecificPage,
+                                    arguments: {
+                                      'user': loan.book.owner,
+                                    },
+                                  );
+                                }
 
-                            if (value == 1) {
-                              controller.deleteLoan(loan);
-                            }
-                          },
-                          itemBuilder: (context) {
-                            return <PopupMenuEntry>[
-                              const PopupMenuItem(
-                                value: 0,
-                                child: Text('Chat'),
-                              ),
-                              const PopupMenuItem(
-                                value: 1,
-                                child: Text('Withdraw'),
-                              ),
-                            ];
-                          },
+                                if (value == 1) {
+                                  controller.deleteLoan(loan);
+                                }
+                              },
+                              itemBuilder: (context) {
+                                if (loan.accepted) {
+                                  return <PopupMenuEntry>[
+                                    const PopupMenuItem(
+                                      value: 0,
+                                      child: Text('Chat'),
+                                    ),
+                                  ];
+                                }
+                                return <PopupMenuEntry>[
+                                  const PopupMenuItem(
+                                    value: 0,
+                                    child: Text('Chat'),
+                                  ),
+                                  const PopupMenuItem(
+                                    value: 1,
+                                    child: Text('Withdraw'),
+                                  ),
+                                ];
+                              },
+                            ),
+                          ),
                         ),
                       ],
                     ),

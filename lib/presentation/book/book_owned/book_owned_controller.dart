@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 class BookOwnedController extends GetxController {
   final Rx<Book> book = Book.empty().obs;
 
-  final BookListController myBooksController = Get.arguments['controller'];
+  final BookListController? myBooksController = Get.arguments['controller'];
 
   final RxBool loading = false.obs;
 
@@ -37,7 +37,7 @@ class BookOwnedController extends GetxController {
         false;
 
     if (deleteConfirm) {
-      myBooksController.deleteBook(book.value);
+      myBooksController?.deleteBook(book.value);
       Get.back();
     }
   }
