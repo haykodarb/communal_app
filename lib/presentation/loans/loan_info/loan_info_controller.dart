@@ -45,7 +45,7 @@ class LoanInfoController extends GetxController {
       final BackendResponse response = await LoansBackend.deleteLoan(loan.value);
 
       if (response.success) {
-        loansBorrowedController!.loans.removeWhere(
+        loansBorrowedController?.loans.removeWhere(
           (element) => element.id == inheritedLoan.id,
         );
 

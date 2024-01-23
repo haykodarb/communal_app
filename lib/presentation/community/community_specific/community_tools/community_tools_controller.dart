@@ -1,15 +1,14 @@
 import 'dart:async';
-
-import 'package:communal/backend/books_backend.dart';
+import 'package:communal/backend/tools_backend.dart';
 import 'package:communal/models/backend_response.dart';
-import 'package:communal/models/book.dart';
+import 'package:communal/models/tool.dart';
 import 'package:communal/models/community.dart';
 import 'package:get/get.dart';
 
-class CommunityHomeController extends GetxController {
+class CommunityToolsController extends GetxController {
   final Community community = Get.arguments['community'];
 
-  final RxList<Book> booksLoaded = <Book>[].obs;
+  final RxList<Tool> toolsLoaded = <Tool>[].obs;
 
   final RxBool loadingMore = false.obs;
   final RxBool firstLoad = true.obs;
@@ -21,7 +20,7 @@ class CommunityHomeController extends GetxController {
 
   @override
   Future<void> onInit() async {
-    await searchBooks('');
+    await searchTools('');
 
     super.onInit();
   }
@@ -30,11 +29,11 @@ class CommunityHomeController extends GetxController {
     loadingIndex = 0;
 
     firstLoad.value = true;
-    await searchBooks('');
+    await searchTools('');
     firstLoad.value = false;
   }
 
-  Future<void> searchBooks(String string_query) async {
+  Future<void> searchTools(String string_query) async {
     searchDebounceTimer?.cancel();
 
     searchDebounceTimer = Timer(
@@ -42,11 +41,11 @@ class CommunityHomeController extends GetxController {
       () async {
         firstLoad.value = true;
 
-        final BackendResponse response = await BooksBackend.getBooksInCommunity(community, 0, string_query);
+        final BackendResponse response = await ToolsBackend.getToolsInCommunity(community, 0, string_query);
 
         if (response.success) {
-          booksLoaded.value = response.payload;
-          booksLoaded.refresh();
+          toolsLoaded.value = response.payload;
+          toolsLoaded.refresh();
           loadingIndex++;
         }
 

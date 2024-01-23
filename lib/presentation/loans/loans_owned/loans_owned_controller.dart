@@ -99,7 +99,7 @@ class LoansOwnedController extends GetxController {
   Future<void> loadLoans() async {
     loading.value = true;
 
-    final BackendResponse response = await LoansBackend.getLoansWhere(LoansRequestType.userIsOwner);
+    final BackendResponse response = await LoansBackend.getLoansWhere(LoansRequestType.userIsOwner, tools: true);
 
     if (response.success) {
       loans.value = response.payload;

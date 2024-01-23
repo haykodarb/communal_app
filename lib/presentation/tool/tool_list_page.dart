@@ -1,26 +1,26 @@
-import 'package:communal/models/book.dart';
+import 'package:communal/models/tool.dart';
 import 'package:communal/presentation/common/common_item_card.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
-import 'package:communal/presentation/book/book_list_controller.dart';
 import 'package:communal/presentation/common/common_text_info.dart';
+import 'package:communal/presentation/tool/tool_list_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class BookListPage extends StatelessWidget {
-  const BookListPage({super.key});
+class ToolListPage extends StatelessWidget {
+  const ToolListPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: BookListController(),
-      builder: (BookListController controller) {
+      init: ToolListController(),
+      builder: (ToolListController controller) {
         return Scaffold(
           drawer: CommonDrawerWidget(),
           appBar: AppBar(
             elevation: 10,
-            title: const Text('My Books'),
+            title: const Text('My Tools'),
             bottom: PreferredSize(
               preferredSize: const Size.fromHeight(60),
               child: Container(
@@ -30,7 +30,7 @@ class BookListPage extends StatelessWidget {
                   color: Theme.of(context).colorScheme.tertiary.withOpacity(0.1),
                 ),
                 child: TextField(
-                  onChanged: controller.searchBooks,
+                  onChanged: controller.searchTools,
                   cursorColor: Theme.of(context).colorScheme.onBackground,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
@@ -68,7 +68,7 @@ class BookListPage extends StatelessWidget {
             ),
           ),
           floatingActionButton: FloatingActionButton(
-            onPressed: controller.goToAddBookPage,
+            onPressed: controller.goToAddToolPage,
             child: const Icon(
               Icons.add,
             ),
@@ -77,13 +77,13 @@ class BookListPage extends StatelessWidget {
             () => CommonLoadingBody(
               loading: controller.loading.value,
               child: RefreshIndicator(
-                onRefresh: controller.reloadBooks,
+                onRefresh: controller.reloadTools,
                 child: Obx(
                   () {
-                    if (controller.userBooks.isEmpty) {
+                    if (controller.userTools.isEmpty) {
                       return const Center(
                         child: Text(
-                          'You haven\'t added\nany books yet.',
+                          'You haven\'t added\nany tools yet.',
                           style: TextStyle(
                             fontSize: 16,
                           ),
@@ -92,7 +92,7 @@ class BookListPage extends StatelessWidget {
                       );
                     } else {
                       return ListView.separated(
-                        itemCount: controller.userBooks.length,
+                        itemCount: controller.userTools.length,
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
                         separatorBuilder: (context, index) {
                           return const SizedBox(
@@ -100,24 +100,23 @@ class BookListPage extends StatelessWidget {
                           );
                         },
                         itemBuilder: (context, index) {
-                          final Book book = controller.userBooks[index];
+                          final Tool tool = controller.userTools[index];
 
                           return InkWell(
                             highlightColor: Colors.transparent,
                             splashColor: Colors.transparent,
                             onTap: () => Get.toNamed(
-                              RouteNames.bookOwnedPage,
+                              RouteNames.toolOwnedPage,
                               arguments: {
-                                'book': book,
+                                'tool': tool,
                                 'controller': controller,
                               },
                             ),
                             child: CommonItemCard(
-                              book: book,
+                              tool: tool,
                               height: 200,
                               children: [
-                                CommonTextInfo(label: 'Author', text: book.author, size: 13),
-                                CommonTextInfo(label: 'Available', text: book.available ? 'Yes' : 'No', size: 13),
+                                CommonTextInfo(label: 'Available', text: tool.available ? 'Yes' : 'No', size: 13),
                               ],
                             ),
                           );

@@ -1,25 +1,29 @@
 import 'package:communal/backend/books_backend.dart';
+import 'package:communal/backend/tools_backend.dart';
 import 'package:communal/models/book.dart';
+import 'package:communal/models/tool.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-class CommonBookCard extends StatelessWidget {
-  const CommonBookCard({
+class CommonItemCard extends StatelessWidget {
+  const CommonItemCard({
     super.key,
-    required this.book,
     required this.children,
+    this.book,
+    this.tool,
     this.height = 225,
     this.elevation,
   });
 
-  final Book book;
+  final Book? book;
+  final Tool? tool;
   final List<Widget> children;
   final double height;
   final double? elevation;
 
-  Widget _loadingBookIndicator() {
+  Widget _loadingIndicator() {
     return Builder(
       builder: (context) {
         return Center(
@@ -45,8 +49,12 @@ class CommonBookCard extends StatelessWidget {
         height: height,
         child: Obx(
           () {
-            if (book.loading.value) {
-              return _loadingBookIndicator();
+            if (book != null && book!.loading.value) {
+              return _loadingIndicator();
+            }
+
+            if (tool != null && tool!.loading.value) {
+              return _loadingIndicator();
             }
 
             return Row(
@@ -55,7 +63,7 @@ class CommonBookCard extends StatelessWidget {
                 AspectRatio(
                   aspectRatio: 3 / 4,
                   child: FutureBuilder(
-                    future: BooksBackend.getBookCover(book),
+                    future: book == null ? ToolsBackend.getToolImage(tool!) : BooksBackend.getBookCover(book!),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return const CommonLoadingImage();
@@ -77,7 +85,7 @@ class CommonBookCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          book.title,
+                          book == null ? tool!.name : book!.title,
                           style: TextStyle(
                             fontSize: 16,
                             color: Theme.of(context).colorScheme.onSurface,

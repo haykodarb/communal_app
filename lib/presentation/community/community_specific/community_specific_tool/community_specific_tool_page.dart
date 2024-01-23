@@ -1,12 +1,12 @@
-import 'package:communal/backend/books_backend.dart';
+import 'package:communal/backend/tools_backend.dart';
 import 'package:communal/backend/users_backend.dart';
-import 'package:communal/models/book.dart';
+import 'package:communal/models/tool.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_text_info.dart';
 import 'package:communal/presentation/common/common_username_button.dart';
-import 'package:communal/presentation/community/community_specific/community_specific_book/community_specific_book_controller.dart';
+import 'package:communal/presentation/community/community_specific/community_specific_tool/community_specific_tool_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/material.dart';
@@ -14,42 +14,29 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-class CommunitySpecificBookPage extends StatelessWidget {
-  const CommunitySpecificBookPage({super.key});
+class CommunitySpecificToolPage extends StatelessWidget {
+  const CommunitySpecificToolPage({super.key});
 
-  Widget _bookTitle(Book book) {
+  Widget _toolName(Tool tool) {
     return Builder(
       builder: (context) {
         return Container(
           width: double.maxFinite,
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            children: [
-              Text(
-                book.title,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              Text(
-                book.author,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Theme.of(context).colorScheme.secondary,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
+          child: Text(
+            tool.name,
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
           ),
         );
       },
     );
   }
 
-  Widget _ownerReview(CommunitySpecificBookController controller) {
+  Widget _toolDescription(CommunitySpecificToolController controller) {
     return Builder(
       builder: (context) {
         return SizedBox(
@@ -58,8 +45,8 @@ class CommunitySpecificBookPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CommonTextInfo(
-                label: 'Owner\'s Review',
-                text: controller.book.review ?? 'User has not reviewed this book yet.',
+                label: 'Description',
+                text: controller.tool.description,
                 size: 14,
               ),
             ],
@@ -69,7 +56,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
     );
   }
 
-  Widget _reviewCard(CommunitySpecificBookController controller, int index) {
+  Widget _reviewCard(CommunitySpecificToolController controller, int index) {
     final Loan loan = controller.completedLoans[index];
     return SizedBox(
       width: double.maxFinite,
@@ -110,7 +97,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
     );
   }
 
-  Widget _borrowersReviews(CommunitySpecificBookController controller) {
+  Widget _borrowersReviews(CommunitySpecificToolController controller) {
     return Builder(builder: (context) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,8 +183,8 @@ class CommunitySpecificBookPage extends StatelessWidget {
     });
   }
 
-  Widget _sideInformation(CommunitySpecificBookController controller) {
-    final Book book = controller.book;
+  Widget _sideInformation(CommunitySpecificToolController controller) {
+    final Tool tool = controller.tool;
 
     return Builder(
       builder: (context) {
@@ -219,16 +206,16 @@ class CommunitySpecificBookPage extends StatelessWidget {
                       Get.toNamed(
                         RouteNames.profileOtherPage,
                         arguments: {
-                          'user': book.owner,
+                          'user': tool.owner,
                         },
                       );
                     },
-                    child: Text(book.owner.username),
+                    child: Text(tool.owner.username),
                   ),
                   const Divider(),
-                  CommonTextInfo(label: 'Added', text: DateFormat.yMMMd().format(book.created_at), size: 14),
+                  CommonTextInfo(label: 'Added', text: DateFormat.yMMMd().format(tool.created_at), size: 14),
                   const Divider(),
-                  CommonTextInfo(label: 'Available', text: book.available ? 'Yes' : 'No', size: 14),
+                  CommonTextInfo(label: 'Available', text: tool.available ? 'Yes' : 'No', size: 14),
                   const Divider(),
                   Obx(
                     () {
@@ -266,7 +253,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
                           return const SizedBox.shrink();
                         }
                       } else {
-                        if (!book.available) {
+                        if (!tool.available) {
                           return const SizedBox.shrink();
                         }
 
@@ -306,8 +293,8 @@ class CommunitySpecificBookPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: CommunitySpecificBookController(),
-      builder: (CommunitySpecificBookController controller) {
+      init: CommunitySpecificToolController(),
+      builder: (CommunitySpecificToolController controller) {
         return Scaffold(
           appBar: AppBar(),
           body: SingleChildScrollView(
@@ -316,7 +303,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
-                    _bookTitle(controller.book),
+                    _toolName(controller.tool),
                     const Divider(height: 30),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -328,7 +315,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
                             child: AspectRatio(
                               aspectRatio: 3 / 4,
                               child: FutureBuilder(
-                                future: BooksBackend.getBookCover(controller.book),
+                                future: ToolsBackend.getToolImage(controller.tool),
                                 builder: (context, snapshot) {
                                   if (!snapshot.hasData) {
                                     return const CommonLoadingImage();
@@ -350,7 +337,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
                       ],
                     ),
                     const Divider(height: 30),
-                    _ownerReview(controller),
+                    _toolDescription(controller),
                     const Divider(height: 30),
                     _borrowersReviews(controller),
                   ],

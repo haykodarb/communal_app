@@ -1,8 +1,9 @@
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_page.dart';
-import 'package:communal/presentation/community/community_specific/community_home/community_home_page.dart';
+import 'package:communal/presentation/community/community_specific/community_books/community_books_page.dart';
 import 'package:communal/presentation/community/community_specific/community_members/community_members_page.dart';
 import 'package:communal/presentation/community/community_specific/community_settings/community_settings_page.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_controller.dart';
+import 'package:communal/presentation/community/community_specific/community_tools/community_tools_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,8 +11,8 @@ class CommunitySpecificPage extends StatelessWidget {
   const CommunitySpecificPage({super.key});
 
   static const List<Widget> _pages = <Widget>[
-    CommunityHomePage(),
-    CommunityHomePage(),
+    CommunityBooksPage(),
+    CommunityToolsPage(),
     CommunityDiscussionsPage(),
     CommunityMembersPage(),
     CommunitySettingsPage(),

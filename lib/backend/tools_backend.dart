@@ -1,32 +1,32 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:communal/models/backend_response.dart';
-import 'package:communal/models/book.dart';
+import 'package:communal/models/tool.dart';
 import 'package:communal/models/community.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class BooksBackend {
+class ToolsBackend {
   static final SupabaseClient _client = Supabase.instance.client;
 
-  static Future<Uint8List> getBookCover(Book book) async {
-    FileInfo? file = await DefaultCacheManager().getFileFromCache(book.image_path);
+  static Future<Uint8List> getToolImage(Tool tool) async {
+    FileInfo? file = await DefaultCacheManager().getFileFromCache(tool.image_path);
 
     Uint8List bytes;
 
     if (file != null) {
       bytes = await file.file.openRead().toBytes();
     } else {
-      bytes = await _client.storage.from('book_covers').download(book.image_path);
+      bytes = await _client.storage.from('tool_images').download(tool.image_path);
 
-      await DefaultCacheManager().putFile(book.image_path, bytes, key: book.image_path);
+      await DefaultCacheManager().putFile(tool.image_path, bytes, key: tool.image_path);
     }
 
     return bytes;
   }
 
-  static Future<BackendResponse> updateBook(Book book, File? image) async {
+  static Future<BackendResponse> updateTool(Tool tool, File? image) async {
     try {
       final String userId = _client.auth.currentUser!.id;
       final String currentTime = DateTime.now().millisecondsSinceEpoch.toString();
@@ -38,34 +38,32 @@ class BooksBackend {
 
         fileName = '/$userId/$currentTime.$imageExtension';
 
-        await _client.storage.from('book_covers').upload(
+        await _client.storage.from('tool_images').upload(
               fileName,
               image,
               retryAttempts: 5,
             );
       } else {
-        fileName = book.image_path;
+        fileName = tool.image_path;
       }
 
       final Map<String, dynamic> response = await _client
-          .from('books')
+          .from('tools')
           .update(
             {
-              'title': book.title,
-              'author': book.author,
+              'name': tool.name,
               'image_path': fileName,
-              'available': book.available,
-              'read': book.read,
-              'review': book.review,
+              'available': tool.available,
+              'description': tool.description,
             },
           )
-          .eq('id', book.id)
+          .eq('id', tool.id)
           .select('*, profiles(*)')
           .single();
 
       return BackendResponse(
         success: response.isNotEmpty,
-        payload: response.isNotEmpty ? Book.fromMap(response) : 'Could not update book. Please try again.',
+        payload: response.isNotEmpty ? Tool.fromMap(response) : 'Could not update tool. Please try again.',
       );
     } on StorageException catch (error) {
       return BackendResponse(success: false, payload: error.message);
@@ -76,7 +74,7 @@ class BooksBackend {
     }
   }
 
-  static Future<BackendResponse> addBook(Book book, File image) async {
+  static Future<BackendResponse> addTool(Tool tool, File image) async {
     try {
       final String userId = _client.auth.currentUser!.id;
       final String currentTime = DateTime.now().millisecondsSinceEpoch.toString();
@@ -84,23 +82,21 @@ class BooksBackend {
 
       final String pathToUpload = '/$userId/$currentTime.$imageExtension';
 
-      await _client.storage.from('book_covers').upload(
+      await _client.storage.from('tool_images').upload(
             pathToUpload,
             image,
             retryAttempts: 5,
           );
 
       final Map<String, dynamic> response = await _client
-          .from('books')
+          .from('tools')
           .insert(
             {
-              'title': book.title,
-              'author': book.author,
+              'name': tool.name,
               'owner': _client.auth.currentUser!.id,
               'image_path': pathToUpload,
-              'available': book.available,
-              'read': book.read,
-              'review': book.review,
+              'description': tool.description,
+              'available': tool.available,
             },
           )
           .select('*, profiles(*)')
@@ -108,7 +104,7 @@ class BooksBackend {
 
       return BackendResponse(
         success: response.isNotEmpty,
-        payload: response.isNotEmpty ? Book.fromMap(response) : 'Could not create book. Please try again.',
+        payload: response.isNotEmpty ? Tool.fromMap(response) : 'Could not create tool. Please try again.',
       );
     } on StorageException catch (error) {
       return BackendResponse(success: false, payload: error.message);
@@ -117,13 +113,13 @@ class BooksBackend {
     }
   }
 
-  static Future<BackendResponse> deleteBook(Book book) async {
+  static Future<BackendResponse> deleteTool(Tool tool) async {
     try {
-      final List<dynamic> response = await _client.from('books').delete().eq('id', book.id).select();
+      final List<dynamic> response = await _client.from('tools').delete().eq('id', tool.id).select();
 
       if (response.isNotEmpty) {
-        _client.storage.from('book_covers').remove(
-          [book.image_path],
+        _client.storage.from('tool_images').remove(
+          [tool.image_path],
         );
       }
 
@@ -133,74 +129,74 @@ class BooksBackend {
     }
   }
 
-  static Future<BackendResponse> searchOwnerBooksByQuery(String query) async {
+  static Future<BackendResponse> searchOwnerToolsByQuery(String query) async {
     try {
       final String userId = _client.auth.currentUser!.id;
 
       final List<Map<String, dynamic>> response = await _client
-          .from('books')
+          .from('tools')
           .select('*, profiles(*)')
-          .or('title.ilike.%$query%, author.ilike.%$query%')
+          .ilike('name', '%$query%')
           .eq('owner', userId)
           .limit(10)
           .order('created_at');
 
-      final List<Book> bookList = response
+      final List<Tool> toolList = response
           .map(
-            (Map<String, dynamic> element) => Book.fromMap(element),
+            (Map<String, dynamic> element) => Tool.fromMap(element),
           )
           .toList();
 
       return BackendResponse(
         success: true,
-        payload: bookList,
+        payload: toolList,
       );
     } on PostgrestException catch (error) {
       return BackendResponse(success: false, payload: error.message);
     }
   }
 
-  static Future<BackendResponse> getAllBooksForUser() async {
+  static Future<BackendResponse> getAllToolsForUser() async {
     try {
       final String userId = _client.auth.currentUser!.id;
 
       final List<Map<String, dynamic>> response =
-          await _client.from('books').select('*, profiles(*)').eq('owner', userId).limit(10).order('created_at');
+          await _client.from('tools').select('*, profiles(*)').eq('owner', userId).limit(10).order('created_at');
 
-      final List<Book> bookList = response
+      final List<Tool> toolList = response
           .map(
-            (Map<String, dynamic> element) => Book.fromMap(element),
+            (Map<String, dynamic> element) => Tool.fromMap(element),
           )
           .toList();
 
       return BackendResponse(
         success: true,
-        payload: bookList,
+        payload: toolList,
       );
     } on PostgrestException catch (error) {
       return BackendResponse(success: false, payload: error.message);
     }
   }
 
-  static Future<BackendResponse> getBookById(String id) async {
+  static Future<BackendResponse> getToolById(String id) async {
     try {
       final Map<String, dynamic>? response =
-          await _client.from('books').select('*, profiles(*)').eq('id', id).maybeSingle();
+          await _client.from('tools').select('*, profiles(*)').eq('id', id).maybeSingle();
 
       return BackendResponse(
         success: response != null,
-        payload: response != null ? Book.fromMap(response) : null,
+        payload: response != null ? Tool.fromMap(response) : null,
       );
     } on PostgrestException catch (error) {
       return BackendResponse(success: false, payload: error.message);
     }
   }
 
-  static Future<BackendResponse> getBooksInCommunity(Community community, int index, String query) async {
+  static Future<BackendResponse> getToolsInCommunity(Community community, int index, String query) async {
     try {
-      final List<dynamic> booksResponse = await _client
+      final List<dynamic> toolsResponse = await _client
           .rpc(
-            'get_books_community',
+            'get_tools_community',
             params: {
               'community_id': community.id,
               'offset_num': index * 10,
@@ -212,15 +208,15 @@ class BooksBackend {
           .limit(10)
           .order('created_at');
 
-      final List<Book> listOfBooks = booksResponse
+      final List<Tool> listOfTools = toolsResponse
           .map(
-            (element) => Book.fromMap(element),
+            (element) => Tool.fromMap(element),
           )
           .toList();
 
       return BackendResponse(
         success: true,
-        payload: listOfBooks,
+        payload: listOfTools,
       );
     } on PostgrestException catch (error) {
       return BackendResponse(success: false, payload: error.message);

@@ -1,4 +1,5 @@
 import 'package:communal/models/profile.dart';
+import 'package:get/get.dart';
 
 class Tool {
   String id;
@@ -8,6 +9,8 @@ class Tool {
   String image_path;
   String description;
   bool available;
+
+  RxBool loading = false.obs;
 
   Tool({
     required this.id,

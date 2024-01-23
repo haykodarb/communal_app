@@ -1,19 +1,19 @@
-import 'package:communal/models/book.dart';
-import 'package:communal/presentation/common/common_book_card.dart';
+import 'package:communal/models/tool.dart';
+import 'package:communal/presentation/common/common_item_card.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_text_info.dart';
-import 'package:communal/presentation/community/community_specific/community_home/community_home_controller.dart';
+import 'package:communal/presentation/community/community_specific/community_tools/community_tools_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CommunityHomePage extends StatelessWidget {
-  const CommunityHomePage({super.key});
+class CommunityToolsPage extends StatelessWidget {
+  const CommunityToolsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: CommunityHomeController(),
+      init: CommunityToolsController(),
       builder: (controller) {
         return RefreshIndicator(
           onRefresh: controller.reloadPage,
@@ -30,7 +30,7 @@ class CommunityHomePage extends StatelessWidget {
                       color: Theme.of(context).colorScheme.tertiary.withOpacity(0.1),
                     ),
                     child: TextField(
-                      onChanged: controller.searchBooks,
+                      onChanged: controller.searchTools,
                       cursorColor: Theme.of(context).colorScheme.onBackground,
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
@@ -72,13 +72,13 @@ class CommunityHomePage extends StatelessWidget {
                       loading: controller.firstLoad.value,
                       child: Obx(
                         () {
-                          if (controller.booksLoaded.isEmpty) {
+                          if (controller.toolsLoaded.isEmpty) {
                             return const CustomScrollView(
                               slivers: [
                                 SliverFillRemaining(
                                   child: Center(
                                     child: Text(
-                                      'No books found.',
+                                      'No tools found.',
                                       style: TextStyle(fontSize: 14),
                                       textAlign: TextAlign.center,
                                     ),
@@ -89,30 +89,29 @@ class CommunityHomePage extends StatelessWidget {
                           }
 
                           return ListView.separated(
-                            itemCount: controller.booksLoaded.length,
+                            itemCount: controller.toolsLoaded.length,
                             padding: const EdgeInsets.symmetric(vertical: 20),
                             separatorBuilder: (context, index) {
                               return const SizedBox(height: 20);
                             },
                             itemBuilder: (context, index) {
-                              final Book book = controller.booksLoaded[index];
+                              final Tool tool = controller.toolsLoaded[index];
 
                               return InkWell(
                                 onTap: () {
                                   Get.toNamed(
-                                    RouteNames.communitySpecificBookPage,
+                                    RouteNames.communitySpecificToolPage,
                                     arguments: {
-                                      'book': book,
+                                      'tool': tool,
                                       'community': controller.community,
                                     },
                                   );
                                 },
-                                child: CommonBookCard(
-                                  book: book,
+                                child: CommonItemCard(
+                                  tool: tool,
                                   height: 200,
                                   children: [
-                                    CommonTextInfo(label: 'Author', text: book.author, size: 13),
-                                    CommonTextInfo(label: 'Owner', text: book.owner.username, size: 13),
+                                    CommonTextInfo(label: 'Owner', text: tool.owner.username, size: 13),
                                   ],
                                 ),
                               );

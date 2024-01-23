@@ -177,7 +177,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       _drawerButton(
                         text: 'My Tools',
                         icon: Icons.construction,
-                        callback: () {},
+                        callback: () => _commonDrawerController.goToRoute(RouteNames.toolListPage),
                       ),
                       Divider(
                         thickness: 2,

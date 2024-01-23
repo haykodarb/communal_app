@@ -1,16 +1,15 @@
 import 'dart:async';
-
 import 'package:communal/backend/loans_backend.dart';
 import 'package:communal/models/backend_response.dart';
-import 'package:communal/models/book.dart';
+import 'package:communal/models/tool.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/presentation/common/common_confirmation_dialog.dart';
 import 'package:get/get.dart';
 
-class CommunitySpecificBookController extends GetxController {
-  final Book book = Get.arguments['book'];
+class CommunitySpecificToolController extends GetxController {
+  final Tool tool = Get.arguments['tool'];
   final Community community = Get.arguments['community'];
 
   final RxString message = ''.obs;
@@ -32,7 +31,7 @@ class CommunitySpecificBookController extends GetxController {
     loadingCarousel.value = true;
 
     completedLoans.clear();
-    final BackendResponse response = await LoansBackend.getCompletedLoansForItem(book: book);
+    final BackendResponse response = await LoansBackend.getCompletedLoansForItem(tool: tool);
 
     if (response.success) {
       completedLoans.addAll(response.payload);
@@ -45,7 +44,7 @@ class CommunitySpecificBookController extends GetxController {
   Future<void> checkLoanStatus() async {
     loading.value = true;
 
-    final BackendResponse currentLoanResponse = await LoansBackend.getCurrentLoanForBook(book);
+    final BackendResponse currentLoanResponse = await LoansBackend.getCurrentLoanForTool(tool);
 
     if (currentLoanResponse.success) {
       currentLoan.value = currentLoanResponse.payload;
@@ -58,7 +57,7 @@ class CommunitySpecificBookController extends GetxController {
   Future<void> requestLoan() async {
     final bool? confirm = await Get.dialog(
       const CommonConfirmationDialog(
-        title: 'Request loan for this book?',
+        title: 'Request loan for this tool?',
       ),
     );
 
@@ -66,7 +65,7 @@ class CommunitySpecificBookController extends GetxController {
       loading.value = true;
 
       final BackendResponse response = await LoansBackend.requestItemLoanInCommunity(
-        book: book,
+        tool: tool,
         community: community,
       );
 

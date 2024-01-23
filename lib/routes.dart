@@ -1,6 +1,7 @@
 import 'package:communal/presentation/book/book_edit/book_edit_page.dart';
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_topic_create/community_discussions_topic_create_page.dart';
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_topic_messages/community_discussions_topic_messages_page.dart';
+import 'package:communal/presentation/community/community_specific/community_specific_tool/community_specific_tool_page.dart';
 import 'package:communal/presentation/loans/loan_info/loan_info_page.dart';
 import 'package:communal/presentation/messages/messages_page.dart';
 import 'package:communal/presentation/community/community_invite/community_invite_page.dart';
@@ -21,6 +22,10 @@ import 'package:communal/presentation/profiles/profile_own/profile_own_page.dart
 import 'package:communal/presentation/register/register_page.dart';
 import 'package:communal/presentation/register/register_resend/register_resend_page.dart';
 import 'package:communal/presentation/start/start_page.dart';
+import 'package:communal/presentation/tool/tool_create/tool_create_page.dart';
+import 'package:communal/presentation/tool/tool_edit/tool_edit_page.dart';
+import 'package:communal/presentation/tool/tool_list_page.dart';
+import 'package:communal/presentation/tool/tool_owned/tool_owned_page.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 
@@ -29,24 +34,35 @@ class RouteNames {
   static const String loginPage = '/login';
   static const String registerPage = '/register';
   static const String registerResendPage = '/register/resend';
-  static const String dashboardPage = '/dashboard';
+
   static const String profileOwnPage = '/profile/own';
   static const String profileOwnEditPage = '/profile/own/edit';
   static const String profileOtherPage = '/profile/other';
+
   static const String bookListPage = '/book';
   static const String bookCreatePage = '/book/create';
   static const String bookOwnedPage = '/book/owned';
   static const String bookEditPage = '/book/edit';
+
+  static const String toolListPage = '/tool';
+  static const String toolCreatePage = '/tool/create';
+  static const String toolOwnedPage = '/tool/owned';
+  static const String toolEditPage = '/tool/edit';
+
   static const String communityListPage = '/community';
   static const String communityCreatePage = '/community/create';
   static const String communitySpecificPage = '/community/specific';
   static const String communitySpecificBookPage = '/community/specific/book';
+  static const String communitySpecificToolPage = '/community/specific/tool';
   static const String communityInvitePage = '/community/invite';
   static const String communityDiscussionsTopicCreate = '/community/discussions/topic/create';
   static const String communityDiscussionsTopicMessages = '/community/discussions/topic/messages';
+
   static const String invitationsPage = '/invitations';
+
   static const String loansPage = '/loans';
   static const String loanInfoPage = '/loans/info';
+
   static const String messagesPage = '/messages';
   static const String messagesSpecificPage = '/messages/specific';
 }
@@ -102,6 +118,26 @@ final List<GetPage> routes = <GetPage>[
     page: () => const BookOwnedPage(),
   ),
   GetPage<dynamic>(
+    name: RouteNames.toolListPage,
+    transition: Transition.noTransition,
+    page: () => const ToolListPage(),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.toolCreatePage,
+    transition: Transition.downToUp,
+    page: () => const ToolCreatePage(),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.toolEditPage,
+    transition: Transition.rightToLeft,
+    page: () => const ToolEditPage(),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.toolOwnedPage,
+    transition: Transition.rightToLeft,
+    page: () => const ToolOwnedPage(),
+  ),
+  GetPage<dynamic>(
     name: RouteNames.communityListPage,
     transition: Transition.noTransition,
     page: () => const CommunityListPage(),
@@ -120,6 +156,11 @@ final List<GetPage> routes = <GetPage>[
     name: RouteNames.communitySpecificBookPage,
     transition: Transition.rightToLeft,
     page: () => const CommunitySpecificBookPage(),
+  ),
+  GetPage<bool>(
+    name: RouteNames.communitySpecificToolPage,
+    transition: Transition.rightToLeft,
+    page: () => const CommunitySpecificToolPage(),
   ),
   GetPage<dynamic>(
     name: RouteNames.communityInvitePage,

@@ -1,11 +1,8 @@
-import 'dart:ffi';
-
 import 'package:communal/backend/books_backend.dart';
+import 'package:communal/backend/tools_backend.dart';
 import 'package:communal/backend/users_backend.dart';
-import 'package:communal/models/book.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/models/profile.dart';
-import 'package:communal/models/tool.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_text_info.dart';
@@ -37,7 +34,7 @@ class LoanInfoPage extends StatelessWidget {
               Visibility(
                 visible: loan.hasBook,
                 child: Text(
-                  loan.book!.author,
+                  loan.book?.author ?? '',
                   style: TextStyle(
                     fontSize: 18,
                     color: Theme.of(context).colorScheme.secondary,
@@ -59,8 +56,7 @@ class LoanInfoPage extends StatelessWidget {
       child: AspectRatio(
         aspectRatio: 3 / 4,
         child: FutureBuilder(
-          // TOOD: FIX FOR TOOL COVER
-          future: loan.hasBook ? BooksBackend.getBookCover(loan.book!) : BooksBackend.getBookCover(loan.book!),
+          future: loan.hasBook ? BooksBackend.getBookCover(loan.book!) : ToolsBackend.getToolImage(loan.tool!),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const CommonLoadingImage();
