@@ -1,24 +1,24 @@
-import 'dart:async';
+import 'dart:ffi';
 
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/loan.dart';
+import 'package:communal/models/profile.dart';
+import 'package:communal/models/tool.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_text_info.dart';
 import 'package:communal/presentation/common/common_username_button.dart';
 import 'package:communal/presentation/loans/loan_info/loan_info_controller.dart';
-import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class LoanInfoPage extends StatelessWidget {
   const LoanInfoPage({super.key});
 
-  Widget _bookTitle(Book book) {
+  Widget _loanTitle(Loan loan) {
     return Builder(
       builder: (context) {
         return Container(
@@ -27,21 +27,24 @@ class LoanInfoPage extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                book.title,
+                loan.name,
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
               ),
-              Text(
-                book.author,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Theme.of(context).colorScheme.secondary,
-                  fontWeight: FontWeight.bold,
+              Visibility(
+                visible: loan.hasBook,
+                child: Text(
+                  loan.book!.author,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Theme.of(context).colorScheme.secondary,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               ),
             ],
           ),
@@ -50,13 +53,14 @@ class LoanInfoPage extends StatelessWidget {
     );
   }
 
-  Widget _bookCover(Book book) {
+  Widget _loanItemCover(Loan loan) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(5),
       child: AspectRatio(
         aspectRatio: 3 / 4,
         child: FutureBuilder(
-          future: BooksBackend.getBookCover(book),
+          // TOOD: FIX FOR TOOL COVER
+          future: loan.hasBook ? BooksBackend.getBookCover(loan.book!) : BooksBackend.getBookCover(loan.book!),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const CommonLoadingImage();
@@ -209,8 +213,8 @@ class LoanInfoPage extends StatelessWidget {
   }
 
   Widget _borrowedSideInformation(LoanInfoController controller) {
-    final Book book = controller.loan.value.book;
-    final bool isOwned = book.owner.id == UsersBackend.currentUserId;
+    final Profile owner = controller.loan.value.owner;
+    final bool isOwned = owner.id == UsersBackend.currentUserId;
 
     return Builder(
       builder: (context) {
@@ -228,7 +232,7 @@ class LoanInfoPage extends StatelessWidget {
                       color: Theme.of(context).colorScheme.secondary,
                     ),
                   ),
-                  CommonUsernameButton(user: isOwned ? controller.loan.value.loanee : book.owner),
+                  CommonUsernameButton(user: isOwned ? controller.loan.value.loanee : owner),
                   const Divider(),
                   CommonTextInfo(
                     label: 'Requested',
@@ -312,11 +316,19 @@ class LoanInfoPage extends StatelessWidget {
     return Builder(
       builder: (context) {
         if (!controller.loan.value.accepted) {
-          return CommonTextInfo(
-            label: 'Owner Review',
-            text: controller.loan.value.book.review ?? 'User has not reviewed this book yet.',
-            size: 14,
-          );
+          if (controller.loan.value.hasTool) {
+            return CommonTextInfo(
+              label: 'Description',
+              text: controller.loan.value.tool!.description,
+              size: 14,
+            );
+          } else {
+            return CommonTextInfo(
+              label: 'Owner Review',
+              text: controller.loan.value.book!.review ?? 'User has not reviewed this book yet.',
+              size: 14,
+            );
+          }
         } else {
           return Obx(
             () {
@@ -434,14 +446,14 @@ class LoanInfoPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _bookTitle(controller.loan.value.book),
+                  _loanTitle(controller.loan.value),
                   const Divider(height: 30),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         flex: 5,
-                        child: _bookCover(controller.loan.value.book),
+                        child: _loanItemCover(controller.loan.value),
                       ),
                       Expanded(
                         flex: 3,

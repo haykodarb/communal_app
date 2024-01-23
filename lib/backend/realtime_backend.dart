@@ -9,15 +9,16 @@ class RealtimeBackend {
   static Future<void> subscribeToDatabaseChanges() async {
     final SupabaseClient client = Supabase.instance.client;
 
-    final RealtimeChannel channel = client
+    client
         .channel(
-          'postgres_changes',
+          'my_channel',
           opts: const RealtimeChannelConfig(
             self: true,
           ),
         )
         .onPostgresChanges(
           event: PostgresChangeEvent.all,
+          schema: 'public',
           callback: (PostgresChangePayload payload) {
             if (payload.newRecord.isNotEmpty || payload.oldRecord.isNotEmpty) {
               final RealtimeMessage realtimeMessage = RealtimeMessage(
@@ -29,8 +30,7 @@ class RealtimeBackend {
               streamController.add(realtimeMessage);
             }
           },
-        );
-
-    channel.subscribe();
+        )
+        .subscribe();
   }
 }

@@ -1,11 +1,8 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/book.dart';
-import 'package:communal/models/community.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
-import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_text_info.dart';
 import 'package:communal/presentation/common/common_username_button.dart';

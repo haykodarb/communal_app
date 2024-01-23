@@ -29,7 +29,7 @@ class MessagesPage extends StatelessWidget {
               padding: const EdgeInsets.all(15),
               child: Row(
                 children: [
-                  CommonCircularAvatar(profile: chatter, radius: 30),
+                  CommonCircularAvatar(profile: chatter, radius: 30, clickable: true),
                   const VerticalDivider(width: 20),
                   Expanded(
                     child: Column(
@@ -94,25 +94,28 @@ class MessagesPage extends StatelessWidget {
           body: Obx(
             () => CommonLoadingBody(
               loading: controller.loading.value,
-              child: Obx(
-                () {
-                  return ListView.separated(
-                    padding: const EdgeInsets.all(10),
-                    itemCount: controller.distinctChats.length,
-                    separatorBuilder: (context, index) {
-                      return const Divider(
-                        height: 5,
-                      );
-                    },
-                    itemBuilder: (context, index) {
-                      final Message message = controller.distinctChats[index];
-                      final Profile chatter =
-                          message.sender.id == UsersBackend.currentUserId ? message.receiver : message.sender;
+              child: RefreshIndicator(
+                onRefresh: controller.loadChats,
+                child: Obx(
+                  () {
+                    return ListView.separated(
+                      padding: const EdgeInsets.all(10),
+                      itemCount: controller.distinctChats.length,
+                      separatorBuilder: (context, index) {
+                        return const Divider(
+                          height: 5,
+                        );
+                      },
+                      itemBuilder: (context, index) {
+                        final Message message = controller.distinctChats[index];
+                        final Profile chatter =
+                            message.sender.id == UsersBackend.currentUserId ? message.receiver : message.sender;
 
-                      return _chatCard(controller, message, chatter);
-                    },
-                  );
-                },
+                        return _chatCard(controller, message, chatter);
+                      },
+                    );
+                  },
+                ),
               ),
             ),
           ),

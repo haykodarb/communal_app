@@ -37,7 +37,8 @@ class MessagesBackend {
 
     final List<Map<String, dynamic>> distinctChats = await client
         .from('distinct_chats')
-        .select('*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)');
+        .select('*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
+        .order('created_at');
 
     final List<Message> messages = <Message>[];
 

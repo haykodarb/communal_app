@@ -4,7 +4,6 @@ import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 class CommonCircularAvatar extends StatelessWidget {
   const CommonCircularAvatar({

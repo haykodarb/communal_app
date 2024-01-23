@@ -27,6 +27,19 @@ class CommunityDiscussionsPage extends StatelessWidget {
                 loading: controller.loading.value,
                 child: Obx(
                   () {
+                    if (controller.topics.isEmpty) {
+                      return const Center(
+                        child: SizedBox(
+                          height: 100,
+                          width: 300,
+                          child: Text(
+                            'There are have been no topics created in this community yet.\nBe the first!',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      );
+                    }
+
                     return ListView.separated(
                       itemCount: controller.topics.length,
                       padding: const EdgeInsets.all(20),

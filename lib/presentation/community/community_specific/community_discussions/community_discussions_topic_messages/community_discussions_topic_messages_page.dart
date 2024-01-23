@@ -79,7 +79,7 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
                             child: Text(
                               message.content,
                               style: TextStyle(
-                                color: Theme.of(context).colorScheme.onPrimary,
+                                color: Theme.of(context).colorScheme.onBackground,
                               ),
                             ),
                           ),

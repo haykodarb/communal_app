@@ -24,7 +24,7 @@ class LoansOwnedController extends GetxController {
     );
 
     if (confirm != null && confirm) {
-      loan.book.loading.value = true;
+      loan.loading.value = true;
 
       final BackendResponse response = await LoansBackend.setLoanParameterTrue(loan, 'rejected');
 
@@ -39,8 +39,7 @@ class LoansOwnedController extends GetxController {
           const CommonAlertDialog(title: 'Could not reject this loan, please try again.'),
         );
       }
-
-      loan.book.loading.value = false;
+      loan.loading.value = true;
     }
   }
 
@@ -52,7 +51,7 @@ class LoansOwnedController extends GetxController {
     );
 
     if (confirm != null && confirm) {
-      loan.book.loading.value = true;
+      loan.loading.value = true;
 
       final BackendResponse response = await LoansBackend.setLoanParameterTrue(loan, 'accepted');
 
@@ -67,7 +66,7 @@ class LoansOwnedController extends GetxController {
         );
       }
 
-      loan.book.loading.value = false;
+      loan.loading.value = false;
     }
   }
 
@@ -79,7 +78,7 @@ class LoansOwnedController extends GetxController {
     );
 
     if (confirm != null && confirm) {
-      loan.book.loading.value = true;
+      loan.loading.value = true;
 
       final BackendResponse response = await LoansBackend.setLoanParameterTrue(loan, 'returned');
 
@@ -93,7 +92,7 @@ class LoansOwnedController extends GetxController {
         );
       }
 
-      loan.book.loading.value = false;
+      loan.loading.value = false;
     }
   }
 

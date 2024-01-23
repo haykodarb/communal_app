@@ -36,7 +36,7 @@ class LoansOwnedWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          loan.book.title,
+                          loan.name,
                           style: TextStyle(
                             fontSize: 18,
                             color: Theme.of(context).colorScheme.onSurface,

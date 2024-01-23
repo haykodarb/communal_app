@@ -11,6 +11,7 @@ class CommunitySpecificPage extends StatelessWidget {
 
   static const List<Widget> _pages = <Widget>[
     CommunityHomePage(),
+    CommunityHomePage(),
     CommunityDiscussionsPage(),
     CommunityMembersPage(),
     CommunitySettingsPage(),
@@ -40,8 +41,12 @@ class CommunitySpecificPage extends StatelessWidget {
                 backgroundColor: Theme.of(context).colorScheme.background,
                 items: const <BottomNavigationBarItem>[
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.home),
-                    label: 'Home',
+                    icon: Icon(Icons.library_books_outlined),
+                    label: 'Books',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.construction),
+                    label: 'Tools',
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.forum_rounded),

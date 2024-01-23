@@ -1,5 +1,5 @@
 name: communal
-description: A new Flutter project.
+description: Book sharing platform.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -51,7 +51,6 @@ dependencies:
   toggle_switch: ^2.1.0
   easy_debounce: ^2.0.3
   flutter_cache_manager: ^3.3.1
-  carousel_slider: ^4.2.1
   expandable_page_view: ^1.0.17
 
 dev_dependencies:

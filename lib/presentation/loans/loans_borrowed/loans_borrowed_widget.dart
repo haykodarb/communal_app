@@ -36,7 +36,7 @@ class LoansBorrowedWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          loan.book.title,
+                          loan.name,
                           style: TextStyle(
                             fontSize: 18,
                             color: Theme.of(context).colorScheme.onSurface,
@@ -45,7 +45,7 @@ class LoansBorrowedWidget extends StatelessWidget {
                         ),
                         Obx(
                           () => CommonLoadingBody(
-                            loading: loan.book.loading.value,
+                            loading: loan.loading.value,
                             size: 30,
                             child: PopupMenuButton(
                               padding: EdgeInsets.zero,
@@ -58,7 +58,7 @@ class LoansBorrowedWidget extends StatelessWidget {
                                   Get.toNamed(
                                     RouteNames.messagesSpecificPage,
                                     arguments: {
-                                      'user': loan.book.owner,
+                                      'user': loan.name,
                                     },
                                   );
                                 }
@@ -96,7 +96,7 @@ class LoansBorrowedWidget extends StatelessWidget {
                     Row(
                       children: [
                         const Text('Requested from '),
-                        CommonUsernameButton(user: loan.book.owner),
+                        CommonUsernameButton(user: loan.owner),
                       ],
                     ),
                     const Divider(height: 10),

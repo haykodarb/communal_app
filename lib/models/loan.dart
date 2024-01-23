@@ -1,6 +1,8 @@
 import 'package:communal/models/book.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/models/profile.dart';
+import 'package:communal/models/tool.dart';
+import 'package:get/get.dart';
 
 class Loan {
   String id;
@@ -8,12 +10,47 @@ class Loan {
   DateTime? accepted_at;
   DateTime? returned_at;
   Community community;
-  Book book;
+  Book? book;
+  Tool? tool;
   Profile loanee;
   String? review;
   bool accepted;
   bool rejected;
   bool returned;
+
+  RxBool loading = false.obs;
+
+  bool get hasBook {
+    return book != null;
+  }
+
+  bool get hasTool {
+    return tool != null;
+  }
+
+  Profile get owner {
+    if (book == null) {
+      return tool!.owner;
+    } else {
+      return book!.owner;
+    }
+  }
+
+  String get name {
+    if (book == null) {
+      return tool!.name;
+    } else {
+      return book!.title;
+    }
+  }
+
+  String? get description {
+    if (book == null) {
+      return tool!.description;
+    } else {
+      return book!.review;
+    }
+  }
 
   Loan({
     required this.id,

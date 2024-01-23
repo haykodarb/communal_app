@@ -32,7 +32,7 @@ class LoansCompletedWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          loan.book.title,
+                          loan.name,
                           style: TextStyle(
                             fontSize: 18,
                             color: Theme.of(context).colorScheme.onSurface,
@@ -50,7 +50,7 @@ class LoansCompletedWidget extends StatelessWidget {
                               Get.toNamed(
                                 RouteNames.messagesSpecificPage,
                                 arguments: {
-                                  'user': loan.book.owner,
+                                  'user': loan.owner,
                                 },
                               );
                             }
@@ -70,7 +70,9 @@ class LoansCompletedWidget extends StatelessWidget {
                     Row(
                       children: [
                         Text('Loaned ${is_borrowed ? 'from' : 'to'} '),
-                        CommonUsernameButton(user: is_borrowed ? loan.book.owner : loan.loanee),
+                        CommonUsernameButton(
+                          user: is_borrowed ? loan.owner : loan.loanee,
+                        ),
                       ],
                     ),
                     const Divider(height: 10),

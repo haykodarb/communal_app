@@ -175,6 +175,15 @@ class CommonDrawerWidget extends StatelessWidget {
                         color: dividerColor,
                       ),
                       _drawerButton(
+                        text: 'My Tools',
+                        icon: Icons.construction,
+                        callback: () {},
+                      ),
+                      Divider(
+                        thickness: 2,
+                        color: dividerColor,
+                      ),
+                      _drawerButton(
                         text: 'Communities',
                         icon: Icons.people_alt_outlined,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.communityListPage),
