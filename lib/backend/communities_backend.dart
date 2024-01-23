@@ -11,23 +11,23 @@ class CommunitiesBackend {
 
   static Future<Uint8List?> getCommunityAvatar(Community community) async {
     try {
-      if (community.image_path != null) {
-        FileInfo? file = await DefaultCacheManager().getFileFromCache(community.image_path!);
-
-        Uint8List bytes;
-
-        if (file != null) {
-          bytes = await file.file.openRead().toBytes();
-        } else {
-          bytes = await _client.storage.from('community_avatars').download(community.image_path!);
-
-          await DefaultCacheManager().putFile(community.image_path!, bytes, key: community.image_path!);
-        }
-
-        return bytes;
+      if (community.image_path == null) {
+        return null;
       }
 
-      return null;
+      FileInfo? file = await DefaultCacheManager().getFileFromCache(community.image_path!);
+
+      Uint8List bytes;
+
+      if (file != null) {
+        bytes = await file.file.openRead().toBytes();
+      } else {
+        bytes = await _client.storage.from('community_avatars').download(community.image_path!);
+
+        await DefaultCacheManager().putFile(community.image_path!, bytes, key: community.image_path!);
+      }
+
+      return bytes;
     } catch (error) {
       return null;
     }

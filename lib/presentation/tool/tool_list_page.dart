@@ -7,6 +7,7 @@ import 'package:communal/presentation/tool/tool_list_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:unicons/unicons.dart';
 
 class ToolListPage extends StatelessWidget {
   const ToolListPage({super.key});
@@ -43,7 +44,7 @@ class ToolListPage extends StatelessWidget {
                       ),
                     ),
                     prefixIcon: Icon(
-                      Icons.search,
+                      UniconsLine.search_alt,
                       color: Theme.of(context).colorScheme.onSurface,
                     ),
                     focusedBorder: OutlineInputBorder(
@@ -70,7 +71,7 @@ class ToolListPage extends StatelessWidget {
           floatingActionButton: FloatingActionButton(
             onPressed: controller.goToAddToolPage,
             child: const Icon(
-              Icons.add,
+              UniconsLine.plus,
             ),
           ),
           body: Obx(

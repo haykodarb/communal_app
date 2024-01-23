@@ -177,7 +177,7 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
                                 }
 
                                 return Icon(
-                                  Icons.send,
+                                  Icons.send_rounded,
                                   color: Theme.of(context).colorScheme.onPrimary,
                                   size: 30,
                                 );

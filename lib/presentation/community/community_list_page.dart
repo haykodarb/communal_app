@@ -6,6 +6,7 @@ import 'package:communal/presentation/common/common_drawer/common_drawer_widget.
 import 'package:communal/presentation/community/community_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:unicons/unicons.dart';
 
 class CommunityListPage extends StatelessWidget {
   const CommunityListPage({super.key});
@@ -26,15 +27,16 @@ class CommunityListPage extends StatelessWidget {
               child: FutureBuilder(
                 future: CommunitiesBackend.getCommunityAvatar(community),
                 builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
+                  if (snapshot.connectionState == ConnectionState.active ||
+                      snapshot.connectionState == ConnectionState.waiting) {
                     return const CommonLoadingImage();
                   }
 
-                  if (snapshot.data!.isEmpty) {
+                  if (snapshot.data == null) {
                     return Container(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context).colorScheme.tertiary.withOpacity(0.75),
                       child: Icon(
-                        Icons.groups,
+                        UniconsLine.users_alt,
                         color: Theme.of(context).colorScheme.background,
                         size: 150,
                       ),
@@ -71,7 +73,7 @@ class CommunityListPage extends StatelessWidget {
         return Scaffold(
           floatingActionButton: FloatingActionButton(
             onPressed: controller.goToCommunityCreate,
-            child: const Icon(Icons.add),
+            child: const Icon(UniconsLine.plus),
           ),
           appBar: AppBar(
             title: const Text('Communities'),

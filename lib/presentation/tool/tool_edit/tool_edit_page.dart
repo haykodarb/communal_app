@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:unicons/unicons.dart';
 
 class ToolEditPage extends StatelessWidget {
   const ToolEditPage({super.key});
@@ -38,7 +39,7 @@ class ToolEditPage extends StatelessWidget {
               initialLabelIndex: controller.inheritedTool.available ? 0 : 1,
               totalSwitches: 2,
               iconSize: 60,
-              icons: const [Icons.check, Icons.close],
+              icons: const [UniconsLine.check, UniconsLine.multiply],
               radiusStyle: true,
               onToggle: controller.onAvailableChange,
             ),
@@ -82,7 +83,7 @@ class ToolEditPage extends StatelessWidget {
                       )
                     : IconButton(
                         onPressed: controller.onSubmitButton,
-                        icon: const Icon(Icons.done),
+                        icon: const Icon(UniconsLine.check),
                       ),
               ),
               const VerticalDivider(),
@@ -124,7 +125,7 @@ class ToolEditPage extends StatelessWidget {
                                           return Container(
                                             color: Theme.of(context).colorScheme.primary,
                                             child: Icon(
-                                              Icons.groups,
+                                              UniconsLine.users_alt,
                                               color: Theme.of(context).colorScheme.background,
                                               size: 150,
                                             ),

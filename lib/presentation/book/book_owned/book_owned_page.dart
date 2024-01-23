@@ -7,6 +7,7 @@ import 'package:communal/routes.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:unicons/unicons.dart';
 
 class BookOwnedPage extends StatelessWidget {
   const BookOwnedPage({super.key});
@@ -81,6 +82,12 @@ class BookOwnedPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  CommonTextInfo(
+                    label: 'Added',
+                    text: DateFormat.yMMMd().format(controller.book.value.created_at.toLocal()),
+                    size: 14,
+                  ),
+                  const Divider(),
                   Obx(
                     () => CommonTextInfo(
                       label: 'Read',
@@ -88,7 +95,7 @@ class BookOwnedPage extends StatelessWidget {
                       size: 14,
                     ),
                   ),
-                  const Divider(height: 20),
+                  const Divider(),
                   controller.currentLoan.value != null
                       ? Obx(
                           () => _existingLoan(controller.currentLoan.value!),
@@ -146,14 +153,13 @@ class BookOwnedPage extends StatelessWidget {
             actions: [
               IconButton(
                 onPressed: controller.editBook,
-                icon: const Icon(Icons.edit),
+                icon: const Icon(UniconsLine.edit),
               ),
               const VerticalDivider(width: 5),
               IconButton(
                 onPressed: controller.deleteBook,
-                icon: const Icon(Icons.delete),
+                icon: const Icon(UniconsLine.trash),
               ),
-              const VerticalDivider(),
             ],
           ),
           body: SingleChildScrollView(

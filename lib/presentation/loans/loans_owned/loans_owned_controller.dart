@@ -46,7 +46,7 @@ class LoansOwnedController extends GetxController {
   Future<void> acceptLoan(Loan loan) async {
     final bool? confirm = await Get.dialog(
       const CommonConfirmationDialog(
-        title: 'Approve of this loan?',
+        title: 'ApAccept this loan?',
       ),
     );
 
@@ -99,7 +99,7 @@ class LoansOwnedController extends GetxController {
   Future<void> loadLoans() async {
     loading.value = true;
 
-    final BackendResponse response = await LoansBackend.getLoansWhere(LoansRequestType.userIsOwner, tools: true);
+    final BackendResponse response = await LoansBackend.getLoansWhere(LoansRequestType.userIsOwner);
 
     if (response.success) {
       loans.value = response.payload;

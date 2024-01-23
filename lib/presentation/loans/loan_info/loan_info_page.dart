@@ -11,6 +11,7 @@ import 'package:communal/presentation/loans/loan_info/loan_info_controller.dart'
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:unicons/unicons.dart';
 
 class LoanInfoPage extends StatelessWidget {
   const LoanInfoPage({super.key});
@@ -117,7 +118,7 @@ class LoanInfoPage extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Icon(
-                                    Icons.done,
+                                    UniconsLine.check,
                                     color: Theme.of(context).colorScheme.onPrimary,
                                   ),
                                   const VerticalDivider(width: 5),
@@ -138,7 +139,7 @@ class LoanInfoPage extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Icon(
-                                    Icons.close,
+                                    UniconsLine.multiply,
                                     color: Theme.of(context).colorScheme.onTertiary,
                                   ),
                                   const VerticalDivider(width: 5),
@@ -180,7 +181,7 @@ class LoanInfoPage extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Icon(
-                                  Icons.done,
+                                  UniconsLine.check,
                                   color: Theme.of(context).colorScheme.onPrimary,
                                 ),
                                 const VerticalDivider(width: 5),
@@ -259,7 +260,7 @@ class LoanInfoPage extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Icon(
-                                    Icons.close,
+                                    UniconsLine.multiply,
                                     color: Theme.of(context).colorScheme.onTertiary,
                                   ),
                                   const VerticalDivider(width: 5),
@@ -362,7 +363,7 @@ class LoanInfoPage extends StatelessWidget {
                                 padding: EdgeInsets.zero,
                                 alignment: Alignment.topRight,
                                 icon: const Icon(
-                                  Icons.close,
+                                  UniconsLine.multiply,
                                   size: 35,
                                 ),
                               ),
@@ -371,7 +372,7 @@ class LoanInfoPage extends StatelessWidget {
                                 padding: EdgeInsets.zero,
                                 alignment: Alignment.topRight,
                                 icon: const Icon(
-                                  Icons.done,
+                                  UniconsLine.check,
                                   size: 35,
                                 ),
                               ),
@@ -403,7 +404,7 @@ class LoanInfoPage extends StatelessWidget {
                             alignment: Alignment.topRight,
                             padding: EdgeInsets.zero,
                             icon: const Icon(
-                              Icons.delete,
+                              UniconsLine.trash,
                               size: 35,
                             ),
                           ),
@@ -413,7 +414,7 @@ class LoanInfoPage extends StatelessWidget {
                           padding: EdgeInsets.zero,
                           alignment: Alignment.topRight,
                           icon: Icon(
-                            controller.loan.value.review == null ? Icons.add : Icons.edit,
+                            controller.loan.value.review == null ? UniconsLine.plus : UniconsLine.edit,
                             size: 35,
                           ),
                         ),

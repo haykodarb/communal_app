@@ -7,6 +7,7 @@ import 'package:communal/presentation/profiles/profile_own/profile_own_controlle
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:unicons/unicons.dart';
 
 class ProfileOwnPage extends StatelessWidget {
   const ProfileOwnPage({super.key});
@@ -24,7 +25,7 @@ class ProfileOwnPage extends StatelessWidget {
                 onPressed: () => Get.toNamed(RouteNames.profileOwnEditPage, arguments: {
                   'profile': UsersBackend.currentUserProfile.value,
                 }),
-                icon: const Icon(Icons.edit),
+                icon: const Icon(UniconsLine.edit),
               ),
             ],
           ),
@@ -38,7 +39,6 @@ class ProfileOwnPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      // mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Obx(() => CommonCircularAvatar(profile: UsersBackend.currentUserProfile.value, radius: 80)),
                         const VerticalDivider(width: 25),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:unicons/unicons.dart';
 
 class BookCreatePage extends StatelessWidget {
   const BookCreatePage({super.key});
@@ -36,7 +37,7 @@ class BookCreatePage extends StatelessWidget {
               initialLabelIndex: 0,
               totalSwitches: 2,
               iconSize: 60,
-              icons: const [Icons.check, Icons.close],
+              icons: const [UniconsLine.check, UniconsLine.multiply],
               radiusStyle: true,
               onToggle: controller.onAvailableChange,
             ),
@@ -73,7 +74,7 @@ class BookCreatePage extends StatelessWidget {
               initialLabelIndex: 1,
               totalSwitches: 2,
               iconSize: 60,
-              icons: const [Icons.check, Icons.close],
+              icons: const [UniconsLine.check, UniconsLine.multiply],
               radiusStyle: true,
               onToggle: controller.onReadChange,
             ),
@@ -113,7 +114,7 @@ class BookCreatePage extends StatelessWidget {
                   initialLabelIndex: 1,
                   totalSwitches: 2,
                   iconSize: 60,
-                  icons: const [Icons.check, Icons.close],
+                  icons: const [UniconsLine.check, UniconsLine.multiply],
                   radiusStyle: true,
                   onToggle: controller.onAddReviewChange,
                 ),
@@ -165,7 +166,7 @@ class BookCreatePage extends StatelessWidget {
                       )
                     : IconButton(
                         onPressed: controller.onSubmitButton,
-                        icon: const Icon(Icons.done),
+                        icon: const Icon(UniconsLine.check),
                       ),
               ),
               const VerticalDivider(),
@@ -226,6 +227,7 @@ class BookCreatePage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   IconButton(
+                                    color: Theme.of(context).colorScheme.background,
                                     onPressed: () => controller.takePicture(ImageSource.camera),
                                     icon: const Icon(
                                       Icons.camera_alt,
@@ -233,6 +235,7 @@ class BookCreatePage extends StatelessWidget {
                                     ),
                                   ),
                                   IconButton(
+                                    color: Theme.of(context).colorScheme.background,
                                     onPressed: () => controller.takePicture(ImageSource.gallery),
                                     icon: const Icon(
                                       Icons.image,

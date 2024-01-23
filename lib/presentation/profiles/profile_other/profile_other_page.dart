@@ -5,6 +5,7 @@ import 'package:communal/presentation/profiles/profile_other/profile_other_contr
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:unicons/unicons.dart';
 
 class ProfileOtherPage extends StatelessWidget {
   const ProfileOtherPage({super.key});
@@ -21,7 +22,7 @@ class ProfileOtherPage extends StatelessWidget {
                 onPressed: () => Get.toNamed(RouteNames.messagesSpecificPage, arguments: {
                   'user': controller.profile.value,
                 }),
-                icon: const Icon(Icons.chat_bubble_outline_rounded),
+                icon: const Icon(UniconsLine.comment_alt_lines),
               ),
             ],
           ),

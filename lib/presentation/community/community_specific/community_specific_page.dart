@@ -6,6 +6,7 @@ import 'package:communal/presentation/community/community_specific/community_spe
 import 'package:communal/presentation/community/community_specific/community_tools/community_tools_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:unicons/unicons.dart';
 
 class CommunitySpecificPage extends StatelessWidget {
   const CommunitySpecificPage({super.key});
@@ -42,23 +43,23 @@ class CommunitySpecificPage extends StatelessWidget {
                 backgroundColor: Theme.of(context).colorScheme.background,
                 items: const <BottomNavigationBarItem>[
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.library_books_outlined),
+                    icon: Icon(UniconsLine.books),
                     label: 'Books',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.construction),
+                    icon: Icon(Icons.handyman_outlined),
                     label: 'Tools',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.forum_rounded),
-                    label: 'Discussions',
+                    icon: Icon(UniconsLine.comments_alt),
+                    label: 'Discuss',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.people),
+                    icon: Icon(UniconsLine.users_alt),
                     label: 'Members',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.settings),
+                    icon: Icon(UniconsLine.setting),
                     label: 'Settings',
                   ),
                 ],

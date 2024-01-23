@@ -6,6 +6,7 @@ import 'package:communal/presentation/common/common_drawer/common_drawer_widget.
 import 'package:communal/presentation/invitations/invitations_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:unicons/unicons.dart';
 
 class InvitationsPage extends StatelessWidget {
   const InvitationsPage({super.key});
@@ -37,7 +38,7 @@ class InvitationsPage extends StatelessWidget {
                         return Container(
                           color: Theme.of(context).colorScheme.primary,
                           child: Icon(
-                            Icons.groups,
+                            UniconsLine.users_alt,
                             color: Theme.of(context).colorScheme.background,
                             size: 150,
                           ),
@@ -71,7 +72,7 @@ class InvitationsPage extends StatelessWidget {
                   height: 40,
                   child: ElevatedButton(
                     onPressed: () => controller.respondToInvitation(invitation, true),
-                    child: const Icon(Icons.done),
+                    child: const Icon(UniconsLine.check),
                   ),
                 ),
                 const VerticalDivider(width: 30),
@@ -80,7 +81,7 @@ class InvitationsPage extends StatelessWidget {
                   height: 40,
                   child: OutlinedButton(
                     onPressed: () => controller.respondToInvitation(invitation, false),
-                    child: const Icon(Icons.close),
+                    child: const Icon(UniconsLine.multiply),
                   ),
                 ),
                 const Expanded(child: VerticalDivider()),

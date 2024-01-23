@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:communal/presentation/start/start_controller.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:unicons/unicons.dart';
 
 class StartPage extends StatelessWidget {
   const StartPage({super.key});
@@ -99,7 +100,7 @@ class StartPage extends StatelessWidget {
                           child: Row(
                             children: [
                               Icon(
-                                Get.isDarkMode ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+                                Get.isDarkMode ? UniconsLine.moon : UniconsLine.sun,
                               ),
                               const VerticalDivider(),
                               Text(Get.isDarkMode ? 'Light Theme' : 'Dark Theme'),

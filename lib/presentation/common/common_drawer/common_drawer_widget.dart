@@ -4,6 +4,7 @@ import 'package:communal/presentation/common/common_drawer/common_drawer_control
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:unicons/unicons.dart';
 
 class CommonDrawerWidget extends StatelessWidget {
   CommonDrawerWidget({super.key});
@@ -14,6 +15,7 @@ class CommonDrawerWidget extends StatelessWidget {
     required IconData icon,
     required String text,
     required void Function() callback,
+    required bool selected,
     RxInt? notifications,
   }) {
     return Column(
@@ -26,13 +28,16 @@ class CommonDrawerWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Builder(
               builder: (context) {
+                final Color color =
+                    selected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onBackground;
+
                 return Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Icon(
                       icon,
-                      color: Theme.of(context).colorScheme.onBackground,
+                      color: color,
                     ),
                     const VerticalDivider(),
                     Expanded(
@@ -43,7 +48,7 @@ class CommonDrawerWidget extends StatelessWidget {
                         child: Text(
                           text,
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onBackground,
+                            color: color,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -148,7 +153,8 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       _drawerButton(
                         text: 'Profile',
-                        icon: Icons.person,
+                        icon: UniconsLine.user,
+                        selected: Get.currentRoute == RouteNames.profileOwnPage,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.profileOwnPage),
                       ),
                       Divider(
@@ -157,7 +163,8 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       _drawerButton(
                         text: 'Messages',
-                        icon: Icons.chat_bubble_outline,
+                        icon: UniconsLine.comments_alt,
+                        selected: Get.currentRoute == RouteNames.messagesPage,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.messagesPage),
                         notifications: _commonDrawerController.messageNotifications,
                       ),
@@ -167,7 +174,8 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       _drawerButton(
                         text: 'My Books',
-                        icon: Icons.menu_book,
+                        icon: UniconsLine.books,
+                        selected: Get.currentRoute == RouteNames.bookListPage,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.bookListPage),
                       ),
                       Divider(
@@ -176,7 +184,8 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       _drawerButton(
                         text: 'My Tools',
-                        icon: Icons.construction,
+                        selected: Get.currentRoute == RouteNames.toolListPage,
+                        icon: Icons.handyman_outlined,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.toolListPage),
                       ),
                       Divider(
@@ -185,7 +194,8 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       _drawerButton(
                         text: 'Communities',
-                        icon: Icons.people_alt_outlined,
+                        selected: Get.currentRoute == RouteNames.communityListPage,
+                        icon: UniconsLine.users_alt,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.communityListPage),
                       ),
                       Divider(
@@ -194,7 +204,8 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       _drawerButton(
                         text: 'Invitations',
-                        icon: Icons.mail,
+                        selected: Get.currentRoute == RouteNames.invitationsPage,
+                        icon: UniconsLine.envelopes,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.invitationsPage),
                         notifications: _commonDrawerController.invitationsNotifications,
                       ),
@@ -204,7 +215,8 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       _drawerButton(
                         text: 'Loans',
-                        icon: Icons.sync_alt_rounded,
+                        selected: Get.currentRoute == RouteNames.loansPage,
+                        icon: UniconsLine.exchange_alt,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.loansPage),
                         notifications: _commonDrawerController.loanNotifications,
                       ),
@@ -213,7 +225,8 @@ class CommonDrawerWidget extends StatelessWidget {
                         color: dividerColor,
                       ),
                       _drawerButton(
-                        icon: Get.isDarkMode ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+                        selected: false,
+                        icon: Get.isDarkMode ? UniconsLine.sun : UniconsLine.moon,
                         text: Get.isDarkMode ? 'Light' : 'Dark',
                         callback: _commonDrawerController.changeThemeMode,
                       ),
@@ -224,7 +237,8 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       _drawerButton(
                         text: 'Logout',
-                        icon: Icons.logout,
+                        selected: false,
+                        icon: UniconsLine.sign_out_alt,
                         callback: _commonDrawerController.handleLogout,
                       ),
                       const Divider(height: 10),

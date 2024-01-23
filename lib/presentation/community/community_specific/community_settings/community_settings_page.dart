@@ -4,6 +4,7 @@ import 'package:communal/presentation/community/community_specific/community_set
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:unicons/unicons.dart';
 
 class CommunitySettingsPage extends StatelessWidget {
   const CommunitySettingsPage({super.key});
@@ -22,7 +23,7 @@ class CommunitySettingsPage extends StatelessWidget {
             return Container(
               color: Theme.of(context).colorScheme.primary,
               child: Icon(
-                Icons.groups,
+                UniconsLine.users_alt,
                 color: Theme.of(context).colorScheme.background,
                 size: 150,
               ),

@@ -5,6 +5,7 @@ import 'package:communal/presentation/community/community_specific/community_mem
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:unicons/unicons.dart';
 
 class CommunityMembersPage extends StatelessWidget {
   const CommunityMembersPage({super.key});
@@ -120,7 +121,7 @@ class CommunityMembersPage extends StatelessWidget {
                       },
                     );
                   },
-                  child: const Icon(Icons.add),
+                  child: const Icon(UniconsLine.user_plus),
                 )
               : null,
           body: Obx(
@@ -167,7 +168,7 @@ class CommunityMembersPage extends StatelessWidget {
                                   );
                                 },
                                 icon: Icon(
-                                  Icons.chat_bubble_outline_rounded,
+                                  UniconsLine.comment_alt_dots,
                                   color: Theme.of(context).colorScheme.onPrimary,
                                 ),
                               ),

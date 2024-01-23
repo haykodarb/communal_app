@@ -13,6 +13,7 @@ class Loan {
   Book? book;
   Tool? tool;
   Profile loanee;
+  Profile owner;
   String? review;
   bool accepted;
   bool rejected;
@@ -26,14 +27,6 @@ class Loan {
 
   bool get hasTool {
     return tool != null;
-  }
-
-  Profile get owner {
-    if (book == null) {
-      return tool!.owner;
-    } else {
-      return book!.owner;
-    }
   }
 
   String get name {
@@ -60,6 +53,7 @@ class Loan {
     required this.community,
     required this.book,
     required this.loanee,
+    required this.owner,
     required this.accepted,
     required this.rejected,
     required this.returned,
@@ -79,7 +73,8 @@ class Loan {
         ),
         book = map['books'] != null ? Book.fromMap(map['books']) : null,
         tool = map['tools'] != null ? Tool.fromMap(map['tools']) : null,
-        loanee = Profile.fromMap(map['profiles']),
+        loanee = Profile.fromMap(map['loanee_profile']),
+        owner = Profile.fromMap(map['owner_profile']),
         accepted = map['accepted'],
         rejected = map['rejected'],
         returned = map['returned'];
@@ -89,6 +84,7 @@ class Loan {
         created_at = DateTime.now(),
         community = Community.empty(),
         loanee = Profile.empty(),
+        owner = Profile.empty(),
         accepted = false,
         rejected = false,
         returned = false;

@@ -61,12 +61,14 @@ class LoanInfoController extends GetxController {
   Future<void> acceptLoanRequest() async {
     final bool? confirm = await Get.dialog(
       const CommonConfirmationDialog(
-        title: 'Approve of this loan?',
+        title: 'Accept this loan?',
       ),
     );
 
     if (confirm != null && confirm) {
       loading.value = true;
+
+      print(loan.value.id);
 
       final BackendResponse response = await LoansBackend.setLoanParameterTrue(loan.value, 'accepted');
 

@@ -1,5 +1,4 @@
-import 'dart:convert';
-
+import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/community.dart';
@@ -65,9 +64,7 @@ class LoansBackend {
 
       return BackendResponse(success: true, payload: '');
     } on PostgrestException catch (error) {
-      Map<String, dynamic> json = jsonDecode(error.message);
-
-      return BackendResponse(success: false, payload: json['message']);
+      return BackendResponse(success: false, payload: error.message);
     }
   }
 
@@ -81,7 +78,7 @@ class LoansBackend {
     switch (requestType) {
       case LoansRequestType.userIsOwner:
         query = {
-          'books.owner': userId,
+          'owner': userId,
           'returned': false,
           'accepted': false,
           'rejected': false,
@@ -105,13 +102,8 @@ class LoansBackend {
         break;
     }
 
-    final PostgrestResponse<PostgrestList> response = await client
-        .from('loans')
-        .select(
-          '*,  books!inner(*, profiles(*))',
-        )
-        .match(query)
-        .count(CountOption.exact);
+    final PostgrestResponse<PostgrestList> response =
+        await client.from('loans').select('*').match(query).count(CountOption.exact);
 
     return BackendResponse(success: true, payload: response.count);
   }
@@ -123,7 +115,7 @@ class LoansBackend {
       final Map<String, dynamic> response = await client
           .from('loans')
           .select(
-            '*, communities(*), books!inner(*, profiles(*)), profiles(*)',
+            '*, communities(*), books!left(*, profiles(*)), tools!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
           )
           .eq('id', id)
           .single();
@@ -147,7 +139,7 @@ class LoansBackend {
     final List<dynamic> response = await client
         .from('loans')
         .select(
-          '*, communities(*), books!inner(*, profiles(*)), profiles(*)',
+          '*, communities(*), books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
         )
         .match(
       {
@@ -189,7 +181,7 @@ class LoansBackend {
     final List<dynamic> response = await client
         .from('loans')
         .select(
-          '*, communities(*), tools!inner(*, profiles(*)), profiles(*)',
+          '*, communities(*), tools!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
         )
         .match(
       {
@@ -221,52 +213,47 @@ class LoansBackend {
     );
   }
 
-  static Future<BackendResponse> getLoansWhere(LoansRequestType requestType, {bool tools = false}) async {
-    final SupabaseClient client = Supabase.instance.client;
+  static Future<BackendResponse> getLoansWhere(LoansRequestType requestType) async {
+    try {
+      final SupabaseClient client = Supabase.instance.client;
+      final String userId = UsersBackend.currentUserId;
 
-    final String userId = client.auth.currentUser!.id;
+      PostgrestFilterBuilder filter = client.from('loans').select(
+            '*, communities(*), books!left(*, profiles(*)), tools!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
+          );
 
-    Map<String, dynamic> query;
+      switch (requestType) {
+        case LoansRequestType.userIsOwner:
+          filter = filter.eq('returned', false).eq('rejected', false).eq('owner', userId);
+          break;
 
-    switch (requestType) {
-      case LoansRequestType.userIsOwner:
-        query = {
-          tools ? 'tools.owner' : 'books.owner': userId,
-          'returned': false,
-          'rejected': false,
-        };
-        break;
+        case LoansRequestType.userIsLoanee:
+          filter = filter.match(
+            {
+              'loanee': userId,
+              'returned': false,
+            },
+          );
+          break;
+        case LoansRequestType.loanIsCompleted:
+          filter = filter.eq('returned', true);
+          break;
+        default:
+          break;
+      }
 
-      case LoansRequestType.userIsLoanee:
-        query = {
-          'loanee': userId,
-          'returned': false,
-        };
-        break;
-      case LoansRequestType.loanIsCompleted:
-        query = {
-          'returned': true,
-        };
-        break;
-      default:
-        query = {};
-        break;
+      final List<dynamic> response = await filter;
+
+      if (response.isEmpty) {
+        return BackendResponse(success: false, payload: 'No requests have been made for your items yet.');
+      }
+
+      final List<Loan> loanList = response.map((element) => Loan.fromMap(element)).toList();
+
+      return BackendResponse(success: true, payload: loanList);
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
     }
-
-    final List<dynamic> response = await client
-        .from('loans')
-        .select(
-          '*, communities(*), ${tools ? 'tools' : 'books'}!inner(*, profiles(*)), profiles(*)',
-        )
-        .match(query);
-
-    if (response.isEmpty) {
-      return BackendResponse(success: false, payload: 'No requests have been made for your items yet.');
-    }
-
-    final List<Loan> loanList = response.map((element) => Loan.fromMap(element)).toList();
-
-    return BackendResponse(success: true, payload: loanList);
   }
 
   static Future<BackendResponse> getCompletedLoansForItem({
@@ -286,7 +273,7 @@ class LoansBackend {
       final List<Map<String, dynamic>> response = await client
           .from('loans')
           .select(
-            '*, communities(*), ${parameter}s!inner(*, profiles(*)), profiles(*)',
+            '*, communities(*), ${parameter}s!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
           )
           .eq(parameter, value)
           .eq('accepted', true)
@@ -324,7 +311,8 @@ class LoansBackend {
               'community': community.id,
             },
           )
-          .select('*, communities(*), ${parameter}s!inner(*, profiles(*)), profiles(*)')
+          .select(
+              '*, communities(*), ${parameter}s!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)')
           .single();
 
       return BackendResponse(

@@ -6,6 +6,7 @@ import 'package:communal/presentation/community/community_specific/community_boo
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:unicons/unicons.dart';
 
 class CommunityBooksPage extends StatelessWidget {
   const CommunityBooksPage({super.key});
@@ -43,7 +44,7 @@ class CommunityBooksPage extends StatelessWidget {
                           ),
                         ),
                         prefixIcon: Icon(
-                          Icons.search,
+                          UniconsLine.search_alt,
                           color: Theme.of(context).colorScheme.onSurface,
                         ),
                         focusedBorder: OutlineInputBorder(

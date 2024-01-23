@@ -7,6 +7,7 @@ import 'package:communal/routes.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:unicons/unicons.dart';
 
 class ToolOwnedPage extends StatelessWidget {
   const ToolOwnedPage({super.key});
@@ -77,15 +78,26 @@ class ToolOwnedPage extends StatelessWidget {
       child: Obx(
         () => controller.loading.value
             ? const SizedBox.shrink()
-            : controller.currentLoan.value != null
-                ? Obx(
-                    () => _existingLoan(controller.currentLoan.value!),
-                  )
-                : CommonTextInfo(
-                    label: 'Available',
-                    text: controller.tool.value.available ? 'Yes' : 'No',
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CommonTextInfo(
+                    label: 'Added',
+                    text: DateFormat.yMMMd().format(controller.tool.value.created_at.toLocal()),
                     size: 14,
                   ),
+                  const Divider(),
+                  controller.currentLoan.value != null
+                      ? Obx(
+                          () => _existingLoan(controller.currentLoan.value!),
+                        )
+                      : CommonTextInfo(
+                          label: 'Available',
+                          text: controller.tool.value.available ? 'Yes' : 'No',
+                          size: 14,
+                        ),
+                ],
+              ),
       ),
     );
   }
@@ -119,14 +131,13 @@ class ToolOwnedPage extends StatelessWidget {
             actions: [
               IconButton(
                 onPressed: controller.editTool,
-                icon: const Icon(Icons.edit),
+                icon: const Icon(UniconsLine.edit),
               ),
               const VerticalDivider(width: 5),
               IconButton(
                 onPressed: controller.deleteTool,
-                icon: const Icon(Icons.delete),
+                icon: const Icon(UniconsLine.trash),
               ),
-              const VerticalDivider(),
             ],
           ),
           body: SingleChildScrollView(

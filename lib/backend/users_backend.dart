@@ -13,7 +13,7 @@ class UsersBackend {
   static final SupabaseClient _client = Supabase.instance.client;
   static Rx<Profile> currentUserProfile = Profile.empty().obs;
 
-  static get currentUserId {
+  static String get currentUserId {
     return _client.auth.currentUser!.id;
   }
 

@@ -6,6 +6,7 @@ import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:unicons/unicons.dart';
 
 class LoansBorrowedWidget extends StatelessWidget {
   const LoansBorrowedWidget({super.key});
@@ -50,7 +51,7 @@ class LoansBorrowedWidget extends StatelessWidget {
                             child: PopupMenuButton(
                               padding: EdgeInsets.zero,
                               icon: Icon(
-                                Icons.more_vert,
+                                UniconsLine.ellipsis_v,
                                 color: Theme.of(context).colorScheme.onBackground,
                               ),
                               onSelected: (value) {
@@ -58,7 +59,7 @@ class LoansBorrowedWidget extends StatelessWidget {
                                   Get.toNamed(
                                     RouteNames.messagesSpecificPage,
                                     arguments: {
-                                      'user': loan.name,
+                                      'user': loan.owner,
                                     },
                                   );
                                 }

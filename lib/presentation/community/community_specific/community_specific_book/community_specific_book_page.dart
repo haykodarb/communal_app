@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:unicons/unicons.dart';
 
 class CommunitySpecificBookPage extends StatelessWidget {
   const CommunitySpecificBookPage({super.key});
@@ -278,7 +279,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Icon(
-                                Icons.arrow_circle_down,
+                                UniconsLine.download_alt,
                                 color: Theme.of(context).colorScheme.onPrimary,
                               ),
                               const VerticalDivider(width: 5),

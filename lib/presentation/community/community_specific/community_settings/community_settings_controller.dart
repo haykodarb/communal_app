@@ -80,7 +80,7 @@ class CommunitySettingsController extends GetxController {
         Get.back();
       } else {
         Get.dialog(
-          const CommonAlertDialog(title: 'Could not delete community.'),
+          CommonAlertDialog(title: response.payload),
         );
       }
     }

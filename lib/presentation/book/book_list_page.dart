@@ -7,6 +7,7 @@ import 'package:communal/presentation/common/common_text_info.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:unicons/unicons.dart';
 
 class BookListPage extends StatelessWidget {
   const BookListPage({super.key});
@@ -43,7 +44,7 @@ class BookListPage extends StatelessWidget {
                       ),
                     ),
                     prefixIcon: Icon(
-                      Icons.search,
+                      UniconsLine.search_alt,
                       color: Theme.of(context).colorScheme.onSurface,
                     ),
                     focusedBorder: OutlineInputBorder(
@@ -70,7 +71,7 @@ class BookListPage extends StatelessWidget {
           floatingActionButton: FloatingActionButton(
             onPressed: controller.goToAddBookPage,
             child: const Icon(
-              Icons.add,
+              UniconsLine.plus,
             ),
           ),
           body: Obx(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:unicons/unicons.dart';
 
 class CommonTextField extends StatelessWidget {
   const CommonTextField({
@@ -81,7 +82,7 @@ class _CommonPasswordFieldState extends State<CommonPasswordField> {
         counter: const SizedBox.shrink(),
         suffixIcon: IconButton(
           icon: Icon(
-            isVisible ? Icons.visibility : Icons.visibility_off,
+            isVisible ? UniconsLine.eye : UniconsLine.eye_slash,
             color: isVisible ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.primary,
           ),
           onPressed: () {

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:unicons/unicons.dart';
 
 class BookEditPage extends StatelessWidget {
   const BookEditPage({super.key});
@@ -38,7 +39,7 @@ class BookEditPage extends StatelessWidget {
               initialLabelIndex: controller.inheritedBook.available ? 0 : 1,
               totalSwitches: 2,
               iconSize: 60,
-              icons: const [Icons.check, Icons.close],
+              icons: const [UniconsLine.check, UniconsLine.multiply],
               radiusStyle: true,
               onToggle: controller.onAvailableChange,
             ),
@@ -75,7 +76,7 @@ class BookEditPage extends StatelessWidget {
               initialLabelIndex: controller.inheritedBook.read ? 0 : 1,
               totalSwitches: 2,
               iconSize: 60,
-              icons: const [Icons.check, Icons.close],
+              icons: const [UniconsLine.check, UniconsLine.multiply],
               radiusStyle: true,
               onToggle: controller.onReadChange,
             ),
@@ -115,7 +116,7 @@ class BookEditPage extends StatelessWidget {
                   initialLabelIndex: controller.inheritedBook.review != null ? 0 : 1,
                   totalSwitches: 2,
                   iconSize: 60,
-                  icons: const [Icons.check, Icons.close],
+                  icons: const [UniconsLine.check, UniconsLine.multiply],
                   radiusStyle: true,
                   onToggle: controller.onAddReviewChange,
                 ),
@@ -168,7 +169,7 @@ class BookEditPage extends StatelessWidget {
                       )
                     : IconButton(
                         onPressed: controller.onSubmitButton,
-                        icon: const Icon(Icons.done),
+                        icon: const Icon(UniconsLine.check),
                       ),
               ),
               const VerticalDivider(),
@@ -210,7 +211,7 @@ class BookEditPage extends StatelessWidget {
                                           return Container(
                                             color: Theme.of(context).colorScheme.primary,
                                             child: Icon(
-                                              Icons.groups,
+                                              UniconsLine.users_alt,
                                               color: Theme.of(context).colorScheme.background,
                                               size: 150,
                                             ),

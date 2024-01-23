@@ -5,6 +5,7 @@ import 'package:communal/presentation/community/community_specific/community_dis
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:unicons/unicons.dart';
 
 class CommunityDiscussionsPage extends StatelessWidget {
   const CommunityDiscussionsPage({super.key});
@@ -18,7 +19,7 @@ class CommunityDiscussionsPage extends StatelessWidget {
           floatingActionButton: FloatingActionButton(
             onPressed: controller.goToDiscussionsTopicCreate,
             child: const Icon(
-              Icons.add,
+              UniconsLine.comment_add,
             ),
           ),
           body: SafeArea(
