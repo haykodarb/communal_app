@@ -1,4 +1,5 @@
 import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
@@ -39,7 +40,19 @@ class LoginPage extends StatelessWidget {
                 ),
                 textAlign: TextAlign.right,
               ),
-              onPressed: () {},
+              onPressed: () {
+                Get.toNamed(RouteNames.loginRecoveryPage);
+              },
+            ),
+          ),
+          const Divider(),
+          Obx(
+            () => Text(
+              controller.errorMessage.value,
+              style: TextStyle(
+                fontSize: 16,
+                color: Theme.of(Get.context!).colorScheme.error,
+              ),
             ),
           ),
           const Divider(),

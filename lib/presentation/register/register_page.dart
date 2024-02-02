@@ -56,6 +56,16 @@ class RegisterPage extends StatelessWidget {
           ),
           const Divider(),
           Obx(
+            () => Text(
+              controller.errorMessage.value,
+              style: TextStyle(
+                fontSize: 16,
+                color: Theme.of(Get.context!).colorScheme.error,
+              ),
+            ),
+          ),
+          const Divider(),
+          Obx(
             () => CommonLoadingBody(
               loading: controller.loading.value,
               size: 40,

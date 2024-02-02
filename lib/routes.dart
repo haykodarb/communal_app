@@ -3,6 +3,7 @@ import 'package:communal/presentation/community/community_specific/community_dis
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_topic_messages/community_discussions_topic_messages_page.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_tool/community_specific_tool_page.dart';
 import 'package:communal/presentation/loans/loan_info/loan_info_page.dart';
+import 'package:communal/presentation/login/login_password_recovery/login_password_recovery_page.dart';
 import 'package:communal/presentation/messages/messages_page.dart';
 import 'package:communal/presentation/community/community_invite/community_invite_page.dart';
 import 'package:communal/presentation/community/community_list_page.dart';
@@ -31,7 +32,10 @@ import 'package:get/get_navigation/src/routes/transitions_type.dart';
 
 class RouteNames {
   static const String startPage = '/start';
+
   static const String loginPage = '/login';
+  static const String loginRecoveryPage = '/login/recovery';
+
   static const String registerPage = '/register';
   static const String registerResendPage = '/register/resend';
 
@@ -80,6 +84,11 @@ final List<GetPage> routes = <GetPage>[
     transitionDuration: const Duration(
       milliseconds: 300,
     ),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.loginRecoveryPage,
+    page: () => const LoginPasswordRecoveryPage(),
+    transition: Transition.noTransition,
   ),
   GetPage<dynamic>(
     name: RouteNames.registerPage,

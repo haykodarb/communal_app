@@ -1,3 +1,4 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_page.dart';
 import 'package:communal/presentation/community/community_specific/community_books/community_books_page.dart';
 import 'package:communal/presentation/community/community_specific/community_members/community_members_page.dart';
@@ -41,25 +42,30 @@ class CommunitySpecificPage extends StatelessWidget {
                 enableFeedback: false,
                 fixedColor: Theme.of(context).colorScheme.primary,
                 backgroundColor: Theme.of(context).colorScheme.background,
+                iconSize: 22,
                 items: const <BottomNavigationBarItem>[
                   BottomNavigationBarItem(
-                    icon: Icon(UniconsLine.books),
+                    icon: Icon(Atlas.book),
                     label: 'Books',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.handyman_outlined),
+                    icon: Icon(
+                      Icons.handyman_outlined,
+                      opticalSize: 48,
+                      size: 25,
+                    ),
                     label: 'Tools',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(UniconsLine.comments_alt),
+                    icon: Icon(Atlas.chats),
                     label: 'Discuss',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(UniconsLine.users_alt),
+                    icon: Icon(Atlas.users),
                     label: 'Members',
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(UniconsLine.setting),
+                    icon: Icon(Atlas.gear),
                     label: 'Settings',
                   ),
                 ],

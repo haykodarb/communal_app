@@ -8,10 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:string_validator/string_validator.dart';
 
 class LoginController extends GetxController {
-  final Rx<LoginForm> form = LoginForm(
-    email: 'hayko1',
-    password: 'ea29hd',
-  ).obs;
+  final Rx<LoginForm> form = LoginForm(email: '', password: '').obs;
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 

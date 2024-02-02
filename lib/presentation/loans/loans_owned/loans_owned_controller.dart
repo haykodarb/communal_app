@@ -84,8 +84,6 @@ class LoansOwnedController extends GetxController {
 
       if (response.success) {
         loans.remove(loan);
-
-        Get.find<CommonDrawerController>().getPendingLoans();
       } else {
         Get.dialog(
           const CommonAlertDialog(title: 'Could not mark book as returned, please try again.'),

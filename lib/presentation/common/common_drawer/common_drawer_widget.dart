@@ -1,3 +1,4 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
@@ -153,7 +154,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       _drawerButton(
                         text: 'Profile',
-                        icon: UniconsLine.user,
+                        icon: Atlas.account,
                         selected: Get.currentRoute == RouteNames.profileOwnPage,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.profileOwnPage),
                       ),
@@ -163,7 +164,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       _drawerButton(
                         text: 'Messages',
-                        icon: UniconsLine.comments_alt,
+                        icon: Atlas.chats,
                         selected: Get.currentRoute == RouteNames.messagesPage,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.messagesPage),
                         notifications: _commonDrawerController.messageNotifications,
@@ -174,7 +175,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       _drawerButton(
                         text: 'My Books',
-                        icon: UniconsLine.books,
+                        icon: Atlas.book,
                         selected: Get.currentRoute == RouteNames.bookListPage,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.bookListPage),
                       ),
@@ -195,7 +196,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       _drawerButton(
                         text: 'Communities',
                         selected: Get.currentRoute == RouteNames.communityListPage,
-                        icon: UniconsLine.users_alt,
+                        icon: Atlas.users,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.communityListPage),
                       ),
                       Divider(
@@ -205,7 +206,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       _drawerButton(
                         text: 'Invitations',
                         selected: Get.currentRoute == RouteNames.invitationsPage,
-                        icon: UniconsLine.envelopes,
+                        icon: Atlas.envelopes_lines,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.invitationsPage),
                         notifications: _commonDrawerController.invitationsNotifications,
                       ),
@@ -216,7 +217,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       _drawerButton(
                         text: 'Loans',
                         selected: Get.currentRoute == RouteNames.loansPage,
-                        icon: UniconsLine.exchange_alt,
+                        icon: Atlas.account_arrows,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.loansPage),
                         notifications: _commonDrawerController.loanNotifications,
                       ),
@@ -226,7 +227,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       _drawerButton(
                         selected: false,
-                        icon: Get.isDarkMode ? UniconsLine.sun : UniconsLine.moon,
+                        icon: Get.isDarkMode ? Atlas.sunny : Atlas.moon,
                         text: Get.isDarkMode ? 'Light' : 'Dark',
                         callback: _commonDrawerController.changeThemeMode,
                       ),
@@ -238,7 +239,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       _drawerButton(
                         text: 'Logout',
                         selected: false,
-                        icon: UniconsLine.sign_out_alt,
+                        icon: Atlas.double_arrow_right_circle,
                         callback: _commonDrawerController.handleLogout,
                       ),
                       const Divider(height: 10),

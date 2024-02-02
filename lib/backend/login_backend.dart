@@ -22,6 +22,19 @@ class LoginBackend {
     }
   }
 
+  static Future<BackendResponse> sendRecoveryEmail(String email) async {
+    try {
+      await Supabase.instance.client.auth.resetPasswordForEmail(
+        email,
+        redirectTo: 'https://communal.ar/auth/recovery',
+      );
+
+      return BackendResponse(success: true, payload: 'Recovery email sent to $email');
+    } catch (error) {
+      return BackendResponse(success: false, payload: error);
+    }
+  }
+
   static Future<void> logout() async {
     await Supabase.instance.client.auth.signOut();
   }
