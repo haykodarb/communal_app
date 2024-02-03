@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:toggle_switch/toggle_switch.dart';
-import 'package:unicons/unicons.dart';
 
 class BookCreatePage extends StatelessWidget {
   const BookCreatePage({super.key});
@@ -37,7 +36,7 @@ class BookCreatePage extends StatelessWidget {
               initialLabelIndex: 0,
               totalSwitches: 2,
               iconSize: 60,
-              icons: const [UniconsLine.check, UniconsLine.multiply],
+              icons: const [Icons.done, Icons.close],
               radiusStyle: true,
               onToggle: controller.onAvailableChange,
             ),
@@ -74,7 +73,7 @@ class BookCreatePage extends StatelessWidget {
               initialLabelIndex: 1,
               totalSwitches: 2,
               iconSize: 60,
-              icons: const [UniconsLine.check, UniconsLine.multiply],
+              icons: const [Icons.done, Icons.close],
               radiusStyle: true,
               onToggle: controller.onReadChange,
             ),
@@ -114,7 +113,7 @@ class BookCreatePage extends StatelessWidget {
                   initialLabelIndex: 1,
                   totalSwitches: 2,
                   iconSize: 60,
-                  icons: const [UniconsLine.check, UniconsLine.multiply],
+                  icons: const [Icons.done, Icons.close],
                   radiusStyle: true,
                   onToggle: controller.onAddReviewChange,
                 ),
@@ -166,7 +165,7 @@ class BookCreatePage extends StatelessWidget {
                       )
                     : IconButton(
                         onPressed: controller.onSubmitButton,
-                        icon: const Icon(UniconsLine.check),
+                        icon: const Icon(Icons.done),
                       ),
               ),
               const VerticalDivider(),
@@ -180,46 +179,45 @@ class BookCreatePage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    SizedBox(
+                    Container(
                       width: 300,
                       height: 400,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      clipBehavior: Clip.hardEdge,
                       child: Stack(
                         children: [
                           AspectRatio(
                             aspectRatio: 3 / 4,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(5),
-                              child: Obx(
-                                () {
-                                  if (controller.selectedFile.value != null) {
-                                    return Image.file(
-                                      File(controller.selectedFile.value!.path),
-                                      fit: BoxFit.cover,
-                                    );
-                                  } else {
-                                    return Card(
-                                      color: Theme.of(context).colorScheme.surface,
-                                      child: const Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: Center(
-                                          child: Text(
-                                            'No\nimage',
-                                            style: TextStyle(fontSize: 18),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
+                            child: Obx(
+                              () {
+                                if (controller.selectedFile.value != null) {
+                                  return Image.file(
+                                    File(controller.selectedFile.value!.path),
+                                    fit: BoxFit.cover,
+                                  );
+                                } else {
+                                  return Card(
+                                    margin: EdgeInsets.zero,
+                                    color: Theme.of(context).colorScheme.surface,
+                                    child: const Center(
+                                      child: Text(
+                                        'No\nimage',
+                                        style: TextStyle(fontSize: 18),
+                                        textAlign: TextAlign.center,
                                       ),
-                                    );
-                                  }
-                                },
-                              ),
+                                    ),
+                                  );
+                                }
+                              },
                             ),
                           ),
                           Container(
                             width: double.maxFinite,
                             alignment: Alignment.bottomCenter,
                             child: Container(
-                              color: Colors.black.withOpacity(0.5),
+                              color: Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
                               width: double.maxFinite,
                               height: 75,
                               child: Row(

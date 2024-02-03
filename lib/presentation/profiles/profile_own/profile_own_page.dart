@@ -1,3 +1,4 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
@@ -7,7 +8,6 @@ import 'package:communal/presentation/profiles/profile_own/profile_own_controlle
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:unicons/unicons.dart';
 
 class ProfileOwnPage extends StatelessWidget {
   const ProfileOwnPage({super.key});
@@ -25,7 +25,7 @@ class ProfileOwnPage extends StatelessWidget {
                 onPressed: () => Get.toNamed(RouteNames.profileOwnEditPage, arguments: {
                   'profile': UsersBackend.currentUserProfile.value,
                 }),
-                icon: const Icon(UniconsLine.edit),
+                icon: const Icon(Atlas.pencil_edit),
               ),
             ],
           ),

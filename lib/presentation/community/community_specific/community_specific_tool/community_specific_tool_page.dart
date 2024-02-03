@@ -1,3 +1,4 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/tools_backend.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/tool.dart';
@@ -13,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:unicons/unicons.dart';
 
 class CommunitySpecificToolPage extends StatelessWidget {
   const CommunitySpecificToolPage({super.key});
@@ -266,7 +266,7 @@ class CommunitySpecificToolPage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Icon(
-                                UniconsLine.download_alt,
+                                Atlas.double_arrow_down_circle,
                                 color: Theme.of(context).colorScheme.onPrimary,
                               ),
                               const VerticalDivider(width: 5),

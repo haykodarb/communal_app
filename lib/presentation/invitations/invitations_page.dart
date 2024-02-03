@@ -1,3 +1,4 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/communities_backend.dart';
 import 'package:communal/models/membership.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
@@ -6,7 +7,6 @@ import 'package:communal/presentation/common/common_drawer/common_drawer_widget.
 import 'package:communal/presentation/invitations/invitations_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:unicons/unicons.dart';
 
 class InvitationsPage extends StatelessWidget {
   const InvitationsPage({super.key});
@@ -38,7 +38,7 @@ class InvitationsPage extends StatelessWidget {
                         return Container(
                           color: Theme.of(context).colorScheme.primary,
                           child: Icon(
-                            UniconsLine.users_alt,
+                            Atlas.users,
                             color: Theme.of(context).colorScheme.background,
                             size: 150,
                           ),
@@ -72,7 +72,7 @@ class InvitationsPage extends StatelessWidget {
                   height: 40,
                   child: ElevatedButton(
                     onPressed: () => controller.respondToInvitation(invitation, true),
-                    child: const Icon(UniconsLine.check),
+                    child: const Icon(Icons.done),
                   ),
                 ),
                 const VerticalDivider(width: 30),
@@ -81,7 +81,7 @@ class InvitationsPage extends StatelessWidget {
                   height: 40,
                   child: OutlinedButton(
                     onPressed: () => controller.respondToInvitation(invitation, false),
-                    child: const Icon(UniconsLine.multiply),
+                    child: const Icon(Icons.close),
                   ),
                 ),
                 const Expanded(child: VerticalDivider()),

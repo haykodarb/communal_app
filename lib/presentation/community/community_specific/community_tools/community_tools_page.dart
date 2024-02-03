@@ -1,3 +1,4 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/models/tool.dart';
 import 'package:communal/presentation/common/common_item_card.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
@@ -6,7 +7,6 @@ import 'package:communal/presentation/community/community_specific/community_too
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:unicons/unicons.dart';
 
 class CommunityToolsPage extends StatelessWidget {
   const CommunityToolsPage({super.key});
@@ -44,7 +44,7 @@ class CommunityToolsPage extends StatelessWidget {
                           ),
                         ),
                         prefixIcon: Icon(
-                          UniconsLine.search_alt,
+                          Atlas.magnifying_glass,
                           color: Theme.of(context).colorScheme.onSurface,
                         ),
                         focusedBorder: OutlineInputBorder(

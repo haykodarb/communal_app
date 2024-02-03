@@ -1,3 +1,4 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/tools_backend.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
@@ -7,7 +8,6 @@ import 'package:communal/routes.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:unicons/unicons.dart';
 
 class ToolOwnedPage extends StatelessWidget {
   const ToolOwnedPage({super.key});
@@ -131,12 +131,12 @@ class ToolOwnedPage extends StatelessWidget {
             actions: [
               IconButton(
                 onPressed: controller.editTool,
-                icon: const Icon(UniconsLine.edit),
+                icon: const Icon(Atlas.pencil_edit),
               ),
               const VerticalDivider(width: 5),
               IconButton(
                 onPressed: controller.deleteTool,
-                icon: const Icon(UniconsLine.trash),
+                icon: const Icon(Atlas.trash),
               ),
             ],
           ),

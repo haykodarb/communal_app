@@ -7,7 +7,6 @@ import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:unicons/unicons.dart';
 
 class LoansCompletedWidget extends StatelessWidget {
   const LoansCompletedWidget({super.key});
@@ -43,7 +42,7 @@ class LoansCompletedWidget extends StatelessWidget {
                         PopupMenuButton(
                           padding: EdgeInsets.zero,
                           icon: Icon(
-                            UniconsLine.ellipsis_v,
+                            Icons.more_vert,
                             color: Theme.of(context).colorScheme.onBackground,
                           ),
                           onSelected: (value) {

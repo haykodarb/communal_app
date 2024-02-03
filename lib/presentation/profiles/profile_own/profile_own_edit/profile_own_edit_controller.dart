@@ -6,6 +6,7 @@ import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide debounce;
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:string_validator/string_validator.dart';
 
@@ -45,7 +46,28 @@ class ProfileOwnEditController extends GetxController {
 
     if (pickedImage == null) return;
 
-    selectedFile.value = File(pickedImage.path);
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: pickedImage.path,
+      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+      cropStyle: CropStyle.circle,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Crop',
+          toolbarColor: Theme.of(Get.context!).colorScheme.surface,
+          toolbarWidgetColor: Colors.white,
+          initAspectRatio: CropAspectRatioPreset.original,
+          lockAspectRatio: true,
+          hideBottomControls: true,
+        ),
+        IOSUiSettings(
+          title: 'Crop',
+        ),
+      ],
+    );
+
+    if (croppedFile == null) return;
+
+    selectedFile.value = File(croppedFile.path);
     selectedFile.refresh();
   }
 

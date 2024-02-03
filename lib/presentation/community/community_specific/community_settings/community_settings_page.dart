@@ -1,10 +1,10 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/communities_backend.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/community/community_specific/community_settings/community_settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:unicons/unicons.dart';
 
 class CommunitySettingsPage extends StatelessWidget {
   const CommunitySettingsPage({super.key});
@@ -23,7 +23,7 @@ class CommunitySettingsPage extends StatelessWidget {
             return Container(
               color: Theme.of(context).colorScheme.primary,
               child: Icon(
-                UniconsLine.users_alt,
+                Atlas.users,
                 color: Theme.of(context).colorScheme.background,
                 size: 150,
               ),

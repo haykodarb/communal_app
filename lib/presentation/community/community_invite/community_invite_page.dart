@@ -1,8 +1,8 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/community/community_invite/community_invite_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:unicons/unicons.dart';
 
 class CommunityInvitePage extends StatelessWidget {
   const CommunityInvitePage({super.key});
@@ -30,7 +30,7 @@ class CommunityInvitePage extends StatelessWidget {
                     suffixIcon: const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       child: Icon(
-                        UniconsLine.search_alt,
+                        Atlas.magnifying_glass,
                         size: 30,
                       ),
                     ),

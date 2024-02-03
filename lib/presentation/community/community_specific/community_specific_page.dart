@@ -7,7 +7,6 @@ import 'package:communal/presentation/community/community_specific/community_spe
 import 'package:communal/presentation/community/community_specific/community_tools/community_tools_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:unicons/unicons.dart';
 
 class CommunitySpecificPage extends StatelessWidget {
   const CommunitySpecificPage({super.key});
@@ -45,7 +44,7 @@ class CommunitySpecificPage extends StatelessWidget {
                 iconSize: 22,
                 items: const <BottomNavigationBarItem>[
                   BottomNavigationBarItem(
-                    icon: Icon(Atlas.book),
+                    icon: Icon(Atlas.library),
                     label: 'Books',
                   ),
                   BottomNavigationBarItem(

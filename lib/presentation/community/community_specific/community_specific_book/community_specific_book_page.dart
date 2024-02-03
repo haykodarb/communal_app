@@ -1,3 +1,4 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/book.dart';
@@ -13,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:unicons/unicons.dart';
 
 class CommunitySpecificBookPage extends StatelessWidget {
   const CommunitySpecificBookPage({super.key});
@@ -279,7 +279,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Icon(
-                                UniconsLine.download_alt,
+                                Atlas.double_arrow_down_circle,
                                 color: Theme.of(context).colorScheme.onPrimary,
                               ),
                               const VerticalDivider(width: 5),

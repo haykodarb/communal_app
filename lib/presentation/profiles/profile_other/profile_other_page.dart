@@ -1,3 +1,4 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_text_info.dart';
@@ -5,7 +6,6 @@ import 'package:communal/presentation/profiles/profile_other/profile_other_contr
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:unicons/unicons.dart';
 
 class ProfileOtherPage extends StatelessWidget {
   const ProfileOtherPage({super.key});
@@ -22,7 +22,7 @@ class ProfileOtherPage extends StatelessWidget {
                 onPressed: () => Get.toNamed(RouteNames.messagesSpecificPage, arguments: {
                   'user': controller.profile.value,
                 }),
-                icon: const Icon(UniconsLine.comment_alt_lines),
+                icon: const Icon(Atlas.comment_dots),
               ),
             ],
           ),

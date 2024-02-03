@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/tools_backend.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
@@ -7,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:toggle_switch/toggle_switch.dart';
-import 'package:unicons/unicons.dart';
 
 class ToolEditPage extends StatelessWidget {
   const ToolEditPage({super.key});
@@ -39,7 +39,7 @@ class ToolEditPage extends StatelessWidget {
               initialLabelIndex: controller.inheritedTool.available ? 0 : 1,
               totalSwitches: 2,
               iconSize: 60,
-              icons: const [UniconsLine.check, UniconsLine.multiply],
+              icons: const [Icons.done, Icons.close],
               radiusStyle: true,
               onToggle: controller.onAvailableChange,
             ),
@@ -83,7 +83,7 @@ class ToolEditPage extends StatelessWidget {
                       )
                     : IconButton(
                         onPressed: controller.onSubmitButton,
-                        icon: const Icon(UniconsLine.check),
+                        icon: const Icon(Icons.done),
                       ),
               ),
               const VerticalDivider(),
@@ -125,7 +125,7 @@ class ToolEditPage extends StatelessWidget {
                                           return Container(
                                             color: Theme.of(context).colorScheme.primary,
                                             child: Icon(
-                                              UniconsLine.users_alt,
+                                              Atlas.users,
                                               color: Theme.of(context).colorScheme.background,
                                               size: 150,
                                             ),

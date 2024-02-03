@@ -1,4 +1,3 @@
-import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_username_button.dart';
@@ -7,7 +6,6 @@ import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:unicons/unicons.dart';
 
 class LoansOwnedWidget extends StatelessWidget {
   const LoansOwnedWidget({super.key});
@@ -48,7 +46,7 @@ class LoansOwnedWidget extends StatelessWidget {
                         PopupMenuButton(
                           padding: EdgeInsets.zero,
                           icon: Icon(
-                            UniconsLine.ellipsis_v,
+                            Icons.more_vert,
                             color: Theme.of(context).colorScheme.onBackground,
                           ),
                           onSelected: (value) {

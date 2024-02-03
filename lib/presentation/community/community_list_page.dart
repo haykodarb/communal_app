@@ -1,3 +1,4 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/communities_backend.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
@@ -6,7 +7,6 @@ import 'package:communal/presentation/common/common_drawer/common_drawer_widget.
 import 'package:communal/presentation/community/community_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:unicons/unicons.dart';
 
 class CommunityListPage extends StatelessWidget {
   const CommunityListPage({super.key});
@@ -36,7 +36,7 @@ class CommunityListPage extends StatelessWidget {
                     return Container(
                       color: Theme.of(context).colorScheme.tertiary.withOpacity(0.75),
                       child: Icon(
-                        UniconsLine.users_alt,
+                        Atlas.users,
                         color: Theme.of(context).colorScheme.background,
                         size: 150,
                       ),
@@ -73,7 +73,10 @@ class CommunityListPage extends StatelessWidget {
         return Scaffold(
           floatingActionButton: FloatingActionButton(
             onPressed: controller.goToCommunityCreate,
-            child: const Icon(UniconsLine.plus),
+            child: const Icon(
+              Icons.add,
+              size: 35,
+            ),
           ),
           appBar: AppBar(
             title: const Text('Communities'),

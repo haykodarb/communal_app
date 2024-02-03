@@ -5,7 +5,6 @@ import 'package:communal/presentation/common/common_drawer/common_drawer_control
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:unicons/unicons.dart';
 
 class CommonDrawerWidget extends StatelessWidget {
   CommonDrawerWidget({super.key});
@@ -175,7 +174,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       _drawerButton(
                         text: 'My Books',
-                        icon: Atlas.book,
+                        icon: Atlas.library,
                         selected: Get.currentRoute == RouteNames.bookListPage,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.bookListPage),
                       ),
@@ -206,7 +205,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       _drawerButton(
                         text: 'Invitations',
                         selected: Get.currentRoute == RouteNames.invitationsPage,
-                        icon: Atlas.envelopes_lines,
+                        icon: Atlas.envelope_paper_email,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.invitationsPage),
                         notifications: _commonDrawerController.invitationsNotifications,
                       ),

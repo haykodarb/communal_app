@@ -1,3 +1,4 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
@@ -5,7 +6,6 @@ import 'package:communal/presentation/community/community_specific/community_mem
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:unicons/unicons.dart';
 
 class CommunityMembersPage extends StatelessWidget {
   const CommunityMembersPage({super.key});
@@ -121,7 +121,7 @@ class CommunityMembersPage extends StatelessWidget {
                       },
                     );
                   },
-                  child: const Icon(UniconsLine.user_plus),
+                  child: const Icon(Atlas.user_plus),
                 )
               : null,
           body: Obx(
@@ -168,7 +168,7 @@ class CommunityMembersPage extends StatelessWidget {
                                   );
                                 },
                                 icon: Icon(
-                                  UniconsLine.comment_alt_dots,
+                                  Atlas.comment_dots,
                                   color: Theme.of(context).colorScheme.onPrimary,
                                 ),
                               ),

@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:toggle_switch/toggle_switch.dart';
-import 'package:unicons/unicons.dart';
 
 class ProfileOwnEditPage extends StatelessWidget {
   const ProfileOwnEditPage({super.key});
@@ -39,7 +38,7 @@ class ProfileOwnEditPage extends StatelessWidget {
               initialLabelIndex: controller.inheritedProfile.bio != null ? 0 : 1,
               totalSwitches: 2,
               iconSize: 60,
-              icons: const [UniconsLine.check, UniconsLine.multiply],
+              icons: const [Icons.done, Icons.close],
               radiusStyle: true,
               onToggle: controller.onAddBioChanged,
             ),
@@ -76,7 +75,7 @@ class ProfileOwnEditPage extends StatelessWidget {
               initialLabelIndex: controller.inheritedProfile.show_email ? 0 : 1,
               totalSwitches: 2,
               iconSize: 60,
-              icons: const [UniconsLine.check, UniconsLine.multiply],
+              icons: const [Icons.done, Icons.close],
               radiusStyle: true,
               onToggle: controller.onShowEmailChanged,
             ),
@@ -107,7 +106,7 @@ class ProfileOwnEditPage extends StatelessWidget {
                         )
                       : IconButton(
                           onPressed: controller.onSubmit,
-                          icon: const Icon(UniconsLine.check),
+                          icon: const Icon(Icons.done),
                         ),
                 ),
               ],
@@ -133,7 +132,7 @@ class ProfileOwnEditPage extends StatelessWidget {
                                   visible: controller.selectedFile.value != null,
                                   child: IconButton(
                                     icon: Icon(
-                                      UniconsLine.multiply,
+                                      Icons.close,
                                       color: Theme.of(context).colorScheme.error,
                                     ),
                                     iconSize: 40,

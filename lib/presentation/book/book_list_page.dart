@@ -1,3 +1,4 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/presentation/common/common_item_card.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
@@ -7,7 +8,6 @@ import 'package:communal/presentation/common/common_text_info.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:unicons/unicons.dart';
 
 class BookListPage extends StatelessWidget {
   const BookListPage({super.key});
@@ -44,7 +44,7 @@ class BookListPage extends StatelessWidget {
                       ),
                     ),
                     prefixIcon: Icon(
-                      UniconsLine.search_alt,
+                      Atlas.magnifying_glass,
                       color: Theme.of(context).colorScheme.onSurface,
                     ),
                     focusedBorder: OutlineInputBorder(
@@ -71,7 +71,8 @@ class BookListPage extends StatelessWidget {
           floatingActionButton: FloatingActionButton(
             onPressed: controller.goToAddBookPage,
             child: const Icon(
-              UniconsLine.plus,
+              Icons.add,
+              size: 35,
             ),
           ),
           body: Obx(

@@ -5,6 +5,7 @@ import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/community.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CommunityCreateController extends GetxController {
@@ -29,14 +30,34 @@ class CommunityCreateController extends GetxController {
   Future<void> takePicture(ImageSource source) async {
     XFile? pickedImage = await imagePicker.pickImage(
       source: source,
-      imageQuality: 80,
+      imageQuality: 100,
       maxHeight: 720,
       maxWidth: 1280,
     );
 
     if (pickedImage == null) return;
 
-    selectedFile.value = File(pickedImage.path);
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: pickedImage.path,
+      aspectRatio: const CropAspectRatio(ratioX: 16, ratioY: 9),
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Crop',
+          toolbarColor: Theme.of(Get.context!).colorScheme.surface,
+          toolbarWidgetColor: Colors.white,
+          initAspectRatio: CropAspectRatioPreset.original,
+          lockAspectRatio: true,
+          hideBottomControls: true,
+        ),
+        IOSUiSettings(
+          title: 'Crop',
+        ),
+      ],
+    );
+
+    if (croppedFile == null) return;
+
+    selectedFile.value = File(croppedFile.path);
   }
 
   String? stringValidator(String? value, int length) {

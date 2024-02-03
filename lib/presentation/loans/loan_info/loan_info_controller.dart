@@ -68,8 +68,6 @@ class LoanInfoController extends GetxController {
     if (confirm != null && confirm) {
       loading.value = true;
 
-      print(loan.value.id);
-
       final BackendResponse response = await LoansBackend.setLoanParameterTrue(loan.value, 'accepted');
 
       loading.value = false;

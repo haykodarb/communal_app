@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/presentation/book/book_edit/book_edit_controller.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
@@ -7,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:toggle_switch/toggle_switch.dart';
-import 'package:unicons/unicons.dart';
 
 class BookEditPage extends StatelessWidget {
   const BookEditPage({super.key});
@@ -39,7 +39,7 @@ class BookEditPage extends StatelessWidget {
               initialLabelIndex: controller.inheritedBook.available ? 0 : 1,
               totalSwitches: 2,
               iconSize: 60,
-              icons: const [UniconsLine.check, UniconsLine.multiply],
+              icons: const [Icons.done, Icons.close],
               radiusStyle: true,
               onToggle: controller.onAvailableChange,
             ),
@@ -76,7 +76,7 @@ class BookEditPage extends StatelessWidget {
               initialLabelIndex: controller.inheritedBook.read ? 0 : 1,
               totalSwitches: 2,
               iconSize: 60,
-              icons: const [UniconsLine.check, UniconsLine.multiply],
+              icons: const [Icons.done, Icons.close],
               radiusStyle: true,
               onToggle: controller.onReadChange,
             ),
@@ -116,7 +116,7 @@ class BookEditPage extends StatelessWidget {
                   initialLabelIndex: controller.inheritedBook.review != null ? 0 : 1,
                   totalSwitches: 2,
                   iconSize: 60,
-                  icons: const [UniconsLine.check, UniconsLine.multiply],
+                  icons: const [Icons.done, Icons.close],
                   radiusStyle: true,
                   onToggle: controller.onAddReviewChange,
                 ),
@@ -169,10 +169,9 @@ class BookEditPage extends StatelessWidget {
                       )
                     : IconButton(
                         onPressed: controller.onSubmitButton,
-                        icon: const Icon(UniconsLine.check),
+                        icon: const Icon(Icons.done),
                       ),
               ),
-              const VerticalDivider(),
             ],
           ),
           body: SingleChildScrollView(
@@ -183,57 +182,58 @@ class BookEditPage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    SizedBox(
+                    Container(
                       width: 300,
                       height: 400,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      clipBehavior: Clip.hardEdge,
                       child: Stack(
                         children: [
                           AspectRatio(
                             aspectRatio: 3 / 4,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(5),
-                              child: Obx(
-                                () {
-                                  if (controller.selectedFile.value != null) {
-                                    return Image.file(
-                                      File(controller.selectedFile.value!.path),
-                                      fit: BoxFit.cover,
-                                    );
-                                  } else {
-                                    return FutureBuilder(
-                                      future: BooksBackend.getBookCover(controller.inheritedBook),
-                                      builder: (context, snapshot) {
-                                        if (!snapshot.hasData) {
-                                          return const CommonLoadingImage();
-                                        }
+                            child: Obx(
+                              () {
+                                if (controller.selectedFile.value != null) {
+                                  return Image.file(
+                                    File(controller.selectedFile.value!.path),
+                                    fit: BoxFit.cover,
+                                  );
+                                } else {
+                                  return FutureBuilder(
+                                    future: BooksBackend.getBookCover(controller.inheritedBook),
+                                    builder: (context, snapshot) {
+                                      if (!snapshot.hasData) {
+                                        return const CommonLoadingImage();
+                                      }
 
-                                        if (snapshot.data!.isEmpty) {
-                                          return Container(
-                                            color: Theme.of(context).colorScheme.primary,
-                                            child: Icon(
-                                              UniconsLine.users_alt,
-                                              color: Theme.of(context).colorScheme.background,
-                                              size: 150,
-                                            ),
-                                          );
-                                        }
-
-                                        return Image.memory(
-                                          snapshot.data!,
-                                          fit: BoxFit.cover,
+                                      if (snapshot.data!.isEmpty) {
+                                        return Container(
+                                          color: Theme.of(context).colorScheme.primary,
+                                          child: Icon(
+                                            Atlas.users,
+                                            color: Theme.of(context).colorScheme.background,
+                                            size: 150,
+                                          ),
                                         );
-                                      },
-                                    );
-                                  }
-                                },
-                              ),
+                                      }
+
+                                      return Image.memory(
+                                        snapshot.data!,
+                                        fit: BoxFit.cover,
+                                      );
+                                    },
+                                  );
+                                }
+                              },
                             ),
                           ),
                           Container(
                             width: double.maxFinite,
                             alignment: Alignment.bottomCenter,
                             child: Container(
-                              color: Colors.black.withOpacity(0.5),
+                              color: Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
                               width: double.maxFinite,
                               height: 75,
                               child: Row(
@@ -241,6 +241,7 @@ class BookEditPage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   IconButton(
+                                    color: Theme.of(context).colorScheme.background,
                                     onPressed: () => controller.takePicture(ImageSource.camera),
                                     icon: const Icon(
                                       Icons.camera_alt,
@@ -248,6 +249,7 @@ class BookEditPage extends StatelessWidget {
                                     ),
                                   ),
                                   IconButton(
+                                    color: Theme.of(context).colorScheme.background,
                                     onPressed: () => controller.takePicture(ImageSource.gallery),
                                     icon: const Icon(
                                       Icons.image,

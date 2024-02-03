@@ -1,3 +1,4 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/models/discussion.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_username_button.dart';
@@ -5,7 +6,6 @@ import 'package:communal/presentation/community/community_specific/community_dis
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:unicons/unicons.dart';
 
 class CommunityDiscussionsPage extends StatelessWidget {
   const CommunityDiscussionsPage({super.key});
@@ -19,7 +19,7 @@ class CommunityDiscussionsPage extends StatelessWidget {
           floatingActionButton: FloatingActionButton(
             onPressed: controller.goToDiscussionsTopicCreate,
             child: const Icon(
-              UniconsLine.comment_add,
+              Atlas.add_messages,
             ),
           ),
           body: SafeArea(

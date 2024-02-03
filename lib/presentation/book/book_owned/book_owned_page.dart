@@ -1,3 +1,4 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/book/book_owned/book_owned_controller.dart';
@@ -7,7 +8,6 @@ import 'package:communal/routes.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:unicons/unicons.dart';
 
 class BookOwnedPage extends StatelessWidget {
   const BookOwnedPage({super.key});
@@ -153,12 +153,12 @@ class BookOwnedPage extends StatelessWidget {
             actions: [
               IconButton(
                 onPressed: controller.editBook,
-                icon: const Icon(UniconsLine.edit),
+                icon: const Icon(Atlas.pencil_edit),
               ),
               const VerticalDivider(width: 5),
               IconButton(
                 onPressed: controller.deleteBook,
-                icon: const Icon(UniconsLine.trash),
+                icon: const Icon(Atlas.trash),
               ),
             ],
           ),

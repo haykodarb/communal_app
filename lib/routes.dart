@@ -80,10 +80,7 @@ final List<GetPage> routes = <GetPage>[
   GetPage<dynamic>(
     name: RouteNames.loginPage,
     page: () => const LoginPage(),
-    transition: Transition.downToUp,
-    transitionDuration: const Duration(
-      milliseconds: 300,
-    ),
+    transition: Transition.noTransition,
   ),
   GetPage<dynamic>(
     name: RouteNames.loginRecoveryPage,
@@ -93,18 +90,12 @@ final List<GetPage> routes = <GetPage>[
   GetPage<dynamic>(
     name: RouteNames.registerPage,
     page: () => const RegisterPage(),
-    transition: Transition.downToUp,
-    transitionDuration: const Duration(
-      milliseconds: 300,
-    ),
+    transition: Transition.noTransition,
   ),
   GetPage<dynamic>(
     name: RouteNames.registerResendPage,
     page: () => const RegisterResendPage(),
-    transition: Transition.downToUp,
-    transitionDuration: const Duration(
-      milliseconds: 300,
-    ),
+    transition: Transition.noTransition,
   ),
   GetPage<dynamic>(
     name: RouteNames.bookListPage,

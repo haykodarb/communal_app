@@ -1,3 +1,4 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/backend/tools_backend.dart';
 import 'package:communal/backend/users_backend.dart';
@@ -11,7 +12,6 @@ import 'package:communal/presentation/loans/loan_info/loan_info_controller.dart'
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:unicons/unicons.dart';
 
 class LoanInfoPage extends StatelessWidget {
   const LoanInfoPage({super.key});
@@ -118,7 +118,7 @@ class LoanInfoPage extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Icon(
-                                    UniconsLine.check,
+                                    Icons.done,
                                     color: Theme.of(context).colorScheme.onPrimary,
                                   ),
                                   const VerticalDivider(width: 5),
@@ -139,7 +139,7 @@ class LoanInfoPage extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Icon(
-                                    UniconsLine.multiply,
+                                    Icons.close,
                                     color: Theme.of(context).colorScheme.onTertiary,
                                   ),
                                   const VerticalDivider(width: 5),
@@ -181,7 +181,7 @@ class LoanInfoPage extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Icon(
-                                  UniconsLine.check,
+                                  Icons.done,
                                   color: Theme.of(context).colorScheme.onPrimary,
                                 ),
                                 const VerticalDivider(width: 5),
@@ -260,7 +260,7 @@ class LoanInfoPage extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Icon(
-                                    UniconsLine.multiply,
+                                    Icons.close,
                                     color: Theme.of(context).colorScheme.onTertiary,
                                   ),
                                   const VerticalDivider(width: 5),
@@ -363,7 +363,7 @@ class LoanInfoPage extends StatelessWidget {
                                 padding: EdgeInsets.zero,
                                 alignment: Alignment.topRight,
                                 icon: const Icon(
-                                  UniconsLine.multiply,
+                                  Icons.close,
                                   size: 35,
                                 ),
                               ),
@@ -372,7 +372,7 @@ class LoanInfoPage extends StatelessWidget {
                                 padding: EdgeInsets.zero,
                                 alignment: Alignment.topRight,
                                 icon: const Icon(
-                                  UniconsLine.check,
+                                  Icons.done,
                                   size: 35,
                                 ),
                               ),
@@ -404,7 +404,7 @@ class LoanInfoPage extends StatelessWidget {
                             alignment: Alignment.topRight,
                             padding: EdgeInsets.zero,
                             icon: const Icon(
-                              UniconsLine.trash,
+                              Atlas.trash,
                               size: 35,
                             ),
                           ),
@@ -414,7 +414,7 @@ class LoanInfoPage extends StatelessWidget {
                           padding: EdgeInsets.zero,
                           alignment: Alignment.topRight,
                           icon: Icon(
-                            controller.loan.value.review == null ? UniconsLine.plus : UniconsLine.edit,
+                            controller.loan.value.review == null ? Icons.add : Atlas.pencil_edit,
                             size: 35,
                           ),
                         ),
