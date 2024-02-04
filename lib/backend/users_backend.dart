@@ -248,40 +248,31 @@ class UsersBackend {
     }
   }
 
-  // TODO: Build the checking logic in the backend and remove the first half of this function.
   static Future<BackendResponse> inviteUserToCommunity(Community community, Profile user) async {
-    final Map<String, dynamic>? memberExistsResponse = await _client.from('memberships').select().match({
-      'community': community.id,
-      'member': user.id,
-    }).maybeSingle();
+    try {
+      final Map<String, dynamic> createMembershipResponse = await _client
+          .from('memberships')
+          .insert(
+            {
+              'member': user.id,
+              'community': community.id,
+              'is_admin': false,
+            },
+          )
+          .select('*, profiles(*), communities(*)')
+          .single();
 
-    if (memberExistsResponse != null) {
-      if (memberExistsResponse['accepted'] != null && memberExistsResponse['accepted']) {
-        return BackendResponse(
-          success: false,
-          payload: 'User is already a member in this community.',
-        );
-      } else {
-        return BackendResponse(
-          success: false,
-          payload: 'User has already been invited to this community.',
-        );
+      if (createMembershipResponse.isEmpty) {
+        return BackendResponse(success: false, payload: 'Error in sending out invitation.');
       }
+
+      return BackendResponse(
+        success: true,
+        payload: Membership.fromMap(createMembershipResponse),
+      );
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
     }
-
-    final Map<String, dynamic> createMembershipResponse = await _client
-        .from('memberships')
-        .insert(
-          {
-            'member': user.id,
-            'community': community.id,
-            'is_admin': false,
-          },
-        )
-        .select()
-        .single();
-
-    return BackendResponse(success: createMembershipResponse.isNotEmpty, payload: createMembershipResponse);
   }
 
   static Future<BackendResponse> removeUserFromCommunity(Community community, Profile user) async {

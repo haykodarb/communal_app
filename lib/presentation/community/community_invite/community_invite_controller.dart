@@ -68,8 +68,7 @@ class CommunityInviteController extends GetxController {
 
       if (response.success) {
         inviteError.value = 'User invite sent.';
-      }
-      {
+      } else {
         inviteError.value = response.payload;
       }
     }

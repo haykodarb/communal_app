@@ -89,29 +89,28 @@ class CommunityInvitePage extends StatelessWidget {
                 SizedBox(
                   height: 50,
                   child: Obx(
-                    () => CommonLoadingBody(
-                      loading: controller.processingInvite.value,
-                      size: 40,
-                      child: Obx(
-                        () => Center(
-                          child: Text(
-                            controller.inviteError.value,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Theme.of(context).colorScheme.secondary,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
+                    () => Center(
+                      child: Text(
+                        controller.inviteError.value,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontWeight: FontWeight.w500,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ),
                 ),
                 const Divider(),
-                ElevatedButton(
-                  onPressed: controller.onSubmit,
-                  child: const Text('Invite'),
+                Obx(
+                  () => CommonLoadingBody(
+                    loading: controller.processingInvite.value,
+                    child: ElevatedButton(
+                      onPressed: controller.onSubmit,
+                      child: const Text('Invite'),
+                    ),
+                  ),
                 ),
               ],
             ),
