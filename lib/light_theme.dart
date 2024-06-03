@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 const ColorScheme _lightScheme = ColorScheme.light(
   background: Color(0xFFffffff),
-  surface: Color(0xFFdeedea),
+  surface: Color(0xFFE6E6E6),
   primary: Color(0xFF56949f),
   secondary: Color(0xFFd7827e),
   // secondary: Color(0xFFebbcba),
@@ -61,7 +61,7 @@ final ElevatedButtonThemeData _elevatedButtonThemeData = ElevatedButtonThemeData
       fontSize: 18,
     ),
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(5),
     ),
     minimumSize: const Size.fromHeight(50),
   ),

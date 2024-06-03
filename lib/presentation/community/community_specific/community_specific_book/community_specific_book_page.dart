@@ -1,11 +1,9 @@
-import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
-import 'package:communal/presentation/common/common_text_info.dart';
 import 'package:communal/presentation/common/common_username_button.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_book/community_specific_book_controller.dart';
 import 'package:communal/routes.dart';
@@ -38,7 +36,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
                 book.author,
                 style: TextStyle(
                   fontSize: 18,
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: Theme.of(context).colorScheme.onSurface.withAlpha(128),
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
@@ -50,80 +48,101 @@ class CommunitySpecificBookPage extends StatelessWidget {
     );
   }
 
-  Widget _ownerReview(CommunitySpecificBookController controller) {
-    return Builder(
-      builder: (context) {
-        return SizedBox(
-          width: double.maxFinite,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CommonTextInfo(
-                label: 'Owner\'s Review',
-                text: controller.book.review ?? 'User has not reviewed this book yet.',
-                size: 14,
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _reviewCard(CommunitySpecificBookController controller, int index) {
-    final Loan loan = controller.completedLoans[index];
-    return SizedBox(
-      width: double.maxFinite,
+  Widget _ownerReviewCard(CommunitySpecificBookController controller) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: InkWell(
         onTap: () {
           controller.expandCarouselItem.value = !controller.expandCarouselItem.value;
         },
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    CommonCircularAvatar(
-                      profile: loan.loanee,
-                      radius: 20,
-                      clickable: true,
-                    ),
-                    const VerticalDivider(width: 10),
-                    CommonUsernameButton(user: loan.loanee),
-                  ],
-                ),
-                const Divider(),
-                Obx(
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            color: Theme.of(Get.context!).colorScheme.surface,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  CommonCircularAvatar(
+                    profile: controller.book.owner,
+                    radius: 20,
+                    clickable: true,
+                  ),
+                  const VerticalDivider(width: 10),
+                  CommonUsernameButton(user: controller.book.owner),
+                ],
+              ),
+              const Divider(),
+              SingleChildScrollView(
+                child: Obx(
                   () => Text(
-                    loan.review ?? '',
+                    controller.book.review ?? '',
                     overflow: controller.expandCarouselItem.value ? TextOverflow.visible : TextOverflow.ellipsis,
-                    maxLines: controller.expandCarouselItem.value ? null : 5,
+                    maxLines: controller.expandCarouselItem.value ? null : 4,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _borrowersReviews(CommunitySpecificBookController controller) {
-    return Builder(builder: (context) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: double.maxFinite,
-            child: Text(
-              'Borrowers\' Reviews',
-              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-            ),
+  Widget _reviewCard(CommunitySpecificBookController controller, int index) {
+    final Loan loan = controller.completedLoans[index];
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: InkWell(
+        onTap: () {
+          controller.expandCarouselItem.value = !controller.expandCarouselItem.value;
+        },
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            color: Theme.of(Get.context!).colorScheme.surface,
           ),
-          Obx(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  CommonCircularAvatar(
+                    profile: loan.loanee,
+                    radius: 20,
+                    clickable: true,
+                  ),
+                  const VerticalDivider(width: 10),
+                  CommonUsernameButton(user: loan.loanee),
+                ],
+              ),
+              const Divider(),
+              SingleChildScrollView(
+                child: Obx(
+                  () => Text(
+                    loan.review ?? '',
+                    overflow: controller.expandCarouselItem.value ? TextOverflow.visible : TextOverflow.ellipsis,
+                    maxLines: controller.expandCarouselItem.value ? null : 4,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _reviewsTab(CommunitySpecificBookController controller) {
+    return Builder(
+      builder: (context) {
+        return Center(
+          child: Obx(
             () {
               if (controller.loadingCarousel.value) {
                 return SizedBox(
@@ -136,50 +155,52 @@ class CommunitySpecificBookPage extends StatelessWidget {
                 );
               }
 
-              if (controller.completedLoans.isEmpty) {
-                return const Text('No other reviews available.');
+              bool ownerHasReview = controller.book.review != null && controller.book.review!.isNotEmpty;
+
+              if (controller.completedLoans.isEmpty && !ownerHasReview) {
+                return const Center(child: Text('No reviews.'));
               }
 
               return Column(
                 children: [
                   const Divider(),
-                  ExpandablePageView.builder(
-                    itemCount: controller.completedLoans.length,
-                    onPageChanged: (value) {
-                      controller.carouselIndex.value = value;
-                    },
-                    itemBuilder: (context, index) {
-                      return LayoutBuilder(
-                        builder: (context, constraints) {
-                          return Align(
-                            alignment: Alignment.topCenter,
-                            child: _reviewCard(controller, index),
-                          );
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: ExpandablePageView.builder(
+                        itemCount: controller.completedLoans.length + (ownerHasReview ? 1 : 0),
+                        onPageChanged: (value) {
+                          controller.carouselIndex.value = value;
                         },
-                      );
-                    },
+                        allowImplicitScrolling: true,
+                        itemBuilder: (context, index) {
+                          if (index == 0 && ownerHasReview) return _ownerReviewCard(controller);
+
+                          return _reviewCard(controller, index - (ownerHasReview ? 1 : 0));
+                        },
+                      ),
+                    ),
                   ),
                   const Divider(),
                   Visibility(
-                    visible: controller.completedLoans.length > 1,
+                    visible: controller.completedLoans.length + (ownerHasReview ? 1 : 0) >= 2,
                     child: Container(
                       alignment: Alignment.center,
                       height: 10,
                       width: double.maxFinite,
                       child: ListView.builder(
-                        itemCount: controller.completedLoans.length,
+                        itemCount: controller.completedLoans.length + (ownerHasReview ? 1 : 0),
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
                           return Obx(
                             () => Container(
-                              height: 30,
-                              width: 30,
+                              height: 15,
+                              width: 15,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: index == controller.carouselIndex.value
-                                    ? Theme.of(context).colorScheme.tertiary
-                                    : Theme.of(context).colorScheme.tertiary.withOpacity(0.1),
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Theme.of(context).colorScheme.primary.withOpacity(0.25),
                               ),
                             ),
                           );
@@ -187,115 +208,159 @@ class CommunitySpecificBookPage extends StatelessWidget {
                       ),
                     ),
                   ),
+                  const Divider(),
                 ],
               );
             },
           ),
-          const Divider(),
-        ],
-      );
-    });
+        );
+      },
+    );
   }
 
-  Widget _sideInformation(CommunitySpecificBookController controller) {
-    final Book book = controller.book;
+  Widget _informationTab(CommunitySpecificBookController controller) {
+    final BuildContext context = Get.context!;
+    final Color red = Theme.of(context).colorScheme.error;
+    final Color purple = Theme.of(context).colorScheme.tertiary;
+    const Color green = Color(0xFF7DAE6B);
 
-    return Builder(
-      builder: (context) {
+    return Obx(
+      () {
+        if (controller.loading.value) {
+          return SizedBox(
+            height: 100,
+            width: double.maxFinite,
+            child: LoadingAnimationWidget.threeArchedCircle(
+              color: Theme.of(Get.context!).colorScheme.primary,
+              size: 30,
+            ),
+          );
+        }
+
+        final Loan? currentLoan = controller.currentLoan.value;
+        final Book book = controller.book;
+        bool loanByCurrentUser = false;
+        if (currentLoan != null) {
+          loanByCurrentUser = currentLoan.loanee.id == UsersBackend.currentUserId;
+        }
+
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'Owner',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 30,
+                        child: Center(child: Text('Owner')),
+                      ),
+                      Divider(),
+                      SizedBox(
+                        height: 30,
+                        child: Center(child: Text('Added')),
+                      ),
+                      Divider(),
+                      SizedBox(
+                        height: 30,
+                        child: Center(child: Text('Status')),
+                      ),
+                    ],
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Get.toNamed(
-                        RouteNames.profileOtherPage,
-                        arguments: {
-                          'user': book.owner,
-                        },
-                      );
-                    },
-                    child: Text(book.owner.username),
-                  ),
-                  const Divider(),
-                  CommonTextInfo(label: 'Added', text: DateFormat.yMMMd().format(book.created_at), size: 14),
-                  const Divider(),
-                  CommonTextInfo(label: 'Available', text: book.available ? 'Yes' : 'No', size: 14),
-                  const Divider(),
-                  Obx(
-                    () {
-                      if (controller.loading.value) {
-                        return LoadingAnimationWidget.horizontalRotatingDots(
-                          color: Theme.of(context).colorScheme.primary,
-                          size: 20,
-                        );
-                      }
-
-                      final Loan? currentLoan = controller.currentLoan.value;
-
-                      if (currentLoan != null) {
-                        final bool loanedByCurrentUser = currentLoan.loanee.id == UsersBackend.currentUserId;
-
-                        if (!loanedByCurrentUser) {
-                          return const SizedBox.shrink();
-                        }
-
-                        if (loanedByCurrentUser && currentLoan.accepted) {
-                          return CommonTextInfo(
-                            label: 'Status',
-                            text: 'Borrowed ${DateFormat.yMMMd().format(currentLoan.accepted_at!)}',
-                            size: 14,
-                          );
-                        }
-
-                        if (loanedByCurrentUser) {
-                          return CommonTextInfo(
-                            label: 'Status',
-                            text: 'Requested ${DateFormat.yMMMd().format(currentLoan.created_at)}',
-                            size: 14,
-                          );
-                        } else {
-                          return const SizedBox.shrink();
-                        }
-                      } else {
-                        if (!book.available) {
-                          return const SizedBox.shrink();
-                        }
-
-                        return MaterialButton(
-                          onPressed: controller.requestLoan,
-                          color: Theme.of(context).colorScheme.primary,
-                          padding: const EdgeInsets.all(8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(
-                                Atlas.double_arrow_down_circle,
-                                color: Theme.of(context).colorScheme.onPrimary,
-                              ),
-                              const VerticalDivider(width: 5),
-                              Text(
-                                'Request',
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onPrimary,
-                                ),
-                              ),
-                            ],
+                  const VerticalDivider(),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 30,
+                        child: Center(
+                          child: TextButton(
+                            onPressed: () {
+                              Get.toNamed(
+                                RouteNames.profileOtherPage,
+                                arguments: {
+                                  'user': book.owner,
+                                },
+                              );
+                            },
+                            child: Text(
+                              book.owner.username,
+                            ),
                           ),
-                        );
-                      }
-                    },
+                        ),
+                      ),
+                      const Divider(),
+                      SizedBox(
+                        height: 30,
+                        child: Center(
+                          child: Text(
+                            DateFormat.yMMMd().format(book.created_at),
+                          ),
+                        ),
+                      ),
+                      const Divider(),
+                      Container(
+                        height: 30,
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                        decoration: BoxDecoration(
+                          color: book.available
+                              ? (loanByCurrentUser ? purple.withOpacity(0.25) : green.withOpacity(0.25))
+                              : (loanByCurrentUser ? purple.withOpacity(0.25) : red.withOpacity(0.25)),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                color: book.available
+                                    ? (loanByCurrentUser ? purple : green)
+                                    : (loanByCurrentUser ? purple : red),
+                                shape: BoxShape.circle,
+                              ),
+                              height: 8,
+                              width: 8,
+                            ),
+                            const VerticalDivider(width: 10),
+                            Text(
+                              book.available
+                                  ? (loanByCurrentUser ? 'Requested' : 'Available')
+                                  : (loanByCurrentUser ? 'Loaned' : 'Unavailable'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
+              ),
+              Visibility(
+                visible: book.available && !loanByCurrentUser,
+                child: ElevatedButton(
+                  onPressed: controller.requestLoan,
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Request',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      VerticalDivider(width: 5),
+                      Icon(
+                        Icons.back_hand_outlined,
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
@@ -310,52 +375,109 @@ class CommunitySpecificBookPage extends StatelessWidget {
       init: CommunitySpecificBookController(),
       builder: (CommunitySpecificBookController controller) {
         return Scaffold(
-          appBar: AppBar(),
-          body: SingleChildScrollView(
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).colorScheme.surface,
+          ),
+          body: DefaultTabController(
+            length: 2,
             child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    _bookTitle(controller.book),
-                    const Divider(height: 30),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              child: Column(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        _bookTitle(controller.book),
                         Expanded(
-                          flex: 5,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(5),
-                            child: AspectRatio(
-                              aspectRatio: 3 / 4,
-                              child: FutureBuilder(
-                                future: BooksBackend.getBookCover(controller.book),
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return const CommonLoadingImage();
-                                  }
+                          child: Padding(
+                            padding: const EdgeInsets.all(30),
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    offset: Offset(2, 1),
+                                    blurRadius: 20,
+                                    spreadRadius: 12,
+                                    color: Color(0x4C3D3D3D),
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(5),
+                                child: AspectRatio(
+                                  aspectRatio: 3 / 4,
+                                  child: FutureBuilder(
+                                    future: BooksBackend.getBookCover(controller.book),
+                                    builder: (context, snapshot) {
+                                      if (!snapshot.hasData) {
+                                        return const CommonLoadingImage();
+                                      }
 
-                                  return Image.memory(
-                                    snapshot.data!,
-                                    fit: BoxFit.cover,
-                                  );
-                                },
+                                      return Image.memory(
+                                        snapshot.data!,
+                                        fit: BoxFit.cover,
+                                      );
+                                    },
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                        Expanded(
-                          flex: 3,
-                          child: _sideInformation(controller),
-                        ),
                       ],
                     ),
-                    const Divider(height: 30),
-                    _ownerReview(controller),
-                    const Divider(height: 30),
-                    _borrowersReviews(controller),
-                  ],
-                ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        ),
+                        color: Theme.of(context).colorScheme.background,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: DefaultTabController(
+                          length: 2,
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: 50,
+                                child: TabBar(
+                                  isScrollable: false,
+                                  indicatorColor: Theme.of(context).colorScheme.primary,
+                                  labelColor: Theme.of(context).colorScheme.primary,
+                                  // overlayColor: Colors.blue,
+                                  labelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                                  unselectedLabelColor: Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
+                                  dividerColor: Colors.transparent,
+
+                                  tabs: const [
+                                    Text('Information'),
+                                    Text('Reviews'),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: TabBarView(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  children: [
+                                    _informationTab(controller),
+                                    _reviewsTab(controller),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
           ),

@@ -26,7 +26,7 @@ class RegisterController extends GetxController {
       return 'Please enter something.';
     }
 
-    if (!value.isEmail) {
+    if (!GetUtils.isEmail(value)) {
       return 'Input must be a valid email.';
     }
 

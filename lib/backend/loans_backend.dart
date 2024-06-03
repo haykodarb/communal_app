@@ -73,7 +73,7 @@ class LoansBackend {
 
     final String userId = client.auth.currentUser!.id;
 
-    Map<String, dynamic> query;
+    Map<String, Object> query;
 
     switch (requestType) {
       case LoansRequestType.userIsOwner:

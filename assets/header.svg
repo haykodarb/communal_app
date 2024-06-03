@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1024"
+   height="500"
+   viewBox="0 0 270.93333 132.29167"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25, custom)"
+   sodipodi:docname="header.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#191724"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:export-bgcolor="#19172400"
+     inkscape:zoom="1.0356019"
+     inkscape:cx="404.11281"
+     inkscape:cy="210.5056"
+     inkscape:window-width="1908"
+     inkscape:window-height="1026"
+     inkscape:window-x="4"
+     inkscape:window-y="4"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <rect
+       x="241.57121"
+       y="51.381664"
+       width="625.7066"
+       height="409.52898"
+       id="rect2" />
+    <rect
+       x="200.59288"
+       y="129.29484"
+       width="645.50528"
+       height="269.88402"
+       id="rect1" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text1"
+       style="fill:#191724;stroke-width:0;paint-order:markers fill stroke;white-space:pre;shape-inside:url(#rect1)" />
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text2"
+       style="white-space:pre;shape-inside:url(#rect2);fill:#191724;stroke-width:0;paint-order:markers fill stroke;font-size:74.66666761px" />
+    <text
+       xml:space="preserve"
+       style="font-size:19.7556px;fill:#ffffff;stroke-width:0;paint-order:markers fill stroke"
+       x="80.556801"
+       y="90.866226"
+       id="text3"><tspan
+         sodipodi:role="line"
+         id="tspan3"
+         style="fill:#ffffff;stroke-width:0"
+         x="80.556801"
+         y="90.866226">Communal</tspan></text>
+  </g>
+</svg>

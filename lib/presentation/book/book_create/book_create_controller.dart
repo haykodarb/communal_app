@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:barcode_scan2/barcode_scan2.dart';
 
 class BookCreateController extends GetxController {
   final Rx<Book> bookForm = Book.empty().obs;
@@ -26,6 +27,12 @@ class BookCreateController extends GetxController {
     super.onInit();
 
     bookForm.value.available = true;
+    var result = await BarcodeScanner.scan();
+
+    print(result.type); // The result type (barcode, cancelled, failed)
+    print(result.rawContent); // The barcode content
+    print(result.format); // The barcode format (as enum)
+    print(result.formatNote); // If a unknown format was scanned this field contains a note
   }
 
   Future<void> takePicture(ImageSource source) async {

@@ -32,6 +32,7 @@ class CommunitySpecificBookController extends GetxController {
     loadingCarousel.value = true;
 
     completedLoans.clear();
+
     final BackendResponse response = await LoansBackend.getCompletedLoansForItem(book: book);
 
     if (response.success) {

@@ -33,7 +33,7 @@ class LoginController extends GetxController {
       return 'Please enter something.';
     }
 
-    if (!value.isEmail) {
+    if (!GetUtils.isEmail(value)) {
       return 'Input must be a valid email.';
     }
 
@@ -49,7 +49,7 @@ class LoginController extends GetxController {
       return 'Password must be at least 6 characters long';
     }
 
-    if (!isAscii(value)) {
+    if (!value.isAscii) {
       return 'Password should only include ASCII characters';
     }
 

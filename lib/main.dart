@@ -8,10 +8,13 @@ import 'package:get/get.dart';
 import 'package:communal/routes.dart';
 import 'package:communal/light_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Hive.initFlutter();
 
   await Supabase.initialize(
     url: 'https://ievjxqrtftfnwzobklde.supabase.co',
