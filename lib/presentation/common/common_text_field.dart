@@ -10,6 +10,7 @@ class CommonTextField extends StatelessWidget {
     this.maxLines = 1,
     this.maxLength = 60,
     this.initialValue,
+    this.inheritedController,
   });
 
   final void Function(String) callback;
@@ -18,11 +19,12 @@ class CommonTextField extends StatelessWidget {
   final int maxLines;
   final int? maxLength;
   final String? initialValue;
+  final TextEditingController? inheritedController;
   final String label;
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController controller = TextEditingController(text: initialValue);
+    final TextEditingController controller = inheritedController ?? TextEditingController(text: initialValue);
 
     return TextFormField(
       validator: validator,

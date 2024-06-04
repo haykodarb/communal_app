@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:communal/backend/books_backend.dart';
+import 'package:communal/backend/openlibrary_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
@@ -22,17 +23,47 @@ class BookCreateController extends GetxController {
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController authorController = TextEditingController();
+
   @override
   Future<void> onInit() async {
     super.onInit();
 
     bookForm.value.available = true;
+  }
+
+  Future<void> getOpenLibraryImage(String isbnCode) async {
+    final File? cover = await OpenLibraryBackend.getCoverByISBN(isbnCode);
+    if (cover != null) {
+      selectedFile.value = File(cover.path);
+    }
+  }
+
+  Future<void> scanBook() async {
     var result = await BarcodeScanner.scan();
 
-    print(result.type); // The result type (barcode, cancelled, failed)
-    print(result.rawContent); // The barcode content
-    print(result.format); // The barcode format (as enum)
-    print(result.formatNote); // If a unknown format was scanned this field contains a note
+    if (result.type == ResultType.Barcode && result.rawContent.isNotEmpty) {
+      getOpenLibraryImage(result.rawContent);
+
+      final BackendResponse response = await OpenLibraryBackend.getBookByISBN(result.rawContent);
+
+      if (response.success) {
+        final OpenLibraryBook book = response.payload;
+
+        if (book.title != null) {
+          bookForm.value.title = book.title!;
+          titleController.text = book.title!;
+        }
+
+        if (book.author != null) {
+          bookForm.value.author = book.author!;
+          authorController.text = book.author!;
+        }
+
+        bookForm.refresh();
+      }
+    }
   }
 
   Future<void> takePicture(ImageSource source) async {
@@ -52,7 +83,7 @@ class BookCreateController extends GetxController {
       uiSettings: [
         AndroidUiSettings(
           toolbarTitle: 'Crop',
-          toolbarColor: Theme.of(Get.context!).colorScheme.surface,
+          toolbarColor: Theme.of(Get.context!).colorScheme.surfaceContainer,
           toolbarWidgetColor: Colors.white,
           initAspectRatio: CropAspectRatioPreset.original,
           lockAspectRatio: true,

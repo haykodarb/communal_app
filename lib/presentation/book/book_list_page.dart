@@ -32,7 +32,7 @@ class BookListPage extends StatelessWidget {
                 ),
                 child: TextField(
                   onChanged: controller.searchBooks,
-                  cursorColor: Theme.of(context).colorScheme.onBackground,
+                  cursorColor: Theme.of(context).colorScheme.onSurface,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
                     border: InputBorder.none,

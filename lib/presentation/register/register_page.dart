@@ -45,7 +45,7 @@ class RegisterPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: Theme.of(Get.context!).colorScheme.onBackground,
+                  color: Theme.of(Get.context!).colorScheme.onSurface,
                 ),
                 textAlign: TextAlign.right,
               ),
@@ -86,7 +86,7 @@ class RegisterPage extends StatelessWidget {
       init: RegisterController(),
       builder: (RegisterController controller) {
         return Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           resizeToAvoidBottomInset: false,
           body: Obx(
             () {

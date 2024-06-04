@@ -40,7 +40,7 @@ class LoginPasswordRecoveryPage extends StatelessWidget {
       init: LoginPasswordRecoveryController(),
       builder: (LoginPasswordRecoveryController controller) {
         return Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           resizeToAvoidBottomInset: false,
           body: SingleChildScrollView(
             child: Padding(

@@ -39,7 +39,7 @@ class InvitationsPage extends StatelessWidget {
                           color: Theme.of(context).colorScheme.primary,
                           child: Icon(
                             Atlas.users,
-                            color: Theme.of(context).colorScheme.background,
+                            color: Theme.of(context).colorScheme.surface,
                             size: 150,
                           ),
                         );

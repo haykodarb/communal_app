@@ -55,6 +55,11 @@ dependencies:
   atlas_icons: ^0.0.12
   image_cropper: ^6.0.0
   barcode_scan2: ^4.3.0
+  path_provider: ^2.1.3
+  http: ^1.2.1
+  image: ^4.2.0
+  dio: ^5.4.3+1
+  cronet_http: ^1.3.0
 
 dev_dependencies:
   flutter_test:

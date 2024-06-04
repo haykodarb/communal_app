@@ -27,15 +27,15 @@ class BookEditPage extends StatelessWidget {
               minWidth: 60,
               minHeight: 40,
               cornerRadius: 4,
-              borderColor: [Theme.of(context).colorScheme.onBackground],
+              borderColor: [Theme.of(context).colorScheme.onSurface],
               borderWidth: 0.75,
               activeBgColors: [
                 [Theme.of(context).colorScheme.primary],
                 [Theme.of(context).colorScheme.error]
               ],
-              activeFgColor: Theme.of(context).colorScheme.onBackground,
-              inactiveBgColor: Theme.of(context).colorScheme.surface,
-              inactiveFgColor: Theme.of(context).colorScheme.onBackground,
+              activeFgColor: Theme.of(context).colorScheme.onSurface,
+              inactiveBgColor: Theme.of(context).colorScheme.surfaceContainer,
+              inactiveFgColor: Theme.of(context).colorScheme.onSurface,
               initialLabelIndex: controller.inheritedBook.available ? 0 : 1,
               totalSwitches: 2,
               iconSize: 60,
@@ -64,15 +64,15 @@ class BookEditPage extends StatelessWidget {
               minWidth: 60,
               minHeight: 40,
               cornerRadius: 4,
-              borderColor: [Theme.of(context).colorScheme.onBackground],
+              borderColor: [Theme.of(context).colorScheme.onSurface],
               borderWidth: 0.75,
               activeBgColors: [
                 [Theme.of(context).colorScheme.primary],
                 [Theme.of(context).colorScheme.error]
               ],
-              activeFgColor: Theme.of(context).colorScheme.onBackground,
-              inactiveBgColor: Theme.of(context).colorScheme.surface,
-              inactiveFgColor: Theme.of(context).colorScheme.onBackground,
+              activeFgColor: Theme.of(context).colorScheme.onSurface,
+              inactiveBgColor: Theme.of(context).colorScheme.surfaceContainer,
+              inactiveFgColor: Theme.of(context).colorScheme.onSurface,
               initialLabelIndex: controller.inheritedBook.read ? 0 : 1,
               totalSwitches: 2,
               iconSize: 60,
@@ -104,15 +104,15 @@ class BookEditPage extends StatelessWidget {
                   minWidth: 60,
                   minHeight: 40,
                   cornerRadius: 4,
-                  borderColor: [Theme.of(context).colorScheme.onBackground],
+                  borderColor: [Theme.of(context).colorScheme.onSurface],
                   borderWidth: 0.75,
                   activeBgColors: [
                     [Theme.of(context).colorScheme.primary],
                     [Theme.of(context).colorScheme.error]
                   ],
-                  activeFgColor: Theme.of(context).colorScheme.onBackground,
-                  inactiveBgColor: Theme.of(context).colorScheme.surface,
-                  inactiveFgColor: Theme.of(context).colorScheme.onBackground,
+                  activeFgColor: Theme.of(context).colorScheme.onSurface,
+                  inactiveBgColor: Theme.of(context).colorScheme.surfaceContainer,
+                  inactiveFgColor: Theme.of(context).colorScheme.onSurface,
                   initialLabelIndex: controller.inheritedBook.review != null ? 0 : 1,
                   totalSwitches: 2,
                   iconSize: 60,
@@ -164,7 +164,7 @@ class BookEditPage extends StatelessWidget {
                         height: 30,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          color: Theme.of(context).colorScheme.onBackground,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       )
                     : IconButton(
@@ -213,7 +213,7 @@ class BookEditPage extends StatelessWidget {
                                           color: Theme.of(context).colorScheme.primary,
                                           child: Icon(
                                             Atlas.users,
-                                            color: Theme.of(context).colorScheme.background,
+                                            color: Theme.of(context).colorScheme.surface,
                                             size: 150,
                                           ),
                                         );
@@ -233,7 +233,7 @@ class BookEditPage extends StatelessWidget {
                             width: double.maxFinite,
                             alignment: Alignment.bottomCenter,
                             child: Container(
-                              color: Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
+                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                               width: double.maxFinite,
                               height: 75,
                               child: Row(
@@ -241,7 +241,7 @@ class BookEditPage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   IconButton(
-                                    color: Theme.of(context).colorScheme.background,
+                                    color: Theme.of(context).colorScheme.surface,
                                     onPressed: () => controller.takePicture(ImageSource.camera),
                                     icon: const Icon(
                                       Icons.camera_alt,
@@ -249,7 +249,7 @@ class BookEditPage extends StatelessWidget {
                                     ),
                                   ),
                                   IconButton(
-                                    color: Theme.of(context).colorScheme.background,
+                                    color: Theme.of(context).colorScheme.surface,
                                     onPressed: () => controller.takePicture(ImageSource.gallery),
                                     icon: const Icon(
                                       Icons.image,

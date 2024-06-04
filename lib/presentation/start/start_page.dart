@@ -73,7 +73,7 @@ class StartPage extends StatelessWidget {
       init: StartController(),
       builder: (StartController controller) {
         return Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           body: Align(
             alignment: Alignment.topCenter,
             child: Padding(

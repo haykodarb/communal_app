@@ -37,7 +37,7 @@ class CommunityListPage extends StatelessWidget {
                       color: Theme.of(context).colorScheme.tertiary.withOpacity(0.75),
                       child: Icon(
                         Atlas.users,
-                        color: Theme.of(context).colorScheme.background,
+                        color: Theme.of(context).colorScheme.surface,
                         size: 150,
                       ),
                     );

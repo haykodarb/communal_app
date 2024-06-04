@@ -24,7 +24,7 @@ class MessagesPage extends StatelessWidget {
           child: Card(
             elevation: hightlightMessage ? 5 : 1,
             shadowColor: hightlightMessage ? Theme.of(context).colorScheme.primary : null,
-            color: Theme.of(context).colorScheme.background,
+            color: Theme.of(context).colorScheme.surface,
             child: Padding(
               padding: const EdgeInsets.all(15),
               child: Row(

@@ -52,7 +52,7 @@ class BookEditController extends GetxController {
       uiSettings: [
         AndroidUiSettings(
           toolbarTitle: 'Crop',
-          toolbarColor: Theme.of(Get.context!).colorScheme.surface,
+          toolbarColor: Theme.of(Get.context!).colorScheme.surfaceContainer,
           toolbarWidgetColor: Colors.white,
           initAspectRatio: CropAspectRatioPreset.original,
           lockAspectRatio: true,

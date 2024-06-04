@@ -79,7 +79,7 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
                             child: Text(
                               message.content,
                               style: TextStyle(
-                                color: Theme.of(context).colorScheme.onBackground,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                           ),
@@ -97,7 +97,7 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
                       DateFormat.MMMd().add_Hm().format(message.created_at.toLocal()),
                       textAlign: isReceived ? TextAlign.left : TextAlign.right,
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onBackground.withOpacity(0.8),
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
                         fontSize: 12,
                       ),
                     ),

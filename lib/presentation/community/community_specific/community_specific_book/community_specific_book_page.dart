@@ -59,7 +59,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
-            color: Theme.of(Get.context!).colorScheme.surface,
+            color: Theme.of(Get.context!).colorScheme.surfaceContainer,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,7 +105,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
-            color: Theme.of(Get.context!).colorScheme.surface,
+            color: Theme.of(Get.context!).colorScheme.surfaceContainer,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -375,9 +375,9 @@ class CommunitySpecificBookPage extends StatelessWidget {
       init: CommunitySpecificBookController(),
       builder: (CommunitySpecificBookController controller) {
         return Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.surface,
+          backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
           appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.surface,
+            backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
           ),
           body: DefaultTabController(
             length: 2,
@@ -437,7 +437,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
                           topLeft: Radius.circular(20),
                           topRight: Radius.circular(20),
                         ),
-                        color: Theme.of(context).colorScheme.background,
+                        color: Theme.of(context).colorScheme.surface,
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -453,7 +453,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
                                   labelColor: Theme.of(context).colorScheme.primary,
                                   // overlayColor: Colors.blue,
                                   labelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-                                  unselectedLabelColor: Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
+                                  unselectedLabelColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                                   dividerColor: Colors.transparent,
 
                                   tabs: const [

@@ -24,7 +24,7 @@ class CommunitySettingsPage extends StatelessWidget {
               color: Theme.of(context).colorScheme.primary,
               child: Icon(
                 Atlas.users,
-                color: Theme.of(context).colorScheme.background,
+                color: Theme.of(context).colorScheme.surface,
                 size: 150,
               ),
             );
@@ -111,12 +111,12 @@ class CommunitySettingsPage extends StatelessWidget {
               style: TextStyle(
                 color: controller.editing.value
                     ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).colorScheme.onBackground,
+                    : Theme.of(context).colorScheme.onSurface,
               ),
               decoration: InputDecoration(
                 disabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.onBackground,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
               ),

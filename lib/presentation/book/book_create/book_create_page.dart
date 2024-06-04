@@ -24,15 +24,15 @@ class BookCreatePage extends StatelessWidget {
               minWidth: 60,
               minHeight: 40,
               cornerRadius: 4,
-              borderColor: [Theme.of(context).colorScheme.onBackground],
+              borderColor: [Theme.of(context).colorScheme.onSurface],
               borderWidth: 0.75,
               activeBgColors: [
                 [Theme.of(context).colorScheme.primary],
                 [Theme.of(context).colorScheme.error]
               ],
-              activeFgColor: Theme.of(context).colorScheme.onBackground,
-              inactiveBgColor: Theme.of(context).colorScheme.surface,
-              inactiveFgColor: Theme.of(context).colorScheme.onBackground,
+              activeFgColor: Theme.of(context).colorScheme.onSurface,
+              inactiveBgColor: Theme.of(context).colorScheme.surfaceContainer,
+              inactiveFgColor: Theme.of(context).colorScheme.onSurface,
               initialLabelIndex: 0,
               totalSwitches: 2,
               iconSize: 60,
@@ -61,15 +61,15 @@ class BookCreatePage extends StatelessWidget {
               minWidth: 60,
               minHeight: 40,
               cornerRadius: 4,
-              borderColor: [Theme.of(context).colorScheme.onBackground],
+              borderColor: [Theme.of(context).colorScheme.onSurface],
               borderWidth: 0.75,
               activeBgColors: [
                 [Theme.of(context).colorScheme.primary],
                 [Theme.of(context).colorScheme.error]
               ],
-              activeFgColor: Theme.of(context).colorScheme.onBackground,
-              inactiveBgColor: Theme.of(context).colorScheme.surface,
-              inactiveFgColor: Theme.of(context).colorScheme.onBackground,
+              activeFgColor: Theme.of(context).colorScheme.onSurface,
+              inactiveBgColor: Theme.of(context).colorScheme.surfaceContainer,
+              inactiveFgColor: Theme.of(context).colorScheme.onSurface,
               initialLabelIndex: 1,
               totalSwitches: 2,
               iconSize: 60,
@@ -101,15 +101,15 @@ class BookCreatePage extends StatelessWidget {
                   minWidth: 60,
                   minHeight: 40,
                   cornerRadius: 4,
-                  borderColor: [Theme.of(context).colorScheme.onBackground],
+                  borderColor: [Theme.of(context).colorScheme.onSurface],
                   borderWidth: 0.75,
                   activeBgColors: [
                     [Theme.of(context).colorScheme.primary],
                     [Theme.of(context).colorScheme.error]
                   ],
-                  activeFgColor: Theme.of(context).colorScheme.onBackground,
-                  inactiveBgColor: Theme.of(context).colorScheme.surface,
-                  inactiveFgColor: Theme.of(context).colorScheme.onBackground,
+                  activeFgColor: Theme.of(context).colorScheme.onSurface,
+                  inactiveBgColor: Theme.of(context).colorScheme.surfaceContainer,
+                  inactiveFgColor: Theme.of(context).colorScheme.onSurface,
                   initialLabelIndex: 1,
                   totalSwitches: 2,
                   iconSize: 60,
@@ -153,6 +153,11 @@ class BookCreatePage extends StatelessWidget {
               'Add Book',
             ),
             actions: [
+              IconButton(
+                onPressed: controller.scanBook,
+                icon: const Icon(Icons.camera_alt_outlined),
+              ),
+              const VerticalDivider(),
               Obx(
                 () => controller.loading.value
                     ? SizedBox(
@@ -160,7 +165,7 @@ class BookCreatePage extends StatelessWidget {
                         height: 30,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          color: Theme.of(context).colorScheme.onBackground,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       )
                     : IconButton(
@@ -200,7 +205,7 @@ class BookCreatePage extends StatelessWidget {
                                 } else {
                                   return Card(
                                     margin: EdgeInsets.zero,
-                                    color: Theme.of(context).colorScheme.surface,
+                                    color: Theme.of(context).colorScheme.surfaceContainer,
                                     child: const Center(
                                       child: Text(
                                         'No\nimage',
@@ -217,7 +222,7 @@ class BookCreatePage extends StatelessWidget {
                             width: double.maxFinite,
                             alignment: Alignment.bottomCenter,
                             child: Container(
-                              color: Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
+                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                               width: double.maxFinite,
                               height: 75,
                               child: Row(
@@ -225,7 +230,7 @@ class BookCreatePage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   IconButton(
-                                    color: Theme.of(context).colorScheme.background,
+                                    color: Theme.of(context).colorScheme.surface,
                                     onPressed: () => controller.takePicture(ImageSource.camera),
                                     icon: const Icon(
                                       Icons.camera_alt,
@@ -233,7 +238,7 @@ class BookCreatePage extends StatelessWidget {
                                     ),
                                   ),
                                   IconButton(
-                                    color: Theme.of(context).colorScheme.background,
+                                    color: Theme.of(context).colorScheme.surface,
                                     onPressed: () => controller.takePicture(ImageSource.gallery),
                                     icon: const Icon(
                                       Icons.image,
@@ -250,6 +255,7 @@ class BookCreatePage extends StatelessWidget {
                     const Divider(height: 30),
                     CommonTextField(
                       callback: controller.onTitleChange,
+                      inheritedController: controller.titleController,
                       label: 'Title',
                       validator: (String? value) => controller.stringValidator(value, 3),
                       maxLength: 100,
@@ -258,6 +264,7 @@ class BookCreatePage extends StatelessWidget {
                     const Divider(),
                     CommonTextField(
                       callback: controller.onAuthorChange,
+                      inheritedController: controller.authorController,
                       label: 'Author',
                       validator: (String? value) => controller.stringValidator(value, 3),
                     ),

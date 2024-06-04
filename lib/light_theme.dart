@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 const ColorScheme _lightScheme = ColorScheme.light(
-  background: Color(0xFFffffff),
-  surface: Color(0xFFE6E6E6),
+  surface: Color(0xFFffffff),
+  surfaceContainer: Color(0xFFE6E6E6),
   primary: Color(0xFF56949f),
   secondary: Color(0xFFd7827e),
   // secondary: Color(0xFFebbcba),
   tertiary: Color(0xFF907aa9),
-  onBackground: Color(0xFF0F1F1B),
+  onSurfaceVariant: Color(0xFF0F1F1B),
   onPrimary: Color(0xFFffffff),
   onSecondary: Color(0xFFffffff),
   onTertiary: Color(0xFFffffff),
@@ -19,10 +19,10 @@ const ColorScheme _lightScheme = ColorScheme.light(
 final BottomNavigationBarThemeData _bottomNavigationBarTheme = BottomNavigationBarThemeData(
   type: BottomNavigationBarType.fixed,
   selectedItemColor: _lightScheme.primary,
-  unselectedItemColor: _lightScheme.onBackground,
+  unselectedItemColor: _lightScheme.onSurface,
   backgroundColor: _lightScheme.primary,
   elevation: 10,
-  unselectedLabelStyle: TextStyle(color: _lightScheme.onBackground),
+  unselectedLabelStyle: TextStyle(color: _lightScheme.onSurface),
   selectedLabelStyle: TextStyle(color: _lightScheme.primary),
   showUnselectedLabels: false,
   showSelectedLabels: true,
@@ -37,7 +37,7 @@ final TextButtonThemeData _textButtonTheme = TextButtonThemeData(
 );
 
 final AppBarTheme _appBarTheme = AppBarTheme(
-  backgroundColor: _lightScheme.background,
+  backgroundColor: _lightScheme.surface,
   elevation: 1,
   surfaceTintColor: Colors.transparent,
   iconTheme: const IconThemeData(
@@ -47,7 +47,7 @@ final AppBarTheme _appBarTheme = AppBarTheme(
   titleTextStyle: GoogleFonts.poppins(
     fontWeight: FontWeight.w600,
     fontSize: 18,
-    color: _lightScheme.onBackground,
+    color: _lightScheme.onSurface,
   ),
 );
 
@@ -132,7 +132,7 @@ final FloatingActionButtonThemeData _floatingActionButtonThemeData = FloatingAct
 );
 
 final CardTheme _cardTheme = CardTheme(
-  color: _lightScheme.background,
+  color: _lightScheme.surface,
   shadowColor: _lightScheme.tertiary,
   surfaceTintColor: _lightScheme.tertiary,
   elevation: 1,
@@ -154,13 +154,13 @@ final ThemeData lightTheme = ThemeData(
   colorScheme: _lightScheme,
   textTheme: GoogleFonts.poppinsTextTheme().apply(
     displayColor: _lightScheme.onSurface,
-    bodyColor: _lightScheme.onBackground,
-    decorationColor: _lightScheme.onBackground,
+    bodyColor: _lightScheme.onSurface,
+    decorationColor: _lightScheme.onSurface,
   ),
   primaryColor: _lightScheme.primary,
   secondaryHeaderColor: _lightScheme.secondary,
   textButtonTheme: _textButtonTheme,
-  dialogBackgroundColor: _lightScheme.background,
+  dialogBackgroundColor: _lightScheme.surface,
   cardColor: _lightScheme.surface,
   elevatedButtonTheme: _elevatedButtonThemeData,
   outlinedButtonTheme: _outlinedButtonThemeData,
@@ -168,9 +168,9 @@ final ThemeData lightTheme = ThemeData(
   iconTheme: _iconThemeData,
   appBarTheme: _appBarTheme,
   cardTheme: _cardTheme,
-  canvasColor: _lightScheme.background,
-  disabledColor: _lightScheme.onBackground,
-  scaffoldBackgroundColor: _lightScheme.background,
+  canvasColor: _lightScheme.surface,
+  disabledColor: _lightScheme.onSurface,
+  scaffoldBackgroundColor: _lightScheme.surface,
   floatingActionButtonTheme: _floatingActionButtonThemeData,
   dividerTheme: _dividerThemeData,
   popupMenuTheme: _popupMenuTheme,

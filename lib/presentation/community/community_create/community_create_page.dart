@@ -48,7 +48,7 @@ class CommunityCreatePage extends StatelessWidget {
                                 } else {
                                   return Card(
                                     margin: EdgeInsets.zero,
-                                    color: Theme.of(context).colorScheme.surface,
+                                    color: Theme.of(context).colorScheme.surfaceContainer,
                                     child: const Center(
                                       child: Text(
                                         'No\nimage',
@@ -65,7 +65,7 @@ class CommunityCreatePage extends StatelessWidget {
                             alignment: Alignment.centerRight,
                             height: double.maxFinite,
                             child: Container(
-                              color: Theme.of(context).colorScheme.onBackground.withOpacity(0.35),
+                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.35),
                               height: double.maxFinite,
                               width: 75,
                               child: Column(
@@ -73,7 +73,7 @@ class CommunityCreatePage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   IconButton(
-                                    color: Theme.of(context).colorScheme.background,
+                                    color: Theme.of(context).colorScheme.surface,
                                     onPressed: () => controller.takePicture(ImageSource.camera),
                                     icon: const Icon(
                                       Icons.camera_alt,
@@ -81,7 +81,7 @@ class CommunityCreatePage extends StatelessWidget {
                                     ),
                                   ),
                                   IconButton(
-                                    color: Theme.of(context).colorScheme.background,
+                                    color: Theme.of(context).colorScheme.surface,
                                     onPressed: () => controller.takePicture(ImageSource.gallery),
                                     icon: const Icon(
                                       Icons.image,

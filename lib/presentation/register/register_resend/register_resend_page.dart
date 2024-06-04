@@ -40,7 +40,7 @@ class RegisterResendPage extends StatelessWidget {
       init: RegisterResendController(),
       builder: (RegisterResendController controller) {
         return Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           resizeToAvoidBottomInset: false,
           body: SingleChildScrollView(
             child: Padding(

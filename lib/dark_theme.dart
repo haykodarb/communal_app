@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 const ColorScheme _darkScheme = ColorScheme.dark(
-  // background: Color(0xFF191724),
+  // surface: Color(0xFF191724),
   // surface: Color(0xFF1f1d2e),
-  background: Color(0xFF0F0F19),
-  surface: Color(0xFF181623),
+  surface: Color(0xFF0F0F19),
+  surfaceContainer: Color(0xFF181623),
   primary: Color(0xFF84BDAB),
   secondary: Color(0xFFebbcba),
   tertiary: Color(0xFFc4a7e7),
   error: Color(0xFFeb6f92),
-  onBackground: Color(0xFFFFFFFF),
   onPrimary: Color(0xCC0F0F19),
   onSecondary: Color(0xFF0F0F19),
   onSurfaceVariant: Color(0xFFBBBBBB),
@@ -22,16 +21,16 @@ const ColorScheme _darkScheme = ColorScheme.dark(
 final BottomNavigationBarThemeData _bottomNavigationBarTheme = BottomNavigationBarThemeData(
   type: BottomNavigationBarType.fixed,
   selectedItemColor: _darkScheme.primary,
-  unselectedItemColor: _darkScheme.onBackground,
+  unselectedItemColor: _darkScheme.onSurface,
   elevation: 10,
-  unselectedLabelStyle: TextStyle(color: _darkScheme.onBackground),
+  unselectedLabelStyle: TextStyle(color: _darkScheme.onSurface),
   selectedLabelStyle: TextStyle(color: _darkScheme.primary),
   showUnselectedLabels: false,
   showSelectedLabels: true,
 );
 
 final AppBarTheme _appBarTheme = AppBarTheme(
-  backgroundColor: _darkScheme.background,
+  backgroundColor: _darkScheme.surface,
   elevation: 1,
   iconTheme: const IconThemeData(
     size: 30,
@@ -41,7 +40,7 @@ final AppBarTheme _appBarTheme = AppBarTheme(
   titleTextStyle: GoogleFonts.poppins(
     fontWeight: FontWeight.w600,
     fontSize: 18,
-    color: _darkScheme.onBackground,
+    color: _darkScheme.onSurface,
   ),
 );
 
@@ -120,14 +119,14 @@ final IconThemeData _iconThemeData = IconThemeData(
 
 final FloatingActionButtonThemeData _floatingActionButtonThemeData = FloatingActionButtonThemeData(
   backgroundColor: _darkScheme.primary,
-  foregroundColor: _darkScheme.background,
+  foregroundColor: _darkScheme.surface,
   shape: RoundedRectangleBorder(
     borderRadius: BorderRadius.circular(20),
   ),
 );
 
 final CardTheme _cardTheme = CardTheme(
-  color: _darkScheme.background,
+  color: _darkScheme.surface,
   shadowColor: _darkScheme.tertiary,
   surfaceTintColor: _darkScheme.tertiary,
   elevation: 1,
@@ -135,7 +134,7 @@ final CardTheme _cardTheme = CardTheme(
 );
 
 final PopupMenuThemeData _popupMenuTheme = PopupMenuThemeData(
-  color: _darkScheme.background,
+  color: _darkScheme.surface,
   surfaceTintColor: Colors.transparent,
   shape: RoundedRectangleBorder(
     side: BorderSide(
@@ -159,8 +158,8 @@ final ThemeData darkTheme = ThemeData(
   colorScheme: _darkScheme,
   textTheme: GoogleFonts.poppinsTextTheme().apply(
     displayColor: _darkScheme.onSurface,
-    bodyColor: _darkScheme.onBackground,
-    decorationColor: _darkScheme.onBackground,
+    bodyColor: _darkScheme.onSurface,
+    decorationColor: _darkScheme.onSurface,
   ),
   elevatedButtonTheme: _elevatedButtonThemeData,
   outlinedButtonTheme: _outlinedButtonThemeData,
@@ -169,9 +168,9 @@ final ThemeData darkTheme = ThemeData(
   appBarTheme: _appBarTheme,
   textButtonTheme: _textButtonTheme,
   cardTheme: _cardTheme,
-  canvasColor: _darkScheme.background,
-  disabledColor: _darkScheme.onBackground,
-  scaffoldBackgroundColor: _darkScheme.background,
+  canvasColor: _darkScheme.surface,
+  disabledColor: _darkScheme.onSurface,
+  scaffoldBackgroundColor: _darkScheme.surface,
   floatingActionButtonTheme: _floatingActionButtonThemeData,
   dividerTheme: _dividerThemeData,
   popupMenuTheme: _popupMenuTheme,

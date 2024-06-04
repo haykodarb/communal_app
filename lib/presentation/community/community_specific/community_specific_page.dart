@@ -40,7 +40,7 @@ class CommunitySpecificPage extends StatelessWidget {
                 onTap: controller.onBottomNavBarIndexChanged,
                 enableFeedback: false,
                 fixedColor: Theme.of(context).colorScheme.primary,
-                backgroundColor: Theme.of(context).colorScheme.background,
+                backgroundColor: Theme.of(context).colorScheme.surface,
                 iconSize: 22,
                 items: const <BottomNavigationBarItem>[
                   BottomNavigationBarItem(

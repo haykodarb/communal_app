@@ -24,15 +24,15 @@ class ToolCreatePage extends StatelessWidget {
               minWidth: 60,
               minHeight: 40,
               cornerRadius: 4,
-              borderColor: [Theme.of(context).colorScheme.onBackground],
+              borderColor: [Theme.of(context).colorScheme.onSurface],
               borderWidth: 0.75,
               activeBgColors: [
                 [Theme.of(context).colorScheme.primary],
                 [Theme.of(context).colorScheme.error]
               ],
-              activeFgColor: Theme.of(context).colorScheme.onBackground,
-              inactiveBgColor: Theme.of(context).colorScheme.surface,
-              inactiveFgColor: Theme.of(context).colorScheme.onBackground,
+              activeFgColor: Theme.of(context).colorScheme.onSurface,
+              inactiveBgColor: Theme.of(context).colorScheme.surfaceContainer,
+              inactiveFgColor: Theme.of(context).colorScheme.onSurface,
               initialLabelIndex: 0,
               totalSwitches: 2,
               iconSize: 60,
@@ -74,7 +74,7 @@ class ToolCreatePage extends StatelessWidget {
                         height: 30,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          color: Theme.of(context).colorScheme.onBackground,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       )
                     : IconButton(
@@ -111,7 +111,7 @@ class ToolCreatePage extends StatelessWidget {
                                     );
                                   } else {
                                     return Card(
-                                      color: Theme.of(context).colorScheme.surface,
+                                      color: Theme.of(context).colorScheme.surfaceContainer,
                                       child: const Padding(
                                         padding: EdgeInsets.all(8.0),
                                         child: Center(

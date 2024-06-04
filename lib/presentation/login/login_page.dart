@@ -36,7 +36,7 @@ class LoginPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: Theme.of(Get.context!).colorScheme.onBackground,
+                  color: Theme.of(Get.context!).colorScheme.onSurface,
                 ),
                 textAlign: TextAlign.right,
               ),
@@ -77,7 +77,7 @@ class LoginPage extends StatelessWidget {
       init: LoginController(),
       builder: (LoginController controller) {
         return Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           body: Padding(
             padding: const EdgeInsets.only(
               top: 75,

@@ -24,7 +24,7 @@ class CommonConfirmationDialog extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Theme.of(context).colorScheme.background,
+          color: Theme.of(context).colorScheme.surface,
           border: Border.all(
             color: Theme.of(context).colorScheme.primary,
             width: 0.25,

@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
       },
       themeMode: themeMode,
       getPages: routes,
-      color: Theme.of(context).colorScheme.background,
+      color: Theme.of(context).colorScheme.surface,
       initialRoute:
           Supabase.instance.client.auth.currentUser == null ? RouteNames.startPage : RouteNames.communityListPage,
     );

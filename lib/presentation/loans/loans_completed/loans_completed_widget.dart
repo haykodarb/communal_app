@@ -43,7 +43,7 @@ class LoansCompletedWidget extends StatelessWidget {
                           padding: EdgeInsets.zero,
                           icon: Icon(
                             Icons.more_vert,
-                            color: Theme.of(context).colorScheme.onBackground,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                           onSelected: (value) {
                             if (value == 0) {

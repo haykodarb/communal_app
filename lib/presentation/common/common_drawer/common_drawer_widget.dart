@@ -29,7 +29,7 @@ class CommonDrawerWidget extends StatelessWidget {
             child: Builder(
               builder: (context) {
                 final Color color =
-                    selected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onBackground;
+                    selected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurface;
 
                 return Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -102,7 +102,7 @@ class CommonDrawerWidget extends StatelessWidget {
             return Container(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
               width: double.maxFinite,
-              color: Theme.of(context).colorScheme.surface,
+              color: Theme.of(context).colorScheme.surfaceContainer,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -131,12 +131,12 @@ class CommonDrawerWidget extends StatelessWidget {
     return GetBuilder(
       init: _commonDrawerController,
       builder: (CommonDrawerController controller) {
-        final Color dividerColor = Theme.of(context).colorScheme.surface;
+        final Color dividerColor = Theme.of(context).colorScheme.surfaceContainer;
 
         return Drawer(
           elevation: 20,
           child: Container(
-            color: Theme.of(context).colorScheme.background,
+            color: Theme.of(context).colorScheme.surface,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,

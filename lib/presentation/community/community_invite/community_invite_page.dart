@@ -65,9 +65,9 @@ class CommunityInvitePage extends StatelessWidget {
                                             backgroundColor: Theme.of(context).colorScheme.primary,
                                           )
                                         : TextButton.styleFrom(
-                                            foregroundColor: Theme.of(context).colorScheme.onBackground,
+                                            foregroundColor: Theme.of(context).colorScheme.onSurface,
                                             minimumSize: const Size.fromHeight(50),
-                                            backgroundColor: Theme.of(context).colorScheme.background,
+                                            backgroundColor: Theme.of(context).colorScheme.surface,
                                           ),
                                     child: Text(
                                       controller.foundProfiles[index].username,
