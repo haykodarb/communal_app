@@ -1,4 +1,5 @@
 import 'package:atlas_icons/atlas_icons.dart';
+import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
@@ -44,7 +45,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       flex: 4,
                       child: Container(
                         alignment: Alignment.centerLeft,
-                        height: 50,
+                        height: 30,
                         child: Text(
                           text,
                           style: TextStyle(
@@ -152,7 +153,7 @@ class CommonDrawerWidget extends StatelessWidget {
                         height: 10,
                       ),
                       _drawerButton(
-                        text: 'Profile',
+                        text: 'profile'.tr,
                         icon: Atlas.account,
                         selected: Get.currentRoute == RouteNames.profileOwnPage,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.profileOwnPage),
@@ -162,7 +163,7 @@ class CommonDrawerWidget extends StatelessWidget {
                         color: dividerColor,
                       ),
                       _drawerButton(
-                        text: 'Messages',
+                        text: 'messages'.tr,
                         icon: Atlas.chats,
                         selected: Get.currentRoute == RouteNames.messagesPage,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.messagesPage),
@@ -173,7 +174,7 @@ class CommonDrawerWidget extends StatelessWidget {
                         color: dividerColor,
                       ),
                       _drawerButton(
-                        text: 'My Books',
+                        text: 'my-books'.tr,
                         icon: Atlas.library,
                         selected: Get.currentRoute == RouteNames.bookListPage,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.bookListPage),
@@ -183,7 +184,7 @@ class CommonDrawerWidget extends StatelessWidget {
                         color: dividerColor,
                       ),
                       _drawerButton(
-                        text: 'My Tools',
+                        text: 'my-tools'.tr,
                         selected: Get.currentRoute == RouteNames.toolListPage,
                         icon: Icons.handyman_outlined,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.toolListPage),
@@ -193,7 +194,7 @@ class CommonDrawerWidget extends StatelessWidget {
                         color: dividerColor,
                       ),
                       _drawerButton(
-                        text: 'Communities',
+                        text: 'communities'.tr,
                         selected: Get.currentRoute == RouteNames.communityListPage,
                         icon: Atlas.users,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.communityListPage),
@@ -203,7 +204,7 @@ class CommonDrawerWidget extends StatelessWidget {
                         color: dividerColor,
                       ),
                       _drawerButton(
-                        text: 'Invitations',
+                        text: 'invitations'.tr,
                         selected: Get.currentRoute == RouteNames.invitationsPage,
                         icon: Atlas.envelope_paper_email,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.invitationsPage),
@@ -214,7 +215,7 @@ class CommonDrawerWidget extends StatelessWidget {
                         color: dividerColor,
                       ),
                       _drawerButton(
-                        text: 'Loans',
+                        text: 'loans'.tr,
                         selected: Get.currentRoute == RouteNames.loansPage,
                         icon: Atlas.account_arrows,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.loansPage),
@@ -227,8 +228,25 @@ class CommonDrawerWidget extends StatelessWidget {
                       _drawerButton(
                         selected: false,
                         icon: Get.isDarkMode ? Atlas.sunny : Atlas.moon,
-                        text: Get.isDarkMode ? 'Light' : 'Dark',
+                        text: Get.isDarkMode ? 'light'.tr : 'dark'.tr,
                         callback: _commonDrawerController.changeThemeMode,
+                      ),
+                      Divider(
+                        thickness: 2,
+                        color: dividerColor,
+                      ),
+                      _drawerButton(
+                        selected: false,
+                        icon: Atlas.language_translation,
+                        text: Get.locale == const Locale('es', 'ES') ? 'Español' : 'English',
+                        callback: () async {
+                          final Locale newLocale = Get.locale == const Locale('es', 'ES')
+                              ? const Locale('en', 'US')
+                              : const Locale('es', 'ES');
+
+                          await Get.updateLocale(newLocale);
+                          await UserPreferences.setSelectedLocale(newLocale);
+                        },
                       ),
                       const Expanded(child: SizedBox()),
                       Divider(
@@ -236,7 +254,7 @@ class CommonDrawerWidget extends StatelessWidget {
                         color: dividerColor,
                       ),
                       _drawerButton(
-                        text: 'Logout',
+                        text: 'logout'.tr,
                         selected: false,
                         icon: Atlas.double_arrow_right_circle,
                         callback: _commonDrawerController.handleLogout,

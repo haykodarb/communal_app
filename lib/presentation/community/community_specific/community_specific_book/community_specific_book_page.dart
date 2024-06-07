@@ -253,23 +253,23 @@ class CommunitySpecificBookPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
                         height: 30,
-                        child: Center(child: Text('Owner')),
+                        child: Center(child: Text('owner'.tr)),
                       ),
-                      Divider(),
+                      const Divider(),
                       SizedBox(
                         height: 30,
-                        child: Center(child: Text('Added')),
+                        child: Center(child: Text('added'.tr)),
                       ),
-                      Divider(),
+                      const Divider(),
                       SizedBox(
                         height: 30,
-                        child: Center(child: Text('Status')),
+                        child: Center(child: Text('status'.tr)),
                       ),
                     ],
                   ),
@@ -301,7 +301,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
                         height: 30,
                         child: Center(
                           child: Text(
-                            DateFormat.yMMMd().format(book.created_at),
+                            DateFormat.yMMMd(Get.locale?.languageCode).format(book.created_at),
                           ),
                         ),
                       ),
@@ -331,8 +331,8 @@ class CommunitySpecificBookPage extends StatelessWidget {
                             const VerticalDivider(width: 10),
                             Text(
                               book.available
-                                  ? (loanByCurrentUser ? 'Requested' : 'Available')
-                                  : (loanByCurrentUser ? 'Loaned' : 'Unavailable'),
+                                  ? (loanByCurrentUser ? 'requested'.tr : 'available'.tr)
+                                  : (loanByCurrentUser ? 'loaned'.tr : 'unavailable'.tr),
                             ),
                           ],
                         ),
@@ -345,17 +345,17 @@ class CommunitySpecificBookPage extends StatelessWidget {
                 visible: book.available && !loanByCurrentUser,
                 child: ElevatedButton(
                   onPressed: controller.requestLoan,
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Request',
-                        style: TextStyle(
+                        'request'.tr,
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      VerticalDivider(width: 5),
-                      Icon(
+                      const VerticalDivider(width: 5),
+                      const Icon(
                         Icons.back_hand_outlined,
                       ),
                     ],
@@ -455,10 +455,10 @@ class CommunitySpecificBookPage extends StatelessWidget {
                                   labelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
                                   unselectedLabelColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                                   dividerColor: Colors.transparent,
-
-                                  tabs: const [
-                                    Text('Information'),
-                                    Text('Reviews'),
+                                  enableFeedback: true,
+                                  tabs: [
+                                    Text('information'.tr),
+                                    Text('reviews'.tr),
                                   ],
                                 ),
                               ),
