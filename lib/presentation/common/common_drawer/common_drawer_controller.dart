@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:communal/backend/loans_backend.dart';
 import 'package:communal/backend/login_backend.dart';
 import 'package:communal/backend/messages_backend.dart';
+import 'package:communal/backend/notifications_backend.dart';
 import 'package:communal/backend/realtime_backend.dart';
 import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/backend/users_backend.dart';
@@ -16,8 +17,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CommonDrawerController extends GetxController {
   final RxInt messageNotifications = 0.obs;
-  final RxInt loanNotifications = 0.obs;
-  final RxInt invitationsNotifications = 0.obs;
+  final RxInt globalNotifications = 0.obs;
 
   StreamSubscription? realtimeSubscription;
 
@@ -33,9 +33,11 @@ class CommonDrawerController extends GetxController {
 
     await UsersBackend.updateCurrentUserProfile();
 
-    loanNotifications.value = (await LoansBackend.getLoanCountWhere(LoansRequestType.userIsOwner)).payload;
+    final BackendResponse notificationResponse = await NotificationsBackend.getUnreadNotificationsCount();
 
-    invitationsNotifications.value = (await UsersBackend.getInvitationsCountForUser()).payload;
+    if (notificationResponse.success) {
+      globalNotifications.value = notificationResponse.payload;
+    }
 
     getUnreadChats();
 
@@ -62,14 +64,7 @@ class CommonDrawerController extends GetxController {
         }
         break;
 
-      case 'memberships':
-        if (realtimeMessage.eventType != PostgresChangeEvent.insert &&
-            realtimeMessage.eventType != PostgresChangeEvent.update) return;
-
-        if (realtimeMessage.new_row['member'] != UsersBackend.currentUserId) return;
-
-        invitationsNotifications.value = (await UsersBackend.getInvitationsCountForUser()).payload;
-
+      case 'notifications':
         break;
 
       default:
@@ -93,10 +88,6 @@ class CommonDrawerController extends GetxController {
 
       messageNotifications.value = unreadCount;
     }
-  }
-
-  Future<void> getPendingLoans() async {
-    loanNotifications.value = (await LoansBackend.getLoanCountWhere(LoansRequestType.userIsOwner)).payload;
   }
 
   Future<void> changeThemeMode() async {

@@ -12,7 +12,7 @@ const ColorScheme _darkScheme = ColorScheme.dark(
   error: Color(0xFFeb6f92),
   onPrimary: Color(0xCC0F0F19),
   onSecondary: Color(0xFF0F0F19),
-  onSurfaceVariant: Color(0xFFBBBBBB),
+  onSurfaceVariant: Color(0xFFFFFFFF),
   onTertiary: Color(0xFF0F0F19),
   onSurface: Color(0xFFFFFFFF),
   onError: Color(0xFFFFFFFF),

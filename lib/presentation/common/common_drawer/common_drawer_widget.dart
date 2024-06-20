@@ -66,14 +66,14 @@ class CommonDrawerWidget extends StatelessWidget {
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                // color: Theme.of(context).colorScheme.primary,
-                                border: Border.all(color: Theme.of(context).colorScheme.primary),
+                                border: Border.all(color: Theme.of(context).colorScheme.primary, width: 1.5),
                               ),
                               child: Text(
                                 notifications.value.toString(),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Theme.of(context).colorScheme.primary,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             );
@@ -129,6 +129,8 @@ class CommonDrawerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const double dividerHeight = 7.5;
+
     return GetBuilder(
       init: _commonDrawerController,
       builder: (CommonDrawerController controller) {
@@ -161,6 +163,19 @@ class CommonDrawerWidget extends StatelessWidget {
                       Divider(
                         thickness: 2,
                         color: dividerColor,
+                        height: dividerHeight,
+                      ),
+                      _drawerButton(
+                        text: 'notifications'.tr,
+                        icon: Atlas.bell,
+                        selected: Get.currentRoute == RouteNames.notificationsPage,
+                        callback: () => _commonDrawerController.goToRoute(RouteNames.notificationsPage),
+                        notifications: _commonDrawerController.globalNotifications,
+                      ),
+                      Divider(
+                        thickness: 2,
+                        color: dividerColor,
+                        height: dividerHeight,
                       ),
                       _drawerButton(
                         text: 'messages'.tr,
@@ -172,6 +187,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       Divider(
                         thickness: 2,
                         color: dividerColor,
+                        height: dividerHeight,
                       ),
                       _drawerButton(
                         text: 'my-books'.tr,
@@ -182,6 +198,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       Divider(
                         thickness: 2,
                         color: dividerColor,
+                        height: dividerHeight,
                       ),
                       _drawerButton(
                         text: 'my-tools'.tr,
@@ -192,6 +209,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       Divider(
                         thickness: 2,
                         color: dividerColor,
+                        height: dividerHeight,
                       ),
                       _drawerButton(
                         text: 'communities'.tr,
@@ -202,28 +220,18 @@ class CommonDrawerWidget extends StatelessWidget {
                       Divider(
                         thickness: 2,
                         color: dividerColor,
-                      ),
-                      _drawerButton(
-                        text: 'invitations'.tr,
-                        selected: Get.currentRoute == RouteNames.invitationsPage,
-                        icon: Atlas.envelope_paper_email,
-                        callback: () => _commonDrawerController.goToRoute(RouteNames.invitationsPage),
-                        notifications: _commonDrawerController.invitationsNotifications,
-                      ),
-                      Divider(
-                        thickness: 2,
-                        color: dividerColor,
+                        height: dividerHeight,
                       ),
                       _drawerButton(
                         text: 'loans'.tr,
                         selected: Get.currentRoute == RouteNames.loansPage,
                         icon: Atlas.account_arrows,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.loansPage),
-                        notifications: _commonDrawerController.loanNotifications,
                       ),
                       Divider(
                         thickness: 2,
                         color: dividerColor,
+                        height: dividerHeight,
                       ),
                       _drawerButton(
                         selected: false,
@@ -234,6 +242,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       Divider(
                         thickness: 2,
                         color: dividerColor,
+                        height: dividerHeight,
                       ),
                       _drawerButton(
                         selected: false,
@@ -252,6 +261,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       Divider(
                         thickness: 2,
                         color: dividerColor,
+                        height: dividerHeight,
                       ),
                       _drawerButton(
                         text: 'logout'.tr,

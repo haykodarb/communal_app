@@ -3,18 +3,19 @@ import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/presentation/common/common_confirmation_dialog.dart';
-import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
 import 'package:communal/presentation/loans/loans_borrowed/loans_borrowed_controller.dart';
 import 'package:communal/presentation/loans/loans_owned/loans_owned_controller.dart';
 import 'package:get/get.dart';
 
 class LoanInfoController extends GetxController {
-  final Loan inheritedLoan = Get.arguments['loan'];
+  final Loan? inheritedLoan = Get.arguments['loan'];
   final Rx<Loan> loan = Loan.empty().obs;
 
   final RxBool loading = false.obs;
   final RxBool editing = false.obs;
   final RxBool deleting = false.obs;
+
+  final RxBool loadingPage = false.obs;
 
   String? newReview = '';
 
@@ -22,9 +23,27 @@ class LoanInfoController extends GetxController {
   final LoansOwnedController? loansOwnedController = Get.arguments['loansOwnedController'];
 
   @override
-  void onInit() {
-    loan.value = inheritedLoan;
-    newReview = inheritedLoan.review;
+  Future<void> onInit() async {
+    if (inheritedLoan != null) {
+      loan.value = inheritedLoan!;
+      newReview = inheritedLoan!.review;
+      loan.refresh();
+    } else {
+      loadingPage.value = true;
+
+      final String loan_id = Get.arguments['loan_id'];
+
+      final BackendResponse response = await LoansBackend.getLoanById(loan_id);
+
+      if (response.success) {
+        loan.value = response.payload;
+        newReview = loan.value.review;
+        loan.refresh();
+      }
+
+      loadingPage.value = false;
+    }
+
     super.onInit();
   }
 
@@ -46,7 +65,7 @@ class LoanInfoController extends GetxController {
 
       if (response.success) {
         loansBorrowedController?.loans.removeWhere(
-          (element) => element.id == inheritedLoan.id,
+          (element) => element.id == inheritedLoan?.id,
         );
 
         Get.back();
@@ -77,11 +96,9 @@ class LoanInfoController extends GetxController {
         loan.value.accepted_at = DateTime.now();
         loan.refresh();
 
-        inheritedLoan.accepted = true;
-        inheritedLoan.accepted_at = DateTime.now();
+        inheritedLoan?.accepted = true;
+        inheritedLoan?.accepted_at = DateTime.now();
         loansOwnedController!.loans.refresh();
-
-        Get.find<CommonDrawerController>().getPendingLoans();
       } else {
         Get.dialog(
           CommonAlertDialog(title: response.payload),
@@ -102,12 +119,10 @@ class LoanInfoController extends GetxController {
 
       final BackendResponse response = await LoansBackend.setLoanParameterTrue(loan.value, 'rejected');
 
-      if (response.success) {
-        loansOwnedController!.loans.removeWhere(
-          (element) => element.id == inheritedLoan.id,
+      if (response.success && inheritedLoan != null) {
+        loansOwnedController?.loans.removeWhere(
+          (element) => element.id == inheritedLoan!.id,
         );
-
-        Get.find<CommonDrawerController>().getPendingLoans();
       }
 
       if (!response.success) {
@@ -137,11 +152,9 @@ class LoanInfoController extends GetxController {
         loan.value.returned_at = DateTime.now();
         loan.refresh();
 
-        loansOwnedController!.loans.removeWhere(
-          (element) => element.id == inheritedLoan.id,
+        loansOwnedController?.loans.removeWhere(
+          (element) => element.id == inheritedLoan?.id,
         );
-
-        Get.find<CommonDrawerController>().getPendingLoans();
       } else {
         Get.dialog(
           const CommonAlertDialog(title: 'Could not mark book as returned, please try again.'),

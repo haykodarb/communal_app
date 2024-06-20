@@ -52,6 +52,8 @@ class LoanInfoPage extends StatelessWidget {
   }
 
   Widget _loanItemCover(Loan loan) {
+    if (loan.book == null && loan.tool == null) return const SizedBox.shrink();
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(5),
       child: AspectRatio(
@@ -437,34 +439,39 @@ class LoanInfoPage extends StatelessWidget {
       builder: (LoanInfoController controller) {
         return Scaffold(
           appBar: AppBar(),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _loanTitle(controller.loan.value),
-                  const Divider(height: 30),
-                  Row(
+          body: Obx(
+            () => CommonLoadingBody(
+              loading: controller.loadingPage.value,
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        flex: 5,
-                        child: _loanItemCover(controller.loan.value),
+                      _loanTitle(controller.loan.value),
+                      const Divider(height: 30),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 5,
+                            child: _loanItemCover(controller.loan.value),
+                          ),
+                          Expanded(
+                            flex: 3,
+                            child: controller.loan.value.loanee.id == UsersBackend.currentUserId
+                                ? _borrowedSideInformation(controller)
+                                : _ownedSideInformation(controller),
+                          ),
+                        ],
                       ),
-                      Expanded(
-                        flex: 3,
-                        child: controller.loan.value.loanee.id == UsersBackend.currentUserId
-                            ? _borrowedSideInformation(controller)
-                            : _ownedSideInformation(controller),
-                      ),
+                      const Divider(height: 30),
+                      controller.loan.value.loanee.id == UsersBackend.currentUserId
+                          ? _borrowedBookReviewField(controller)
+                          : _ownedBookReviewField(controller),
                     ],
                   ),
-                  const Divider(height: 30),
-                  controller.loan.value.loanee.id == UsersBackend.currentUserId
-                      ? _borrowedBookReviewField(controller)
-                      : _ownedBookReviewField(controller),
-                ],
+                ),
               ),
             ),
           ),

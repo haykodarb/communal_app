@@ -30,8 +30,6 @@ class LoansOwnedController extends GetxController {
 
       if (response.success) {
         loans.remove(loan);
-
-        Get.find<CommonDrawerController>().getPendingLoans();
       }
 
       if (!response.success) {
@@ -58,8 +56,6 @@ class LoansOwnedController extends GetxController {
       if (response.success) {
         loan.accepted = true;
         loans.refresh();
-
-        Get.find<CommonDrawerController>().getPendingLoans();
       } else {
         Get.dialog(
           CommonAlertDialog(title: response.payload),

@@ -26,6 +26,7 @@ class LocalizationText extends Translations {
           'loans': 'Loans',
           'dark': 'Dark',
           'light': 'Light',
+          'notifications': 'Notifications',
           'logout': 'Logout',
         },
         'es_ES': {
@@ -50,6 +51,7 @@ class LocalizationText extends Translations {
           'invitations': 'Invitaciones',
           'loans': 'Prestamos',
           'dark': 'Oscuro',
+          'notifications': 'Notificaciones',
           'light': 'Claro',
           'logout': 'Salir',
         },
