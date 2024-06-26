@@ -5,12 +5,14 @@ import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/routes.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class BookListController extends GetxController {
   final RxList<Book> userBooks = <Book>[].obs;
   final RxBool loading = true.obs;
   Timer? debounceTimer;
+  final FocusNode focusScope = FocusNode();
 
   @override
   Future<void> onReady() async {

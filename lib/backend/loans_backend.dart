@@ -129,7 +129,46 @@ class LoansBackend {
     }
   }
 
-  /// If book is already loaned to another user, returns false and that loan.
+  static Future<BackendResponse> getCurrentLoanForOwnedBook(Book book) async {
+    final SupabaseClient client = Supabase.instance.client;
+    final String userId = client.auth.currentUser!.id;
+
+    final List<dynamic> response = await client
+        .from('loans')
+        .select(
+          '*, communities(*), books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
+        )
+        .match(
+      {
+        'book': book.id,
+        'returned': false,
+      },
+    ).or('loanee.eq.$userId, accepted.eq.true');
+
+    final List<Loan> loans = response.map((element) => Loan.fromMap(element)).toList();
+
+    final Loan? loanMadeByAnotherUser = loans.firstWhereOrNull(
+      (element) => element.loanee.id != userId && element.accepted,
+    );
+
+    if (loanMadeByAnotherUser != null) {
+      return BackendResponse(
+        success: true,
+        payload: loanMadeByAnotherUser,
+      );
+    }
+
+    final Loan? requestByCurrentUser = loans.firstWhereOrNull(
+      (element) => element.loanee.id == userId && !element.rejected,
+    );
+
+    return BackendResponse(
+      success: requestByCurrentUser != null,
+      payload: requestByCurrentUser,
+    );
+  }
+
+  /// If book is already loaned to another user, returns true and that loan.
   /// If book is not loaned and current user has already requested it, returns true and that loan.
   /// Else returns false and no payload.
   static Future<BackendResponse> getCurrentLoanForBook(Book book) async {

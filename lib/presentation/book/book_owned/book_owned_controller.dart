@@ -14,6 +14,12 @@ class BookOwnedController extends GetxController {
 
   final RxBool loading = false.obs;
 
+  final RxInt carouselIndex = 0.obs;
+  final RxBool loadingCarousel = false.obs;
+  final RxList<Loan> completedLoans = <Loan>[].obs;
+
+  final RxBool expandCarouselItem = false.obs;
+
   Rxn<Loan> currentLoan = Rxn<Loan>();
 
   @override
@@ -22,6 +28,18 @@ class BookOwnedController extends GetxController {
     book.refresh();
 
     await loadCurrentLoan();
+
+    loadingCarousel.value = true;
+
+    completedLoans.clear();
+
+    final BackendResponse response = await LoansBackend.getCompletedLoansForItem(book: book.value);
+
+    if (response.success) {
+      completedLoans.addAll(response.payload);
+    }
+
+    loadingCarousel.value = false;
 
     super.onInit();
   }

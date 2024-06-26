@@ -54,7 +54,7 @@ final ElevatedButtonThemeData _elevatedButtonThemeData = ElevatedButtonThemeData
       fontSize: 18,
     ),
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(5),
     ),
     minimumSize: const Size.fromHeight(50),
   ),
@@ -73,7 +73,7 @@ final OutlinedButtonThemeData _outlinedButtonThemeData = OutlinedButtonThemeData
       fontSize: 18,
     ),
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(5),
     ),
     minimumSize: const Size.fromHeight(50),
   ),
@@ -127,8 +127,6 @@ final FloatingActionButtonThemeData _floatingActionButtonThemeData = FloatingAct
 
 final CardTheme _cardTheme = CardTheme(
   color: _darkScheme.surface,
-  shadowColor: _darkScheme.tertiary,
-  surfaceTintColor: _darkScheme.tertiary,
   elevation: 1,
   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
 );

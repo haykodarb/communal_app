@@ -29,7 +29,6 @@ class BookEditController extends GetxController {
 
     bookForm.value = inheritedBook;
 
-    allowReview.value = inheritedBook.read;
     addingReview.value = inheritedBook.review != null;
 
     bookForm.refresh();
@@ -91,24 +90,11 @@ class BookEditController extends GetxController {
     );
   }
 
-  void onAvailableChange(int? index) {
+  void onPublicChange(int? index) {
     bookForm.update(
       (Book? val) {
-        val!.available = index == 0 ? true : false;
-      },
-    );
-  }
-
-  void onReadChange(int? index) {
-    if (index == 1) {
-      onAddReviewChange(1);
-    }
-
-    allowReview.value = index == 0;
-
-    bookForm.update(
-      (Book? val) {
-        val!.read = index == 0 ? true : false;
+        val!.public = index == 0 ? true : false;
+        val.available = index == 0 ? true : false;
       },
     );
   }

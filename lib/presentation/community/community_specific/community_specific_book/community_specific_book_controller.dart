@@ -38,6 +38,7 @@ class CommunitySpecificBookController extends GetxController {
     if (response.success) {
       completedLoans.addAll(response.payload);
     }
+
     loadingCarousel.value = false;
 
     super.onReady();

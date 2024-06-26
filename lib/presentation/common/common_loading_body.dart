@@ -4,8 +4,8 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 class CommonLoadingBody extends StatelessWidget {
   const CommonLoadingBody({
     super.key,
-    required this.child,
-    required this.loading,
+    this.child = const SizedBox(),
+    this.loading = true,
     this.size = 50,
     this.alignment = Alignment.center,
   });

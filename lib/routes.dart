@@ -107,17 +107,17 @@ final List<GetPage> routes = <GetPage>[
   ),
   GetPage<dynamic>(
     name: RouteNames.bookCreatePage,
-    transition: Transition.downToUp,
+    transition: Transition.noTransition,
     page: () => const BookCreatePage(),
   ),
   GetPage<dynamic>(
     name: RouteNames.bookEditPage,
-    transition: Transition.rightToLeft,
+    transition: Transition.noTransition,
     page: () => const BookEditPage(),
   ),
   GetPage<dynamic>(
     name: RouteNames.bookOwnedPage,
-    transition: Transition.rightToLeft,
+    transition: Transition.noTransition,
     page: () => const BookOwnedPage(),
   ),
   GetPage<dynamic>(
@@ -127,17 +127,17 @@ final List<GetPage> routes = <GetPage>[
   ),
   GetPage<dynamic>(
     name: RouteNames.toolCreatePage,
-    transition: Transition.downToUp,
+    transition: Transition.noTransition,
     page: () => const ToolCreatePage(),
   ),
   GetPage<dynamic>(
     name: RouteNames.toolEditPage,
-    transition: Transition.rightToLeft,
+    transition: Transition.noTransition,
     page: () => const ToolEditPage(),
   ),
   GetPage<dynamic>(
     name: RouteNames.toolOwnedPage,
-    transition: Transition.rightToLeft,
+    transition: Transition.noTransition,
     page: () => const ToolOwnedPage(),
   ),
   GetPage<dynamic>(
@@ -147,37 +147,37 @@ final List<GetPage> routes = <GetPage>[
   ),
   GetPage<bool>(
     name: RouteNames.communityCreatePage,
-    transition: Transition.downToUp,
+    transition: Transition.noTransition,
     page: () => const CommunityCreatePage(),
   ),
   GetPage<bool>(
     name: RouteNames.communitySpecificPage,
-    transition: Transition.rightToLeft,
+    transition: Transition.noTransition,
     page: () => const CommunitySpecificPage(),
   ),
   GetPage<bool>(
     name: RouteNames.communitySpecificBookPage,
-    transition: Transition.rightToLeft,
+    transition: Transition.noTransition,
     page: () => const CommunitySpecificBookPage(),
   ),
   GetPage<bool>(
     name: RouteNames.communitySpecificToolPage,
-    transition: Transition.rightToLeft,
+    transition: Transition.noTransition,
     page: () => const CommunitySpecificToolPage(),
   ),
   GetPage<dynamic>(
     name: RouteNames.communityInvitePage,
-    transition: Transition.downToUp,
+    transition: Transition.noTransition,
     page: () => const CommunityInvitePage(),
   ),
   GetPage<dynamic>(
     name: RouteNames.communityDiscussionsTopicCreate,
-    transition: Transition.downToUp,
+    transition: Transition.noTransition,
     page: () => const CommunityDiscussionsTopicCreatePage(),
   ),
   GetPage<dynamic>(
     name: RouteNames.communityDiscussionsTopicMessages,
-    transition: Transition.downToUp,
+    transition: Transition.noTransition,
     page: () => const CommunityDiscussionsTopicMessagesPage(),
   ),
   GetPage<dynamic>(

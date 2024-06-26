@@ -33,7 +33,7 @@ class BookEditPage extends StatelessWidget {
                 [Theme.of(context).colorScheme.primary],
                 [Theme.of(context).colorScheme.error]
               ],
-              activeFgColor: Theme.of(context).colorScheme.onSurface,
+              activeFgColor: Theme.of(context).colorScheme.onPrimary,
               inactiveBgColor: Theme.of(context).colorScheme.surfaceContainer,
               inactiveFgColor: Theme.of(context).colorScheme.onSurface,
               initialLabelIndex: controller.inheritedBook.available ? 0 : 1,
@@ -41,7 +41,7 @@ class BookEditPage extends StatelessWidget {
               iconSize: 60,
               icons: const [Icons.done, Icons.close],
               radiusStyle: true,
-              onToggle: controller.onAvailableChange,
+              onToggle: controller.onPublicChange,
             ),
           ],
         );
@@ -49,14 +49,14 @@ class BookEditPage extends StatelessWidget {
     );
   }
 
-  Widget _alreadyReadPrompt(BookEditController controller) {
+  Widget _addReviewPrompt(BookEditController controller) {
     return Builder(
       builder: (context) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text(
-              'Already read?',
+              'Add a review?',
               style: TextStyle(fontSize: 14),
             ),
             const Divider(),
@@ -70,61 +70,19 @@ class BookEditPage extends StatelessWidget {
                 [Theme.of(context).colorScheme.primary],
                 [Theme.of(context).colorScheme.error]
               ],
-              activeFgColor: Theme.of(context).colorScheme.onSurface,
+              activeFgColor: Theme.of(context).colorScheme.onPrimary,
               inactiveBgColor: Theme.of(context).colorScheme.surfaceContainer,
               inactiveFgColor: Theme.of(context).colorScheme.onSurface,
-              initialLabelIndex: controller.inheritedBook.read ? 0 : 1,
+              initialLabelIndex: controller.inheritedBook.review != null ? 0 : 1,
               totalSwitches: 2,
               iconSize: 60,
               icons: const [Icons.done, Icons.close],
               radiusStyle: true,
-              onToggle: controller.onReadChange,
+              onToggle: controller.onAddReviewChange,
             ),
           ],
         );
       },
-    );
-  }
-
-  Widget _addReviewPrompt(BookEditController controller) {
-    return Obx(
-      () => Visibility(
-        visible: controller.allowReview.value,
-        child: Builder(
-          builder: (context) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Add a review?',
-                  style: TextStyle(fontSize: 14),
-                ),
-                const Divider(),
-                ToggleSwitch(
-                  minWidth: 60,
-                  minHeight: 40,
-                  cornerRadius: 4,
-                  borderColor: [Theme.of(context).colorScheme.onSurface],
-                  borderWidth: 0.75,
-                  activeBgColors: [
-                    [Theme.of(context).colorScheme.primary],
-                    [Theme.of(context).colorScheme.error]
-                  ],
-                  activeFgColor: Theme.of(context).colorScheme.onSurface,
-                  inactiveBgColor: Theme.of(context).colorScheme.surfaceContainer,
-                  inactiveFgColor: Theme.of(context).colorScheme.onSurface,
-                  initialLabelIndex: controller.inheritedBook.review != null ? 0 : 1,
-                  totalSwitches: 2,
-                  iconSize: 60,
-                  icons: const [Icons.done, Icons.close],
-                  radiusStyle: true,
-                  onToggle: controller.onAddReviewChange,
-                ),
-              ],
-            );
-          },
-        ),
-      ),
     );
   }
 
@@ -283,8 +241,6 @@ class BookEditPage extends StatelessWidget {
                     ),
                     const Divider(),
                     _availableForLoansPrompt(controller),
-                    const Divider(),
-                    _alreadyReadPrompt(controller),
                     const Divider(),
                     _addReviewPrompt(controller),
                     const Divider(),

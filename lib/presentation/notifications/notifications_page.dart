@@ -1,7 +1,6 @@
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/notifications_backend.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
-import 'package:communal/presentation/common/common_username_button.dart';
 import 'package:communal/presentation/notifications/notifications_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/gestures.dart';

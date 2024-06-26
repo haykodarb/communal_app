@@ -55,7 +55,7 @@ class BooksBackend {
               'author': book.author,
               'image_path': fileName,
               'available': book.available,
-              'read': book.read,
+              'public': book.public,
               'review': book.review,
             },
           )
@@ -99,7 +99,7 @@ class BooksBackend {
               'owner': _client.auth.currentUser!.id,
               'image_path': pathToUpload,
               'available': book.available,
-              'read': book.read,
+              'public': book.public,
               'review': book.review,
             },
           )

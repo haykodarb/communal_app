@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 const ColorScheme _lightScheme = ColorScheme.light(
   surface: Color(0xFFffffff),
-  surfaceContainer: Color(0xFFE6E6E6),
+  surfaceContainer: Color(0xFFF0F0F5),
   primary: Color(0xFF56949f),
   secondary: Color(0xFFd7827e),
   // secondary: Color(0xFFebbcba),
@@ -80,7 +80,7 @@ final OutlinedButtonThemeData _outlinedButtonThemeData = OutlinedButtonThemeData
       fontSize: 18,
     ),
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(5),
     ),
     minimumSize: const Size.fromHeight(50),
   ),
@@ -133,10 +133,10 @@ final FloatingActionButtonThemeData _floatingActionButtonThemeData = FloatingAct
 
 final CardTheme _cardTheme = CardTheme(
   color: _lightScheme.surface,
-  shadowColor: _lightScheme.tertiary,
-  surfaceTintColor: _lightScheme.tertiary,
+  shadowColor: _lightScheme.surfaceContainer,
+  surfaceTintColor: _lightScheme.surfaceContainer,
   elevation: 1,
-  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
 );
 
 final PopupMenuThemeData _popupMenuTheme = PopupMenuThemeData(
