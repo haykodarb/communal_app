@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 const ColorScheme _lightScheme = ColorScheme.light(
-  surface: Color(0xFFffffff),
-  surfaceContainer: Color(0xFFF0F0F5),
-  primary: Color(0xFF56949f),
-  secondary: Color(0xFFd7827e),
+  surface: Color(0xFFf2e9e1),
+  surfaceContainer: Color(0xFFfffaf3),
+  primary: Color(0xFFd7827e),
+  secondary: Color(0xFF286983),
   // secondary: Color(0xFFebbcba),
   tertiary: Color(0xFF907aa9),
   onSurfaceVariant: Color(0xFF0F1F1B),
-  onPrimary: Color(0xFFffffff),
-  onSecondary: Color(0xFFffffff),
-  onTertiary: Color(0xFFffffff),
-  onSurface: Color(0xFF0F1F1B),
+  shadow: Color(0xFFcecacd),
+  onPrimary: Color(0xFFfaf4ed),
+  onSecondary: Color(0xFFfaf4ed),
+  onTertiary: Color(0xFFfaf4ed),
+  onSurface: Color(0xFF575279),
   error: Color(0xFFeb6f92),
 );
 
@@ -126,17 +127,17 @@ final IconThemeData _iconThemeData = IconThemeData(
 
 final FloatingActionButtonThemeData _floatingActionButtonThemeData = FloatingActionButtonThemeData(
   backgroundColor: _lightScheme.primary,
+  foregroundColor: _lightScheme.onPrimary,
   shape: RoundedRectangleBorder(
     borderRadius: BorderRadius.circular(20),
   ),
 );
 
 final CardTheme _cardTheme = CardTheme(
-  color: _lightScheme.surface,
-  shadowColor: _lightScheme.surfaceContainer,
-  surfaceTintColor: _lightScheme.surfaceContainer,
-  elevation: 1,
-  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+  color: _lightScheme.surfaceContainer,
+  shadowColor: _lightScheme.shadow,
+  elevation: 0,
+  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
 );
 
 final PopupMenuThemeData _popupMenuTheme = PopupMenuThemeData(

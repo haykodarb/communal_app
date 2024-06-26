@@ -50,7 +50,7 @@ class BookListPage extends StatelessWidget {
                     // const VerticalDivider(width: 10),
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 30, right: 30, left: 30),
+                        padding: const EdgeInsets.only(top: 20, right: 20, left: 20),
                         child: Column(
                           mainAxisSize: MainAxisSize.max,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +65,14 @@ class BookListPage extends StatelessWidget {
                               ),
                             ),
                             const Divider(height: 10),
-                            Text(book.author),
+                            Text(
+                              book.author,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                             const Divider(height: 10),
                             Container(
                               height: 30,
@@ -113,8 +120,8 @@ class BookListPage extends StatelessWidget {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: BorderRadius.circular(10),
+                color: Theme.of(context).colorScheme.surfaceContainer,
+                borderRadius: BorderRadius.circular(5),
               ),
               height: 45,
               child: TextField(
@@ -125,8 +132,9 @@ class BookListPage extends StatelessWidget {
                 },
                 cursorColor: Theme.of(context).colorScheme.onSurface,
                 textAlignVertical: TextAlignVertical.center,
+                style: const TextStyle(fontSize: 14),
                 decoration: InputDecoration(
-                  fillColor: Theme.of(context).colorScheme.surface,
+                  fillColor: Theme.of(context).colorScheme.surfaceContainer,
                   contentPadding: EdgeInsets.zero,
                   isCollapsed: true,
                   border: InputBorder.none,
@@ -156,8 +164,8 @@ class BookListPage extends StatelessWidget {
             onPressed: () {},
             iconSize: 20,
             style: IconButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.surface,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
               fixedSize: const Size(45, 45),
             ),
             icon: Icon(
@@ -171,8 +179,8 @@ class BookListPage extends StatelessWidget {
             onPressed: () {},
             iconSize: 20,
             style: IconButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.surface,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
               fixedSize: const Size(45, 45),
             ),
             icon: Icon(
@@ -193,10 +201,8 @@ class BookListPage extends StatelessWidget {
       builder: (BookListController controller) {
         return Scaffold(
           drawer: CommonDrawerWidget(),
-          backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
           appBar: AppBar(
             elevation: 10,
-            backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
             title: const Text('My Books'),
           ),
           floatingActionButton: FloatingActionButton(
@@ -206,75 +212,77 @@ class BookListPage extends StatelessWidget {
               size: 35,
             ),
           ),
-          body: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: _searchRow(controller),
-              ),
-              Expanded(
-                child: Obx(
-                  () => CommonLoadingBody(
-                    loading: controller.loading.value,
-                    child: RefreshIndicator(
-                      onRefresh: controller.reloadBooks,
-                      child: Obx(
-                        () {
-                          if (controller.userBooks.isEmpty) {
-                            return const Center(
-                              child: Text(
-                                'You haven\'t added\nany books yet.',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            );
-                          } else {
-                            return ListView.separated(
-                              itemCount: controller.userBooks.length,
-                              padding: const EdgeInsets.all(10),
-                              cacheExtent: 1000,
-                              separatorBuilder: (context, index) {
-                                return const SizedBox(
-                                  height: 10,
-                                );
-                              },
-                              itemBuilder: (context, index) {
-                                final Book book = controller.userBooks[index];
-
-                                return InkWell(
-                                  highlightColor: Colors.transparent,
-                                  splashColor: Colors.transparent,
-                                  onTap: () async {
-                                    if (controller.focusScope.hasFocus) {
-                                      controller.focusScope.unfocus();
-                                    }
-
-                                    await Get.toNamed(
-                                      RouteNames.bookOwnedPage,
-                                      arguments: {
-                                        'book': book,
-                                        'controller': controller,
-                                      },
-                                    );
-
-                                    if (controller.focusScope.hasFocus) {
-                                      controller.focusScope.unfocus();
-                                    }
-                                  },
-                                  child: _bookCard(book),
-                                );
-                              },
-                            );
-                          }
-                        },
-                      ),
+          body: NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) => [
+              SliverList(
+                delegate: SliverChildListDelegate(
+                  [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                      child: _searchRow(controller),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ],
+            body: Obx(
+              () => CommonLoadingBody(
+                loading: controller.loading.value,
+                child: RefreshIndicator(
+                  onRefresh: controller.reloadBooks,
+                  child: Obx(
+                    () {
+                      if (controller.userBooks.isEmpty) {
+                        return const Center(
+                          child: Text(
+                            'No books.',
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      } else {
+                        return ListView.separated(
+                          itemCount: controller.userBooks.length,
+                          padding: const EdgeInsets.all(5),
+                          cacheExtent: 2000,
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(height: 5);
+                          },
+                          itemBuilder: (context, index) {
+                            final Book book = controller.userBooks[index];
+
+                            return InkWell(
+                              highlightColor: Colors.transparent,
+                              splashColor: Colors.transparent,
+                              onTap: () async {
+                                if (controller.focusScope.hasFocus) {
+                                  controller.focusScope.unfocus();
+                                }
+
+                                await Get.toNamed(
+                                  RouteNames.bookOwnedPage,
+                                  arguments: {
+                                    'book': book,
+                                    'controller': controller,
+                                  },
+                                );
+
+                                if (controller.focusScope.hasFocus) {
+                                  controller.focusScope.unfocus();
+                                }
+                              },
+                              child: _bookCard(book),
+                            );
+                          },
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ),
+            ),
           ),
         );
       },

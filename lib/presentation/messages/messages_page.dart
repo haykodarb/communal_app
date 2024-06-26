@@ -22,9 +22,8 @@ class MessagesPage extends StatelessWidget {
           onLongPress: () => controller.deleteChatsWithUsers(chatter),
           splashColor: Colors.transparent,
           child: Card(
-            elevation: hightlightMessage ? 5 : 1,
-            shadowColor: hightlightMessage ? Theme.of(context).colorScheme.primary : null,
-            color: Theme.of(context).colorScheme.surface,
+            elevation: hightlightMessage ? 3 : 1,
+            shadowColor: hightlightMessage ? Theme.of(context).colorScheme.tertiary : null,
             child: Padding(
               padding: const EdgeInsets.all(15),
               child: Row(

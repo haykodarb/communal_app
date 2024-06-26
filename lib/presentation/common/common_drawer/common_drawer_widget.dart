@@ -103,7 +103,7 @@ class CommonDrawerWidget extends StatelessWidget {
             return Container(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
               width: double.maxFinite,
-              color: Theme.of(context).colorScheme.surfaceContainer,
+              color: Theme.of(context).colorScheme.surface,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -134,12 +134,12 @@ class CommonDrawerWidget extends StatelessWidget {
     return GetBuilder(
       init: _commonDrawerController,
       builder: (CommonDrawerController controller) {
-        final Color dividerColor = Theme.of(context).colorScheme.surfaceContainer;
+        final Color dividerColor = Theme.of(context).colorScheme.surface;
 
         return Drawer(
           elevation: 20,
           child: Container(
-            color: Theme.of(context).colorScheme.surface,
+            color: Theme.of(context).colorScheme.surfaceContainer,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,

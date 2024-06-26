@@ -18,16 +18,15 @@ class ProfileOwnPage extends StatelessWidget {
       init: ProfileOwnController(),
       builder: (ProfileOwnController controller) {
         return Scaffold(
-          appBar: AppBar(
-            title: const Text('Profile'),
-            actions: [
-              IconButton(
-                onPressed: () => Get.toNamed(RouteNames.profileOwnEditPage, arguments: {
-                  'profile': UsersBackend.currentUserProfile.value,
-                }),
-                icon: const Icon(Atlas.pencil_edit),
-              ),
-            ],
+          appBar: AppBar(title: const Text('Profile')),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => Get.toNamed(
+              RouteNames.profileOwnEditPage,
+              arguments: {
+                'profile': UsersBackend.currentUserProfile.value,
+              },
+            ),
+            child: const Icon(Atlas.pencil),
           ),
           drawer: CommonDrawerWidget(),
           body: Obx(

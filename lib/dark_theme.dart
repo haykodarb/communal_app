@@ -4,18 +4,19 @@ import 'package:google_fonts/google_fonts.dart';
 const ColorScheme _darkScheme = ColorScheme.dark(
   // surface: Color(0xFF191724),
   // surface: Color(0xFF1f1d2e),
-  surface: Color(0xFF0F0F19),
-  surfaceContainer: Color(0xFF181623),
-  primary: Color(0xFF84BDAB),
-  secondary: Color(0xFFebbcba),
+  surface: Color(0xFF191724),
+  surfaceContainer: Color(0xFF1f1d2e),
+  primary: Color(0xFFebbcba),
+  shadow: Color(0xFF524f67),
+  secondary: Color(0xFF9ccfd8),
   tertiary: Color(0xFFc4a7e7),
   error: Color(0xFFeb6f92),
   onPrimary: Color(0xCC0F0F19),
   onSecondary: Color(0xFF0F0F19),
-  onSurfaceVariant: Color(0xFFFFFFFF),
+  onSurfaceVariant: Color(0xFFe0def4),
   onTertiary: Color(0xFF0F0F19),
-  onSurface: Color(0xFFFFFFFF),
-  onError: Color(0xFFFFFFFF),
+  onSurface: Color(0xFFe0def4),
+  onError: Color(0xFFe0def4),
 );
 
 final BottomNavigationBarThemeData _bottomNavigationBarTheme = BottomNavigationBarThemeData(
@@ -119,14 +120,15 @@ final IconThemeData _iconThemeData = IconThemeData(
 
 final FloatingActionButtonThemeData _floatingActionButtonThemeData = FloatingActionButtonThemeData(
   backgroundColor: _darkScheme.primary,
-  foregroundColor: _darkScheme.surface,
+  foregroundColor: _darkScheme.onPrimary,
   shape: RoundedRectangleBorder(
     borderRadius: BorderRadius.circular(20),
   ),
 );
 
 final CardTheme _cardTheme = CardTheme(
-  color: _darkScheme.surface,
+  color: _darkScheme.surfaceContainer,
+  shadowColor: _darkScheme.shadow,
   elevation: 1,
   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
 );

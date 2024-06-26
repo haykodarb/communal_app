@@ -35,7 +35,7 @@ class BookOwnedPage extends StatelessWidget {
                 book.author,
                 style: TextStyle(
                   fontSize: 18,
-                  color: Theme.of(context).colorScheme.onSurface.withAlpha(128),
+                  color: Theme.of(context).colorScheme.onSurface.withAlpha(150),
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
@@ -58,7 +58,7 @@ class BookOwnedPage extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
-            color: Theme.of(Get.context!).colorScheme.surfaceContainer,
+            color: Theme.of(Get.context!).colorScheme.surface,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -380,10 +380,7 @@ class BookOwnedPage extends StatelessWidget {
       init: BookOwnedController(),
       builder: (BookOwnedController controller) {
         return Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
-          appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
-          ),
+          appBar: AppBar(),
           body: DefaultTabController(
             length: 2,
             child: SafeArea(
@@ -399,13 +396,13 @@ class BookOwnedPage extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.all(30),
                             child: Container(
-                              decoration: const BoxDecoration(
+                              decoration: BoxDecoration(
                                 boxShadow: [
                                   BoxShadow(
-                                    offset: Offset(2, 1),
+                                    offset: const Offset(2, 1),
                                     blurRadius: 20,
                                     spreadRadius: 12,
-                                    color: Color(0x4C3D3D3D),
+                                    color: Theme.of(context).colorScheme.surface,
                                   ),
                                 ],
                               ),
@@ -442,7 +439,7 @@ class BookOwnedPage extends StatelessWidget {
                           topLeft: Radius.circular(20),
                           topRight: Radius.circular(20),
                         ),
-                        color: Theme.of(context).colorScheme.surface,
+                        color: Theme.of(context).colorScheme.surfaceContainer,
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),

@@ -15,6 +15,7 @@ void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MyApp(
+      locale: const Locale('es'),
       themeMode: await UserPreferences.getSelectedThemeMode(),
     ));
 
