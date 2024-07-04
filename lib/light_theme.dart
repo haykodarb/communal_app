@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 const ColorScheme _lightScheme = ColorScheme.light(
   surface: Color(0xFFf2e9e1),
   surfaceContainer: Color(0xFFfffaf3),
   primary: Color(0xFFd7827e),
   secondary: Color(0xFF286983),
-  // secondary: Color(0xFFebbcba),
   tertiary: Color(0xFF907aa9),
-  onSurfaceVariant: Color(0xFF0F1F1B),
   shadow: Color(0xFFcecacd),
-  onPrimary: Color(0xFFfaf4ed),
-  onSecondary: Color(0xFFfaf4ed),
-  onTertiary: Color(0xFFfaf4ed),
+  onPrimary: Color(0xFFfffaf3),
+  onSecondary: Color(0xFFfffaf3),
+  onTertiary: Color(0xFFfffaf3),
   onSurface: Color(0xFF575279),
+  onSurfaceVariant: Color(0xFF797593),
   error: Color(0xFFeb6f92),
 );
 
@@ -45,7 +43,7 @@ final AppBarTheme _appBarTheme = AppBarTheme(
     size: 30,
   ),
   centerTitle: true,
-  titleTextStyle: GoogleFonts.poppins(
+  titleTextStyle: TextStyle(
     fontWeight: FontWeight.w600,
     fontSize: 18,
     color: _lightScheme.onSurface,
@@ -58,7 +56,7 @@ final ElevatedButtonThemeData _elevatedButtonThemeData = ElevatedButtonThemeData
     backgroundColor: _lightScheme.primary,
     foregroundColor: _lightScheme.onPrimary,
     disabledBackgroundColor: _lightScheme.onSurface,
-    textStyle: GoogleFonts.poppins(
+    textStyle: const TextStyle(
       fontSize: 18,
     ),
     shape: RoundedRectangleBorder(
@@ -77,7 +75,7 @@ final OutlinedButtonThemeData _outlinedButtonThemeData = OutlinedButtonThemeData
       color: _lightScheme.primary,
       width: 2,
     ),
-    textStyle: GoogleFonts.poppins(
+    textStyle: const TextStyle(
       fontSize: 18,
     ),
     shape: RoundedRectangleBorder(
@@ -153,11 +151,7 @@ final PopupMenuThemeData _popupMenuTheme = PopupMenuThemeData(
 
 final ThemeData lightTheme = ThemeData(
   colorScheme: _lightScheme,
-  textTheme: GoogleFonts.poppinsTextTheme().apply(
-    displayColor: _lightScheme.onSurface,
-    bodyColor: _lightScheme.onSurface,
-    decorationColor: _lightScheme.onSurface,
-  ),
+  fontFamily: 'Poppins',
   primaryColor: _lightScheme.primary,
   secondaryHeaderColor: _lightScheme.secondary,
   textButtonTheme: _textButtonTheme,

@@ -28,7 +28,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
                 book.title,
                 style: const TextStyle(
                   fontSize: 22,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -37,7 +37,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   color: Theme.of(context).colorScheme.onSurface.withAlpha(128),
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -59,7 +59,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
-            color: Theme.of(Get.context!).colorScheme.surfaceContainer,
+            color: Theme.of(Get.context!).colorScheme.surface,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,7 +105,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
-            color: Theme.of(Get.context!).colorScheme.surfaceContainer,
+            color: Theme.of(Get.context!).colorScheme.surface,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -375,9 +375,9 @@ class CommunitySpecificBookPage extends StatelessWidget {
       init: CommunitySpecificBookController(),
       builder: (CommunitySpecificBookController controller) {
         return Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+            backgroundColor: Theme.of(context).colorScheme.surface,
           ),
           body: DefaultTabController(
             length: 2,
@@ -437,7 +437,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
                           topLeft: Radius.circular(20),
                           topRight: Radius.circular(20),
                         ),
-                        color: Theme.of(context).colorScheme.surface,
+                        color: Theme.of(context).colorScheme.surfaceContainer,
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),

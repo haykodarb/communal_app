@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 const ColorScheme _darkScheme = ColorScheme.dark(
-  // surface: Color(0xFF191724),
-  // surface: Color(0xFF1f1d2e),
   surface: Color(0xFF191724),
   surfaceContainer: Color(0xFF1f1d2e),
   primary: Color(0xFFebbcba),
@@ -11,11 +8,11 @@ const ColorScheme _darkScheme = ColorScheme.dark(
   secondary: Color(0xFF9ccfd8),
   tertiary: Color(0xFFc4a7e7),
   error: Color(0xFFeb6f92),
-  onPrimary: Color(0xCC0F0F19),
+  onPrimary: Color(0xFF0F0F19),
   onSecondary: Color(0xFF0F0F19),
-  onSurfaceVariant: Color(0xFFe0def4),
   onTertiary: Color(0xFF0F0F19),
   onSurface: Color(0xFFe0def4),
+  onSurfaceVariant: Color(0xFF908caa),
   onError: Color(0xFFe0def4),
 );
 
@@ -38,7 +35,7 @@ final AppBarTheme _appBarTheme = AppBarTheme(
   ),
   surfaceTintColor: Colors.transparent,
   centerTitle: true,
-  titleTextStyle: GoogleFonts.poppins(
+  titleTextStyle: TextStyle(
     fontWeight: FontWeight.w600,
     fontSize: 18,
     color: _darkScheme.onSurface,
@@ -51,7 +48,7 @@ final ElevatedButtonThemeData _elevatedButtonThemeData = ElevatedButtonThemeData
     backgroundColor: _darkScheme.primary,
     foregroundColor: _darkScheme.onPrimary,
     disabledBackgroundColor: _darkScheme.onSurface,
-    textStyle: GoogleFonts.poppins(
+    textStyle: const TextStyle(
       fontSize: 18,
     ),
     shape: RoundedRectangleBorder(
@@ -70,7 +67,7 @@ final OutlinedButtonThemeData _outlinedButtonThemeData = OutlinedButtonThemeData
       color: _darkScheme.primary,
       width: 2,
     ),
-    textStyle: GoogleFonts.poppins(
+    textStyle: const TextStyle(
       fontSize: 18,
     ),
     shape: RoundedRectangleBorder(
@@ -156,11 +153,7 @@ final TextButtonThemeData _textButtonTheme = TextButtonThemeData(
 final ThemeData darkTheme = ThemeData(
   useMaterial3: true,
   colorScheme: _darkScheme,
-  textTheme: GoogleFonts.poppinsTextTheme().apply(
-    displayColor: _darkScheme.onSurface,
-    bodyColor: _darkScheme.onSurface,
-    decorationColor: _darkScheme.onSurface,
-  ),
+  fontFamily: 'Poppins',
   elevatedButtonTheme: _elevatedButtonThemeData,
   outlinedButtonTheme: _outlinedButtonThemeData,
   inputDecorationTheme: _inputDecorationTheme,

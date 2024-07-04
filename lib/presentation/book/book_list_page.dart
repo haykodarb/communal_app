@@ -214,14 +214,10 @@ class BookListPage extends StatelessWidget {
           ),
           body: NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) => [
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                      child: _searchRow(controller),
-                    ),
-                  ],
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                  child: _searchRow(controller),
                 ),
               ),
             ],

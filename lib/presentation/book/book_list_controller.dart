@@ -14,6 +14,8 @@ class BookListController extends GetxController {
   Timer? debounceTimer;
   final FocusNode focusScope = FocusNode();
 
+  BooksQuery query = BooksQuery();
+
   @override
   Future<void> onReady() async {
     super.onReady();

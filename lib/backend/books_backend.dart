@@ -7,6 +7,15 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+class BooksQuery {
+  String order_by = 'created_at';
+  Map<String, String> filter = {};
+  String? search_query = '';
+  int current_index = 0;
+
+  BooksQuery();
+}
+
 class BooksBackend {
   static final SupabaseClient _client = Supabase.instance.client;
 

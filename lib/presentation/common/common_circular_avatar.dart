@@ -64,6 +64,7 @@ class CommonCircularAvatar extends StatelessWidget {
               image: Image.memory(
                 snapshot.data!,
                 fit: BoxFit.fitWidth,
+                gaplessPlayback: true,
               ).image,
             ),
             shape: BoxShape.circle,

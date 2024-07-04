@@ -27,7 +27,7 @@ class CommunityMembersPage extends StatelessWidget {
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
         child: SizedBox(
-          height: 70,
+          height: 60,
           child: Padding(
             padding: EdgeInsets.only(left: 20, right: user.id == UsersBackend.currentUserId ? 20 : 10),
             child: Obx(
@@ -134,7 +134,7 @@ class CommunityMembersPage extends StatelessWidget {
                     padding: const EdgeInsets.all(10),
                     itemCount: controller.listOfMembers.length,
                     separatorBuilder: (context, index) {
-                      return const Divider();
+                      return const Divider(height: 0);
                     },
                     itemBuilder: (context, index) {
                       final Profile member = controller.listOfMembers[index];
@@ -148,14 +148,14 @@ class CommunityMembersPage extends StatelessWidget {
                           ),
                           Visibility(
                             visible: member.id != UsersBackend.currentUserId,
-                            child: const VerticalDivider(width: 10),
+                            child: const VerticalDivider(width: 5),
                           ),
                           Container(
                             decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.primary,
                               borderRadius: BorderRadius.circular(5),
                             ),
-                            height: 70,
+                            height: 60,
                             child: Visibility(
                               visible: member.id != UsersBackend.currentUserId,
                               child: IconButton(

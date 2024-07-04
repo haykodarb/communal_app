@@ -97,7 +97,7 @@ class CommunityListPage extends StatelessWidget {
                             return ListView.separated(
                               padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
                               itemCount: controller.communities.length,
-                              separatorBuilder: (context, index) => const Divider(),
+                              separatorBuilder: (context, index) => const Divider(height: 5),
                               itemBuilder: (context, index) {
                                 return _communityCard(
                                   controller,
