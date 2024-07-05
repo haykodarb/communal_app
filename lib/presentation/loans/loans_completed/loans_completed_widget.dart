@@ -36,7 +36,7 @@ class LoansCompletedWidget extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 18,
                             color: Theme.of(context).colorScheme.onSurface,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         PopupMenuButton(

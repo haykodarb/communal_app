@@ -61,7 +61,7 @@ class BookListPage extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Theme.of(context).colorScheme.onSurface,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                             const Divider(height: 10),
@@ -70,7 +70,7 @@ class BookListPage extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                             const Divider(height: 10),
@@ -169,22 +169,7 @@ class BookListPage extends StatelessWidget {
               fixedSize: const Size(45, 45),
             ),
             icon: Icon(
-              Atlas.funnel_sort,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
-          const VerticalDivider(width: 5),
-          IconButton(
-            onPressed: () {},
-            iconSize: 20,
-            style: IconButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-              fixedSize: const Size(45, 45),
-            ),
-            icon: Icon(
-              Atlas.align_justify_down,
+              Atlas.horizontal_sliders_dots,
               color: Theme.of(context).colorScheme.onSurface,
             ),
             color: Theme.of(context).colorScheme.onSurface,

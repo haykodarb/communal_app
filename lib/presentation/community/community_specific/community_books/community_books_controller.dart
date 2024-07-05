@@ -4,12 +4,14 @@ import 'package:communal/backend/books_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/community.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CommunityBooksController extends GetxController {
   final Community community = Get.arguments['community'];
 
   final RxList<Book> booksLoaded = <Book>[].obs;
+  final FocusNode focusScope = FocusNode();
 
   final RxBool loadingMore = false.obs;
   final RxBool firstLoad = true.obs;

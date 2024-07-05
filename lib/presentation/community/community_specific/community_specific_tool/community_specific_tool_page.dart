@@ -28,7 +28,7 @@ class CommunitySpecificToolPage extends StatelessWidget {
             tool.name,
             style: const TextStyle(
               fontSize: 22,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w600,
             ),
             textAlign: TextAlign.center,
           ),

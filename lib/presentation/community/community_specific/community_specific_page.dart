@@ -29,47 +29,123 @@ class CommunitySpecificPage extends StatelessWidget {
           appBar: AppBar(
             title: Text(controller.community.name),
           ),
+          extendBody: true,
           bottomNavigationBar: Theme(
             data: Theme.of(context).copyWith(
               highlightColor: Colors.transparent,
+              dialogBackgroundColor: Colors.transparent,
               splashColor: Colors.transparent,
             ),
-            child: Obx(
-              () => BottomNavigationBar(
-                currentIndex: controller.selectedIndex.value,
-                onTap: controller.onBottomNavBarIndexChanged,
-                enableFeedback: false,
-                fixedColor: Theme.of(context).colorScheme.primary,
-                backgroundColor: Theme.of(context).colorScheme.surface,
-                iconSize: 22,
-                items: const <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                    icon: Icon(Atlas.library),
-                    label: 'Books',
+
+            child: SafeArea(
+              child: Container(
+                color: Colors.transparent,
+                margin: const EdgeInsets.only(bottom: 10, right: 10, left: 10),
+                height: 70,
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceContainer,
+                    borderRadius: BorderRadius.circular(50),
+                    boxShadow: [
+                      BoxShadow(
+                        offset: const Offset(0, 2),
+                        blurRadius: 6,
+                        spreadRadius: 2,
+                        color: Theme.of(context).colorScheme.shadow,
+                      ),
+                    ],
                   ),
-                  BottomNavigationBarItem(
-                    icon: Icon(
-                      Icons.handyman_outlined,
-                      opticalSize: 48,
-                      size: 25,
-                    ),
-                    label: 'Tools',
+                  child: Row(
+                    children: [
+                      Container(
+                        height: double.maxFinite,
+                        width: 120,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary,
+                          borderRadius: BorderRadius.circular(40),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Atlas.book,
+                              color: Theme.of(context).colorScheme.surfaceContainer,
+                              size: 24,
+                            ),
+                            const VerticalDivider(width: 5),
+                            Text(
+                              'Books',
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.surfaceContainer,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Icon(
+                          Icons.handyman_outlined,
+                          size: 24,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                      Expanded(
+                        child: Icon(
+                          Atlas.chats,
+                          size: 24,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                      Expanded(
+                        child: Icon(
+                          Atlas.users,
+                          size: 24,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ],
                   ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Atlas.chats),
-                    label: 'Discuss',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Atlas.users),
-                    label: 'Members',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Atlas.gear),
-                    label: 'Settings',
-                  ),
-                ],
+                ),
               ),
             ),
+            // child: Obx(
+            //   () => BottomNavigationBar(
+            //     currentIndex: controller.selectedIndex.value,
+            //     onTap: controller.onBottomNavBarIndexChanged,
+            //     enableFeedback: false,
+            //     fixedColor: Theme.of(context).colorScheme.primary,
+            //     backgroundColor: Theme.of(context).colorScheme.surface,
+            //     iconSize: 22,
+            //     items: const <BottomNavigationBarItem>[
+            //       BottomNavigationBarItem(
+            //         icon: Icon(Atlas.library),
+            //         label: 'Books',
+            //       ),
+            //       BottomNavigationBarItem(
+            //         icon: Icon(
+            //           Icons.handyman_outlined,
+            //           opticalSize: 48,
+            //           size: 25,
+            //         ),
+            //         label: 'Tools',
+            //       ),
+            //       BottomNavigationBarItem(
+            //         icon: Icon(Atlas.chats),
+            //         label: 'Discuss',
+            //       ),
+            //       BottomNavigationBarItem(
+            //         icon: Icon(Atlas.users),
+            //         label: 'Members',
+            //       ),
+            //       BottomNavigationBarItem(
+            //         icon: Icon(Atlas.gear),
+            //         label: 'Settings',
+            //       ),
+            //     ],
+            //   ),
+            // ),
           ),
           body: Obx(() => _pages[controller.selectedIndex.value]),
         );

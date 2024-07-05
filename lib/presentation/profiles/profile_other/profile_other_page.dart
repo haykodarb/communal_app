@@ -43,7 +43,7 @@ class ProfileOtherPage extends StatelessWidget {
                           () => Text(
                             controller.profile.value.username,
                             textAlign: TextAlign.left,
-                            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
                           ),
                         ),
                       ],

@@ -1,5 +1,6 @@
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/users_backend.dart';
+import 'package:communal/models/book.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
@@ -8,9 +9,7 @@ import 'package:communal/presentation/common/common_vertical_book_card.dart';
 import 'package:communal/presentation/profiles/profile_own/profile_own_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -182,14 +181,26 @@ class ProfileOwnPage extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         builderDelegate: PagedChildBuilderDelegate(
           noItemsFoundIndicatorBuilder: (context) {
-            return Container(
+            return const SizedBox(
               height: 100,
-              child: const Text('No items found'),
+              child: Center(child: Text('No items found')),
             );
           },
           itemBuilder: (context, item, index) {
+            final Book book = controller.userBooks[index];
+
             return CommonKeepaliveWrapper(
-              child: CommonVerticalBookCard(book: controller.userBooks[index % controller.userBooks.length]),
+              child: InkWell(
+                onTap: () {
+                  Get.toNamed(
+                    RouteNames.bookOwnedPage,
+                    arguments: {'book': book},
+                  );
+                },
+                child: CommonVerticalBookCard(
+                  book: book,
+                ),
+              ),
             );
           },
         ),

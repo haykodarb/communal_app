@@ -109,7 +109,7 @@ class RegisterPage extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 18,
                               color: Theme.of(context).colorScheme.tertiary,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                           const Divider(height: 20),

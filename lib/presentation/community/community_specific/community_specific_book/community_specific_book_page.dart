@@ -351,7 +351,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
                       Text(
                         'request'.tr,
                         style: const TextStyle(
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       const VerticalDivider(width: 5),

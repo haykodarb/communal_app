@@ -73,7 +73,7 @@ class CommonDrawerWidget extends StatelessWidget {
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Theme.of(context).colorScheme.primary,
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             );

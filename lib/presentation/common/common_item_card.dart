@@ -89,7 +89,7 @@ class CommonItemCard extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 16,
                             color: Theme.of(context).colorScheme.onSurface,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         Column(

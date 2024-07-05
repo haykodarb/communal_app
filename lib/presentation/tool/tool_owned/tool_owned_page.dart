@@ -112,7 +112,7 @@ class ToolOwnedPage extends StatelessWidget {
             controller.tool.value.name,
             style: const TextStyle(
               fontSize: 22,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w600,
             ),
             textAlign: TextAlign.center,
           ),
