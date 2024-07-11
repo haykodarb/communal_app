@@ -29,7 +29,7 @@ final BottomNavigationBarThemeData _bottomNavigationBarTheme = BottomNavigationB
 
 final AppBarTheme _appBarTheme = AppBarTheme(
   backgroundColor: _darkScheme.surface,
-  elevation: 1,
+  elevation: 0,
   iconTheme: const IconThemeData(
     size: 30,
   ),

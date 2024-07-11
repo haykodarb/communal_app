@@ -3,12 +3,15 @@ import 'package:communal/models/discussion.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_username_button.dart';
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_controller.dart';
+import 'package:communal/presentation/community/community_specific/community_specific_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class CommunityDiscussionsPage extends StatelessWidget {
-  const CommunityDiscussionsPage({super.key});
+  const CommunityDiscussionsPage({super.key, required this.communityController});
+
+  final CommunitySpecificController communityController;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +47,6 @@ class CommunityDiscussionsPage extends StatelessWidget {
                     return ListView.separated(
                       itemCount: controller.topics.length,
                       padding: const EdgeInsets.all(20),
-                      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
                       separatorBuilder: (context, index) {
                         return const Divider();
                       },

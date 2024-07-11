@@ -237,81 +237,95 @@ class BookOwnedPage extends StatelessWidget {
           const Expanded(child: SizedBox()),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 30,
-                    child: Center(child: Text('added'.tr)),
-                  ),
-                  const Divider(),
-                  const SizedBox(
-                    height: 30,
-                    child: Center(child: Text('Visibility')),
-                  ),
-                  const Divider(),
-                  SizedBox(
-                    height: 30,
-                    child: Center(child: Text('status'.tr)),
-                  ),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 30,
+                      child: Text('added'.tr),
+                    ),
+                    const Divider(),
+                    const SizedBox(
+                      height: 30,
+                      child: Text('Visibility'),
+                    ),
+                    const Divider(),
+                    SizedBox(
+                      height: 30,
+                      child: Text('status'.tr),
+                    ),
+                  ],
+                ),
               ),
               const VerticalDivider(),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 30,
-                    child: Center(
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 30,
                       child: Text(
                         DateFormat.yMMMd(Get.locale?.languageCode).format(book.created_at),
                       ),
                     ),
-                  ),
-                  const Divider(),
-                  SizedBox(
-                    height: 30,
-                    child: Center(
-                      child: Text(book.public ? 'Public' : 'Private'),
+                    const Divider(),
+                    SizedBox(
+                      height: 30,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            book.public ? Atlas.unlock_keyhole : Atlas.lock_keyhole,
+                            size: 14,
+                          ),
+                          const VerticalDivider(width: 5),
+                          Text(book.public ? 'Public' : 'Private'),
+                        ],
+                      ),
                     ),
-                  ),
-                  const Divider(),
-                  Container(
-                    height: 30,
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: book.available ? green.withOpacity(0.25) : purple.withOpacity(0.25),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Row(
+                    const Divider(),
+                    Row(
                       children: [
                         Container(
+                          constraints: const BoxConstraints.tightFor(height: 30),
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                           decoration: BoxDecoration(
-                            color: book.available ? green : purple,
-                            shape: BoxShape.circle,
+                            color:
+                                (book.available || !book.public) ? green.withOpacity(0.25) : purple.withOpacity(0.25),
+                            borderRadius: BorderRadius.circular(5),
                           ),
-                          height: 8,
-                          width: 8,
-                        ),
-                        const VerticalDivider(width: 10),
-                        Text(
-                          book.available ? 'available'.tr : 'loaned'.tr,
+                          child: Row(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: (book.available || !book.public) ? green : purple,
+                                  shape: BoxShape.circle,
+                                ),
+                                height: 8,
+                                width: 8,
+                              ),
+                              const VerticalDivider(width: 10),
+                              Text(
+                                (book.available || !book.public) ? 'available'.tr : 'loaned'.tr,
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
           const Expanded(child: SizedBox()),
           Visibility(
-            visible: book.available,
+            visible: (book.available || !book.public),
             child: Row(
               children: [
                 Expanded(
@@ -351,7 +365,7 @@ class BookOwnedPage extends StatelessWidget {
             ),
           ),
           Visibility(
-            visible: !book.available,
+            visible: !(book.available || !book.public),
             child: ElevatedButton(
               onPressed: () {},
               child: const Row(
@@ -391,7 +405,7 @@ class BookOwnedPage extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        _bookTitle(controller.book.value),
+                        Obx(() => _bookTitle(controller.book.value)),
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.all(30),
@@ -410,18 +424,20 @@ class BookOwnedPage extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(5),
                                 child: AspectRatio(
                                   aspectRatio: 3 / 4,
-                                  child: FutureBuilder(
-                                    future: BooksBackend.getBookCover(controller.book.value),
-                                    builder: (context, snapshot) {
-                                      if (!snapshot.hasData) {
-                                        return const CommonLoadingImage();
-                                      }
+                                  child: Obx(
+                                    () => FutureBuilder(
+                                      future: BooksBackend.getBookCover(controller.book.value),
+                                      builder: (context, snapshot) {
+                                        if (!snapshot.hasData) {
+                                          return const CommonLoadingImage();
+                                        }
 
-                                      return Image.memory(
-                                        snapshot.data!,
-                                        fit: BoxFit.cover,
-                                      );
-                                    },
+                                        return Image.memory(
+                                          snapshot.data!,
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                    ),
                                   ),
                                 ),
                               ),
@@ -468,7 +484,9 @@ class BookOwnedPage extends StatelessWidget {
                                 child: TabBarView(
                                   physics: const NeverScrollableScrollPhysics(),
                                   children: [
-                                    _informationTab(controller),
+                                    Obx(
+                                      () => _informationTab(controller),
+                                    ),
                                     _reviewsTab(controller),
                                   ],
                                 ),

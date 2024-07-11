@@ -29,10 +29,10 @@ class ProfileOwnEditPage extends StatelessWidget {
               borderColor: [Theme.of(context).colorScheme.onSurface],
               borderWidth: 0.75,
               activeBgColors: [
-                [Theme.of(context).colorScheme.primary],
-                [Theme.of(context).colorScheme.error]
+                [Theme.of(context).colorScheme.secondary],
+                [Theme.of(context).colorScheme.primary]
               ],
-              activeFgColor: Theme.of(context).colorScheme.onSurface,
+              activeFgColor: Theme.of(context).colorScheme.onPrimary,
               inactiveBgColor: Theme.of(context).colorScheme.surfaceContainer,
               inactiveFgColor: Theme.of(context).colorScheme.onSurface,
               initialLabelIndex: controller.inheritedProfile.bio != null ? 0 : 1,
@@ -66,10 +66,10 @@ class ProfileOwnEditPage extends StatelessWidget {
               borderColor: [Theme.of(context).colorScheme.onSurface],
               borderWidth: 0.75,
               activeBgColors: [
-                [Theme.of(context).colorScheme.primary],
-                [Theme.of(context).colorScheme.error]
+                [Theme.of(context).colorScheme.secondary],
+                [Theme.of(context).colorScheme.primary]
               ],
-              activeFgColor: Theme.of(context).colorScheme.onSurface,
+              activeFgColor: Theme.of(context).colorScheme.onPrimary,
               inactiveBgColor: Theme.of(context).colorScheme.surfaceContainer,
               inactiveFgColor: Theme.of(context).colorScheme.onSurface,
               initialLabelIndex: controller.inheritedProfile.show_email ? 0 : 1,
@@ -113,7 +113,7 @@ class ProfileOwnEditPage extends StatelessWidget {
             ),
             body: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Form(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   key: controller.formKey,

@@ -62,6 +62,10 @@ class MyApp extends StatelessWidget {
       title: 'Kaits',
       theme: lightTheme,
       translations: LocalizationText(),
+      scrollBehavior: const ScrollBehavior().copyWith(
+        overscroll: false,
+        physics: const ClampingScrollPhysics(),
+      ),
       locale: locale,
       fallbackLocale: const Locale('en', 'US'),
       darkTheme: darkTheme,

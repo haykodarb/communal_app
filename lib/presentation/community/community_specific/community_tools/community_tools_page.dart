@@ -3,13 +3,16 @@ import 'package:communal/models/tool.dart';
 import 'package:communal/presentation/common/common_item_card.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_text_info.dart';
+import 'package:communal/presentation/community/community_specific/community_specific_controller.dart';
 import 'package:communal/presentation/community/community_specific/community_tools/community_tools_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CommunityToolsPage extends StatelessWidget {
-  const CommunityToolsPage({super.key});
+  const CommunityToolsPage({super.key, required this.communityController});
+
+  final CommunitySpecificController communityController;
 
   @override
   Widget build(BuildContext context) {

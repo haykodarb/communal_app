@@ -61,7 +61,7 @@ class BookListPage extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Theme.of(context).colorScheme.onSurface,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                             const Divider(height: 10),
@@ -70,7 +70,7 @@ class BookListPage extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                             const Divider(height: 10),

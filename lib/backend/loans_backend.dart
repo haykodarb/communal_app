@@ -3,6 +3,7 @@ import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/models/loan.dart';
+import 'package:communal/models/profile.dart';
 import 'package:communal/models/tool.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -316,6 +317,28 @@ class LoansBackend {
           )
           .eq(parameter, value)
           .eq('accepted', true)
+          .not('review', 'is', null);
+
+      final List<Loan> loanList = response.map((element) => Loan.fromMap(element)).toList();
+
+      return BackendResponse(success: true, payload: loanList);
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
+    }
+  }
+
+  static Future<BackendResponse> getBooksReviewedByUser(Profile user) async {
+    try {
+      final SupabaseClient client = Supabase.instance.client;
+
+      final List<Map<String, dynamic>> response = await client
+          .from('loans')
+          .select(
+            '*, communities(*), books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
+          )
+          .eq('returned', true)
+          .eq('accepted', true)
+          .not('book', 'is', null)
           .not('review', 'is', null);
 
       final List<Loan> loanList = response.map((element) => Loan.fromMap(element)).toList();
