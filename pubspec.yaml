@@ -65,6 +65,8 @@ dependencies:
   infinite_scroll_pagination: ^4.0.0
   sliver_tools: ^0.2.12
   flutter_floating_bottom_bar: ^1.2.0
+  dropdown_button2: ^2.3.9
+  collection: ^1.18.0
 
 dev_dependencies:
   flutter_test:

@@ -31,14 +31,13 @@ class CommonTextField extends StatelessWidget {
       cursorColor: Theme.of(context).colorScheme.primary,
       onChanged: callback,
       controller: controller,
+      style: TextStyle(fontSize: 14),
       minLines: minLines,
       maxLines: maxLines,
       maxLength: maxLength,
       decoration: InputDecoration(
         counter: const SizedBox.shrink(),
-        label: Text(
-          label,
-        ),
+        label: Text(label),
         alignLabelWithHint: true,
       ),
     );
@@ -79,20 +78,27 @@ class _CommonPasswordFieldState extends State<CommonPasswordField> {
       minLines: widget.minLines,
       maxLines: widget.maxLines,
       maxLength: widget.maxLength,
+      style: TextStyle(fontSize: 14),
       decoration: InputDecoration(
         counter: const SizedBox.shrink(),
-        suffixIcon: IconButton(
-          icon: Icon(
-            isVisible ? Icons.visibility : Icons.visibility_off,
-            color: isVisible ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.primary,
+        suffixIcon: Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: IconButton(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            icon: Icon(
+              isVisible ? Icons.visibility : Icons.visibility_off,
+              size: 26,
+              color: isVisible ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+            onPressed: () {
+              setState(
+                () {
+                  isVisible = !isVisible;
+                },
+              );
+            },
           ),
-          onPressed: () {
-            setState(
-              () {
-                isVisible = !isVisible;
-              },
-            );
-          },
         ),
         label: Text(
           widget.label,

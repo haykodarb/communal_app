@@ -1,3 +1,4 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:flutter/material.dart';
 
 const ColorScheme _lightScheme = ColorScheme.light(
@@ -57,12 +58,13 @@ final ElevatedButtonThemeData _elevatedButtonThemeData = ElevatedButtonThemeData
     foregroundColor: _lightScheme.onPrimary,
     disabledBackgroundColor: _lightScheme.onSurface,
     textStyle: const TextStyle(
-      fontSize: 18,
+      fontSize: 20,
+      fontWeight: FontWeight.w700,
     ),
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(5),
+      borderRadius: BorderRadius.circular(50),
     ),
-    minimumSize: const Size.fromHeight(50),
+    minimumSize: const Size.fromHeight(60),
   ),
 );
 
@@ -76,32 +78,24 @@ final OutlinedButtonThemeData _outlinedButtonThemeData = OutlinedButtonThemeData
       width: 2,
     ),
     textStyle: const TextStyle(
-      fontSize: 18,
+      fontSize: 20,
+      fontWeight: FontWeight.w700,
     ),
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(5),
+      borderRadius: BorderRadius.circular(50),
     ),
-    minimumSize: const Size.fromHeight(50),
+    minimumSize: const Size.fromHeight(60),
   ),
 );
 
 final InputDecorationTheme _inputDecorationTheme = InputDecorationTheme(
-  labelStyle: TextStyle(
-    color: _lightScheme.primary,
-  ),
-  floatingLabelStyle: TextStyle(
-    color: _lightScheme.primary,
-  ),
-  enabledBorder: OutlineInputBorder(
-    borderSide: BorderSide(
-      color: _lightScheme.primary,
-    ),
-  ),
-  focusedBorder: OutlineInputBorder(
-    borderSide: BorderSide(
-      color: _lightScheme.primary,
-    ),
-  ),
+  fillColor: _lightScheme.surfaceContainer,
+  filled: true,
+  labelStyle: TextStyle(color: _lightScheme.onSurfaceVariant),
+  floatingLabelStyle: TextStyle(color: _lightScheme.onSurface),
+  focusedBorder: const OutlineInputBorder(borderSide: BorderSide.none),
+  border: const OutlineInputBorder(borderSide: BorderSide.none),
+  enabledBorder: const OutlineInputBorder(borderSide: BorderSide.none),
   errorBorder: OutlineInputBorder(
     borderSide: BorderSide(
       color: _lightScheme.error,
@@ -149,11 +143,19 @@ final PopupMenuThemeData _popupMenuTheme = PopupMenuThemeData(
   ),
 );
 
+final ActionIconThemeData _actionIconThemeData = ActionIconThemeData(
+  backButtonIconBuilder: (context) => const Icon(
+    Icons.chevron_left_rounded,
+    size: 36,
+  ),
+);
+
 final ThemeData lightTheme = ThemeData(
   colorScheme: _lightScheme,
   fontFamily: 'Poppins',
   primaryColor: _lightScheme.primary,
   secondaryHeaderColor: _lightScheme.secondary,
+  actionIconTheme: _actionIconThemeData,
   textButtonTheme: _textButtonTheme,
   dialogBackgroundColor: _lightScheme.surface,
   cardColor: _lightScheme.surface,

@@ -131,7 +131,7 @@ class ProfileOwnPage extends StatelessWidget {
     );
   }
 
-  Widget _tabBar(ProfileOwnController controller) {
+  Widget _tabBar(ProfileOwnController controller, bool shadow) {
     return Builder(
       builder: (BuildContext context) {
         return Container(
@@ -147,8 +147,8 @@ class ProfileOwnPage extends StatelessWidget {
               boxShadow: [
                 BoxShadow(
                   offset: const Offset(0, 0),
-                  blurRadius: 2,
-                  spreadRadius: 2,
+                  blurRadius: shadow ? 2 : 0,
+                  spreadRadius: shadow ? 2 : 0,
                   color: Theme.of(context).colorScheme.shadow,
                 ),
               ],
@@ -419,7 +419,7 @@ class ProfileOwnPage extends StatelessWidget {
                       backgroundColor: Colors.transparent,
                       forceMaterialTransparency: true,
                       scrolledUnderElevation: 0,
-                      title: _tabBar(controller),
+                      title: _tabBar(controller, innerBoxIsScrolled),
                       titleSpacing: 0,
                       toolbarHeight: 80,
                       centerTitle: true,

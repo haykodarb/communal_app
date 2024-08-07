@@ -6,6 +6,7 @@ import 'package:communal/presentation/common/common_drawer/common_drawer_widget.
 import 'package:communal/presentation/book/book_list_controller.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/routes.dart';
+import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -50,7 +51,7 @@ class BookListPage extends StatelessWidget {
                     // const VerticalDivider(width: 10),
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 20, right: 20, left: 20),
+                        padding: const EdgeInsets.all(20),
                         child: Column(
                           mainAxisSize: MainAxisSize.max,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,18 +63,20 @@ class BookListPage extends StatelessWidget {
                                 fontSize: 16,
                                 color: Theme.of(context).colorScheme.onSurface,
                                 fontWeight: FontWeight.w500,
+                                height: 1.25,
                               ),
                             ),
-                            const Divider(height: 10),
+                            const Divider(height: 5),
                             Text(
                               book.author,
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                                 fontWeight: FontWeight.w500,
+                                height: 1.25,
                               ),
                             ),
-                            const Divider(height: 10),
+                            const Expanded(child: Divider()),
                             Container(
                               height: 30,
                               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
@@ -115,66 +118,63 @@ class BookListPage extends StatelessWidget {
 
   Widget _searchRow(BookListController controller) {
     return Builder(builder: (context) {
-      return Row(
-        children: [
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainer,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              height: 45,
-              child: TextField(
-                onChanged: controller.searchBooks,
-                focusNode: controller.focusScope,
-                onTapOutside: (event) {
-                  controller.focusScope.unfocus();
-                },
-                cursorColor: Theme.of(context).colorScheme.onSurface,
-                textAlignVertical: TextAlignVertical.center,
-                style: const TextStyle(fontSize: 14),
-                decoration: InputDecoration(
-                  fillColor: Theme.of(context).colorScheme.surfaceContainer,
-                  contentPadding: EdgeInsets.zero,
-                  isCollapsed: true,
-                  border: InputBorder.none,
-                  errorBorder: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  prefixIcon: Icon(
-                    Atlas.magnifying_glass,
-                    color: Theme.of(context).colorScheme.onSurface,
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Row(
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceContainer,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                height: 45,
+                child: TextField(
+                  onChanged: controller.searchBooks,
+                  focusNode: controller.focusScope,
+                  onTapOutside: (event) {
+                    controller.focusScope.unfocus();
+                  },
+                  cursorColor: Theme.of(context).colorScheme.primary,
+                  textAlignVertical: TextAlignVertical.center,
+                  style: const TextStyle(fontSize: 14),
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.zero,
+                    isCollapsed: true,
+                    prefixIcon: Icon(
+                      Atlas.magnifying_glass,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                    labelStyle: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontSize: 14,
+                    ),
+                    label: const Text(
+                      'Search...',
+                      textAlign: TextAlign.center,
+                    ),
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
                   ),
-                  focusedBorder: InputBorder.none,
-                  focusedErrorBorder: InputBorder.none,
-                  labelStyle: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontSize: 14,
-                  ),
-                  label: const Text(
-                    'Search...',
-                    textAlign: TextAlign.center,
-                  ),
-                  floatingLabelBehavior: FloatingLabelBehavior.never,
                 ),
               ),
             ),
-          ),
-          const VerticalDivider(width: 5),
-          IconButton(
-            onPressed: () {},
-            iconSize: 20,
-            style: IconButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-              fixedSize: const Size(45, 45),
-            ),
-            icon: Icon(
-              Atlas.horizontal_sliders_dots,
+            const VerticalDivider(width: 5),
+            IconButton(
+              onPressed: () {},
+              iconSize: 20,
+              style: IconButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                fixedSize: const Size(45, 45),
+              ),
+              icon: Icon(
+                Atlas.horizontal_sliders_dots,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
               color: Theme.of(context).colorScheme.onSurface,
             ),
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
-        ],
+          ],
+        ),
       );
     });
   }
@@ -197,15 +197,20 @@ class BookListPage extends StatelessWidget {
               size: 35,
             ),
           ),
-          body: NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) => [
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                  child: _searchRow(controller),
+          body: ExtendedNestedScrollView(
+            floatHeaderSlivers: true,
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  title: _searchRow(controller),
+                  titleSpacing: 0,
+                  toolbarHeight: 55,
+                  centerTitle: true,
+                  automaticallyImplyLeading: false,
+                  floating: true,
                 ),
-              ),
-            ],
+              ];
+            },
             body: Obx(
               () => CommonLoadingBody(
                 loading: controller.loading.value,
@@ -226,7 +231,7 @@ class BookListPage extends StatelessWidget {
                       } else {
                         return ListView.separated(
                           itemCount: controller.userBooks.length,
-                          padding: const EdgeInsets.all(5),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                           cacheExtent: 2000,
                           separatorBuilder: (context, index) {
                             return const SizedBox(height: 5);

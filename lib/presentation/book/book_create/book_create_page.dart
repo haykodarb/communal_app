@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/book/book_create/book_create_controller.dart';
 import 'package:flutter/material.dart';
@@ -110,29 +111,6 @@ class BookCreatePage extends StatelessWidget {
             title: const Text(
               'Add Book',
             ),
-            actions: [
-              IconButton(
-                onPressed: controller.scanBook,
-                icon: const Icon(Icons.camera_alt_outlined),
-              ),
-              const VerticalDivider(),
-              Obx(
-                () => controller.loading.value
-                    ? SizedBox(
-                        width: 30,
-                        height: 30,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
-                      )
-                    : IconButton(
-                        onPressed: controller.onSubmitButton,
-                        icon: const Icon(Icons.done),
-                      ),
-              ),
-              const VerticalDivider(),
-            ],
           ),
           body: SingleChildScrollView(
             child: Padding(
@@ -143,17 +121,16 @@ class BookCreatePage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Container(
-                      width: 300,
-                      height: 400,
+                      height: 350,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5),
                       ),
                       clipBehavior: Clip.hardEdge,
-                      child: Stack(
-                        children: [
-                          AspectRatio(
-                            aspectRatio: 3 / 4,
-                            child: Obx(
+                      child: AspectRatio(
+                        aspectRatio: 3 / 4,
+                        child: Stack(
+                          children: [
+                            Obx(
                               () {
                                 if (controller.selectedFile.value != null) {
                                   return Image.file(
@@ -164,10 +141,13 @@ class BookCreatePage extends StatelessWidget {
                                   return Card(
                                     margin: EdgeInsets.zero,
                                     color: Theme.of(context).colorScheme.surfaceContainer,
-                                    child: const Center(
+                                    child: Center(
                                       child: Text(
-                                        'No\nimage',
-                                        style: TextStyle(fontSize: 18),
+                                        'Add image',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                        ),
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
@@ -175,42 +155,89 @@ class BookCreatePage extends StatelessWidget {
                                 }
                               },
                             ),
-                          ),
-                          Container(
-                            width: double.maxFinite,
-                            alignment: Alignment.bottomCenter,
-                            child: Container(
-                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                            Container(
                               width: double.maxFinite,
-                              height: 75,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  IconButton(
-                                    color: Theme.of(context).colorScheme.surface,
-                                    onPressed: () => controller.takePicture(ImageSource.camera),
-                                    icon: const Icon(
-                                      Icons.camera_alt,
-                                      size: 40,
-                                    ),
-                                  ),
-                                  IconButton(
-                                    color: Theme.of(context).colorScheme.surface,
-                                    onPressed: () => controller.takePicture(ImageSource.gallery),
-                                    icon: const Icon(
-                                      Icons.image,
-                                      size: 40,
-                                    ),
-                                  ),
-                                ],
+                              padding: EdgeInsets.only(bottom: 20),
+                              alignment: Alignment.bottomCenter,
+                              child: Obx(
+                                () {
+                                  final bool fileSelected = controller.selectedFile.value != null;
+
+                                  final Color buttonBackground = fileSelected
+                                      ? Theme.of(context).colorScheme.surfaceContainer
+                                      : Theme.of(context).colorScheme.primary;
+
+                                  final Color iconColor = fileSelected
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Theme.of(context).colorScheme.onPrimary;
+
+                                  final Border? buttonBorder = fileSelected
+                                      ? Border.all(color: Theme.of(context).colorScheme.primary, width: 2)
+                                      : null;
+
+                                  return Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      InkWell(
+                                        onTap: () => controller.takePicture(ImageSource.camera),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            border: buttonBorder,
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: buttonBackground,
+                                          ),
+                                          padding: const EdgeInsets.all(13),
+                                          child: Icon(
+                                            Atlas.camera,
+                                            weight: 400,
+                                            color: iconColor,
+                                            size: 24,
+                                          ),
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () => controller.takePicture(ImageSource.gallery),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            border: buttonBorder,
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: buttonBackground,
+                                          ),
+                                          padding: const EdgeInsets.all(13),
+                                          child: Icon(
+                                            Atlas.image_gallery,
+                                            color: iconColor,
+                                            size: 24,
+                                          ),
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () => controller.takePicture(ImageSource.gallery),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            border: buttonBorder,
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: buttonBackground,
+                                          ),
+                                          padding: const EdgeInsets.all(13),
+                                          child: Icon(
+                                            Atlas.barcode,
+                                            color: iconColor,
+                                            size: 24,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                    const Divider(height: 30),
+                    const Divider(height: 20),
                     CommonTextField(
                       callback: controller.onTitleChange,
                       inheritedController: controller.titleController,
@@ -219,19 +246,22 @@ class BookCreatePage extends StatelessWidget {
                       maxLength: 100,
                       maxLines: 2,
                     ),
-                    const Divider(),
                     CommonTextField(
                       callback: controller.onAuthorChange,
                       inheritedController: controller.authorController,
                       label: 'Author',
                       validator: (String? value) => controller.stringValidator(value, 3),
                     ),
+                    CommonTextField(
+                      callback: controller.onReviewTextChange,
+                      inheritedController: controller.authorController,
+                      label: 'Review (Optional)',
+                      minLines: 4,
+                      maxLines: 4,
+                      validator: (String? value) => controller.stringValidator(value, 3),
+                    ),
                     const Divider(),
                     _availableForLoansPrompt(controller),
-                    const Divider(),
-                    _addReviewPrompt(controller),
-                    const Divider(),
-                    _reviewTextInput(controller),
                   ],
                 ),
               ),

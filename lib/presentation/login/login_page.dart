@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/login/login_controller.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -17,26 +18,26 @@ class LoginPage extends StatelessWidget {
           CommonTextField(
             validator: controller.emailValidator,
             callback: controller.onEmailChange,
-            label: 'Email',
+            label: 'email'.tr,
           ),
-          const Divider(color: Colors.transparent),
+          const Divider(height: 5),
           CommonPasswordField(
             validator: controller.passwordValidator,
             callback: controller.onPasswordChange,
-            label: 'Password',
+            label: 'password'.tr,
           ),
-          const Divider(),
+          const Divider(height: 5),
           Container(
             alignment: Alignment.centerRight,
-            height: 50,
+            height: 20,
             width: double.maxFinite,
             child: TextButton(
               child: Text(
-                'Forgot password?',
+                'forgot-password'.tr,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: Theme.of(Get.context!).colorScheme.onSurface,
+                  color: Theme.of(Get.context!).colorScheme.secondary,
                 ),
                 textAlign: TextAlign.right,
               ),
@@ -45,7 +46,6 @@ class LoginPage extends StatelessWidget {
               },
             ),
           ),
-          const Divider(),
           Obx(
             () => Text(
               controller.errorMessage.value,
@@ -55,14 +55,16 @@ class LoginPage extends StatelessWidget {
               ),
             ),
           ),
-          const Divider(),
+          const Divider(height: 30),
           Obx(
             () => CommonLoadingBody(
               loading: controller.loading.value,
               size: 40,
               child: ElevatedButton(
                 onPressed: controller.loginButtonCallback,
-                child: const Text('Login'),
+                child: Text(
+                  'login'.tr,
+                ),
               ),
             ),
           ),
@@ -78,13 +80,32 @@ class LoginPage extends StatelessWidget {
       builder: (LoginController controller) {
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.surface,
-          body: Padding(
-            padding: const EdgeInsets.only(
-              top: 75,
-              right: 50,
-              left: 50,
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(
+                top: 100,
+                right: 40,
+                left: 40,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 50),
+                    child: Text(
+                      'sign-in'.tr,
+                      textAlign: TextAlign.left,
+                      style: GoogleFonts.lora(
+                        fontSize: 40,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  const Divider(height: 40),
+                  _loginForm(controller),
+                ],
+              ),
             ),
-            child: _loginForm(controller),
           ),
         );
       },

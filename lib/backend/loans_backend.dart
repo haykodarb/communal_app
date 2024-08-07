@@ -338,6 +338,7 @@ class LoansBackend {
           )
           .eq('returned', true)
           .eq('accepted', true)
+          .eq('loanee', user.id)
           .not('book', 'is', null)
           .not('review', 'is', null);
 

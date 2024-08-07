@@ -49,12 +49,13 @@ final ElevatedButtonThemeData _elevatedButtonThemeData = ElevatedButtonThemeData
     foregroundColor: _darkScheme.onPrimary,
     disabledBackgroundColor: _darkScheme.onSurface,
     textStyle: const TextStyle(
-      fontSize: 18,
+      fontSize: 20,
+      fontWeight: FontWeight.w700,
     ),
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(5),
+      borderRadius: BorderRadius.circular(50),
     ),
-    minimumSize: const Size.fromHeight(50),
+    minimumSize: const Size.fromHeight(60),
   ),
 );
 
@@ -68,32 +69,24 @@ final OutlinedButtonThemeData _outlinedButtonThemeData = OutlinedButtonThemeData
       width: 2,
     ),
     textStyle: const TextStyle(
-      fontSize: 18,
+      fontSize: 20,
+      fontWeight: FontWeight.w700,
     ),
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(5),
+      borderRadius: BorderRadius.circular(50),
     ),
-    minimumSize: const Size.fromHeight(50),
+    minimumSize: const Size.fromHeight(60),
   ),
 );
 
 final InputDecorationTheme _inputDecorationTheme = InputDecorationTheme(
-  labelStyle: TextStyle(
-    color: _darkScheme.primary,
-  ),
-  floatingLabelStyle: TextStyle(
-    color: _darkScheme.primary,
-  ),
-  enabledBorder: OutlineInputBorder(
-    borderSide: BorderSide(
-      color: _darkScheme.primary,
-    ),
-  ),
-  focusedBorder: OutlineInputBorder(
-    borderSide: BorderSide(
-      color: _darkScheme.primary,
-    ),
-  ),
+  fillColor: _darkScheme.surfaceContainer,
+  filled: true,
+  labelStyle: TextStyle(color: _darkScheme.onSurfaceVariant),
+  floatingLabelStyle: TextStyle(color: _darkScheme.onSurface),
+  focusedBorder: const OutlineInputBorder(borderSide: BorderSide.none),
+  border: const OutlineInputBorder(borderSide: BorderSide.none),
+  enabledBorder: const OutlineInputBorder(borderSide: BorderSide.none),
   errorBorder: OutlineInputBorder(
     borderSide: BorderSide(
       color: _darkScheme.error,
@@ -110,7 +103,6 @@ final InputDecorationTheme _inputDecorationTheme = InputDecorationTheme(
   isDense: true,
   contentPadding: const EdgeInsets.all(20),
 );
-
 final IconThemeData _iconThemeData = IconThemeData(
   color: _darkScheme.onSurface,
 );

@@ -3,16 +3,15 @@ import 'package:communal/presentation/community/community_specific/community_boo
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_page.dart';
 import 'package:communal/presentation/community/community_specific/community_members/community_members_page.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_controller.dart';
-import 'package:communal/presentation/community/community_specific/community_tools/community_tools_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CommunitySpecificPage extends StatelessWidget {
   const CommunitySpecificPage({super.key});
 
-  static const List<IconData> _icons = <IconData>[Atlas.book, Icons.handyman_outlined, Atlas.chats, Atlas.users];
+  static const List<IconData> _icons = <IconData>[Atlas.book, Atlas.chats, Atlas.users];
 
-  static const List<String> _labels = <String>['Books', 'Tools', 'Discuss', 'Members'];
+  static const List<String> _labels = <String>['Books', 'Discuss', 'Members'];
 
   Widget _tabBarItem(CommunitySpecificController controller, int index) {
     return Builder(
@@ -23,19 +22,21 @@ class CommunitySpecificPage extends StatelessWidget {
 
             if (!isSelected) {
               return Expanded(
-                child: InkWell(
-                  enableFeedback: true,
-                  onTap: () {
-                    controller.selectedIndex.value = index;
-                  },
-                  child: SizedBox(
-                    width: 40,
-                    child: Icon(
-                      _icons[index],
-                      color: Theme.of(context).colorScheme.primary,
+                child: LayoutBuilder(builder: (context, constraints) {
+                  return InkWell(
+                    enableFeedback: true,
+                    onTap: () {
+                      controller.selectedIndex.value = index;
+                    },
+                    child: SizedBox(
+                      width: 40,
+                      child: Icon(
+                        _icons[index],
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                }),
               );
             }
 
@@ -43,7 +44,7 @@ class CommunitySpecificPage extends StatelessWidget {
               height: double.maxFinite,
               width: 150,
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
+                // color: Theme.of(context).colorScheme.primary,
                 borderRadius: BorderRadius.circular(40),
               ),
               child: Row(
@@ -110,14 +111,42 @@ class CommunitySpecificPage extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: Row(
-                      children: List.generate(
-                        _labels.length,
-                        (index) {
-                          return _tabBarItem(controller, index);
-                        },
-                      ),
-                    ),
+                    child: LayoutBuilder(builder: (context, constraints) {
+                      return Stack(
+                        children: [
+                          Obx(
+                            () {
+                              final int index = controller.selectedIndex.value;
+
+                              // print(constraints.maxWidth);
+
+                              final double offset = ((constraints.maxWidth - 150) / 2) / 150;
+
+                              return AnimatedSlide(
+                                offset: Offset(offset * index, 0),
+                                curve: Curves.linear,
+                                duration: const Duration(milliseconds: 0),
+                                child: Container(
+                                  width: 150,
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).colorScheme.primary,
+                                    borderRadius: BorderRadius.circular(40),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          Row(
+                            children: List.generate(
+                              _labels.length,
+                              (index) {
+                                return _tabBarItem(controller, index);
+                              },
+                            ),
+                          ),
+                        ],
+                      );
+                    }),
                   ),
                 ),
               ),
@@ -132,10 +161,8 @@ class CommunitySpecificPage extends StatelessWidget {
                   case 0:
                     return CommunityBooksPage(communityController: controller);
                   case 1:
-                    return CommunityToolsPage(communityController: controller);
-                  case 2:
                     return CommunityDiscussionsPage(communityController: controller);
-                  case 3:
+                  case 2:
                     return CommunityMembersPage(communityController: controller);
                   default:
                     return const Text('ERROR');

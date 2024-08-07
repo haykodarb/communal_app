@@ -169,9 +169,15 @@ class BooksBackend {
     }
   }
 
-  static Future<BackendResponse> getAllBooksForUser() async {
+  static Future<BackendResponse> getAllBooksForUser({String? id}) async {
     try {
-      final String userId = _client.auth.currentUser!.id;
+      String userId;
+
+      if (id == null) {
+        userId = _client.auth.currentUser!.id;
+      } else {
+        userId = id;
+      }
 
       final List<Map<String, dynamic>> response =
           await _client.from('books').select('*, profiles(*)').eq('owner', userId).limit(10).order('created_at');

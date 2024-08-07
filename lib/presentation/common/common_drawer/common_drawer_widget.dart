@@ -195,17 +195,17 @@ class CommonDrawerWidget extends StatelessWidget {
                         selected: Get.currentRoute == RouteNames.bookListPage,
                         callback: () => _commonDrawerController.goToRoute(RouteNames.bookListPage),
                       ),
-                      Divider(
-                        thickness: 2,
-                        color: dividerColor,
-                        height: dividerHeight,
-                      ),
-                      _drawerButton(
-                        text: 'my-tools'.tr,
-                        selected: Get.currentRoute == RouteNames.toolListPage,
-                        icon: Icons.handyman_outlined,
-                        callback: () => _commonDrawerController.goToRoute(RouteNames.toolListPage),
-                      ),
+                      // Divider(
+                      //   thickness: 2,
+                      //   color: dividerColor,
+                      //   height: dividerHeight,
+                      // ),
+                      // _drawerButton(
+                      //   text: 'my-tools'.tr,
+                      //   selected: Get.currentRoute == RouteNames.toolListPage,
+                      //   icon: Icons.handyman_outlined,
+                      //   callback: () => _commonDrawerController.goToRoute(RouteNames.toolListPage),
+                      // ),
                       Divider(
                         thickness: 2,
                         color: dividerColor,

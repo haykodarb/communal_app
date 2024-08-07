@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/register/register_controller.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
@@ -18,26 +19,26 @@ class RegisterPage extends StatelessWidget {
           CommonTextField(
             validator: controller.emailValidator,
             callback: controller.onEmailChange,
-            label: 'Email',
+            label: 'email'.tr,
           ),
-          const Divider(),
+          const Divider(height: 5),
           CommonAsyncTextField(
             callback: controller.onUsernameChange,
-            label: 'Username',
+            label: 'username'.tr,
             duration: const Duration(milliseconds: 500),
             asyncValidator: controller.asyncUsernameValidator,
             syncValidator: controller.usernameValidator,
           ),
-          const Divider(),
+          const Divider(height: 5),
           CommonPasswordField(
             validator: controller.passwordValidator,
             callback: controller.onPasswordChange,
-            label: 'Password',
+            label: 'password'.tr,
           ),
-          const Divider(),
+          const Divider(height: 5),
           Container(
             alignment: Alignment.centerRight,
-            height: 50,
+            height: 20,
             width: double.maxFinite,
             child: TextButton(
               child: Text(
@@ -45,7 +46,7 @@ class RegisterPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: Theme.of(Get.context!).colorScheme.onSurface,
+                  color: Theme.of(Get.context!).colorScheme.secondary,
                 ),
                 textAlign: TextAlign.right,
               ),
@@ -54,24 +55,14 @@ class RegisterPage extends StatelessWidget {
               },
             ),
           ),
-          const Divider(),
-          Obx(
-            () => Text(
-              controller.errorMessage.value,
-              style: TextStyle(
-                fontSize: 16,
-                color: Theme.of(Get.context!).colorScheme.error,
-              ),
-            ),
-          ),
-          const Divider(),
+          const Divider(height: 30),
           Obx(
             () => CommonLoadingBody(
               loading: controller.loading.value,
               size: 40,
               child: ElevatedButton(
                 onPressed: controller.onSubmitButton,
-                child: const Text('Register'),
+                child: Text('register'.tr),
               ),
             ),
           ),
@@ -129,9 +120,9 @@ class RegisterPage extends StatelessWidget {
                           ),
                           const Divider(height: 20),
                           TextButton(
-                            child: const Text(
-                              'Resend confirmation?',
-                              style: TextStyle(
+                            child: Text(
+                              'resend-confirmation'.tr,
+                              style: const TextStyle(
                                 fontSize: 18,
                               ),
                             ),
@@ -149,11 +140,29 @@ class RegisterPage extends StatelessWidget {
               return SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.only(
-                    top: 75,
-                    right: 50,
-                    left: 50,
+                    top: 100,
+                    right: 40,
+                    left: 40,
                   ),
-                  child: _registerForm(controller),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 50),
+                        child: Text(
+                          'create-account'.tr,
+                          textAlign: TextAlign.left,
+                          style: GoogleFonts.lora(
+                            fontSize: 40,
+                            height: 1.2,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      const Divider(height: 40),
+                      _registerForm(controller),
+                    ],
+                  ),
                 ),
               );
             },
