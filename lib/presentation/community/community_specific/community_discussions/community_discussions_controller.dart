@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:communal/backend/discussions_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/community.dart';
@@ -13,9 +15,17 @@ class CommunityDiscussionsController extends GetxController {
 
   final RxList<DiscussionTopic> topics = <DiscussionTopic>[].obs;
 
-  final RxBool loading = false.obs;
+  final RxList<DiscussionMessage> messages = <DiscussionMessage>[].obs;
+
+  final RxBool firstLoad = false.obs;
+  final RxBool loadingMore = false.obs;
 
   final RxString errorMessage = ''.obs;
+
+  final FocusNode focusScope = FocusNode();
+
+  Timer? searchDebounceTimer;
+  Timer? loadMoreDebounceTimer;
 
   @override
   void onInit() {
@@ -24,7 +34,7 @@ class CommunityDiscussionsController extends GetxController {
   }
 
   Future<void> getDiscussionTopics() async {
-    loading.value = true;
+    firstLoad.value = true;
 
     final BackendResponse response = await DiscussionsBackend.getDiscussionTopicsForCommunity(community);
 
@@ -32,7 +42,7 @@ class CommunityDiscussionsController extends GetxController {
       topics.value = response.payload;
     }
 
-    loading.value = false;
+    firstLoad.value = false;
   }
 
   Future<void> goToTopicMessages(DiscussionTopic topic) async {
@@ -53,5 +63,14 @@ class CommunityDiscussionsController extends GetxController {
     if (topic != null) {
       topics.add(topic);
     }
+  }
+
+  Future<void> searchTopics(String string_query) async {
+    searchDebounceTimer?.cancel();
+
+    searchDebounceTimer = Timer(
+      const Duration(milliseconds: 500),
+      () async {},
+    );
   }
 }

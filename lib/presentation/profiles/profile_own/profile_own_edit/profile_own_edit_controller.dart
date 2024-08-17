@@ -83,11 +83,9 @@ class ProfileOwnEditController extends GetxController {
     });
   }
 
-  void onShowEmailChanged(int? value) {
-    if (value == null) return;
-
+  void onShowEmailChanged() {
     profileForm.update((val) {
-      val!.show_email = value == 0;
+      val!.show_email = !val.show_email;
     });
   }
 
@@ -135,7 +133,7 @@ class ProfileOwnEditController extends GetxController {
 
   String? bioValidator(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter something.';
+      return null;
     }
 
     if (value.length < 20) {

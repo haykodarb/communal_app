@@ -1,3 +1,4 @@
+import 'package:communal/backend/users_backend.dart';
 import 'package:get/get.dart';
 
 class Profile {
@@ -18,6 +19,10 @@ class Profile {
     this.avatar_path,
     this.is_admin = false,
   });
+
+  bool get isCurrentUser {
+    return UsersBackend.currentUserId == id;
+  }
 
   Profile.empty()
       : username = '',

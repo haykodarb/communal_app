@@ -311,18 +311,18 @@ class CommunitySpecificBookPage extends StatelessWidget {
                         alignment: Alignment.center,
                         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                         decoration: BoxDecoration(
-                          color: book.available
-                              ? (loanByCurrentUser ? purple.withOpacity(0.25) : green.withOpacity(0.25))
-                              : (loanByCurrentUser ? purple.withOpacity(0.25) : red.withOpacity(0.25)),
+                          color: book.loaned
+                              ? (loanByCurrentUser ? purple.withOpacity(0.25) : red.withOpacity(0.25))
+                              : (loanByCurrentUser ? purple.withOpacity(0.25) : green.withOpacity(0.25)),
                           borderRadius: BorderRadius.circular(5),
                         ),
                         child: Row(
                           children: [
                             Container(
                               decoration: BoxDecoration(
-                                color: book.available
-                                    ? (loanByCurrentUser ? purple : green)
-                                    : (loanByCurrentUser ? purple : red),
+                                color: book.loaned
+                                    ? (loanByCurrentUser ? purple : red)
+                                    : (loanByCurrentUser ? purple : green),
                                 shape: BoxShape.circle,
                               ),
                               height: 8,
@@ -330,9 +330,9 @@ class CommunitySpecificBookPage extends StatelessWidget {
                             ),
                             const VerticalDivider(width: 10),
                             Text(
-                              book.available
-                                  ? (loanByCurrentUser ? 'requested'.tr : 'available'.tr)
-                                  : (loanByCurrentUser ? 'loaned'.tr : 'unavailable'.tr),
+                              book.loaned
+                                  ? (loanByCurrentUser ? 'loaned'.tr : 'unavailable'.tr)
+                                  : (loanByCurrentUser ? 'requested'.tr : 'available'.tr),
                             ),
                           ],
                         ),
@@ -342,7 +342,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
                 ],
               ),
               Visibility(
-                visible: book.available && !loanByCurrentUser,
+                visible: !book.loaned && !loanByCurrentUser,
                 child: ElevatedButton(
                   onPressed: controller.requestLoan,
                   child: Row(

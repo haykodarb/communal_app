@@ -9,6 +9,7 @@ class CommunitySpecificController extends GetxController with GetTickerProviderS
 
   late AnimationController bottomBarAnimationController;
   late Animation<Offset> bottomBarAnimation;
+  late Animation<double> floatingActionButtonAnimation;
 
   final RxInt selectedIndex = 0.obs;
   final RxBool showBottomNavBar = true.obs;
@@ -20,6 +21,10 @@ class CommunitySpecificController extends GetxController with GetTickerProviderS
     bottomBarAnimationController = AnimationController(
       duration: const Duration(milliseconds: 250),
       vsync: this,
+    );
+
+    floatingActionButtonAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: bottomBarAnimationController, curve: Curves.linear),
     );
 
     bottomBarAnimation = Tween<Offset>(

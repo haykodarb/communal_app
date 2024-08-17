@@ -26,13 +26,6 @@ class BookCreateController extends GetxController {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController authorController = TextEditingController();
 
-  @override
-  Future<void> onInit() async {
-    super.onInit();
-
-    bookForm.value.available = true;
-  }
-
   Future<void> getOpenLibraryImage(String isbnCode) async {
     final File? cover = await OpenLibraryBackend.getCoverByISBN(isbnCode);
     if (cover != null) {
@@ -122,11 +115,10 @@ class BookCreateController extends GetxController {
     );
   }
 
-  void onPublicChange(int? index) {
+  void onPublicChange() {
     bookForm.update(
       (Book? val) {
-        val!.public = index == 0 ? true : false;
-        val.available = index == 0 ? true : false;
+        val!.public = !val.public;
       },
     );
   }

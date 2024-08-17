@@ -89,39 +89,36 @@ class CommunityListPage extends StatelessWidget {
                 child: Obx(
                   () => CommonLoadingBody(
                     loading: controller.loading.value,
-                    child: RefreshIndicator(
-                      onRefresh: controller.fetchAllCommunities,
-                      child: Obx(
-                        () {
-                          if (controller.communities.isNotEmpty) {
-                            return ListView.separated(
-                              padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
-                              itemCount: controller.communities.length,
-                              separatorBuilder: (context, index) => const Divider(height: 5),
-                              itemBuilder: (context, index) {
-                                return _communityCard(
-                                  controller,
-                                  controller.communities[index],
-                                );
-                              },
-                            );
-                          } else {
-                            return const CustomScrollView(
-                              slivers: [
-                                SliverFillRemaining(
-                                  child: Center(
-                                    child: Text(
-                                      'You have not joined\nany communities yet.',
-                                      style: TextStyle(fontSize: 14),
-                                      textAlign: TextAlign.center,
-                                    ),
+                    child: Obx(
+                      () {
+                        if (controller.communities.isNotEmpty) {
+                          return ListView.separated(
+                            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
+                            itemCount: controller.communities.length,
+                            separatorBuilder: (context, index) => const Divider(height: 5),
+                            itemBuilder: (context, index) {
+                              return _communityCard(
+                                controller,
+                                controller.communities[index],
+                              );
+                            },
+                          );
+                        } else {
+                          return const CustomScrollView(
+                            slivers: [
+                              SliverFillRemaining(
+                                child: Center(
+                                  child: Text(
+                                    'You have not joined\nany communities yet.',
+                                    style: TextStyle(fontSize: 14),
+                                    textAlign: TextAlign.center,
                                   ),
                                 ),
-                              ],
-                            );
-                          }
-                        },
-                      ),
+                              ),
+                            ],
+                          );
+                        }
+                      },
                     ),
                   ),
                 ),

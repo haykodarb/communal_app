@@ -31,7 +31,7 @@ class CommonTextField extends StatelessWidget {
       cursorColor: Theme.of(context).colorScheme.primary,
       onChanged: callback,
       controller: controller,
-      style: TextStyle(fontSize: 14),
+      style: const TextStyle(fontSize: 14),
       minLines: minLines,
       maxLines: maxLines,
       maxLength: maxLength,
@@ -78,7 +78,7 @@ class _CommonPasswordFieldState extends State<CommonPasswordField> {
       minLines: widget.minLines,
       maxLines: widget.maxLines,
       maxLength: widget.maxLength,
-      style: TextStyle(fontSize: 14),
+      style: const TextStyle(fontSize: 14),
       decoration: InputDecoration(
         counter: const SizedBox.shrink(),
         suffixIcon: Padding(

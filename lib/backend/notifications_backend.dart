@@ -90,7 +90,6 @@ class NotificationsBackend {
 
       return BackendResponse(success: true, payload: notifications);
     } catch (e) {
-      print(e);
       return BackendResponse(success: false, payload: 'Error, please try again.');
     }
   }

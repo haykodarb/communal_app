@@ -27,6 +27,11 @@ class CommunityCreateController extends GetxController {
     );
   }
 
+  void onDescriptorChange(String value) {
+    communityForm.value.description = value;
+    communityForm.refresh();
+  }
+
   Future<void> takePicture(ImageSource source) async {
     XFile? pickedImage = await imagePicker.pickImage(
       source: source,

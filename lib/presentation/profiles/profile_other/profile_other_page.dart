@@ -242,7 +242,7 @@ class ProfileOtherPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '${loan.book?.title}',
+                            loan.book.title,
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -251,7 +251,7 @@ class ProfileOtherPage extends StatelessWidget {
                           ),
                           const Divider(height: 5),
                           Text(
-                            '${loan.book?.author}',
+                            loan.book.author,
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
@@ -280,7 +280,7 @@ class ProfileOtherPage extends StatelessWidget {
                         child: AspectRatio(
                           aspectRatio: 3 / 4,
                           child: FutureBuilder(
-                            future: BooksBackend.getBookCover(loan.book!),
+                            future: BooksBackend.getBookCover(loan.book),
                             builder: (context, snapshot) {
                               if (!snapshot.hasData) {
                                 return const CommonLoadingImage();

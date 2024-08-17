@@ -44,7 +44,7 @@ class DiscussionsBackend {
       final List<dynamic> response = await _client
           .from('discussion_topics')
           .select(
-            '*, profiles(*), communities(*)',
+            '*, profiles(*), communities(*), last_message(*, profiles(*))',
           )
           .eq(
             'community',

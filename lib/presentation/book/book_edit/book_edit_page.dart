@@ -36,7 +36,7 @@ class BookEditPage extends StatelessWidget {
               activeFgColor: Theme.of(context).colorScheme.onPrimary,
               inactiveBgColor: Theme.of(context).colorScheme.surfaceContainer,
               inactiveFgColor: Theme.of(context).colorScheme.onSurface,
-              initialLabelIndex: controller.inheritedBook.available ? 0 : 1,
+              initialLabelIndex: controller.inheritedBook.loaned ? 1 : 0,
               totalSwitches: 2,
               iconSize: 60,
               icons: const [Icons.done, Icons.close],

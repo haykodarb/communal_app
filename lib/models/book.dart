@@ -9,7 +9,7 @@ class Book {
   String image_path;
   String? review;
   Profile owner;
-  bool available;
+  bool loaned;
   bool public;
 
   RxBool loading = false.obs;
@@ -21,7 +21,7 @@ class Book {
     required this.title,
     required this.owner,
     required this.image_path,
-    required this.available,
+    required this.loaned,
     required this.review,
     required this.public,
   });
@@ -32,7 +32,7 @@ class Book {
         title = map['title'],
         author = map['author'],
         owner = Profile.fromMap(map['profiles']),
-        available = map['available'],
+        loaned = map['loaned'],
         review = map['review'],
         public = map['public'],
         image_path = map['image_path'];
@@ -43,7 +43,7 @@ class Book {
         title = '',
         author = '',
         image_path = '',
-        available = true,
+        loaned = true,
         public = true,
         owner = Profile.empty();
 }

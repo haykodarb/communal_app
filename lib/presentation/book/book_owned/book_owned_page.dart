@@ -295,15 +295,14 @@ class BookOwnedPage extends StatelessWidget {
                           alignment: Alignment.center,
                           padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                           decoration: BoxDecoration(
-                            color:
-                                (book.available || !book.public) ? green.withOpacity(0.25) : purple.withOpacity(0.25),
+                            color: (!book.loaned || !book.public) ? green.withOpacity(0.25) : purple.withOpacity(0.25),
                             borderRadius: BorderRadius.circular(5),
                           ),
                           child: Row(
                             children: [
                               Container(
                                 decoration: BoxDecoration(
-                                  color: (book.available || !book.public) ? green : purple,
+                                  color: (!book.loaned || !book.public) ? green : purple,
                                   shape: BoxShape.circle,
                                 ),
                                 height: 8,
@@ -311,7 +310,7 @@ class BookOwnedPage extends StatelessWidget {
                               ),
                               const VerticalDivider(width: 10),
                               Text(
-                                (book.available || !book.public) ? 'available'.tr : 'loaned'.tr,
+                                (!book.loaned || !book.public) ? 'available'.tr : 'loaned'.tr,
                               ),
                             ],
                           ),
@@ -325,7 +324,7 @@ class BookOwnedPage extends StatelessWidget {
           ),
           const Expanded(child: SizedBox()),
           Visibility(
-            visible: (book.available || !book.public),
+            visible: (!book.loaned || !book.public),
             child: Row(
               children: [
                 Expanded(
@@ -365,7 +364,7 @@ class BookOwnedPage extends StatelessWidget {
             ),
           ),
           Visibility(
-            visible: !(book.available || !book.public),
+            visible: book.loaned,
             child: ElevatedButton(
               onPressed: () {},
               child: const Row(

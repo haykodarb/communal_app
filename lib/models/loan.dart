@@ -1,7 +1,6 @@
 import 'package:communal/models/book.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/models/profile.dart';
-import 'package:communal/models/tool.dart';
 import 'package:get/get.dart';
 
 class Loan {
@@ -10,8 +9,7 @@ class Loan {
   DateTime? accepted_at;
   DateTime? returned_at;
   Community community;
-  Book? book;
-  Tool? tool;
+  Book book;
   Profile loanee;
   Profile owner;
   String? review;
@@ -21,28 +19,12 @@ class Loan {
 
   RxBool loading = false.obs;
 
-  bool get hasBook {
-    return book != null;
-  }
-
-  bool get hasTool {
-    return tool != null;
-  }
-
   String get name {
-    if (book == null) {
-      return tool!.name;
-    } else {
-      return book!.title;
-    }
+    return book.title;
   }
 
   String? get description {
-    if (book == null) {
-      return tool!.description;
-    } else {
-      return book!.review;
-    }
+    return book.review;
   }
 
   Loan({
@@ -71,10 +53,9 @@ class Loan {
           owner: map['communities']['owner'],
           image_path: map['communities']['image_path'],
         ),
-        book = map['books'] != null ? Book.fromMap(map['books']) : null,
-        tool = map['tools'] != null ? Tool.fromMap(map['tools']) : null,
-        loanee = Profile.fromMap(map['loanee_profile']),
+        book = map['books'] != null ? Book.fromMap(map['books']) : Book.empty(),
         owner = Profile.fromMap(map['owner_profile']),
+        loanee = Profile.fromMap(map['loanee_profile']),
         accepted = map['accepted'],
         rejected = map['rejected'],
         returned = map['returned'];
@@ -83,6 +64,7 @@ class Loan {
       : id = '',
         created_at = DateTime.now(),
         community = Community.empty(),
+        book = Book.empty(),
         loanee = Profile.empty(),
         owner = Profile.empty(),
         accepted = false,

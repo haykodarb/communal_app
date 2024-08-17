@@ -8,10 +8,17 @@ import 'package:communal/models/tool.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-enum LoansRequestType {
-  userIsOwner,
-  userIsLoanee,
-  loanIsCompleted,
+class LoansFilterParams {
+  bool allStatus = true;
+  bool accepted = false;
+  bool returned = false;
+  bool orderByDate = true;
+  bool userIsOwner = true;
+  bool userIsLoanee = true;
+
+  String searchQuery = '';
+
+  int currentIndex = 0;
 }
 
 class LoansBackend {
@@ -69,39 +76,19 @@ class LoansBackend {
     }
   }
 
-  static Future<BackendResponse> getLoanCountWhere(LoansRequestType requestType) async {
+  static Future<BackendResponse> getLoanCountWhere() async {
     final SupabaseClient client = Supabase.instance.client;
 
     final String userId = client.auth.currentUser!.id;
 
     Map<String, Object> query;
 
-    switch (requestType) {
-      case LoansRequestType.userIsOwner:
-        query = {
-          'owner': userId,
-          'returned': false,
-          'accepted': false,
-          'rejected': false,
-        };
-        break;
-
-      case LoansRequestType.userIsLoanee:
-        query = {
-          'loanee': userId,
-          'returned': false,
-          'rejected': false,
-        };
-        break;
-      case LoansRequestType.loanIsCompleted:
-        query = {
-          'returned': true,
-        };
-        break;
-      default:
-        query = {};
-        break;
-    }
+    query = {
+      'owner': userId,
+      'returned': false,
+      'accepted': false,
+      'rejected': false,
+    };
 
     final PostgrestResponse<PostgrestList> response =
         await client.from('loans').select('*').match(query).count(CountOption.exact);
@@ -253,40 +240,45 @@ class LoansBackend {
     );
   }
 
-  static Future<BackendResponse> getLoansWhere(LoansRequestType requestType) async {
+  static Future<BackendResponse> getLoansForUser(LoansFilterParams params) async {
     try {
       final SupabaseClient client = Supabase.instance.client;
       final String userId = UsersBackend.currentUserId;
 
       PostgrestFilterBuilder filter = client.from('loans').select(
-            '*, communities(*), books!left(*, profiles(*)), tools!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
+            '*, communities(*), books!inner(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
           );
 
-      switch (requestType) {
-        case LoansRequestType.userIsOwner:
-          filter = filter.eq('returned', false).eq('rejected', false).eq('owner', userId);
-          break;
+      filter = filter.not('books', 'is', null);
 
-        case LoansRequestType.userIsLoanee:
-          filter = filter.match(
-            {
-              'loanee': userId,
-              'returned': false,
-            },
-          );
-          break;
-        case LoansRequestType.loanIsCompleted:
-          filter = filter.eq('returned', true);
-          break;
-        default:
-          break;
+      if (!params.allStatus) {
+        filter = filter.eq('returned', params.returned).eq('accepted', params.accepted);
       }
 
-      final List<dynamic> response = await filter;
-
-      if (response.isEmpty) {
-        return BackendResponse(success: false, payload: 'No requests have been made for your items yet.');
+      if (params.userIsLoanee && params.userIsOwner) {
+        filter = filter.or('loanee.eq.$userId,owner.eq.$userId');
+      } else {
+        if (params.userIsLoanee) {
+          filter = filter.eq('loanee', userId);
+        }
+        if (params.userIsOwner) {
+          filter = filter.eq('owner', userId);
+        }
       }
+
+      if (params.searchQuery.isNotEmpty) {
+        filter = filter.ilike('books.title', '%${params.searchQuery}%');
+      }
+
+      PostgrestTransformBuilder transform;
+
+      if (params.orderByDate) {
+        transform = filter.order('latest_date');
+      } else {
+        transform = filter.order('books(title)', ascending: true);
+      }
+
+      final List<dynamic> response = await transform;
 
       final List<Loan> loanList = response.map((element) => Loan.fromMap(element)).toList();
 

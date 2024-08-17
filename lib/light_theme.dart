@@ -91,11 +91,13 @@ final OutlinedButtonThemeData _outlinedButtonThemeData = OutlinedButtonThemeData
 final InputDecorationTheme _inputDecorationTheme = InputDecorationTheme(
   fillColor: _lightScheme.surfaceContainer,
   filled: true,
-  labelStyle: TextStyle(color: _lightScheme.onSurfaceVariant),
+  labelStyle: TextStyle(color: _lightScheme.onSurfaceVariant, fontSize: 14),
   floatingLabelStyle: TextStyle(color: _lightScheme.onSurface),
   focusedBorder: const OutlineInputBorder(borderSide: BorderSide.none),
   border: const OutlineInputBorder(borderSide: BorderSide.none),
   enabledBorder: const OutlineInputBorder(borderSide: BorderSide.none),
+  hintStyle: const TextStyle(fontSize: 14),
+  floatingLabelBehavior: FloatingLabelBehavior.never,
   errorBorder: OutlineInputBorder(
     borderSide: BorderSide(
       color: _lightScheme.error,
@@ -129,7 +131,7 @@ final CardTheme _cardTheme = CardTheme(
   color: _lightScheme.surfaceContainer,
   shadowColor: _lightScheme.shadow,
   elevation: 0,
-  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
 );
 
 final PopupMenuThemeData _popupMenuTheme = PopupMenuThemeData(
@@ -147,6 +149,10 @@ final ActionIconThemeData _actionIconThemeData = ActionIconThemeData(
   backButtonIconBuilder: (context) => const Icon(
     Icons.chevron_left_rounded,
     size: 36,
+  ),
+  drawerButtonIconBuilder: (context) => const Icon(
+    Atlas.justify_bold,
+    size: 20,
   ),
 );
 

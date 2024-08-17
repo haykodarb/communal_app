@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:communal/backend/loans_backend.dart';
 import 'package:communal/backend/login_backend.dart';
 import 'package:communal/backend/messages_backend.dart';
 import 'package:communal/backend/notifications_backend.dart';

@@ -11,7 +11,7 @@ class RealtimeBackend {
 
     client
         .channel(
-          'my_channel',
+          'all',
           opts: const RealtimeChannelConfig(
             self: true,
           ),
@@ -26,7 +26,6 @@ class RealtimeBackend {
                 new_row: payload.newRecord,
                 eventType: payload.eventType,
               );
-
               streamController.add(realtimeMessage);
             }
           },

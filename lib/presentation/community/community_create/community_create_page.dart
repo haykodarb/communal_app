@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/community/community_create/community_create_controller.dart';
@@ -17,13 +18,14 @@ class CommunityCreatePage extends StatelessWidget {
       builder: (controller) {
         return Scaffold(
           resizeToAvoidBottomInset: false,
-          appBar: AppBar(),
+          appBar: AppBar(
+            title: const Text('Create Community'),
+          ),
           body: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 30),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
             child: Form(
               key: controller.formKey,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
                     width: double.maxFinite,
@@ -62,61 +64,85 @@ class CommunityCreatePage extends StatelessWidget {
                             ),
                           ),
                           Container(
+                            width: double.maxFinite,
+                            padding: const EdgeInsets.only(right: 20),
                             alignment: Alignment.centerRight,
-                            height: double.maxFinite,
-                            child: Container(
-                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.35),
-                              height: double.maxFinite,
-                              width: 75,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  IconButton(
-                                    color: Theme.of(context).colorScheme.surface,
-                                    onPressed: () => controller.takePicture(ImageSource.camera),
-                                    icon: const Icon(
-                                      Icons.camera_alt,
-                                      size: 40,
+                            child: Obx(
+                              () {
+                                final bool fileSelected = controller.selectedFile.value != null;
+
+                                final Color buttonBackground = fileSelected
+                                    ? Theme.of(context).colorScheme.surfaceContainer
+                                    : Theme.of(context).colorScheme.primary;
+
+                                final Color iconColor = fileSelected
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Theme.of(context).colorScheme.onPrimary;
+
+                                final Border? buttonBorder = fileSelected
+                                    ? Border.all(color: Theme.of(context).colorScheme.primary, width: 2)
+                                    : null;
+
+                                return Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    InkWell(
+                                      onTap: () => controller.takePicture(ImageSource.camera),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          border: buttonBorder,
+                                          borderRadius: BorderRadius.circular(10),
+                                          color: buttonBackground,
+                                        ),
+                                        padding: const EdgeInsets.all(13),
+                                        child: Icon(
+                                          Atlas.camera,
+                                          weight: 400,
+                                          color: iconColor,
+                                          size: 24,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                  IconButton(
-                                    color: Theme.of(context).colorScheme.surface,
-                                    onPressed: () => controller.takePicture(ImageSource.gallery),
-                                    icon: const Icon(
-                                      Icons.image,
-                                      size: 40,
+                                    InkWell(
+                                      onTap: () => controller.takePicture(ImageSource.gallery),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          border: buttonBorder,
+                                          borderRadius: BorderRadius.circular(10),
+                                          color: buttonBackground,
+                                        ),
+                                        padding: const EdgeInsets.all(13),
+                                        child: Icon(
+                                          Atlas.image_gallery,
+                                          color: iconColor,
+                                          size: 24,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
+                                  ],
+                                );
+                              },
                             ),
                           ),
                         ],
                       ),
                     ),
                   ),
+                  const Divider(height: 20),
                   CommonTextField(
                     callback: controller.onNameChange,
                     label: 'Name',
                     validator: (value) => controller.stringValidator(value, 4),
                   ),
-                  const Divider(),
-                  const Divider(height: 15),
-                  SizedBox(
-                    height: 70,
-                    child: Obx(
-                      () => Text(
-                        controller.errorMessage.value,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Theme.of(context).colorScheme.error,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
+                  CommonTextField(
+                    callback: controller.onDescriptorChange,
+                    label: 'Description (Optional)',
+                    minLines: 5,
+                    maxLines: 10,
+                    validator: (value) => controller.stringValidator(value, 4),
                   ),
-                  const Divider(height: 15),
+                  const Divider(height: 20),
                   SizedBox(
                     height: 70,
                     child: Obx(

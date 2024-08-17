@@ -126,20 +126,20 @@ class MessagesSpecificController extends GetxController {
       is_read: realtimeMessage.new_row['is_read'],
     );
 
-    final bool isCurrentChat = message.receiver.id == user.id && message.sender.id == UsersBackend.currentUserId ||
-        message.sender.id == user.id && message.receiver.id == UsersBackend.currentUserId;
+    final bool isCurrentChat = message.receiver.id == user.id && message.sender.isCurrentUser ||
+        message.sender.id == user.id && message.receiver.isCurrentUser;
 
     if (!isCurrentChat) return;
+
+    print(message);
 
     final bool messageExists = messages.any((element) => element.id == message.id);
 
     if (messageExists) {
       messages.firstWhereOrNull((element) => element.id == message.id)?.is_read = message.is_read;
-    } else {
-      if (message.sender.id != UsersBackend.currentUserId) {
-        messages.insert(0, message);
-        MessagesBackend.markMessagesWithUserAsRead(user);
-      }
+    } else if (!message.sender.isCurrentUser) {
+      messages.insert(0, message);
+      MessagesBackend.markMessagesWithUserAsRead(user);
     }
 
     messages.refresh();

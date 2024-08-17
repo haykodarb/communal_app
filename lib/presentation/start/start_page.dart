@@ -100,58 +100,60 @@ class StartPage extends StatelessWidget {
   }
 
   Widget _changeThemeButton(StartController controller) {
-    return Builder(builder: (context) {
-      return SizedBox(
-        height: 60,
-        width: 110,
-        child: OutlinedButton(
-          onPressed: controller.changeThemeMode,
-          style: OutlinedButton.styleFrom(
-            padding: EdgeInsets.zero,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Get.isDarkMode ? Colors.transparent : Theme.of(context).colorScheme.primary,
+    return Builder(
+      builder: (context) {
+        return SizedBox(
+          height: 60,
+          width: 110,
+          child: OutlinedButton(
+            onPressed: controller.changeThemeMode,
+            style: OutlinedButton.styleFrom(
+              padding: EdgeInsets.zero,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Get.isDarkMode ? Colors.transparent : Theme.of(context).colorScheme.primary,
+                    ),
+                    padding: EdgeInsets.zero,
+                    child: Icon(
+                      Atlas.sunny,
+                      size: 22,
+                      color: Get.isDarkMode
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.onPrimary,
+                    ),
                   ),
-                  padding: EdgeInsets.zero,
-                  child: Icon(
-                    Atlas.sunny,
-                    size: 22,
-                    color: Get.isDarkMode
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.onPrimary,
+                  Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Get.isDarkMode ? Theme.of(context).colorScheme.primary : Colors.transparent,
+                    ),
+                    padding: EdgeInsets.zero,
+                    child: Icon(
+                      Atlas.moon,
+                      size: 22,
+                      color: Get.isDarkMode
+                          ? Theme.of(context).colorScheme.onPrimary
+                          : Theme.of(context).colorScheme.primary,
+                    ),
                   ),
-                ),
-                Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Get.isDarkMode ? Theme.of(context).colorScheme.primary : Colors.transparent,
-                  ),
-                  padding: EdgeInsets.zero,
-                  child: Icon(
-                    Atlas.moon,
-                    size: 22,
-                    color: Get.isDarkMode
-                        ? Theme.of(context).colorScheme.onPrimary
-                        : Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 
   Widget _loginButton(StartController controller) {

@@ -1,7 +1,7 @@
-import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_search_bar.dart';
 import 'package:communal/presentation/common/common_vertical_book_card.dart';
 import 'package:communal/presentation/community/community_specific/community_books/community_books_controller.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_controller.dart';
@@ -20,68 +20,10 @@ class CommunityBooksPage extends StatelessWidget {
     return Builder(builder: (context) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          children: [
-            Expanded(
-              child: LayoutBuilder(builder: (context, constraints) {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceContainer,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  height: 45,
-                  child: TextField(
-                    onChanged: controller.searchBooks,
-                    focusNode: controller.focusScope,
-                    onTapOutside: (event) {
-                      controller.focusScope.unfocus();
-                    },
-                    cursorColor: Theme.of(context).colorScheme.onSurface,
-                    textAlignVertical: TextAlignVertical.center,
-                    style: const TextStyle(fontSize: 14),
-                    decoration: InputDecoration(
-                      fillColor: Theme.of(context).colorScheme.surfaceContainer,
-                      contentPadding: EdgeInsets.zero,
-                      isCollapsed: true,
-                      border: InputBorder.none,
-                      errorBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      prefixIcon: Icon(
-                        Atlas.magnifying_glass,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                      focusedBorder: InputBorder.none,
-                      focusedErrorBorder: InputBorder.none,
-                      labelStyle: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        fontSize: 14,
-                      ),
-                      label: const Text(
-                        'Search...',
-                        textAlign: TextAlign.center,
-                      ),
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                    ),
-                  ),
-                );
-              }),
-            ),
-            const VerticalDivider(width: 5),
-            IconButton(
-              onPressed: () {},
-              iconSize: 20,
-              style: IconButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                fixedSize: const Size(45, 45),
-              ),
-              icon: Icon(
-                Atlas.horizontal_sliders_dots,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
-          ],
+        child: CommonSearchBar(
+          searchCallback: controller.searchBooks,
+          filterCallback: () {},
+          focusNode: controller.focusScope,
         ),
       );
     });
@@ -92,12 +34,8 @@ class CommunityBooksPage extends StatelessWidget {
     return GetBuilder(
       init: CommunityBooksController(),
       builder: (controller) {
-        return ScrollConfiguration(
-          behavior: const ScrollBehavior().copyWith(
-            physics: const ClampingScrollPhysics(),
-            overscroll: false,
-          ),
-          child: ExtendedNestedScrollView(
+        return Scaffold(
+          body: ExtendedNestedScrollView(
             floatHeaderSlivers: true,
             controller: communityController.scrollController,
             headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -112,49 +50,46 @@ class CommunityBooksPage extends StatelessWidget {
                 ),
               ];
             },
-            body: RefreshIndicator(
-              onRefresh: controller.reloadPage,
-              child: Obx(
-                () => CommonLoadingBody(
-                  loading: controller.firstLoad.value,
-                  child: PagedMasonryGridView.count(
-                    pagingController: PagingController.fromValue(
-                      PagingState(itemList: controller.booksLoaded),
-                      firstPageKey: 0,
-                    ),
-                    mainAxisSpacing: 5,
-                    crossAxisSpacing: 5,
-                    padding: const EdgeInsets.only(top: 10, bottom: 90, right: 10, left: 10),
-                    crossAxisCount: 2,
-                    shrinkWrap: true,
-                    builderDelegate: PagedChildBuilderDelegate(
-                      noItemsFoundIndicatorBuilder: (context) {
-                        return const SizedBox(
-                          height: 100,
-                          child: Center(child: Text('No books found.')),
-                        );
-                      },
-                      itemBuilder: (context, item, index) {
-                        final Book book = controller.booksLoaded[index];
+            body: Obx(
+              () => CommonLoadingBody(
+                loading: controller.firstLoad.value,
+                child: PagedMasonryGridView.count(
+                  pagingController: PagingController.fromValue(
+                    PagingState(itemList: controller.booksLoaded),
+                    firstPageKey: 0,
+                  ),
+                  mainAxisSpacing: 5,
+                  crossAxisSpacing: 5,
+                  padding: const EdgeInsets.only(top: 10, bottom: 20, right: 10, left: 10),
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  builderDelegate: PagedChildBuilderDelegate(
+                    noItemsFoundIndicatorBuilder: (context) {
+                      return const SizedBox(
+                        height: 100,
+                        child: Center(child: Text('No books found.')),
+                      );
+                    },
+                    itemBuilder: (context, item, index) {
+                      final Book book = controller.booksLoaded[index];
 
-                        return CommonKeepaliveWrapper(
-                          child: InkWell(
-                            onTap: () {
-                              Get.toNamed(
-                                RouteNames.communitySpecificBookPage,
-                                arguments: {
-                                  'book': book,
-                                  'community': controller.community,
-                                },
-                              );
-                            },
-                            child: CommonVerticalBookCard(
-                              book: book,
-                            ),
+                      return CommonKeepaliveWrapper(
+                        child: InkWell(
+                          onTap: () {
+                            Get.toNamed(
+                              RouteNames.communitySpecificBookPage,
+                              arguments: {
+                                'book': book,
+                                'community': controller.community,
+                              },
+                            );
+                          },
+                          child: CommonVerticalBookCard(
+                            book: book,
                           ),
-                        );
-                      },
-                    ),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),

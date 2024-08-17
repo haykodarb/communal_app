@@ -3,6 +3,7 @@ import 'package:communal/backend/users_backend.dart';
 class Community {
   String id;
   String name;
+  String? description;
   String? image_path;
   String owner;
   bool? isCurrentUserAdmin;
@@ -23,6 +24,7 @@ class Community {
       : id = map['id'],
         name = map['name'],
         owner = map['owner'],
+        description = map['description'],
         image_path = map['image_path'];
 
   Community.empty()

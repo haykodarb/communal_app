@@ -93,8 +93,7 @@ class BookEditController extends GetxController {
   void onPublicChange(int? index) {
     bookForm.update(
       (Book? val) {
-        val!.public = index == 0 ? true : false;
-        val.available = index == 0 ? true : false;
+        val!.public = index == 0;
       },
     );
   }

@@ -48,10 +48,7 @@ class CommonDrawerWidget extends StatelessWidget {
                         height: 30,
                         child: Text(
                           text,
-                          style: TextStyle(
-                            color: color,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: TextStyle(color: color),
                         ),
                       ),
                     ),

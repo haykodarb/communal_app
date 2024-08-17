@@ -1,9 +1,9 @@
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/books_backend.dart';
-import 'package:communal/backend/tools_backend.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/models/profile.dart';
+import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_text_info.dart';
@@ -32,17 +32,14 @@ class LoanInfoPage extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              Visibility(
-                visible: loan.hasBook,
-                child: Text(
-                  loan.book?.author ?? '',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Theme.of(context).colorScheme.secondary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.center,
+              Text(
+                loan.book.author,
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Theme.of(context).colorScheme.secondary,
+                  fontWeight: FontWeight.w600,
                 ),
+                textAlign: TextAlign.center,
               ),
             ],
           ),
@@ -52,14 +49,12 @@ class LoanInfoPage extends StatelessWidget {
   }
 
   Widget _loanItemCover(Loan loan) {
-    if (loan.book == null && loan.tool == null) return const SizedBox.shrink();
-
     return ClipRRect(
       borderRadius: BorderRadius.circular(5),
       child: AspectRatio(
         aspectRatio: 3 / 4,
         child: FutureBuilder(
-          future: loan.hasBook ? BooksBackend.getBookCover(loan.book!) : ToolsBackend.getToolImage(loan.tool!),
+          future: BooksBackend.getBookCover(loan.book),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const CommonLoadingImage();
@@ -315,19 +310,11 @@ class LoanInfoPage extends StatelessWidget {
     return Builder(
       builder: (context) {
         if (!controller.loan.value.accepted) {
-          if (controller.loan.value.hasTool) {
-            return CommonTextInfo(
-              label: 'Description',
-              text: controller.loan.value.tool!.description,
-              size: 14,
-            );
-          } else {
-            return CommonTextInfo(
-              label: 'Owner Review',
-              text: controller.loan.value.book!.review ?? 'User has not reviewed this book yet.',
-              size: 14,
-            );
-          }
+          return CommonTextInfo(
+            label: 'Owner Review',
+            text: controller.loan.value.book.review ?? 'User has not reviewed this book yet.',
+            size: 14,
+          );
         } else {
           return Obx(
             () {
@@ -445,31 +432,117 @@ class LoanInfoPage extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _loanTitle(controller.loan.value),
-                      const Divider(height: 30),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Card(
+                    margin: EdgeInsets.zero,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
                         children: [
-                          Expanded(
-                            flex: 5,
-                            child: _loanItemCover(controller.loan.value),
+                          Row(
+                            children: [
+                              CommonCircularAvatar(
+                                profile: controller.loan.value.loanee.isCurrentUser
+                                    ? controller.loan.value.owner
+                                    : controller.loan.value.loanee,
+                                radius: 25,
+                              ),
+                              const VerticalDivider(width: 5),
+                              Text(
+                                controller.loan.value.loanee.isCurrentUser
+                                    ? controller.loan.value.owner.username
+                                    : controller.loan.value.loanee.username,
+                              ),
+                              const VerticalDivider(width: 5),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: controller.loan.value.loanee.isCurrentUser
+                                      ? Theme.of(context).colorScheme.tertiary.withOpacity(0.25)
+                                      : Theme.of(context).colorScheme.primary.withOpacity(0.25),
+                                  borderRadius: BorderRadius.circular(40),
+                                ),
+                                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+                                child: Text(
+                                  controller.loan.value.loanee.isCurrentUser ? 'Owner' : 'Loanee',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.2,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          Expanded(
-                            flex: 3,
-                            child: controller.loan.value.loanee.id == UsersBackend.currentUserId
-                                ? _borrowedSideInformation(controller)
-                                : _ownedSideInformation(controller),
+                          const Divider(height: 20),
+                          Container(
+                            padding: const EdgeInsets.only(left: 20, top: 20, bottom: 20, right: 10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Theme.of(context).colorScheme.surface,
+                            ),
+                            height: 140,
+                            child: Row(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  clipBehavior: Clip.hardEdge,
+                                  child: AspectRatio(
+                                    aspectRatio: 3 / 4,
+                                    child: FutureBuilder(
+                                      future: BooksBackend.getBookCover(controller.loan.value.book),
+                                      builder: (context, snapshot) {
+                                        if (!snapshot.hasData) {
+                                          return const CommonLoadingImage();
+                                        }
+
+                                        return Image.memory(
+                                          snapshot.data!,
+                                          gaplessPlayback: true,
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                const VerticalDivider(width: 15),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        controller.loan.value.book.title,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          height: 1.2,
+                                        ),
+                                      ),
+                                      const Divider(height: 5),
+                                      Text(
+                                        controller.loan.value.book.author,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
+                                          height: 1.2,
+                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.chevron_right,
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  size: 40,
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                      const Divider(height: 30),
-                      controller.loan.value.loanee.id == UsersBackend.currentUserId
-                          ? _borrowedBookReviewField(controller)
-                          : _ownedBookReviewField(controller),
-                    ],
+                    ),
                   ),
                 ),
               ),

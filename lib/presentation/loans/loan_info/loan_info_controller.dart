@@ -3,8 +3,7 @@ import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/presentation/common/common_confirmation_dialog.dart';
-import 'package:communal/presentation/loans/loans_borrowed/loans_borrowed_controller.dart';
-import 'package:communal/presentation/loans/loans_owned/loans_owned_controller.dart';
+import 'package:communal/presentation/loans/loans_controller.dart';
 import 'package:get/get.dart';
 
 class LoanInfoController extends GetxController {
@@ -19,8 +18,7 @@ class LoanInfoController extends GetxController {
 
   String? newReview = '';
 
-  final LoansBorrowedController? loansBorrowedController = Get.arguments['loansBorrowedController'];
-  final LoansOwnedController? loansOwnedController = Get.arguments['loansOwnedController'];
+  final LoansController? loansController = Get.arguments['loansController'];
 
   @override
   Future<void> onInit() async {
@@ -64,7 +62,7 @@ class LoanInfoController extends GetxController {
       final BackendResponse response = await LoansBackend.deleteLoan(loan.value);
 
       if (response.success) {
-        loansBorrowedController?.loans.removeWhere(
+        loansController?.loanList.removeWhere(
           (element) => element.id == inheritedLoan?.id,
         );
 
@@ -98,7 +96,7 @@ class LoanInfoController extends GetxController {
 
         inheritedLoan?.accepted = true;
         inheritedLoan?.accepted_at = DateTime.now();
-        loansOwnedController!.loans.refresh();
+        loansController!.loanList.refresh();
       } else {
         Get.dialog(
           CommonAlertDialog(title: response.payload),
@@ -120,7 +118,7 @@ class LoanInfoController extends GetxController {
       final BackendResponse response = await LoansBackend.setLoanParameterTrue(loan.value, 'rejected');
 
       if (response.success && inheritedLoan != null) {
-        loansOwnedController?.loans.removeWhere(
+        loansController?.loanList.removeWhere(
           (element) => element.id == inheritedLoan!.id,
         );
       }
@@ -152,7 +150,7 @@ class LoanInfoController extends GetxController {
         loan.value.returned_at = DateTime.now();
         loan.refresh();
 
-        loansOwnedController?.loans.removeWhere(
+        loansController?.loanList.removeWhere(
           (element) => element.id == inheritedLoan?.id,
         );
       } else {

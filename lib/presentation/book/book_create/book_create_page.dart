@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:atlas_icons/atlas_icons.dart';
+import 'package:communal/presentation/common/common_boolean_selector.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/book/book_create/book_create_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:toggle_switch/toggle_switch.dart';
 
 class BookCreatePage extends StatelessWidget {
   const BookCreatePage({super.key});
@@ -21,81 +21,10 @@ class BookCreatePage extends StatelessWidget {
               style: TextStyle(fontSize: 14),
             ),
             const Divider(),
-            ToggleSwitch(
-              minWidth: 60,
-              minHeight: 40,
-              cornerRadius: 4,
-              borderColor: [Theme.of(context).colorScheme.onSurface],
-              borderWidth: 0.75,
-              activeBgColors: [
-                [Theme.of(context).colorScheme.primary],
-                [Theme.of(context).colorScheme.error]
-              ],
-              activeFgColor: Theme.of(context).colorScheme.onPrimary,
-              inactiveBgColor: Theme.of(context).colorScheme.surfaceContainer,
-              inactiveFgColor: Theme.of(context).colorScheme.onSurface,
-              initialLabelIndex: 0,
-              totalSwitches: 2,
-              iconSize: 60,
-              icons: const [Icons.done, Icons.close],
-              radiusStyle: true,
-              onToggle: controller.onPublicChange,
+            Obx(
+              () => CommonBooleanSelector(callback: controller.onPublicChange, value: controller.bookForm.value.public),
             ),
           ],
-        );
-      },
-    );
-  }
-
-  Widget _addReviewPrompt(BookCreateController controller) {
-    return Builder(
-      builder: (context) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Add a review?',
-              style: TextStyle(fontSize: 14),
-            ),
-            const Divider(),
-            ToggleSwitch(
-              minWidth: 60,
-              minHeight: 40,
-              cornerRadius: 4,
-              borderColor: [Theme.of(context).colorScheme.onSurface],
-              borderWidth: 0.75,
-              activeBgColors: [
-                [Theme.of(context).colorScheme.primary],
-                [Theme.of(context).colorScheme.error]
-              ],
-              activeFgColor: Theme.of(context).colorScheme.onPrimary,
-              inactiveBgColor: Theme.of(context).colorScheme.surfaceContainer,
-              inactiveFgColor: Theme.of(context).colorScheme.onSurface,
-              initialLabelIndex: 1,
-              totalSwitches: 2,
-              iconSize: 60,
-              icons: const [Icons.done, Icons.close],
-              radiusStyle: true,
-              onToggle: controller.onAddReviewChange,
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _reviewTextInput(BookCreateController controller) {
-    return Obx(
-      () {
-        return Visibility(
-          visible: controller.addingReview.value,
-          child: CommonTextField(
-            callback: controller.onReviewTextChange,
-            label: 'Review',
-            validator: (String? value) => controller.stringValidator(value, 10),
-            maxLength: 100,
-            maxLines: 4,
-          ),
         );
       },
     );
@@ -114,7 +43,7 @@ class BookCreatePage extends StatelessWidget {
           ),
           body: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Form(
                 key: controller.formKey,
                 child: Column(
@@ -157,7 +86,7 @@ class BookCreatePage extends StatelessWidget {
                             ),
                             Container(
                               width: double.maxFinite,
-                              padding: EdgeInsets.only(bottom: 20),
+                              padding: const EdgeInsets.only(bottom: 20),
                               alignment: Alignment.bottomCenter,
                               child: Obx(
                                 () {
@@ -213,7 +142,7 @@ class BookCreatePage extends StatelessWidget {
                                         ),
                                       ),
                                       InkWell(
-                                        onTap: () => controller.takePicture(ImageSource.gallery),
+                                        onTap: controller.scanBook,
                                         child: Container(
                                           decoration: BoxDecoration(
                                             border: buttonBorder,
@@ -256,12 +185,14 @@ class BookCreatePage extends StatelessWidget {
                       callback: controller.onReviewTextChange,
                       inheritedController: controller.authorController,
                       label: 'Review (Optional)',
-                      minLines: 4,
-                      maxLines: 4,
-                      validator: (String? value) => controller.stringValidator(value, 3),
+                      minLines: 3,
+                      maxLines: 10,
+                      validator: (String? value) => controller.stringValidator(value, 10),
                     ),
-                    const Divider(),
+                    const Divider(height: 20),
                     _availableForLoansPrompt(controller),
+                    const Divider(height: 20),
+                    ElevatedButton(onPressed: controller.onSubmitButton, child: const Text('Add')),
                   ],
                 ),
               ),

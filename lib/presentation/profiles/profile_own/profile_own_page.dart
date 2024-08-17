@@ -12,7 +12,6 @@ import 'package:communal/presentation/common/common_vertical_book_card.dart';
 import 'package:communal/presentation/profiles/profile_own/profile_own_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -244,7 +243,7 @@ class ProfileOwnPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '${loan.book?.title}',
+                            loan.book.title,
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -253,7 +252,7 @@ class ProfileOwnPage extends StatelessWidget {
                           ),
                           const Divider(height: 5),
                           Text(
-                            '${loan.book?.author}',
+                            loan.book.author,
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
@@ -282,7 +281,7 @@ class ProfileOwnPage extends StatelessWidget {
                         child: AspectRatio(
                           aspectRatio: 3 / 4,
                           child: FutureBuilder(
-                            future: BooksBackend.getBookCover(loan.book!),
+                            future: BooksBackend.getBookCover(loan.book),
                             builder: (context, snapshot) {
                               if (!snapshot.hasData) {
                                 return const CommonLoadingImage();

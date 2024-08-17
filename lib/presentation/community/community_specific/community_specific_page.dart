@@ -84,6 +84,25 @@ class CommunitySpecificPage extends StatelessWidget {
           appBar: AppBar(
             title: Text(controller.community.name),
           ),
+          floatingActionButton: Obx(
+            () {
+              switch (controller.selectedIndex.value) {
+                case 1:
+                  return SlideTransition(
+                    position: controller.bottomBarAnimation,
+                    child: ScaleTransition(
+                      scale: controller.floatingActionButtonAnimation,
+                      child: FloatingActionButton(
+                        onPressed: () {},
+                        child: const Icon(Atlas.add_messages),
+                      ),
+                    ),
+                  );
+                default:
+                  return const SizedBox.shrink();
+              }
+            },
+          ),
           bottomNavigationBar: Theme(
             data: Theme.of(context).copyWith(
               highlightColor: Colors.transparent,

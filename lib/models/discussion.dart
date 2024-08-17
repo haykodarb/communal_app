@@ -7,6 +7,7 @@ class DiscussionTopic {
   final Profile creator;
   final Community community;
   final String name;
+  final DiscussionMessage last_message;
 
   DiscussionTopic({
     required this.id,
@@ -14,6 +15,7 @@ class DiscussionTopic {
     required this.creator,
     required this.community,
     required this.name,
+    required this.last_message,
   });
 
   DiscussionTopic.fromMap(Map<String, dynamic> map)
@@ -25,14 +27,15 @@ class DiscussionTopic {
           map['profiles'],
         ),
         community = Community.fromMap(map['communities']),
-        name = map['name'];
+        name = map['name'],
+        last_message = DiscussionMessage.fromMapWithoutTopic(map['last_message']);
 }
 
 class DiscussionMessage {
   final String id;
   final DateTime created_at;
   final Profile sender;
-  final DiscussionTopic topic;
+  DiscussionTopic? topic;
   final String content;
 
   DiscussionMessage({
@@ -50,13 +53,19 @@ class DiscussionMessage {
         topic = DiscussionTopic.fromMap(map['discussion_topics']),
         id = map['id'];
 
+  DiscussionMessage.fromMapWithoutTopic(Map<String, dynamic> map)
+      : sender = Profile.fromMap(map['profiles']),
+        content = map['content'],
+        created_at = DateTime.parse(map['created_at']),
+        id = map['id'];
+
   @override
   String toString() {
     return {
       'id': id,
       'created_at': created_at.toIso8601String(),
       'sender': sender.id,
-      'topic': topic.id,
+      'topic': topic?.id,
       'content': content,
     }.toString();
   }

@@ -1,3 +1,4 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:flutter/material.dart';
 
 const ColorScheme _darkScheme = ColorScheme.dark(
@@ -142,6 +143,16 @@ final TextButtonThemeData _textButtonTheme = TextButtonThemeData(
   ),
 );
 
+final ActionIconThemeData _actionIconThemeData = ActionIconThemeData(
+  backButtonIconBuilder: (context) => const Icon(
+    Icons.chevron_left_rounded,
+    size: 36,
+  ),
+  drawerButtonIconBuilder: (context) => const Icon(
+    Atlas.justify_bold,
+    size: 20,
+  ),
+);
 final ThemeData darkTheme = ThemeData(
   useMaterial3: true,
   colorScheme: _darkScheme,
@@ -161,4 +172,5 @@ final ThemeData darkTheme = ThemeData(
   popupMenuTheme: _popupMenuTheme,
   bottomNavigationBarTheme: _bottomNavigationBarTheme,
   applyElevationOverlayColor: true,
+  actionIconTheme: _actionIconThemeData,
 );
