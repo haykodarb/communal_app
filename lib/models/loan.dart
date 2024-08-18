@@ -8,6 +8,8 @@ class Loan {
   DateTime created_at;
   DateTime? accepted_at;
   DateTime? returned_at;
+  DateTime? rejected_at;
+  DateTime? latest_date;
   Community community;
   Book book;
   Profile loanee;
@@ -27,11 +29,17 @@ class Loan {
     return book.review;
   }
 
+  bool get isBorrowed {
+    return loanee.isCurrentUser;
+  }
+
+  bool get isOwned {
+    return owner.isCurrentUser;
+  }
+
   Loan({
     required this.id,
     required this.created_at,
-    required this.accepted_at,
-    required this.returned_at,
     required this.community,
     required this.book,
     required this.loanee,
@@ -46,6 +54,8 @@ class Loan {
         created_at = DateTime.parse(map['created_at']).toLocal(),
         accepted_at = DateTime.tryParse(map['accepted_at'] ?? '')?.toLocal(),
         returned_at = DateTime.tryParse(map['returned_at'] ?? '')?.toLocal(),
+        rejected_at = DateTime.tryParse(map['rejected_at'] ?? '')?.toLocal(),
+        latest_date = DateTime.tryParse(map['latest_date'] ?? '')?.toLocal(),
         review = map['review'],
         community = Community(
           id: map['communities']['id'],

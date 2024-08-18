@@ -1,10 +1,9 @@
 import 'package:atlas_icons/atlas_icons.dart';
-import 'package:communal/backend/books_backend.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/book/book_owned/book_owned_controller.dart';
+import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
-import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_username_button.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:get/get.dart';
@@ -419,27 +418,7 @@ class BookOwnedPage extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(5),
-                                child: AspectRatio(
-                                  aspectRatio: 3 / 4,
-                                  child: Obx(
-                                    () => FutureBuilder(
-                                      future: BooksBackend.getBookCover(controller.book.value),
-                                      builder: (context, snapshot) {
-                                        if (!snapshot.hasData) {
-                                          return const CommonLoadingImage();
-                                        }
-
-                                        return Image.memory(
-                                          snapshot.data!,
-                                          fit: BoxFit.cover,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
+                              child: CommonBookCover(controller.book.value),
                             ),
                           ),
                         ),

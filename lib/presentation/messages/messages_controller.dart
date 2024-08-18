@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MessagesController extends GetxController {
-  final RxList<Message> distinctChats = <Message>[].obs;
+  final RxList<Rx<Message>> distinctChats = <Rx<Message>>[].obs;
 
   final RxBool loading = false.obs;
 
@@ -51,32 +51,30 @@ class MessagesController extends GetxController {
       is_read: realtimeMessage.new_row['is_read'],
     );
 
-    if (distinctChats.any((element) => element.id == unfetchedMessage.id)) {
-      distinctChats.firstWhereOrNull((element) => element.id == unfetchedMessage.id)?.is_read =
-          unfetchedMessage.is_read;
-      distinctChats.refresh();
-      return;
-    }
-
-    final BackendResponse response = await MessagesBackend.getMessageWithId(unfetchedMessage.id);
+    final BackendResponse response = await MessagesBackend.getChatWithId(unfetchedMessage.id);
 
     if (!response.success) return;
 
     final Message message = response.payload;
 
-    final int indexOfExisting = distinctChats.indexWhere(
-      (element) =>
-          (element.receiver.id == message.receiver.id && element.sender.id == message.sender.id) ||
-          (element.sender.id == message.receiver.id && element.receiver.id == message.sender.id),
-    );
+    final int indexOfExistingMessage = distinctChats.indexWhere((element) => element.value.id == message.id);
 
-    if (indexOfExisting >= 0) {
-      distinctChats[indexOfExisting] = message;
-    } else {
-      distinctChats.insert(0, message);
+    if (indexOfExistingMessage >= 0) {
+      distinctChats[indexOfExistingMessage] = message.obs;
+      return;
     }
 
-    distinctChats.refresh();
+    final int indexOfExistingChat = distinctChats.indexWhere(
+      (element) =>
+          (element.value.receiver.id == message.receiver.id && element.value.sender.id == message.sender.id) ||
+          (element.value.sender.id == message.receiver.id && element.value.receiver.id == message.sender.id),
+    );
+
+    if (indexOfExistingChat >= 0) {
+      distinctChats[indexOfExistingChat].value = message;
+    } else {
+      distinctChats.insert(0, message.obs);
+    }
   }
 
   Future<void> goToSpecificChat(Profile chatter) async {
@@ -102,7 +100,8 @@ class MessagesController extends GetxController {
       final BackendResponse response = await MessagesBackend.deleteMessagesWithUser(chatter);
 
       if (response.success) {
-        distinctChats.removeWhere((element) => element.sender.id == chatter.id || element.receiver.id == chatter.id);
+        distinctChats
+            .removeWhere((element) => element.value.sender.id == chatter.id || element.value.receiver.id == chatter.id);
       }
     }
   }
@@ -110,10 +109,10 @@ class MessagesController extends GetxController {
   Future<void> loadChats() async {
     loading.value = true;
 
-    final BackendResponse response = await MessagesBackend.getDistinctChats();
+    final BackendResponse<List<Message>> response = await MessagesBackend.getDistinctChats();
 
     if (response.success) {
-      distinctChats.value = response.payload;
+      distinctChats.value = response.payload.map((e) => e.obs).toList();
     }
 
     loading.value = false;

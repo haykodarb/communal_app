@@ -1,9 +1,16 @@
 import 'package:communal/models/community.dart';
+import 'package:communal/presentation/community/community_specific/community_books/community_books_controller.dart';
+import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_controller.dart';
+import 'package:communal/presentation/community/community_specific/community_members/community_members_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CommunitySpecificController extends GetxController with GetTickerProviderStateMixin {
   final Community community = Get.arguments['community'];
+
+  final CommunityMembersController membersController = CommunityMembersController();
+  final CommunityDiscussionsController discussionsController = CommunityDiscussionsController();
+  final CommunityBooksController booksController = CommunityBooksController();
 
   final ScrollController scrollController = ScrollController();
 

@@ -98,6 +98,19 @@ class CommunitySpecificPage extends StatelessWidget {
                       ),
                     ),
                   );
+                case 2:
+                  return controller.community.isCurrentUserAdmin!
+                      ? SlideTransition(
+                          position: controller.bottomBarAnimation,
+                          child: ScaleTransition(
+                            scale: controller.floatingActionButtonAnimation,
+                            child: FloatingActionButton(
+                              onPressed: controller.membersController.addUser,
+                              child: const Icon(Atlas.user_plus),
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink();
                 default:
                   return const SizedBox.shrink();
               }

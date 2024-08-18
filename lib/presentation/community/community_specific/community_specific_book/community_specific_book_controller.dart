@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:communal/backend/loans_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';

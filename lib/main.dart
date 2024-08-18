@@ -71,9 +71,9 @@ class MyApp extends StatelessWidget {
       darkTheme: darkTheme,
       onInit: () async {
         if (Supabase.instance.client.auth.currentUser != null) {
-          Get.put(CommonDrawerController());
+          RealtimeBackend.subscribeToDatabaseChanges();
 
-          await RealtimeBackend.subscribeToDatabaseChanges();
+          Get.put(CommonDrawerController(), permanent: true);
         }
       },
       themeMode: themeMode,

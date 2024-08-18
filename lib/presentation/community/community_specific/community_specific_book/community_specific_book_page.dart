@@ -1,9 +1,8 @@
-import 'package:communal/backend/books_backend.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/loan.dart';
+import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
-import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_username_button.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_book/community_specific_book_controller.dart';
 import 'package:communal/routes.dart';
@@ -404,25 +403,7 @@ class CommunitySpecificBookPage extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(5),
-                                child: AspectRatio(
-                                  aspectRatio: 3 / 4,
-                                  child: FutureBuilder(
-                                    future: BooksBackend.getBookCover(controller.book),
-                                    builder: (context, snapshot) {
-                                      if (!snapshot.hasData) {
-                                        return const CommonLoadingImage();
-                                      }
-
-                                      return Image.memory(
-                                        snapshot.data!,
-                                        fit: BoxFit.cover,
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
+                              child: CommonBookCover(controller.book),
                             ),
                           ),
                         ),

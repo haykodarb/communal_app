@@ -7,6 +7,7 @@ class Message {
   Profile receiver;
   final String content;
   bool is_read;
+  int? unread_messages;
 
   Message({
     required this.id,
@@ -23,6 +24,7 @@ class Message {
         content = map['content'],
         created_at = DateTime.parse(map['created_at']),
         is_read = map['is_read'],
+        unread_messages = map['unread_messages'],
         id = map['id'];
 
   @override

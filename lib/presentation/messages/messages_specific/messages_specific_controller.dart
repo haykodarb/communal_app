@@ -131,8 +131,6 @@ class MessagesSpecificController extends GetxController {
 
     if (!isCurrentChat) return;
 
-    print(message);
-
     final bool messageExists = messages.any((element) => element.id == message.id);
 
     if (messageExists) {

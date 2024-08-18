@@ -18,6 +18,11 @@ class LoansController extends GetxController {
     super.onInit();
   }
 
+  void removeItemById(String id) {
+    loanList.removeWhere((element) => element.id == id);
+    loanList.refresh();
+  }
+
   void onSearchTextChanged(String value) {
     filterParams.value.currentIndex = 0;
     filterParams.value.searchQuery = value;

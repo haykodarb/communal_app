@@ -81,7 +81,7 @@ class CommonDrawerController extends GetxController {
 
       for (int i = 0; i < messages.length; i++) {
         if (!messages[i].is_read && messages[i].receiver.id == UsersBackend.currentUserId) {
-          unreadCount++;
+          unreadCount += messages[i].unread_messages ?? 1;
         }
       }
 

@@ -1,13 +1,13 @@
 import 'package:atlas_icons/atlas_icons.dart';
-import 'package:communal/backend/books_backend.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/loan.dart';
+import 'package:communal/models/profile.dart';
+import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
-import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_vertical_book_card.dart';
 import 'package:communal/presentation/profiles/profile_own/profile_own_controller.dart';
 import 'package:communal/routes.dart';
@@ -20,7 +20,7 @@ import 'package:intl/intl.dart';
 class ProfileOwnPage extends StatelessWidget {
   const ProfileOwnPage({super.key});
 
-  Widget _avatarRow(ProfileOwnController controller) {
+  Widget _avatarRow(Profile profile) {
     return Builder(
       builder: (context) {
         return Padding(
@@ -28,33 +28,40 @@ class ProfileOwnPage extends StatelessWidget {
           child: Row(
             children: [
               CommonCircularAvatar(
-                profile: UsersBackend.currentUserProfile.value,
+                profile: profile,
                 radius: 37.5,
               ),
               const VerticalDivider(width: 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Obx(
-                    () => Text(
-                      UsersBackend.currentUserProfile.value.username,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: Text(
+                        profile.username,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                        ),
                       ),
                     ),
-                  ),
-                  Obx(
-                    () => Text(
-                      UsersBackend.currentUserProfile.value.email ?? '',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        fontSize: 16,
+                    Visibility(
+                      visible: profile.email != null,
+                      child: FittedBox(
+                        fit: BoxFit.fitWidth,
+                        child: Text(
+                          profile.email ?? '',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            fontSize: 16,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
@@ -63,7 +70,7 @@ class ProfileOwnPage extends StatelessWidget {
     );
   }
 
-  Widget _bio(ProfileOwnController controller) {
+  Widget _bio(Profile profile) {
     return Builder(
       builder: (context) {
         return Padding(
@@ -80,13 +87,11 @@ class ProfileOwnPage extends StatelessWidget {
                 ),
               ),
               const Divider(height: 5),
-              Obx(
-                () => Text(
-                  UsersBackend.currentUserProfile.value.bio ?? '',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                  ),
+              Text(
+                profile.bio ?? '',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
             ],
@@ -276,25 +281,7 @@ class ProfileOwnPage extends StatelessWidget {
                     ),
                     SizedBox(
                       height: 100,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(5),
-                        child: AspectRatio(
-                          aspectRatio: 3 / 4,
-                          child: FutureBuilder(
-                            future: BooksBackend.getBookCover(loan.book),
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return const CommonLoadingImage();
-                              }
-
-                              return Image.memory(
-                                snapshot.data!,
-                                fit: BoxFit.cover,
-                              );
-                            },
-                          ),
-                        ),
-                      ),
+                      child: CommonBookCover(loan.book),
                     ),
                   ],
                 ),
@@ -319,7 +306,7 @@ class ProfileOwnPage extends StatelessWidget {
       child: PagedListView.separated(
         pagingController: PagingController.fromValue(PagingState(itemList: controller.userReviews), firstPageKey: 0),
         padding: const EdgeInsets.only(top: 10, bottom: 10),
-        separatorBuilder: (context, index) => const Divider(),
+        separatorBuilder: (context, index) => const Divider(height: 5),
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         builderDelegate: PagedChildBuilderDelegate(
@@ -405,9 +392,14 @@ class ProfileOwnPage extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _avatarRow(controller),
+                          Obx(() => _avatarRow(UsersBackend.currentUserProfile.value)),
                           const Divider(height: 10),
-                          _bio(controller),
+                          Obx(
+                            () => Visibility(
+                              visible: UsersBackend.currentUserProfile.value.bio != null,
+                              child: _bio(UsersBackend.currentUserProfile.value),
+                            ),
+                          ),
                           const Divider(height: 10),
                           _loanCount(controller),
                           const Divider(height: 10),

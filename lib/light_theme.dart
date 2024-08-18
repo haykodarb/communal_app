@@ -130,6 +130,7 @@ final FloatingActionButtonThemeData _floatingActionButtonThemeData = FloatingAct
 final CardTheme _cardTheme = CardTheme(
   color: _lightScheme.surfaceContainer,
   shadowColor: _lightScheme.shadow,
+  margin: EdgeInsets.zero,
   elevation: 0,
   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
 );

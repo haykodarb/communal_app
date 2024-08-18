@@ -1,9 +1,8 @@
-import 'package:communal/backend/books_backend.dart';
 import 'package:communal/models/book.dart';
+import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/book/book_list_controller.dart';
-import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_search_bar.dart';
 import 'package:communal/routes.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
@@ -31,23 +30,7 @@ class BookListPage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    AspectRatio(
-                      aspectRatio: 3 / 4,
-                      child: FutureBuilder(
-                        future: BooksBackend.getBookCover(book),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
-                            return const CommonLoadingImage();
-                          }
-
-                          return Image.memory(
-                            snapshot.data!,
-                            gaplessPlayback: true,
-                            fit: BoxFit.cover,
-                          );
-                        },
-                      ),
-                    ),
+                    CommonBookCover(book, radius: 0),
                     // const VerticalDivider(width: 10),
                     Expanded(
                       child: Padding(
@@ -62,7 +45,7 @@ class BookListPage extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Theme.of(context).colorScheme.onSurface,
-                                fontWeight: FontWeight.w400,
+                                fontWeight: FontWeight.w600,
                                 height: 1.25,
                               ),
                             ),
@@ -71,7 +54,7 @@ class BookListPage extends StatelessWidget {
                               book.author,
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 fontWeight: FontWeight.w400,
                                 height: 1.25,
                               ),

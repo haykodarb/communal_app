@@ -32,7 +32,7 @@ class CommunityBooksPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: CommunityBooksController(),
+      init: communityController.booksController,
       builder: (controller) {
         return Scaffold(
           body: ExtendedNestedScrollView(

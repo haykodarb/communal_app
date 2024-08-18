@@ -329,8 +329,7 @@ class UsersBackend {
   }
 
   static Future<BackendResponse<List<Profile>>> getUsersInCommunity(Community community) async {
-    final List<dynamic> membershipResponse =
-        await _client.from('memberships').select('id, is_admin, profiles(id, username, show_email)').match(
+    final List<dynamic> membershipResponse = await _client.from('memberships').select('*, profiles(*)').match(
       {
         'community': community.id,
         'accepted': true,

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:communal/models/profile.dart';
 import 'package:get/get.dart';
 
@@ -11,6 +13,8 @@ class Book {
   Profile owner;
   bool loaned;
   bool public;
+
+  Uint8List? image_data;
 
   RxBool loading = false.obs;
 

@@ -1,17 +1,15 @@
 import 'package:collection/collection.dart';
-import 'package:communal/backend/books_backend.dart';
 import 'package:communal/models/loan.dart';
+import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
-import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_search_bar.dart';
 import 'package:communal/presentation/loans/loans_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
 
 class LoansPage extends StatelessWidget {
@@ -240,7 +238,9 @@ class LoansPage extends StatelessWidget {
                               ? 'Loan finished'
                               : loan.accepted
                                   ? 'Loan accepted'
-                                  : 'Awaiting approval',
+                                  : loan.rejected
+                                      ? 'Loan rejected'
+                                      : 'Awaiting approval',
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
@@ -250,7 +250,7 @@ class LoansPage extends StatelessWidget {
                         ),
                         const Divider(height: 5),
                         Text(
-                          '${loan.returned ? 'Returned' : loan.accepted ? 'Approved' : 'Requested'}${DateFormat(' MMMM d, y', Get.locale?.languageCode).format(loan.returned_at ?? loan.accepted_at ?? loan.created_at)}',
+                          '${loan.returned ? 'Returned' : loan.accepted ? 'Approved' : loan.rejected ? 'Rejected' : 'Requested'}${DateFormat(' MMMM d, y', Get.locale?.languageCode).format(loan.latest_date ?? loan.created_at)}',
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
@@ -263,25 +263,7 @@ class LoansPage extends StatelessWidget {
                   ),
                   SizedBox(
                     height: 120,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: AspectRatio(
-                        aspectRatio: 3 / 4,
-                        child: FutureBuilder(
-                          future: BooksBackend.getBookCover(loan.book),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) {
-                              return const CommonLoadingImage();
-                            }
-
-                            return Image.memory(
-                              snapshot.data!,
-                              fit: BoxFit.cover,
-                            );
-                          },
-                        ),
-                      ),
-                    ),
+                    child: CommonBookCover(loan.book),
                   ),
                 ],
               ),
@@ -334,22 +316,14 @@ class LoansPage extends StatelessWidget {
               body: Obx(
                 () => CommonLoadingBody(
                   loading: controller.firstLoad.value,
-                  child: PagedListView.separated(
-                    pagingController:
-                        PagingController.fromValue(PagingState(itemList: controller.loanList), firstPageKey: 0),
-                    padding: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-                    separatorBuilder: (context, index) => const Divider(height: 5),
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    builderDelegate: PagedChildBuilderDelegate(
-                      noItemsFoundIndicatorBuilder: (context) {
-                        return Container(
-                          height: 100,
-                          color: Colors.red.shade100,
-                          child: const Text('No items found'),
-                        );
-                      },
-                      itemBuilder: (context, item, index) {
+                  child: Obx(
+                    () => ListView.separated(
+                      padding: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+                      separatorBuilder: (context, index) => const Divider(height: 5),
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: controller.loanList.length,
+                      itemBuilder: (context, index) {
                         final Loan loan = controller.loanList[index];
                         return CommonKeepaliveWrapper(child: _loanCard(loan, controller));
                       },

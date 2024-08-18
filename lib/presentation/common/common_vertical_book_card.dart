@@ -1,6 +1,5 @@
-import 'package:communal/backend/books_backend.dart';
 import 'package:communal/models/book.dart';
-import 'package:communal/presentation/common/common_loading_image.dart';
+import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:flutter/material.dart';
 
 class CommonVerticalBookCard extends StatelessWidget {
@@ -19,29 +18,7 @@ class CommonVerticalBookCard extends StatelessWidget {
         width: 180,
         child: Column(
           children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-              ),
-              clipBehavior: Clip.hardEdge,
-              child: AspectRatio(
-                aspectRatio: 3 / 4,
-                child: FutureBuilder(
-                  future: BooksBackend.getBookCover(book),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return const CommonLoadingImage();
-                    }
-
-                    return Image.memory(
-                      snapshot.data!,
-                      gaplessPlayback: true,
-                      fit: BoxFit.cover,
-                    );
-                  },
-                ),
-              ),
-            ),
+            CommonBookCover(book),
             const Divider(height: 10),
             Padding(
               padding: const EdgeInsets.only(bottom: 5, left: 5, right: 5),

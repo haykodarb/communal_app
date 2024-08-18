@@ -32,7 +32,7 @@ class MessagesBackend {
     }
   }
 
-  static Future<BackendResponse> getDistinctChats() async {
+  static Future<BackendResponse<List<Message>>> getDistinctChats() async {
     final SupabaseClient client = Supabase.instance.client;
 
     final List<Map<String, dynamic>> distinctChats = await client
@@ -63,6 +63,25 @@ class MessagesBackend {
     return BackendResponse(
       success: messages.isNotEmpty,
       payload: messages,
+    );
+  }
+
+  static Future<BackendResponse> getChatWithId(String uuid) async {
+    final SupabaseClient client = Supabase.instance.client;
+
+    final Map<String, dynamic>? response = await client
+        .from('distinct_chats')
+        .select('*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
+        .eq('id', uuid)
+        .maybeSingle();
+
+    if (response == null) {
+      return BackendResponse(success: false, payload: null);
+    }
+
+    return BackendResponse(
+      success: response.isNotEmpty,
+      payload: Message.fromMap(response),
     );
   }
 

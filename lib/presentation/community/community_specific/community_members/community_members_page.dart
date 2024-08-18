@@ -1,10 +1,13 @@
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/profile.dart';
+import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_search_bar.dart';
 import 'package:communal/presentation/community/community_specific/community_members/community_members_controller.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_controller.dart';
 import 'package:communal/routes.dart';
+import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,6 +15,20 @@ class CommunityMembersPage extends StatelessWidget {
   const CommunityMembersPage({super.key, required this.communityController});
 
   final CommunitySpecificController communityController;
+
+  Widget _searchRow(CommunityMembersController controller) {
+    return Builder(
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: CommonSearchBar(
+            searchCallback: (String _) {},
+            focusNode: FocusNode(),
+          ),
+        );
+      },
+    );
+  }
 
   Widget _userElement(CommunityMembersController controller, Profile user) {
     return Card(
@@ -30,9 +47,9 @@ class CommunityMembersPage extends StatelessWidget {
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
         child: SizedBox(
-          height: 60,
+          height: 70,
           child: Padding(
-            padding: EdgeInsets.only(left: 20, right: user.id == UsersBackend.currentUserId ? 20 : 10),
+            padding: const EdgeInsets.only(left: 15, right: 15),
             child: Obx(
               () => CommonLoadingBody(
                 loading: user.loading.value,
@@ -40,7 +57,16 @@ class CommunityMembersPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(user.username),
+                    CommonCircularAvatar(profile: user, radius: 20),
+                    const VerticalDivider(width: 10),
+                    Expanded(
+                      child: Text(
+                        user.username,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
                     Visibility(
                       visible: user.is_admin,
                       child: Builder(
@@ -111,76 +137,74 @@ class CommunityMembersPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: CommunityMembersController(),
+      init: communityController.membersController,
       builder: (controller) {
-        return Scaffold(
-          floatingActionButton: controller.community.isCurrentUserAdmin!
-              ? FloatingActionButton(
-                  onPressed: () {
-                    Get.toNamed(
-                      RouteNames.communityInvitePage,
-                      arguments: {
-                        'community': controller.community,
-                      },
-                    );
-                  },
-                  child: const Icon(Atlas.user_plus),
-                )
-              : null,
+        return ExtendedNestedScrollView(
+          floatHeaderSlivers: true,
+          controller: communityController.scrollController,
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return [
+              SliverAppBar(
+                title: _searchRow(controller),
+                titleSpacing: 0,
+                toolbarHeight: 55,
+                centerTitle: true,
+                automaticallyImplyLeading: false,
+                floating: true,
+              ),
+            ];
+          },
           body: Obx(
             () => CommonLoadingBody(
               loading: controller.loading.value,
-              child: RefreshIndicator(
-                onRefresh: controller.loadUsers,
-                child: Obx(
-                  () => ListView.separated(
-                    padding: const EdgeInsets.all(10),
-                    itemCount: controller.listOfMembers.length,
-                    separatorBuilder: (context, index) {
-                      return const Divider(height: 0);
-                    },
-                    itemBuilder: (context, index) {
-                      final Profile member = controller.listOfMembers[index];
-                      return Row(
-                        children: [
-                          Expanded(
-                            child: _userElement(
-                              controller,
-                              member,
-                            ),
+              child: Obx(
+                () => ListView.separated(
+                  padding: const EdgeInsets.all(10),
+                  itemCount: controller.listOfMembers.length,
+                  separatorBuilder: (context, index) {
+                    return const Divider(height: 5);
+                  },
+                  itemBuilder: (context, index) {
+                    final Profile member = controller.listOfMembers[index];
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: _userElement(
+                            controller,
+                            member,
                           ),
-                          Visibility(
+                        ),
+                        Visibility(
+                          visible: member.id != UsersBackend.currentUserId,
+                          child: const VerticalDivider(width: 5),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          height: 60,
+                          child: Visibility(
                             visible: member.id != UsersBackend.currentUserId,
-                            child: const VerticalDivider(width: 5),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            height: 60,
-                            child: Visibility(
-                              visible: member.id != UsersBackend.currentUserId,
-                              child: IconButton(
-                                onPressed: () {
-                                  Get.toNamed(
-                                    RouteNames.messagesSpecificPage,
-                                    arguments: {
-                                      'user': member,
-                                    },
-                                  );
-                                },
-                                icon: Icon(
-                                  Atlas.comment_dots,
-                                  color: Theme.of(context).colorScheme.onPrimary,
-                                ),
+                            child: IconButton(
+                              onPressed: () {
+                                Get.toNamed(
+                                  RouteNames.messagesSpecificPage,
+                                  arguments: {
+                                    'user': member,
+                                  },
+                                );
+                              },
+                              icon: Icon(
+                                Atlas.comment_dots,
+                                color: Theme.of(context).colorScheme.onPrimary,
                               ),
                             ),
                           ),
-                        ],
-                      );
-                    },
-                  ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ),

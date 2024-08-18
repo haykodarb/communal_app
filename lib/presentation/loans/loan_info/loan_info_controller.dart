@@ -62,9 +62,7 @@ class LoanInfoController extends GetxController {
       final BackendResponse response = await LoansBackend.deleteLoan(loan.value);
 
       if (response.success) {
-        loansController?.loanList.removeWhere(
-          (element) => element.id == inheritedLoan?.id,
-        );
+        loansController?.removeItemById(inheritedLoan!.id);
 
         Get.back();
       } else {
@@ -72,6 +70,8 @@ class LoanInfoController extends GetxController {
           CommonAlertDialog(title: response.payload),
         );
       }
+
+      loading.value = false;
     }
   }
 

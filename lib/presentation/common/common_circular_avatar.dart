@@ -1,6 +1,6 @@
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/profile.dart';
-import 'package:communal/presentation/common/common_loading_image.dart';
+import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -39,44 +39,36 @@ class CommonCircularAvatar extends StatelessWidget {
           );
         }
 
-        if (!snapshot.hasData || snapshot.data == null) {
-          return Container(
-            decoration: const BoxDecoration(
+        final bool hasData = snapshot.hasData && snapshot.data != null;
+
+        return AnimatedOpacity(
+          opacity: hasData ? 1 : 0,
+          duration: const Duration(milliseconds: 200),
+          child: Container(
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(
               color: Colors.transparent,
+              image: hasData
+                  ? DecorationImage(
+                      fit: BoxFit.cover,
+                      image: Image.memory(
+                        snapshot.data!,
+                        fit: BoxFit.fitWidth,
+                        gaplessPlayback: true,
+                      ).image,
+                    )
+                  : null,
               shape: BoxShape.circle,
             ),
-            clipBehavior: Clip.hardEdge,
             height: radius * 2,
             width: radius * 2,
-            child: const ClipOval(
-              clipBehavior: Clip.hardEdge,
-              child: CommonLoadingImage(),
-            ),
-          );
-        }
-
-        return Container(
-          clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              image: Image.memory(
-                snapshot.data!,
-                fit: BoxFit.fitWidth,
-                gaplessPlayback: true,
-              ).image,
-            ),
-            shape: BoxShape.circle,
           ),
-          height: radius * 2,
-          width: radius * 2,
         );
       },
     );
   }
 
-  Widget _textAvatar() {
+  Widget _iconAvatar() {
     return Builder(
       builder: (context) {
         return CircleAvatar(
@@ -89,7 +81,7 @@ class CommonCircularAvatar extends StatelessWidget {
                 return Container(
                   width: constraints.maxWidth,
                   height: constraints.maxHeight,
-                  padding: EdgeInsets.all(constraints.maxWidth * 0.2),
+                  padding: EdgeInsets.all(constraints.maxWidth * 0.15),
                   child: FittedBox(
                     fit: BoxFit.cover,
                     child: Text(
@@ -125,7 +117,9 @@ class CommonCircularAvatar extends StatelessWidget {
         decoration: const BoxDecoration(
           shape: BoxShape.circle,
         ),
-        child: (profile.avatar_path == null && image == null) ? _textAvatar() : _imageAvatar(),
+        child: (profile.avatar_path == null && image == null)
+            ? _iconAvatar()
+            : CommonKeepaliveWrapper(child: _imageAvatar()),
       ),
     );
   }

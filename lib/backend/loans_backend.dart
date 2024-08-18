@@ -4,7 +4,6 @@ import 'package:communal/models/book.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/models/profile.dart';
-import 'package:communal/models/tool.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -198,48 +197,6 @@ class LoansBackend {
     );
   }
 
-  /// If book is already loaned to another user, returns false and that loan.
-  /// If book is not loaned and current user has already requested it, returns true and that loan.
-  /// Else returns false and no payload.
-  static Future<BackendResponse> getCurrentLoanForTool(Tool tool) async {
-    final SupabaseClient client = Supabase.instance.client;
-    final String userId = client.auth.currentUser!.id;
-
-    final List<dynamic> response = await client
-        .from('loans')
-        .select(
-          '*, communities(*), tools!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
-        )
-        .match(
-      {
-        'tool': tool.id,
-        'returned': false,
-      },
-    ).or('loanee.eq.$userId, accepted.eq.true');
-
-    final List<Loan> loans = response.map((element) => Loan.fromMap(element)).toList();
-
-    final Loan? loanMadeByAnotherUser = loans.firstWhereOrNull(
-      (element) => element.loanee.id != userId && element.accepted,
-    );
-
-    if (loanMadeByAnotherUser != null) {
-      return BackendResponse(
-        success: true,
-        payload: loanMadeByAnotherUser,
-      );
-    }
-
-    final Loan? requestByCurrentUser = loans.firstWhereOrNull(
-      (element) => element.loanee.id == userId && !element.rejected,
-    );
-
-    return BackendResponse(
-      success: requestByCurrentUser != null,
-      payload: requestByCurrentUser,
-    );
-  }
-
   static Future<BackendResponse> getLoansForUser(LoansFilterParams params) async {
     try {
       final SupabaseClient client = Supabase.instance.client;
@@ -289,25 +246,17 @@ class LoansBackend {
   }
 
   static Future<BackendResponse> getCompletedLoansForItem({
-    Book? book,
-    Tool? tool,
+    required Book book,
   }) async {
-    if (book == null && tool == null) {
-      return BackendResponse(success: false, payload: "Must include a book or tool");
-    }
-
     try {
       final SupabaseClient client = Supabase.instance.client;
-
-      final String parameter = book == null ? 'tool' : 'book';
-      final String value = book == null ? tool!.id : book.id;
 
       final List<Map<String, dynamic>> response = await client
           .from('loans')
           .select(
-            '*, communities(*), ${parameter}s!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
+            '*, communities(*), books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
           )
-          .eq(parameter, value)
+          .eq('book', book.id)
           .eq('accepted', true)
           .not('review', 'is', null);
 
@@ -328,7 +277,6 @@ class LoansBackend {
           .select(
             '*, communities(*), books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
           )
-          .eq('returned', true)
           .eq('accepted', true)
           .eq('loanee', user.id)
           .not('book', 'is', null)
@@ -344,30 +292,24 @@ class LoansBackend {
 
   static Future<BackendResponse> requestItemLoanInCommunity({
     required Community community,
-    Book? book,
-    Tool? tool,
+    required Book book,
   }) async {
-    if (book == null && tool == null) return BackendResponse(success: false, payload: "Must include tool or book");
-
     final SupabaseClient client = Supabase.instance.client;
 
     final String userId = client.auth.currentUser!.id;
 
     try {
-      final String parameter = book == null ? 'tool' : 'book';
-      final String value = book == null ? tool!.id : book.id;
-
       final Map<String, dynamic> response = await client
           .from('loans')
           .insert(
             {
               'loanee': userId,
-              parameter: value,
+              'book': book.id,
               'community': community.id,
             },
           )
           .select(
-              '*, communities(*), ${parameter}s!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)')
+              '*, communities(*), books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)')
           .single();
 
       return BackendResponse(

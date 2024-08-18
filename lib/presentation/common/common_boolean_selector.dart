@@ -33,13 +33,13 @@ class CommonBooleanSelector extends StatelessWidget {
                 width: 40,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: value ? Colors.transparent : Theme.of(context).colorScheme.primary,
+                  color: value ? Theme.of(context).colorScheme.primary : Colors.transparent,
                 ),
                 padding: EdgeInsets.zero,
                 child: Icon(
                   Icons.check,
                   size: 22,
-                  color: value ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onPrimary,
+                  color: value ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.primary,
                 ),
               ),
               Container(
@@ -47,13 +47,13 @@ class CommonBooleanSelector extends StatelessWidget {
                 width: 40,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: value ? Theme.of(context).colorScheme.primary : Colors.transparent,
+                  color: value ? Colors.transparent : Theme.of(context).colorScheme.primary,
                 ),
                 padding: EdgeInsets.zero,
                 child: Icon(
                   Icons.close,
                   size: 22,
-                  color: value ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.primary,
+                  color: value ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onPrimary,
                 ),
               ),
             ],

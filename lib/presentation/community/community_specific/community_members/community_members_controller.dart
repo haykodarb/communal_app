@@ -3,6 +3,7 @@ import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
+import 'package:communal/routes.dart';
 import 'package:get/get.dart';
 
 class CommunityMembersController extends GetxController {
@@ -16,6 +17,15 @@ class CommunityMembersController extends GetxController {
   void onInit() {
     super.onInit();
     loadUsers();
+  }
+
+  void addUser() {
+    Get.toNamed(
+      RouteNames.communityInvitePage,
+      arguments: {
+        'community': community,
+      },
+    );
   }
 
   Future<void> removeUser(Profile user) async {

@@ -29,7 +29,7 @@ class CommunityDiscussionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: CommunityDiscussionsController(),
+      init: communityController.discussionsController,
       builder: (controller) {
         return ExtendedNestedScrollView(
           floatHeaderSlivers: true,

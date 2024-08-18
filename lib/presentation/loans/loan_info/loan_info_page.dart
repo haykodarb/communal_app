@@ -1,14 +1,9 @@
-import 'package:atlas_icons/atlas_icons.dart';
-import 'package:communal/backend/books_backend.dart';
-import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/loan.dart';
-import 'package:communal/models/profile.dart';
+import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
-import 'package:communal/presentation/common/common_loading_image.dart';
-import 'package:communal/presentation/common/common_text_info.dart';
-import 'package:communal/presentation/common/common_username_button.dart';
 import 'package:communal/presentation/loans/loan_info/loan_info_controller.dart';
+import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -16,30 +11,140 @@ import 'package:intl/intl.dart';
 class LoanInfoPage extends StatelessWidget {
   const LoanInfoPage({super.key});
 
-  Widget _loanTitle(Loan loan) {
+  Widget _userData(Loan loan) {
+    return Builder(
+      builder: (context) {
+        return Row(
+          children: [
+            CommonCircularAvatar(
+              profile: loan.isOwned ? loan.loanee : loan.owner,
+              radius: 25,
+              clickable: true,
+            ),
+            const VerticalDivider(width: 5),
+            Text(
+              loan.isOwned ? loan.loanee.username : loan.owner.username,
+            ),
+            const VerticalDivider(width: 5),
+            Container(
+              decoration: BoxDecoration(
+                color: loan.isOwned
+                    ? Theme.of(context).colorScheme.primary.withOpacity(0.25)
+                    : Theme.of(context).colorScheme.tertiary.withOpacity(0.25),
+                borderRadius: BorderRadius.circular(40),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+              child: Text(
+                loan.isOwned ? 'Loanee' : 'Owner',
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  height: 1.2,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _bookCard(Loan loan) {
+    return Builder(
+      builder: (context) {
+        return InkWell(
+          highlightColor: Colors.transparent,
+          overlayColor: WidgetStateColor.transparent,
+          onTap: () {
+            Get.toNamed(
+              loan.isOwned ? RouteNames.bookOwnedPage : RouteNames.communitySpecificBookPage,
+              arguments: {
+                'book': loan.book,
+                'community': loan.community,
+              },
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.only(left: 20, top: 20, bottom: 20, right: 10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
+            ),
+            height: 140,
+            child: Row(
+              children: [
+                CommonBookCover(loan.book),
+                const VerticalDivider(width: 15),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        loan.book.title,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          height: 1.2,
+                        ),
+                      ),
+                      const Divider(height: 5),
+                      Text(
+                        loan.book.author,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          height: 1.2,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  Icons.chevron_right,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  size: 40,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _dateContainer(String label, String date) {
     return Builder(
       builder: (context) {
         return Container(
-          width: double.maxFinite,
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          height: 60,
+          padding: const EdgeInsets.all(5),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
+            borderRadius: BorderRadius.circular(5),
+          ),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                loan.name,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w600,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              Text(
-                loan.book.author,
+                label,
                 style: TextStyle(
-                  fontSize: 18,
-                  color: Theme.of(context).colorScheme.secondary,
-                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontSize: 12,
                 ),
-                textAlign: TextAlign.center,
+              ),
+              const Divider(height: 2),
+              FittedBox(
+                fit: BoxFit.contain,
+                child: Text(
+                  date,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
             ],
           ),
@@ -48,373 +153,234 @@ class LoanInfoPage extends StatelessWidget {
     );
   }
 
-  Widget _loanItemCover(Loan loan) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(5),
-      child: AspectRatio(
-        aspectRatio: 3 / 4,
-        child: FutureBuilder(
-          future: BooksBackend.getBookCover(loan.book),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const CommonLoadingImage();
-            }
-
-            return Image.memory(
-              snapshot.data!,
-              fit: BoxFit.cover,
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _ownedSideInformation(LoanInfoController controller) {
+  Widget _datesCard(Loan loan) {
     return Builder(
       builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Borrower',
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
+        return Row(
+          children: [
+            Expanded(child: _dateContainer('Requested', DateFormat('d/MM/yy').format(loan.created_at))),
+            const VerticalDivider(width: 5),
+            Visibility(
+              visible: loan.rejected,
+              child: Expanded(
+                child: _dateContainer(
+                  'Rejected',
+                  loan.rejected_at == null ? '-' : DateFormat('d/MM/yy').format(loan.rejected_at!),
                 ),
               ),
-              CommonUsernameButton(user: controller.loan.value.loanee),
-              const Divider(),
-              CommonTextInfo(
-                label: 'Requested',
-                text: DateFormat.yMMMd().format(controller.loan.value.created_at),
-                size: 14,
-              ),
-              const Divider(),
-              Obx(
-                () => CommonLoadingBody(
-                  loading: controller.loading.value,
-                  size: 30,
-                  child: controller.loan.value.accepted
-                      ? CommonTextInfo(
-                          label: 'Accepted',
-                          text: controller.loan.value.accepted
-                              ? DateFormat.yMMMd().format(controller.loan.value.accepted_at!)
-                              : 'Pending',
-                          size: 14,
-                        )
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            MaterialButton(
-                              onPressed: controller.acceptLoanRequest,
-                              color: Theme.of(context).colorScheme.primary,
-                              padding: const EdgeInsets.all(8),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Icon(
-                                    Icons.done,
-                                    color: Theme.of(context).colorScheme.onPrimary,
-                                  ),
-                                  const VerticalDivider(width: 5),
-                                  Text(
-                                    'Accept',
-                                    style: TextStyle(
-                                      color: Theme.of(context).colorScheme.onPrimary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            MaterialButton(
-                              onPressed: controller.rejectLoanRequest,
-                              color: Theme.of(context).colorScheme.tertiary,
-                              padding: const EdgeInsets.all(8),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Icon(
-                                    Icons.close,
-                                    color: Theme.of(context).colorScheme.onTertiary,
-                                  ),
-                                  const VerticalDivider(width: 5),
-                                  Text(
-                                    'Reject',
-                                    style: TextStyle(
-                                      color: Theme.of(context).colorScheme.onTertiary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                ),
-              ),
-              const Divider(),
-              Builder(
-                builder: (context) {
-                  return Obx(
-                    () {
-                      if (controller.loading.value) return const SizedBox.shrink();
-
-                      if (controller.loan.value.accepted) {
-                        if (controller.loan.value.returned) {
-                          return CommonTextInfo(
-                            label: 'Returned',
-                            text: controller.loan.value.returned
-                                ? DateFormat.yMMMd().format(controller.loan.value.returned_at!)
-                                : 'Pending',
-                            size: 14,
-                          );
-                        } else {
-                          return MaterialButton(
-                            onPressed: controller.markLoanReturned,
-                            color: Theme.of(context).colorScheme.primary,
-                            padding: const EdgeInsets.all(8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Icon(
-                                  Icons.done,
-                                  color: Theme.of(context).colorScheme.onPrimary,
-                                ),
-                                const VerticalDivider(width: 5),
-                                Text(
-                                  'Returned',
-                                  style: TextStyle(
-                                    color: Theme.of(context).colorScheme.onPrimary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-                      } else {
-                        return const SizedBox.shrink();
-                      }
-                    },
-                  );
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _borrowedSideInformation(LoanInfoController controller) {
-    final Profile owner = controller.loan.value.owner;
-    final bool isOwned = owner.id == UsersBackend.currentUserId;
-
-    return Builder(
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    isOwned ? 'Borrower' : 'Owner',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.secondary,
+            ),
+            Visibility(
+              visible: !loan.rejected,
+              child: Expanded(
+                flex: 2,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _dateContainer(
+                        'Approved',
+                        loan.accepted_at == null ? '-' : DateFormat('d/MM/yy').format(loan.accepted_at!),
+                      ),
                     ),
-                  ),
-                  CommonUsernameButton(user: isOwned ? controller.loan.value.loanee : owner),
-                  const Divider(),
-                  CommonTextInfo(
-                    label: 'Requested',
-                    text: DateFormat.yMMMd().format(controller.loan.value.created_at),
-                    size: 14,
-                  ),
-                  const Divider(),
-                  CommonTextInfo(
-                    label: 'Accepted',
-                    text: controller.loan.value.accepted
-                        ? DateFormat.yMMMd().format(controller.loan.value.accepted_at!)
-                        : 'Pending',
-                    size: 14,
-                  ),
-                  const Divider(),
-                  Builder(
-                    builder: (context) {
-                      if (!controller.loan.value.accepted && !controller.loan.value.rejected) {
-                        return Obx(
-                          () => CommonLoadingBody(
-                            loading: controller.loading.value,
-                            size: 30,
-                            child: MaterialButton(
-                              onPressed: controller.withdrawLoanRequest,
-                              color: Theme.of(context).colorScheme.tertiary,
-                              padding: const EdgeInsets.all(8),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Icon(
-                                    Icons.close,
-                                    color: Theme.of(context).colorScheme.onTertiary,
-                                  ),
-                                  const VerticalDivider(width: 5),
-                                  Text(
-                                    'Withdraw',
-                                    style: TextStyle(
-                                      color: Theme.of(context).colorScheme.onTertiary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      } else {
-                        return CommonTextInfo(
-                          label: 'Returned',
-                          text: controller.loan.value.returned
-                              ? DateFormat.yMMMd().format(controller.loan.value.returned_at!)
-                              : 'Pending',
-                          size: 14,
-                        );
-                      }
-                    },
-                  ),
-                ],
+                    const VerticalDivider(width: 5),
+                    Expanded(
+                      child: _dateContainer(
+                        'Returned',
+                        loan.returned_at == null ? '-' : DateFormat('d/MM/yy').format(loan.returned_at!),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );
   }
 
-  Widget _ownedBookReviewField(LoanInfoController controller) {
+  Widget _ownerBottomHalf(LoanInfoController controller) {
     return Obx(
       () {
-        return !controller.loan.value.accepted
-            ? const SizedBox.shrink()
-            : CommonTextInfo(
-                label: 'Borrower\'s Review',
-                text: controller.loan.value.review ?? 'User has not left a review yet',
-                size: 14,
-              );
+        final Loan loan = controller.loan.value;
+
+        if (loan.rejected) return const SizedBox.shrink();
+
+        if (loan.accepted || loan.returned) {
+          return Column(
+            children: [
+              Visibility(
+                visible: loan.review != null,
+                child: Column(
+                  children: [
+                    Text('Review by ${controller.loan.value.loanee.username}'),
+                    Text(loan.review ?? ''),
+                  ],
+                ),
+              ),
+              Visibility(
+                visible: !loan.returned,
+                child: Obx(
+                  () => CommonLoadingBody(
+                    loading: controller.loading.value,
+                    child: ElevatedButton(
+                      onPressed: controller.markLoanReturned,
+                      child: const Text('Mark as returned'),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+
+        return Obx(
+          () => CommonLoadingBody(
+            loading: controller.loading.value,
+            child: Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: controller.acceptLoanRequest,
+                    child: const Text('Approve'),
+                  ),
+                ),
+                const VerticalDivider(width: 10),
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: controller.rejectLoanRequest,
+                    child: const Text('Reject'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
       },
     );
   }
 
-  Widget _borrowedBookReviewField(LoanInfoController controller) {
+  Widget _borrowerBottomHalf(LoanInfoController controller) {
     return Builder(
       builder: (context) {
-        if (!controller.loan.value.accepted) {
-          return CommonTextInfo(
-            label: 'Owner Review',
-            text: controller.loan.value.book.review ?? 'User has not reviewed this book yet.',
-            size: 14,
-          );
-        } else {
-          return Obx(
-            () {
+        return Obx(
+          () {
+            final Loan loan = controller.loan.value;
+
+            if (loan.rejected) return const SizedBox.shrink();
+
+            if (loan.accepted || loan.returned) {
               if (controller.editing.value) {
                 return Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     TextField(
+                      maxLines: 10,
                       onChanged: controller.onReviewTextChanged,
                       controller: TextEditingController.fromValue(
                         TextEditingValue(text: controller.loan.value.review ?? ''),
                       ),
-                      decoration: const InputDecoration(
-                        labelText: 'Review',
-                        alignLabelWithHint: true,
-                      ),
-                      maxLines: 4,
-                      keyboardType: TextInputType.multiline,
-                    ),
-                    // const Divider(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Obx(
-                        () => CommonLoadingBody(
-                          loading: controller.loading.value,
-                          alignment: Alignment.centerRight,
-                          size: 30,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  controller.editing.value = false;
-                                },
-                                padding: EdgeInsets.zero,
-                                alignment: Alignment.topRight,
-                                icon: const Icon(
-                                  Icons.close,
-                                  size: 35,
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: controller.onReviewSubmit,
-                                padding: EdgeInsets.zero,
-                                alignment: Alignment.topRight,
-                                icon: const Icon(
-                                  Icons.done,
-                                  size: 35,
-                                ),
-                              ),
-                            ],
+                      style: const TextStyle(fontSize: 13, height: 1.3),
+                      decoration: InputDecoration(
+                        hintText: 'Write a review...',
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                        hintStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontSize: 14,
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                            width: 0.5,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                            width: 0.5,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                            width: 0.5,
                           ),
                         ),
                       ),
                     ),
+                    const Divider(height: 10),
+                    Obx(
+                      () => CommonLoadingBody(
+                        loading: controller.loading.value,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: controller.onReviewSubmit,
+                                child: const Text('Submit'),
+                              ),
+                            ),
+                            const VerticalDivider(width: 10),
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: controller.changeEditingState,
+                                child: const Text('Cancel'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
                   ],
                 );
-              } else {
-                return Obx(
-                  () => CommonLoadingBody(
-                    loading: controller.deleting.value,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: CommonTextInfo(
-                            label: 'Your Review',
-                            text: controller.loan.value.review ?? 'Empty',
-                            size: 14,
-                          ),
-                        ),
-                        Visibility(
-                          visible: controller.loan.value.review != null,
-                          child: IconButton(
-                            onPressed: controller.onReviewDelete,
-                            alignment: Alignment.topRight,
-                            padding: EdgeInsets.zero,
-                            icon: const Icon(
-                              Atlas.trash,
-                              size: 35,
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: controller.changeEditingState,
-                          padding: EdgeInsets.zero,
-                          alignment: Alignment.topRight,
-                          icon: Icon(
-                            controller.loan.value.review == null ? Icons.add : Atlas.pencil_edit,
-                            size: 35,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+              }
+
+              if (loan.review == null) {
+                return ElevatedButton(
+                  onPressed: controller.changeEditingState,
+                  child: const Text('Add review'),
                 );
               }
-            },
-          );
-        }
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Your review',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Text(
+                        loan.review ?? '',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Divider(height: 20),
+                  ElevatedButton(
+                    onPressed: controller.changeEditingState,
+                    child: const Text('Edit review'),
+                  ),
+                ],
+              );
+            }
+
+            return Obx(
+              () => CommonLoadingBody(
+                loading: controller.loading.value,
+                child: ElevatedButton(
+                  onPressed: controller.withdrawLoanRequest,
+                  child: const Text('Withdraw request'),
+                ),
+              ),
+            );
+          },
+        );
       },
     );
   }
@@ -425,122 +391,46 @@ class LoanInfoPage extends StatelessWidget {
       init: LoanInfoController(),
       builder: (LoanInfoController controller) {
         return Scaffold(
-          appBar: AppBar(),
+          appBar: AppBar(
+            title: const Text('Loan'),
+          ),
           body: Obx(
             () => CommonLoadingBody(
               loading: controller.loadingPage.value,
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Card(
-                    margin: EdgeInsets.zero,
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              CommonCircularAvatar(
-                                profile: controller.loan.value.loanee.isCurrentUser
-                                    ? controller.loan.value.owner
-                                    : controller.loan.value.loanee,
-                                radius: 25,
-                              ),
-                              const VerticalDivider(width: 5),
-                              Text(
-                                controller.loan.value.loanee.isCurrentUser
-                                    ? controller.loan.value.owner.username
-                                    : controller.loan.value.loanee.username,
-                              ),
-                              const VerticalDivider(width: 5),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: controller.loan.value.loanee.isCurrentUser
-                                      ? Theme.of(context).colorScheme.tertiary.withOpacity(0.25)
-                                      : Theme.of(context).colorScheme.primary.withOpacity(0.25),
-                                  borderRadius: BorderRadius.circular(40),
-                                ),
-                                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-                                child: Text(
-                                  controller.loan.value.loanee.isCurrentUser ? 'Owner' : 'Loanee',
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.2,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Divider(height: 20),
-                          Container(
-                            padding: const EdgeInsets.only(left: 20, top: 20, bottom: 20, right: 10),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: Theme.of(context).colorScheme.surface,
+              child: Scrollbar(
+                thumbVisibility: true,
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Card(
+                      margin: EdgeInsets.zero,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          children: [
+                            Obx(
+                              () => _userData(controller.loan.value),
                             ),
-                            height: 140,
-                            child: Row(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  clipBehavior: Clip.hardEdge,
-                                  child: AspectRatio(
-                                    aspectRatio: 3 / 4,
-                                    child: FutureBuilder(
-                                      future: BooksBackend.getBookCover(controller.loan.value.book),
-                                      builder: (context, snapshot) {
-                                        if (!snapshot.hasData) {
-                                          return const CommonLoadingImage();
-                                        }
+                            const Divider(height: 20),
+                            Obx(
+                              () => _bookCard(controller.loan.value),
+                            ),
+                            const Divider(height: 20),
+                            Obx(
+                              () => _datesCard(controller.loan.value),
+                            ),
+                            const Divider(height: 20),
+                            Obx(
+                              () {
+                                if (controller.loan.value.isOwned) return _ownerBottomHalf(controller);
 
-                                        return Image.memory(
-                                          snapshot.data!,
-                                          gaplessPlayback: true,
-                                          fit: BoxFit.cover,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                const VerticalDivider(width: 15),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        controller.loan.value.book.title,
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                          height: 1.2,
-                                        ),
-                                      ),
-                                      const Divider(height: 5),
-                                      Text(
-                                        controller.loan.value.book.author,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w400,
-                                          height: 1.2,
-                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Icon(
-                                  Icons.chevron_right,
-                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                  size: 40,
-                                ),
-                              ],
+                                if (controller.loan.value.isBorrowed) return _borrowerBottomHalf(controller);
+
+                                return const Text('Error');
+                              },
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
