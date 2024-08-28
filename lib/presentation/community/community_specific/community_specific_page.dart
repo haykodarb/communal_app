@@ -93,7 +93,7 @@ class CommunitySpecificPage extends StatelessWidget {
                     child: ScaleTransition(
                       scale: controller.floatingActionButtonAnimation,
                       child: FloatingActionButton(
-                        onPressed: () {},
+                        onPressed: controller.discussionsController.goToDiscussionsTopicCreate,
                         child: const Icon(Atlas.add_messages),
                       ),
                     ),

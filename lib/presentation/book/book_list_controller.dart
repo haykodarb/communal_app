@@ -85,4 +85,8 @@ class BookListController extends GetxController {
       userBooks.refresh();
     }
   }
+
+  void onOrderByIndexChanged(int value) {
+    print(value);
+  }
 }

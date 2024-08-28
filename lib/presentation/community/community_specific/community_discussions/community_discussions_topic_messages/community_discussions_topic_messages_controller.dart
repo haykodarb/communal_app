@@ -91,7 +91,6 @@ class CommunityDiscussionsTopicMessagesController extends GetxController {
         show_email: false,
       ),
       content: typedMessage,
-      topic: topic,
     );
 
     messages.insert(0, newMessage);
@@ -105,7 +104,7 @@ class CommunityDiscussionsTopicMessagesController extends GetxController {
     } else {
       messages.removeWhere((element) => element.id == randomID);
 
-      Get.dialog(const CommonAlertDialog(title: 'Could not send message, likely network error.'));
+      Get.dialog(CommonAlertDialog(title: 'Could not send message, error: ${response.payload}.'));
     }
 
     typedMessage = '';

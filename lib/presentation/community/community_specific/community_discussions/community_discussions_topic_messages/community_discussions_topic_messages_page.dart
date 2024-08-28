@@ -34,12 +34,13 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
           child: const SizedBox(),
         ),
         SizedBox(
-          height: 50,
-          width: 50,
+          height: 40,
+          width: 40,
           child: Visibility(
             visible: showAvatar && isReceived,
             child: CommonCircularAvatar(
-              radius: 25,
+              radius: 20,
+              clickable: true,
               profile: message.sender,
             ),
           ),
@@ -73,8 +74,8 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
                               shape: BoxShape.rectangle,
                               borderRadius: BorderRadius.circular(15),
                               color: isReceived
-                                  ? Theme.of(context).colorScheme.secondary.withOpacity(0.5)
-                                  : Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                                  ? Theme.of(context).colorScheme.secondary.withOpacity(0.25)
+                                  : Theme.of(context).colorScheme.primary.withOpacity(0.25),
                             ),
                             child: Text(
                               message.content,
@@ -94,10 +95,10 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
                   Visibility(
                     visible: showTime,
                     child: Text(
-                      DateFormat.MMMd().add_Hm().format(message.created_at.toLocal()),
+                      DateFormat.MMMd(Get.locale?.languageCode).add_Hm().format(message.created_at.toLocal()),
                       textAlign: isReceived ? TextAlign.left : TextAlign.right,
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                         fontSize: 12,
                       ),
                     ),
@@ -118,79 +119,90 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
   Widget _textInput(CommunityDiscussionsTopicMessagesController controller) {
     return Builder(
       builder: (context) {
-        return SizedBox(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    onChanged: controller.onTypedMessageChanged,
-                    onEditingComplete: controller.onMessageSubmit,
-                    controller: controller.textEditingController,
-                    maxLines: 3,
-                    minLines: 1,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
+        return Padding(
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Expanded(
+                child: TextField(
+                  onChanged: controller.onTypedMessageChanged,
+                  onEditingComplete: controller.onMessageSubmit,
+                  controller: controller.textEditingController,
+                  style: const TextStyle(fontSize: 14),
+                  maxLines: 4,
+                  minLines: 1,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
+                        width: 2,
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
+                        width: 2,
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
+                        width: 2,
                       ),
-                      hintText: 'Type something...',
-                      hintStyle: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
+                    ),
+                    hintText: 'Type something...',
+                    hintStyle: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ),
-                const VerticalDivider(width: 5),
-                Container(
-                  padding: EdgeInsets.zero,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  height: 60,
-                  width: 60,
-                  child: Obx(
-                    () {
-                      return InkWell(
-                        onTap: controller.sending.value ? null : controller.onMessageSubmit,
-                        enableFeedback: false,
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        child: SizedBox.expand(
-                          child: Center(
-                            child: Obx(
-                              () {
-                                if (controller.sending.value) {
-                                  return CircularProgressIndicator(
-                                    color: Theme.of(context).colorScheme.onPrimary,
-                                  );
-                                }
-
-                                return Icon(
-                                  Icons.send_rounded,
+              ),
+              const VerticalDivider(width: 5),
+              Container(
+                padding: EdgeInsets.zero,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                height: 60,
+                width: 60,
+                child: Obx(
+                  () {
+                    return InkWell(
+                      onTap: controller.sending.value ? null : controller.onMessageSubmit,
+                      enableFeedback: false,
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      child: SizedBox.expand(
+                        child: Center(
+                          child: Obx(
+                            () {
+                              if (controller.sending.value) {
+                                return CircularProgressIndicator(
                                   color: Theme.of(context).colorScheme.onPrimary,
-                                  size: 30,
                                 );
-                              },
-                            ),
+                              }
+
+                              return Icon(
+                                Icons.send_rounded,
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                size: 30,
+                              );
+                            },
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },
@@ -204,37 +216,40 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
       builder: (CommunityDiscussionsTopicMessagesController controller) {
         return Scaffold(
           appBar: AppBar(
-            title: Text(controller.topic.name),
+            title: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(controller.topic.name),
+            ),
           ),
           body: SafeArea(
-            child: Column(
+            child: Stack(
               children: [
-                Expanded(
-                  child: Obx(
-                    () => CommonLoadingBody(
-                      loading: controller.loading.value,
-                      child: Obx(
-                        () {
-                          return ListView.separated(
-                            reverse: true,
-                            physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                            itemCount: controller.messages.length,
-                            separatorBuilder: (context, index) {
-                              return const Divider(
-                                height: 7.5,
-                              );
-                            },
-                            itemBuilder: (context, index) {
-                              return _messageBubble(controller, index);
-                            },
-                          );
-                        },
-                      ),
+                Obx(
+                  () => CommonLoadingBody(
+                    loading: controller.loading.value,
+                    child: Obx(
+                      () {
+                        return ListView.separated(
+                          reverse: true,
+                          padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 90),
+                          itemCount: controller.messages.length,
+                          separatorBuilder: (context, index) {
+                            return const Divider(
+                              height: 7.5,
+                            );
+                          },
+                          itemBuilder: (context, index) {
+                            return _messageBubble(controller, index);
+                          },
+                        );
+                      },
                     ),
                   ),
                 ),
-                _textInput(controller),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: _textInput(controller),
+                ),
               ],
             ),
           ),

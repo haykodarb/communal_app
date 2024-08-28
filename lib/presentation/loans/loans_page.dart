@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
+import 'package:communal/presentation/common/common_filter_bottomsheet.dart';
 import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_search_bar.dart';
@@ -82,77 +83,50 @@ class LoansPage extends StatelessWidget {
   }
 
   Widget _bottomSheet(LoansController controller) {
-    return Builder(
-      builder: (context) {
-        return BottomSheet(
-          onClosing: () {},
-          backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
-          enableDrag: false,
-          showDragHandle: false,
-          builder: (context) {
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(30),
-                child: Column(
-                  children: [
-                    Obx(
-                      () => _filterRow(
-                        title: 'Ordernar por',
-                        options: ['Fecha', 'Titulo'],
-                        selectedOption: controller.filterParams.value.orderByDate ? 0 : 1,
-                        onSelectedChange: controller.onOrderByValueChanged,
-                      ),
-                    ),
-                    const Divider(height: 25),
-                    Obx(
-                      () {
-                        int selectedIndex = 0;
+    final int orderByIndex = controller.filterParams.value.orderByDate ? 0 : 1;
 
-                        if (controller.filterParams.value.allStatus) {
-                          selectedIndex = 0;
-                        } else if (!controller.filterParams.value.accepted) {
-                          selectedIndex = 1;
-                        } else if (!controller.filterParams.value.returned) {
-                          selectedIndex = 2;
-                        } else {
-                          selectedIndex = 3;
-                        }
+    int filterByStateIndex = 0;
+    if (controller.filterParams.value.allStatus) {
+      filterByStateIndex = 0;
+    } else if (!controller.filterParams.value.accepted) {
+      filterByStateIndex = 1;
+    } else if (!controller.filterParams.value.returned) {
+      filterByStateIndex = 2;
+    } else {
+      filterByStateIndex = 3;
+    }
 
-                        return _filterRow(
-                          title: 'Filtrar por estado del prestamo',
-                          options: ['Todos', 'Pendiente', 'Aceptado', 'Finalizado'],
-                          selectedOption: selectedIndex,
-                          onSelectedChange: controller.onFilterByStatusChanged,
-                        );
-                      },
-                    ),
-                    const Divider(height: 25),
-                    Obx(
-                      () {
-                        int selectedIndex = 0;
+    int filterByOwnerIndex = 0;
+    if (!controller.filterParams.value.userIsLoanee && controller.filterParams.value.userIsOwner) {
+      filterByOwnerIndex = 1;
+    }
+    if (controller.filterParams.value.userIsLoanee && !controller.filterParams.value.userIsOwner) {
+      filterByOwnerIndex = 2;
+    }
 
-                        if (!controller.filterParams.value.userIsLoanee && controller.filterParams.value.userIsOwner) {
-                          selectedIndex = 1;
-                        }
-                        if (controller.filterParams.value.userIsLoanee && !controller.filterParams.value.userIsOwner) {
-                          selectedIndex = 2;
-                        }
-
-                        return _filterRow(
-                          title: 'Filtrar por propiedad del libro',
-                          options: ['Todos', 'Propio', 'Ajeno'],
-                          selectedOption: selectedIndex,
-                          onSelectedChange: controller.onFilterByOwnerChanged,
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
+    return CommonFilterBottomsheet(
+      children: [
+        CommonFilterRow(
+          title: 'Ordenar por',
+          options: const ['Fecha', 'Titulo'],
+          initialIndex: orderByIndex,
+          onIndexChange: controller.onOrderByValueChanged,
+        ),
+        const Divider(height: 20),
+        CommonFilterRow(
+          title: 'Filtrar por estado',
+          options: const ['Todos', 'Pendiente', 'Aceptado', 'Finalizado'],
+          initialIndex: filterByStateIndex,
+          onIndexChange: controller.onFilterByStatusChanged,
+        ),
+        const Divider(height: 20),
+        CommonFilterRow(
+          title: 'Filtrar por propiedad del libro',
+          options: const ['Todos', 'Propio', 'Ajeno'],
+          initialIndex: filterByOwnerIndex,
+          onIndexChange: controller.onFilterByOwnerChanged,
+        ),
+      ],
     );
   }
 

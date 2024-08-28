@@ -267,7 +267,7 @@ class ProfileOwnPage extends StatelessWidget {
                           ),
                           const Divider(height: 5),
                           Text(
-                            '${DateFormat('MMM d, y', Get.locale?.languageCode).format(loan.returned_at!).capitalizeFirst}',
+                            '${DateFormat('MMM d, y', Get.locale?.languageCode).format(loan.latest_date!).capitalizeFirst}',
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
@@ -303,25 +303,16 @@ class ProfileOwnPage extends StatelessWidget {
   Widget _reviewsTab(ProfileOwnController controller) {
     return Padding(
       padding: const EdgeInsets.only(right: 10, left: 10),
-      child: PagedListView.separated(
-        pagingController: PagingController.fromValue(PagingState(itemList: controller.userReviews), firstPageKey: 0),
+      child: ListView.separated(
+        itemCount: controller.userReviews.length,
         padding: const EdgeInsets.only(top: 10, bottom: 10),
         separatorBuilder: (context, index) => const Divider(height: 5),
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        builderDelegate: PagedChildBuilderDelegate(
-          noItemsFoundIndicatorBuilder: (context) {
-            return Container(
-              height: 100,
-              color: Colors.red.shade100,
-              child: const Text('No items found'),
-            );
-          },
-          itemBuilder: (context, item, index) {
-            final Loan loan = controller.userReviews[index];
-            return CommonKeepaliveWrapper(child: _reviewCard(loan));
-          },
-        ),
+        itemBuilder: (context, index) {
+          final Loan loan = controller.userReviews[index];
+          return CommonKeepaliveWrapper(child: _reviewCard(loan));
+        },
       ),
     );
   }

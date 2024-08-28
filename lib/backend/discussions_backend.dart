@@ -71,7 +71,7 @@ class DiscussionsBackend {
       final List<dynamic> response = await _client
           .from('discussion_messages')
           .select(
-            '*, profiles(*), discussion_topics(*, profiles(*), communities(*))',
+            '*, profiles(*)',
           )
           .eq('topic', topic.id)
           .order(
@@ -106,7 +106,7 @@ class DiscussionsBackend {
             'content': content,
           })
           .select(
-            '*, profiles(*), discussion_topics(*, profiles(*), communities(*))',
+            '*, profiles(*)',
           )
           .maybeSingle();
 

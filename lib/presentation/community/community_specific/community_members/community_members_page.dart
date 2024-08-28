@@ -47,7 +47,7 @@ class CommunityMembersPage extends StatelessWidget {
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
         child: SizedBox(
-          height: 70,
+          height: 60,
           child: Padding(
             padding: const EdgeInsets.only(left: 15, right: 15),
             child: Obx(
@@ -57,7 +57,11 @@ class CommunityMembersPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    CommonCircularAvatar(profile: user, radius: 20),
+                    CommonCircularAvatar(
+                      profile: user,
+                      radius: 20,
+                      clickable: true,
+                    ),
                     const VerticalDivider(width: 10),
                     Expanded(
                       child: Text(

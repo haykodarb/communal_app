@@ -1,9 +1,9 @@
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:flutter/material.dart';
-
+  
 const ColorScheme _darkScheme = ColorScheme.dark(
-  surface: Color(0xFF191724),
-  surfaceContainer: Color(0xFF1f1d2e),
+  surface: Color(0xFF1A1825),
+  surfaceContainer: Color(0xFF201D2F),
   primary: Color(0xFFebbcba),
   shadow: Color(0xFF524f67),
   secondary: Color(0xFF9ccfd8),
@@ -118,8 +118,8 @@ final FloatingActionButtonThemeData _floatingActionButtonThemeData = FloatingAct
 
 final CardTheme _cardTheme = CardTheme(
   color: _darkScheme.surfaceContainer,
-  shadowColor: _darkScheme.shadow,
-  elevation: 1,
+  margin: EdgeInsets.zero,
+  elevation: 0,
   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
 );
 

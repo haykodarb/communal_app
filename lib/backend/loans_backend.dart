@@ -209,7 +209,7 @@ class LoansBackend {
       filter = filter.not('books', 'is', null);
 
       if (!params.allStatus) {
-        filter = filter.eq('returned', params.returned).eq('accepted', params.accepted);
+        filter = filter.eq('returned', params.returned).eq('accepted', params.accepted).eq('rejected', false);
       }
 
       if (params.userIsLoanee && params.userIsOwner) {

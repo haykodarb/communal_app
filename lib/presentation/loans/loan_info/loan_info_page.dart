@@ -199,61 +199,76 @@ class LoanInfoPage extends StatelessWidget {
   }
 
   Widget _ownerBottomHalf(LoanInfoController controller) {
-    return Obx(
-      () {
-        final Loan loan = controller.loan.value;
+    return Builder(
+      builder: (context) {
+        return Obx(
+          () {
+            final Loan loan = controller.loan.value;
 
-        if (loan.rejected) return const SizedBox.shrink();
+            if (loan.rejected) return const SizedBox.shrink();
 
-        if (loan.accepted || loan.returned) {
-          return Column(
-            children: [
-              Visibility(
-                visible: loan.review != null,
-                child: Column(
+            if (loan.accepted || loan.returned) {
+              return Column(
+                children: [
+                  Visibility(
+                    visible: loan.review != null,
+                    child: Column(
+                      children: [
+                        Text(
+                          'Review by ${controller.loan.value.loanee.username}',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Text(
+                          loan.review ?? '',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Visibility(
+                    visible: !loan.returned,
+                    child: Obx(
+                      () => CommonLoadingBody(
+                        loading: controller.loading.value,
+                        child: ElevatedButton(
+                          onPressed: controller.markLoanReturned,
+                          child: const Text('Mark as returned'),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }
+
+            return Obx(
+              () => CommonLoadingBody(
+                loading: controller.loading.value,
+                child: Row(
                   children: [
-                    Text('Review by ${controller.loan.value.loanee.username}'),
-                    Text(loan.review ?? ''),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: controller.acceptLoanRequest,
+                        child: const Text('Approve'),
+                      ),
+                    ),
+                    const VerticalDivider(width: 10),
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: controller.rejectLoanRequest,
+                        child: const Text('Reject'),
+                      ),
+                    ),
                   ],
                 ),
               ),
-              Visibility(
-                visible: !loan.returned,
-                child: Obx(
-                  () => CommonLoadingBody(
-                    loading: controller.loading.value,
-                    child: ElevatedButton(
-                      onPressed: controller.markLoanReturned,
-                      child: const Text('Mark as returned'),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          );
-        }
-
-        return Obx(
-          () => CommonLoadingBody(
-            loading: controller.loading.value,
-            child: Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: controller.acceptLoanRequest,
-                    child: const Text('Approve'),
-                  ),
-                ),
-                const VerticalDivider(width: 10),
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: controller.rejectLoanRequest,
-                    child: const Text('Reject'),
-                  ),
-                ),
-              ],
-            ),
-          ),
+            );
+          },
         );
       },
     );
@@ -273,6 +288,7 @@ class LoanInfoPage extends StatelessWidget {
                 return Column(
                   children: [
                     TextField(
+                      minLines: 3,
                       maxLines: 10,
                       onChanged: controller.onReviewTextChanged,
                       controller: TextEditingController.fromValue(

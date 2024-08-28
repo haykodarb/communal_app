@@ -1,5 +1,6 @@
 import 'package:communal/models/book.dart';
 import 'package:communal/presentation/common/common_book_cover.dart';
+import 'package:communal/presentation/common/common_filter_bottomsheet.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/book/book_list_controller.dart';
@@ -7,6 +8,7 @@ import 'package:communal/presentation/common/common_search_bar.dart';
 import 'package:communal/routes.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class BookListPage extends StatelessWidget {
@@ -99,6 +101,18 @@ class BookListPage extends StatelessWidget {
     );
   }
 
+  Widget _bottomSheet(BookListController controller) {
+    return CommonFilterBottomsheet(
+      children: [
+        CommonFilterRow(
+          title: 'Ordenar por',
+          options: const ['Fecha', 'Titulo', 'Autor'],
+          onIndexChange: controller.onOrderByIndexChanged,
+        ),
+      ],
+    );
+  }
+
   Widget _searchRow(BookListController controller) {
     return Builder(builder: (context) {
       return Padding(
@@ -106,21 +120,10 @@ class BookListPage extends StatelessWidget {
         child: CommonSearchBar(
           searchCallback: controller.searchBooks,
           filterCallback: () {
-            Get.bottomSheet(
-              BottomSheet(
-                onClosing: () {},
-                enableDrag: false,
-                builder: (context) {
-                  return Container(
-                    height: 350,
-                    width: double.maxFinite,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceContainer,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  );
-                },
-              ),
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              builder: (context) => _bottomSheet(controller),
             );
           },
           focusNode: controller.focusScope,

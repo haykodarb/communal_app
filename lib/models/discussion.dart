@@ -35,14 +35,12 @@ class DiscussionMessage {
   final String id;
   final DateTime created_at;
   final Profile sender;
-  DiscussionTopic? topic;
   final String content;
 
   DiscussionMessage({
     required this.id,
     required this.created_at,
     required this.sender,
-    required this.topic,
     required this.content,
   });
 
@@ -50,7 +48,6 @@ class DiscussionMessage {
       : sender = Profile.fromMap(map['profiles']),
         content = map['content'],
         created_at = DateTime.parse(map['created_at']),
-        topic = DiscussionTopic.fromMap(map['discussion_topics']),
         id = map['id'];
 
   DiscussionMessage.fromMapWithoutTopic(Map<String, dynamic> map)
@@ -65,7 +62,6 @@ class DiscussionMessage {
       'id': id,
       'created_at': created_at.toIso8601String(),
       'sender': sender.id,
-      'topic': topic?.id,
       'content': content,
     }.toString();
   }

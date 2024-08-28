@@ -96,8 +96,8 @@ class BookEditPage extends StatelessWidget {
             initialValue: controller.inheritedBook.review,
             label: 'Review',
             validator: (String? value) => controller.stringValidator(value, 10),
-            maxLength: 100,
-            maxLines: 4,
+            maxLength: 1000,
+            maxLines: 6,
           ),
         );
       },
