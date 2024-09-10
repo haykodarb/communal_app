@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/community.dart';
@@ -9,8 +10,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class BooksQuery {
   String order_by = 'created_at';
-  String? filter_by;
-  String? search_query = '';
+  bool? loaned;
+  String? search_query;
   int current_index = 0;
 
   BooksQuery();
@@ -20,16 +21,19 @@ class BooksBackend {
   static final SupabaseClient _client = Supabase.instance.client;
 
   static Future<Uint8List> getBookCover(Book book) async {
-    FileInfo? file = await DefaultCacheManager().getFileFromCache(book.image_path);
+    FileInfo? file =
+        await DefaultCacheManager().getFileFromCache(book.image_path);
 
     Uint8List bytes;
 
     if (file != null) {
       bytes = await file.file.openRead().toBytes();
     } else {
-      bytes = await _client.storage.from('book_covers').download(book.image_path);
+      bytes =
+          await _client.storage.from('book_covers').download(book.image_path);
 
-      await DefaultCacheManager().putFile(book.image_path, bytes, key: book.image_path);
+      await DefaultCacheManager()
+          .putFile(book.image_path, bytes, key: book.image_path);
     }
 
     return bytes;
@@ -38,7 +42,8 @@ class BooksBackend {
   static Future<BackendResponse> updateBook(Book book, File? image) async {
     try {
       final String userId = _client.auth.currentUser!.id;
-      final String currentTime = DateTime.now().millisecondsSinceEpoch.toString();
+      final String currentTime =
+          DateTime.now().millisecondsSinceEpoch.toString();
 
       String fileName;
 
@@ -73,7 +78,9 @@ class BooksBackend {
 
       return BackendResponse(
         success: response.isNotEmpty,
-        payload: response.isNotEmpty ? Book.fromMap(response) : 'Could not update book. Please try again.',
+        payload: response.isNotEmpty
+            ? Book.fromMap(response)
+            : 'Could not update book. Please try again.',
       );
     } on StorageException catch (error) {
       return BackendResponse(success: false, payload: error.message);
@@ -87,7 +94,8 @@ class BooksBackend {
   static Future<BackendResponse> addBook(Book book, File image) async {
     try {
       final String userId = _client.auth.currentUser!.id;
-      final String currentTime = DateTime.now().millisecondsSinceEpoch.toString();
+      final String currentTime =
+          DateTime.now().millisecondsSinceEpoch.toString();
       final String imageExtension = image.path.split('.').last;
 
       final String pathToUpload = '/$userId/$currentTime.$imageExtension';
@@ -115,7 +123,9 @@ class BooksBackend {
 
       return BackendResponse(
         success: response.isNotEmpty,
-        payload: response.isNotEmpty ? Book.fromMap(response) : 'Could not create book. Please try again.',
+        payload: response.isNotEmpty
+            ? Book.fromMap(response)
+            : 'Could not create book. Please try again.',
       );
     } on StorageException catch (error) {
       return BackendResponse(success: false, payload: error.message);
@@ -126,7 +136,8 @@ class BooksBackend {
 
   static Future<BackendResponse> deleteBook(Book book) async {
     try {
-      final List<dynamic> response = await _client.from('books').delete().eq('id', book.id).select();
+      final List<dynamic> response =
+          await _client.from('books').delete().eq('id', book.id).select();
 
       if (response.isNotEmpty) {
         _client.storage.from('book_covers').remove(
@@ -167,18 +178,34 @@ class BooksBackend {
     }
   }
 
-  static Future<BackendResponse> getAllBooksForUser({String? id}) async {
+  static Future<BackendResponse> getAllBooksForUser({
+    String? userToQuery,
+    BooksQuery? query,
+  }) async {
     try {
-      String userId;
+      String userId = userToQuery ?? UsersBackend.currentUserId;
 
-      if (id == null) {
-        userId = _client.auth.currentUser!.id;
+      PostgrestFilterBuilder filter =
+          _client.from('books').select('*, profiles(*)').eq('owner', userId);
+
+      PostgrestTransformBuilder transform;
+
+      if (query != null) {
+        if (query.search_query != null) {
+          filter = filter.or('title.ilike.%${query.search_query}%, author.ilike.%${query.search_query}%');
+        }
+
+        if (query.loaned != null) {
+          filter = filter.eq('loaned', query.loaned!);
+        }
+
+        transform = filter.order(query.order_by,
+            ascending: query.order_by == 'created_at' ? false : true);
       } else {
-        userId = id;
+        transform = filter.order('created_at');
       }
 
-      final List<Map<String, dynamic>> response =
-          await _client.from('books').select('*, profiles(*)').eq('owner', userId).limit(10).order('created_at');
+      final List<Map<String, dynamic>> response = await transform;
 
       final List<Book> bookList = response
           .map(
@@ -197,8 +224,11 @@ class BooksBackend {
 
   static Future<BackendResponse> getBookById(String id) async {
     try {
-      final Map<String, dynamic>? response =
-          await _client.from('books').select('*, profiles(*)').eq('id', id).maybeSingle();
+      final Map<String, dynamic>? response = await _client
+          .from('books')
+          .select('*, profiles(*)')
+          .eq('id', id)
+          .maybeSingle();
 
       return BackendResponse(
         success: response != null,
@@ -209,7 +239,8 @@ class BooksBackend {
     }
   }
 
-  static Future<BackendResponse> getBooksInCommunity(Community community, int index, String query) async {
+  static Future<BackendResponse> getBooksInCommunity(
+      Community community, int index, String query) async {
     try {
       final List<dynamic> booksResponse = await _client
           .rpc(

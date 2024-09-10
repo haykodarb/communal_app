@@ -48,6 +48,7 @@ final AppBarTheme _appBarTheme = AppBarTheme(
     fontWeight: FontWeight.w600,
     fontSize: 18,
     color: _lightScheme.onSurface,
+    fontFamily: 'Poppins',
   ),
 );
 
@@ -56,7 +57,8 @@ final ElevatedButtonThemeData _elevatedButtonThemeData = ElevatedButtonThemeData
     shadowColor: _lightScheme.primary,
     backgroundColor: _lightScheme.primary,
     foregroundColor: _lightScheme.onPrimary,
-    disabledBackgroundColor: _lightScheme.onSurface,
+    disabledBackgroundColor: _lightScheme.primary.withOpacity(0.5),
+    disabledForegroundColor: _lightScheme.surface,
     textStyle: const TextStyle(
       fontSize: 20,
       fontWeight: FontWeight.w700,

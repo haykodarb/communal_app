@@ -14,13 +14,19 @@ class BookListController extends GetxController {
   Timer? debounceTimer;
   final FocusNode focusScope = FocusNode();
 
-  BooksQuery query = BooksQuery();
+  Rx<BooksQuery> query = BooksQuery().obs;
 
   @override
   Future<void> onReady() async {
     super.onReady();
 
     await reloadBooks();
+
+    query.listen(
+      (BooksQuery value) {
+        reloadBooks();
+      },
+    );
   }
 
   Future<void> deleteBook(Book book) async {
@@ -40,25 +46,21 @@ class BookListController extends GetxController {
     }
   }
 
-  Future<void> searchBooks(String query) async {
+  Future<void> searchBooks(String stringQuery) async {
     debounceTimer?.cancel();
 
-    debounceTimer = Timer(const Duration(milliseconds: 500), () async {
-      loading.value = true;
-
-      final BackendResponse response = await BooksBackend.searchOwnerBooksByQuery(query);
-
-      if (response.success) {
-        userBooks.value = response.payload;
-        userBooks.refresh();
-      }
-
-      loading.value = false;
-    });
+    debounceTimer = Timer(
+      const Duration(milliseconds: 500),
+      () async {
+        query.value.search_query = stringQuery.isEmpty ? null : stringQuery;
+        query.refresh();
+      },
+    );
   }
 
   Future<void> updateBook(Book book) async {
-    final int indexOfBook = userBooks.indexWhere((element) => element.id == book.id);
+    final int indexOfBook =
+        userBooks.indexWhere((element) => element.id == book.id);
 
     if (indexOfBook >= 0) {
       userBooks[indexOfBook] = book;
@@ -68,7 +70,10 @@ class BookListController extends GetxController {
 
   Future<void> reloadBooks() async {
     loading.value = true;
-    final BackendResponse response = await BooksBackend.getAllBooksForUser();
+    final BackendResponse response = await BooksBackend.getAllBooksForUser(
+      query: query.value,
+    );
+
     loading.value = false;
 
     if (response.success) {
@@ -86,7 +91,39 @@ class BookListController extends GetxController {
     }
   }
 
+  void onFilterByChanged(int value) {
+    switch (value) {
+      case 0:
+        query.value.loaned = null;
+        break;
+      case 1:
+        query.value.loaned = false;
+        break;
+      case 2:
+        query.value.loaned = true;
+        break;
+      default:
+        break;
+    }
+
+    query.refresh();
+  }
+
   void onOrderByIndexChanged(int value) {
-    print(value);
+    switch (value) {
+      case 0:
+        query.value.order_by = 'created_at';
+        break;
+      case 1:
+        query.value.order_by = 'title';
+        break;
+      case 2:
+        query.value.order_by = 'author';
+        break;
+      default:
+        break;
+    }
+
+    query.refresh();
   }
 }

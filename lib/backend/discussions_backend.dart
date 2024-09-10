@@ -39,7 +39,8 @@ class DiscussionsBackend {
     }
   }
 
-  static Future<BackendResponse> getDiscussionTopicsForCommunity(Community community) async {
+  static Future<BackendResponse> getDiscussionTopicsForCommunity(
+      Community community) async {
     try {
       final List<dynamic> response = await _client
           .from('discussion_topics')
@@ -51,10 +52,12 @@ class DiscussionsBackend {
             community.id,
           );
 
-      final List<DiscussionTopic> topics = response.map((element) => DiscussionTopic.fromMap(element)).toList();
+      final List<DiscussionTopic> topics =
+          response.map((element) => DiscussionTopic.fromMap(element)).toList();
 
       if (response.isEmpty) {
-        return BackendResponse(success: false, payload: 'This community has no discussions yet');
+        return BackendResponse(
+            success: false, payload: 'This community has no discussions yet');
       }
 
       return BackendResponse(
@@ -66,7 +69,8 @@ class DiscussionsBackend {
     }
   }
 
-  static Future<BackendResponse> getDiscussionMessagesForTopic(DiscussionTopic topic) async {
+  static Future<BackendResponse> getDiscussionMessagesForTopic(
+      DiscussionTopic topic) async {
     try {
       final List<dynamic> response = await _client
           .from('discussion_messages')
@@ -83,7 +87,9 @@ class DiscussionsBackend {
         return BackendResponse(success: false, payload: 'No messages in topic');
       }
 
-      final List<DiscussionMessage> messages = response.map((element) => DiscussionMessage.fromMap(element)).toList();
+      final List<DiscussionMessage> messages = response
+          .map((element) => DiscussionMessage.fromMap(element))
+          .toList();
 
       return BackendResponse(
         success: messages.isNotEmpty,
@@ -94,7 +100,8 @@ class DiscussionsBackend {
     }
   }
 
-  static Future<BackendResponse> insertDiscussionMessageInTopic(DiscussionTopic topic, String content) async {
+  static Future<BackendResponse> insertDiscussionMessageInTopic(
+      DiscussionTopic topic, String content) async {
     try {
       final String userId = _client.auth.currentUser!.id;
 
@@ -111,10 +118,13 @@ class DiscussionsBackend {
           .maybeSingle();
 
       if (response == null || response.isEmpty) {
-        return BackendResponse(success: false, payload: 'Could not send message, please try again');
+        return BackendResponse(
+            success: false,
+            payload: 'Could not send message, please try again');
       }
 
-      return BackendResponse(success: true, payload: DiscussionMessage.fromMap(response));
+      return BackendResponse(
+          success: true, payload: DiscussionMessage.fromMap(response));
     } on PostgrestException catch (error) {
       return BackendResponse(success: false, payload: error.message);
     }
@@ -125,7 +135,7 @@ class DiscussionsBackend {
       final Map<String, dynamic>? response = await _client
           .from('discussion_messages')
           .select(
-            '*, profiles(*), discussion_topics(*, profiles(*), communities(*))',
+            '*, profiles(*)',
           )
           .eq('id', id)
           .maybeSingle();
@@ -137,6 +147,29 @@ class DiscussionsBackend {
       return BackendResponse(
         success: true,
         payload: DiscussionMessage.fromMap(response),
+      );
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
+    }
+  }
+  
+  static Future<BackendResponse> getDiscussionTopicById(String id) async {
+    try {
+      final Map<String, dynamic>? response = await _client
+          .from('discussion_topics')
+          .select(
+            '*, profiles(*), communities(*), last_message(*, profiles(*))',
+          )
+          .eq('id', id)
+          .maybeSingle();
+
+      if (response == null || response.isEmpty) {
+        return BackendResponse(success: false, payload: '');
+      }
+
+      return BackendResponse(
+        success: true,
+        payload: DiscussionTopic.fromMap(response),
       );
     } on PostgrestException catch (error) {
       return BackendResponse(success: false, payload: error.message);

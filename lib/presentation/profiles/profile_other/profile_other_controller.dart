@@ -56,7 +56,7 @@ class ProfileOtherController extends GetxController {
 
   Future<void> loadBooks() async {
     loadingBooks.value = true;
-    final BackendResponse response = await BooksBackend.getAllBooksForUser(id: profile.value.id);
+    final BackendResponse response = await BooksBackend.getAllBooksForUser(userToQuery: profile.value.id);
     loadingBooks.value = false;
 
     if (response.success) {

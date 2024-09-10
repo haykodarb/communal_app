@@ -211,7 +211,7 @@ class ProfileOtherPage extends StatelessWidget {
               child: InkWell(
                 onTap: () {
                   Get.toNamed(
-                    RouteNames.bookOwnedPage,
+                    RouteNames.communitySpecificBookPage,
                     arguments: {'book': book},
                   );
                 },

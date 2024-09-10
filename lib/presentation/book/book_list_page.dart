@@ -8,7 +8,6 @@ import 'package:communal/presentation/common/common_search_bar.dart';
 import 'package:communal/routes.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class BookListPage extends StatelessWidget {
@@ -102,12 +101,35 @@ class BookListPage extends StatelessWidget {
   }
 
   Widget _bottomSheet(BookListController controller) {
+    int filterByIndex = 0;
+
+    if(controller.query.value.loaned != null) {
+	filterByIndex = controller.query.value.loaned! ? 2 : 1; 
+    } 
+
+    int orderByIndex = 0;
+
+    if(controller.query.value.order_by == 'title') {
+	orderByIndex = 1;
+    } else if(controller.query.value.order_by == 'author') {
+	orderByIndex = 2;
+    }
+    
+
     return CommonFilterBottomsheet(
       children: [
         CommonFilterRow(
           title: 'Ordenar por',
+	  initialIndex: orderByIndex,
           options: const ['Fecha', 'Titulo', 'Autor'],
           onIndexChange: controller.onOrderByIndexChanged,
+        ),
+	const Divider(height: 10),
+        CommonFilterRow(
+          title: 'Filtrar por',
+	  initialIndex: filterByIndex,
+          options: const ['Todos', 'Disponible', 'Prestado'],
+          onIndexChange: controller.onFilterByChanged,
         ),
       ],
     );
@@ -167,58 +189,55 @@ class BookListPage extends StatelessWidget {
             body: Obx(
               () => CommonLoadingBody(
                 loading: controller.loading.value,
-                child: RefreshIndicator(
-                  onRefresh: controller.reloadBooks,
-                  child: Obx(
-                    () {
-                      if (controller.userBooks.isEmpty) {
-                        return const Center(
-                          child: Text(
-                            'No books.',
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
-                            textAlign: TextAlign.center,
+                child: Obx(
+                  () {
+                    if (controller.userBooks.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          'No books.',
+                          style: TextStyle(
+                            fontSize: 16,
                           ),
-                        );
-                      } else {
-                        return ListView.separated(
-                          itemCount: controller.userBooks.length,
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          cacheExtent: 2000,
-                          separatorBuilder: (context, index) {
-                            return const SizedBox(height: 5);
-                          },
-                          itemBuilder: (context, index) {
-                            final Book book = controller.userBooks[index];
-
-                            return InkWell(
-                              highlightColor: Colors.transparent,
-                              splashColor: Colors.transparent,
-                              onTap: () async {
-                                if (controller.focusScope.hasFocus) {
-                                  controller.focusScope.unfocus();
-                                }
-
-                                await Get.toNamed(
-                                  RouteNames.bookOwnedPage,
-                                  arguments: {
-                                    'book': book,
-                                    'controller': controller,
-                                  },
-                                );
-
-                                if (controller.focusScope.hasFocus) {
-                                  controller.focusScope.unfocus();
-                                }
-                              },
-                              child: _bookCard(book),
-                            );
-                          },
-                        );
-                      }
-                    },
-                  ),
+                          textAlign: TextAlign.center,
+                        ),
+                      );
+                    } else {
+                      return ListView.separated(
+                        itemCount: controller.userBooks.length,
+                        padding: const EdgeInsets.only(right: 10, left: 10, top: 5, bottom: 90),
+                        cacheExtent: 2000,
+                        separatorBuilder: (context, index) {
+                          return const SizedBox(height: 5);
+                        },
+                        itemBuilder: (context, index) {
+                          final Book book = controller.userBooks[index];
+                
+                          return InkWell(
+                            highlightColor: Colors.transparent,
+                            splashColor: Colors.transparent,
+                            onTap: () async {
+                              if (controller.focusScope.hasFocus) {
+                                controller.focusScope.unfocus();
+                              }
+                
+                              await Get.toNamed(
+                                RouteNames.bookOwnedPage,
+                                arguments: {
+                                  'book': book,
+                                  'controller': controller,
+                                },
+                              );
+                
+                              if (controller.focusScope.hasFocus) {
+                                controller.focusScope.unfocus();
+                              }
+                            },
+                            child: _bookCard(book),
+                          );
+                        },
+                      );
+                    }
+                  },
                 ),
               ),
             ),

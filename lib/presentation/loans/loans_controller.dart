@@ -65,22 +65,32 @@ class LoansController extends GetxController {
         filterParams.value.allStatus = true;
         filterParams.value.accepted = false;
         filterParams.value.returned = false;
+        filterParams.value.rejected = false;
         break;
       case 1:
         filterParams.value.allStatus = false;
         filterParams.value.accepted = false;
         filterParams.value.returned = false;
+        filterParams.value.rejected = false;
         break;
       case 2:
         filterParams.value.allStatus = false;
         filterParams.value.accepted = true;
         filterParams.value.returned = false;
+        filterParams.value.rejected = false;
         break;
       case 3:
         filterParams.value.allStatus = false;
         filterParams.value.accepted = true;
         filterParams.value.returned = true;
+        filterParams.value.rejected = false;
         break;
+    case 4: 
+	filterParams.value.allStatus = false;
+        filterParams.value.accepted = false;
+        filterParams.value.returned = false;
+        filterParams.value.rejected = true;
+	break;
       default:
         break;
     }

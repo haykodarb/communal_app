@@ -1,6 +1,7 @@
 import 'package:communal/presentation/book/book_edit/book_edit_page.dart';
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_topic_create/community_discussions_topic_create_page.dart';
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_topic_messages/community_discussions_topic_messages_page.dart';
+import 'package:communal/presentation/community/community_specific/community_settings/community_settings_page.dart';
 import 'package:communal/presentation/loans/loan_info/loan_info_page.dart';
 import 'package:communal/presentation/login/login_password_recovery/login_password_recovery_page.dart';
 import 'package:communal/presentation/messages/messages_page.dart';
@@ -52,6 +53,7 @@ class RouteNames {
   static const String communityListPage = '/community';
   static const String communityCreatePage = '/community/create';
   static const String communitySpecificPage = '/community/specific';
+  static const String communitySettingsPage = '/community/settings';
   static const String communitySpecificBookPage = '/community/specific/book';
   static const String communitySpecificToolPage = '/community/specific/tool';
   static const String communityInvitePage = '/community/invite';
@@ -149,6 +151,11 @@ final List<GetPage> routes = <GetPage>[
     name: RouteNames.communityDiscussionsTopicMessages,
     transition: Transition.noTransition,
     page: () => const CommunityDiscussionsTopicMessagesPage(),
+  ),
+  GetPage<dynamic>(
+    name: RouteNames.communitySettingsPage,
+    transition: Transition.noTransition,
+    page: () => const CommunitySettingsPage(),
   ),
   GetPage<dynamic>(
     name: RouteNames.invitationsPage,

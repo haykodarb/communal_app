@@ -13,16 +13,32 @@ import 'package:image_picker/image_picker.dart';
 class CommunitySettingsController extends GetxController {
   final Community community = Get.arguments['community'];
 
-  final TextEditingController textEditingController = TextEditingController.fromValue(
+  final TextEditingController textEditingController =
+      TextEditingController.fromValue(
     TextEditingValue(
       text: (Get.arguments['community'] as Community).name,
     ),
   );
 
-  final RxBool editing = false.obs;
+  final RxBool edited = false.obs;
+
+  final Rx<Community> communityForm = Community.empty().obs;
+
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  final RxBool loading = false.obs;
+  final RxString errorMessage = ''.obs;
 
   final ImagePicker imagePicker = ImagePicker();
   final Rxn<File> selectedFile = Rxn<File>();
+
+  @override
+  void onInit() {
+    super.onInit();
+    communityForm.value = Community.copy(community); 
+    
+    communityForm.refresh();
+  }
 
   Future<void> takePicture(ImageSource source) async {
     XFile? pickedImage = await imagePicker.pickImage(
@@ -34,16 +50,22 @@ class CommunitySettingsController extends GetxController {
 
     if (pickedImage == null) return;
 
+    edited.value = true;
     selectedFile.value = File(pickedImage.path);
+
+    _checkIfEdited();
   }
 
-  void enableEditing() {
-    editing.value = true;
-  }
+  String? stringValidator(String? value, int length) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter something.';
+    }
 
-  void cancelEditing() {
-    editing.value = false;
-    textEditingController.text = community.name;
+    if (value.length < length) {
+      return 'Must be at least $length characters long.';
+    }
+
+    return null;
   }
 
   Future<void> leaveCommunity() async {
@@ -54,7 +76,8 @@ class CommunitySettingsController extends GetxController {
     );
 
     if (confirm != null && confirm) {
-      final BackendResponse response = await UsersBackend.removeCurrentUserFromCommunity(community);
+      final BackendResponse response =
+          await UsersBackend.removeCurrentUserFromCommunity(community);
 
       if (response.success) {
         Get.back();
@@ -74,13 +97,70 @@ class CommunitySettingsController extends GetxController {
     );
 
     if (confirm != null && confirm) {
-      final BackendResponse response = await CommunitiesBackend.deleteCommunity(community);
+      final BackendResponse response =
+          await CommunitiesBackend.deleteCommunity(community);
 
       if (response.success) {
         Get.back();
       } else {
         Get.dialog(
           CommonAlertDialog(title: response.payload),
+        );
+      }
+    }
+  }
+
+  void _checkIfEdited() {
+    bool matchesOriginal = communityForm.value.name == community.name &&
+        communityForm.value.description == community.description &&
+        selectedFile.value == null;
+
+    edited.value = !matchesOriginal;
+  }
+
+  void onNameChange(String value) {
+    communityForm.update(
+      (Community? val) {
+        val!.name = value;
+      },
+    );
+
+    _checkIfEdited();
+  }
+
+  void onDescriptorChange(String value) {
+    communityForm.value.description = value;
+
+    if (value.isEmpty) {
+      communityForm.value.description = null;
+    }
+
+    communityForm.refresh();
+
+    _checkIfEdited();
+  }
+
+  Future<void> onSubmit() async {
+    if (formKey.currentState!.validate()) {
+      loading.value = true;
+      errorMessage.value = '';
+
+      final BackendResponse response = await CommunitiesBackend.updateCommunity(
+        communityForm.value,
+        selectedFile.value,
+      );
+
+      loading.value = false;
+
+      if (response.success) {
+        Get.back<dynamic>(
+          result: true,
+        );
+      } else {
+        Get.dialog(
+          CommonAlertDialog(
+            title: response.payload,
+          ),
         );
       }
     }

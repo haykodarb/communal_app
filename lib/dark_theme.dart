@@ -1,6 +1,6 @@
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:flutter/material.dart';
-  
+
 const ColorScheme _darkScheme = ColorScheme.dark(
   surface: Color(0xFF1A1825),
   surfaceContainer: Color(0xFF201D2F),
@@ -17,7 +17,8 @@ const ColorScheme _darkScheme = ColorScheme.dark(
   onError: Color(0xFFe0def4),
 );
 
-final BottomNavigationBarThemeData _bottomNavigationBarTheme = BottomNavigationBarThemeData(
+final BottomNavigationBarThemeData _bottomNavigationBarTheme =
+    BottomNavigationBarThemeData(
   type: BottomNavigationBarType.fixed,
   selectedItemColor: _darkScheme.primary,
   unselectedItemColor: _darkScheme.onSurface,
@@ -38,12 +39,14 @@ final AppBarTheme _appBarTheme = AppBarTheme(
   centerTitle: true,
   titleTextStyle: TextStyle(
     fontWeight: FontWeight.w600,
+    fontFamily: 'Poppins',
     fontSize: 18,
     color: _darkScheme.onSurface,
   ),
 );
 
-final ElevatedButtonThemeData _elevatedButtonThemeData = ElevatedButtonThemeData(
+final ElevatedButtonThemeData _elevatedButtonThemeData =
+    ElevatedButtonThemeData(
   style: ElevatedButton.styleFrom(
     shadowColor: _darkScheme.primary,
     backgroundColor: _darkScheme.primary,
@@ -60,9 +63,11 @@ final ElevatedButtonThemeData _elevatedButtonThemeData = ElevatedButtonThemeData
   ),
 );
 
-const DividerThemeData _dividerThemeData = DividerThemeData(color: Colors.transparent);
+const DividerThemeData _dividerThemeData =
+    DividerThemeData(color: Colors.transparent);
 
-final OutlinedButtonThemeData _outlinedButtonThemeData = OutlinedButtonThemeData(
+final OutlinedButtonThemeData _outlinedButtonThemeData =
+    OutlinedButtonThemeData(
   style: OutlinedButton.styleFrom(
     foregroundColor: _darkScheme.primary,
     side: BorderSide(
@@ -108,7 +113,8 @@ final IconThemeData _iconThemeData = IconThemeData(
   color: _darkScheme.onSurface,
 );
 
-final FloatingActionButtonThemeData _floatingActionButtonThemeData = FloatingActionButtonThemeData(
+final FloatingActionButtonThemeData _floatingActionButtonThemeData =
+    FloatingActionButtonThemeData(
   backgroundColor: _darkScheme.primary,
   foregroundColor: _darkScheme.onPrimary,
   shape: RoundedRectangleBorder(

@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 
 class CommunitySpecificBookController extends GetxController {
   final Book book = Get.arguments['book'];
-  final Community community = Get.arguments['community'];
+  final Community? community = Get.arguments['community'];
 
   final RxString message = ''.obs;
 

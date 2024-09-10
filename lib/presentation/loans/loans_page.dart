@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:communal/backend/loans_backend.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
@@ -55,7 +56,8 @@ class LoansPage extends StatelessWidget {
                     highlightColor: Colors.transparent,
                     overlayColor: WidgetStateColor.transparent,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 15),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(40),
                         border: Border.all(
@@ -83,24 +85,33 @@ class LoansPage extends StatelessWidget {
   }
 
   Widget _bottomSheet(LoansController controller) {
-    final int orderByIndex = controller.filterParams.value.orderByDate ? 0 : 1;
+    LoansFilterParams filterParams = controller.filterParams.value;
+
+    final int orderByIndex = filterParams.orderByDate ? 0 : 1;
 
     int filterByStateIndex = 0;
-    if (controller.filterParams.value.allStatus) {
+
+    if (filterParams.allStatus) {
       filterByStateIndex = 0;
-    } else if (!controller.filterParams.value.accepted) {
-      filterByStateIndex = 1;
-    } else if (!controller.filterParams.value.returned) {
-      filterByStateIndex = 2;
     } else {
-      filterByStateIndex = 3;
+      if (filterParams.rejected) {
+        filterByStateIndex = 4;
+      } else {
+        if (!filterParams.accepted) {
+          filterByStateIndex = 1;
+        } else if (!filterParams.returned) {
+          filterByStateIndex = 2;
+        } else {
+          filterByStateIndex = 3;
+        }
+      }
     }
 
     int filterByOwnerIndex = 0;
-    if (!controller.filterParams.value.userIsLoanee && controller.filterParams.value.userIsOwner) {
+    if (!filterParams.userIsLoanee && filterParams.userIsOwner) {
       filterByOwnerIndex = 1;
     }
-    if (controller.filterParams.value.userIsLoanee && !controller.filterParams.value.userIsOwner) {
+    if (filterParams.userIsLoanee && !filterParams.userIsOwner) {
       filterByOwnerIndex = 2;
     }
 
@@ -115,7 +126,13 @@ class LoansPage extends StatelessWidget {
         const Divider(height: 20),
         CommonFilterRow(
           title: 'Filtrar por estado',
-          options: const ['Todos', 'Pendiente', 'Aceptado', 'Finalizado'],
+          options: const [
+            'Todos',
+            'Pendiente',
+            'Aceptado',
+            'Finalizado',
+            'Rechazado'
+          ],
           initialIndex: filterByStateIndex,
           onIndexChange: controller.onFilterByStatusChanged,
         ),
@@ -145,7 +162,8 @@ class LoansPage extends StatelessWidget {
           ),
           child: Card(
             margin: EdgeInsets.zero,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             child: Container(
               height: 160,
               padding: const EdgeInsets.all(20),
@@ -172,14 +190,17 @@ class LoansPage extends StatelessWidget {
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                             height: 1.2,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                         const Expanded(child: Divider(height: 5)),
                         Row(
                           children: [
                             Text(
-                              loan.loanee.isCurrentUser ? loan.owner.username : loan.loanee.username,
+                              loan.loanee.isCurrentUser
+                                  ? loan.owner.username
+                                  : loan.loanee.username,
                               style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
@@ -190,11 +211,18 @@ class LoansPage extends StatelessWidget {
                             Container(
                               decoration: BoxDecoration(
                                 color: loan.loanee.isCurrentUser
-                                    ? Theme.of(context).colorScheme.tertiary.withOpacity(0.25)
-                                    : Theme.of(context).colorScheme.primary.withOpacity(0.25),
+                                    ? Theme.of(context)
+                                        .colorScheme
+                                        .tertiary
+                                        .withOpacity(0.25)
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withOpacity(0.25),
                                 borderRadius: BorderRadius.circular(40),
                               ),
-                              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 2, horizontal: 10),
                               child: Text(
                                 loan.loanee.isCurrentUser ? 'Owner' : 'Loanee',
                                 style: const TextStyle(
@@ -219,7 +247,8 @@ class LoansPage extends StatelessWidget {
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                             height: 1.2,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                         const Divider(height: 5),
@@ -229,7 +258,8 @@ class LoansPage extends StatelessWidget {
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                             height: 1.2,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ],
@@ -292,14 +322,17 @@ class LoansPage extends StatelessWidget {
                   loading: controller.firstLoad.value,
                   child: Obx(
                     () => ListView.separated(
-                      padding: const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-                      separatorBuilder: (context, index) => const Divider(height: 5),
+                      padding: const EdgeInsets.only(
+                          top: 10, bottom: 10, left: 10, right: 10),
+                      separatorBuilder: (context, index) =>
+                          const Divider(height: 5),
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: controller.loanList.length,
                       itemBuilder: (context, index) {
                         final Loan loan = controller.loanList[index];
-                        return CommonKeepaliveWrapper(child: _loanCard(loan, controller));
+                        return CommonKeepaliveWrapper(
+                            child: _loanCard(loan, controller));
                       },
                     ),
                   ),

@@ -338,7 +338,12 @@ class UsersBackend {
 
     final List<Profile> listOfProfiles = membershipResponse
         .map(
-          (e) => Profile.fromMap(e['profiles']),
+          (e) {
+	    Profile profile = Profile.fromMap(e['profiles']);
+	    profile.is_admin = e['is_admin'];
+		
+            return profile;
+          },
         )
         .toList();
 

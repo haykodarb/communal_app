@@ -11,6 +11,7 @@ class LoansFilterParams {
   bool allStatus = true;
   bool accepted = false;
   bool returned = false;
+  bool rejected = false;
   bool orderByDate = true;
   bool userIsOwner = true;
   bool userIsLoanee = true;
@@ -209,7 +210,7 @@ class LoansBackend {
       filter = filter.not('books', 'is', null);
 
       if (!params.allStatus) {
-        filter = filter.eq('returned', params.returned).eq('accepted', params.accepted).eq('rejected', false);
+        filter = filter.eq('returned', params.returned).eq('accepted', params.accepted).eq('rejected', params.rejected);
       }
 
       if (params.userIsLoanee && params.userIsOwner) {
@@ -291,8 +292,8 @@ class LoansBackend {
   }
 
   static Future<BackendResponse> requestItemLoanInCommunity({
-    required Community community,
     required Book book,
+     Community? community,
   }) async {
     final SupabaseClient client = Supabase.instance.client;
 
@@ -305,7 +306,7 @@ class LoansBackend {
             {
               'loanee': userId,
               'book': book.id,
-              'community': community.id,
+              'community': community?.id,
             },
           )
           .select(

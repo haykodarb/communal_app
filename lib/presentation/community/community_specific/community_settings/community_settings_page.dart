@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/communities_backend.dart';
+import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
+import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/community/community_specific/community_settings/community_settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,153 +13,176 @@ import 'package:image_picker/image_picker.dart';
 class CommunitySettingsPage extends StatelessWidget {
   const CommunitySettingsPage({super.key});
 
-  Widget _communityAvatar(CommunitySettingsController controller) {
-    return AspectRatio(
-      aspectRatio: 16 / 9,
-      child: FutureBuilder(
-        future: CommunitiesBackend.getCommunityAvatar(controller.community),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const CommonLoadingImage();
-          }
+  Widget _imageSelector(CommunitySettingsController controller) {
+    return Builder(builder: (context) {
+      return Container(
+        width: double.maxFinite,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        clipBehavior: Clip.hardEdge,
+        child: AspectRatio(
+          aspectRatio: 16 / 9,
+          child: Stack(
+            children: [
+              SizedBox(
+                width: double.maxFinite,
+                height: double.maxFinite,
+                child: Obx(
+                  () {
+                    if (controller.selectedFile.value != null) {
+                      return Image.file(
+                        File(controller.selectedFile.value!.path),
+                        fit: BoxFit.cover,
+                      );
+                    } else {
+                      if (controller.community.image_path != null) {
+                        return FutureBuilder(
+                          future: CommunitiesBackend.getCommunityAvatar(
+                            controller.community,
+                          ),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return const CommonLoadingImage();
+                            }
 
-          if (snapshot.data!.isEmpty) {
-            return Container(
-              color: Theme.of(context).colorScheme.primary,
-              child: Icon(
-                Atlas.users,
-                color: Theme.of(context).colorScheme.surface,
-                size: 150,
+                            if (snapshot.data!.isEmpty) {
+                              return Container(
+                                color: Theme.of(context).colorScheme.primary,
+                                child: Icon(
+                                  Atlas.users,
+                                  color: Theme.of(context).colorScheme.surface,
+                                  size: 150,
+                                ),
+                              );
+                            }
+
+                            return Image.memory(
+                              snapshot.data!,
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        );
+                      }
+
+                      return Card(
+                        margin: EdgeInsets.zero,
+                        color: Theme.of(context).colorScheme.surfaceContainer,
+                        child: const Center(
+                          child: Text(
+                            'No\nimage',
+                            style: TextStyle(fontSize: 18),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                ),
               ),
-            );
-          }
+              Container(
+                width: double.maxFinite,
+                padding: const EdgeInsets.only(right: 20),
+                alignment: Alignment.centerRight,
+                child: Obx(
+                  () {
+                    final bool imageExists =
+                        controller.selectedFile.value != null ||
+                            controller.community.image_path != null;
 
-          return Image.memory(
-            snapshot.data!,
-            fit: BoxFit.cover,
-          );
-        },
-      ),
-    );
+                    final Color buttonBackground = imageExists
+                        ? Theme.of(context).colorScheme.surfaceContainer
+                        : Theme.of(context).colorScheme.primary;
+
+                    final Color iconColor = imageExists
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.onPrimary;
+
+                    final Border? buttonBorder = imageExists
+                        ? Border.all(
+                            color: Theme.of(context).colorScheme.primary,
+                            width: 2)
+                        : null;
+
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () =>
+                              controller.takePicture(ImageSource.camera),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: buttonBorder,
+                              borderRadius: BorderRadius.circular(10),
+                              color: buttonBackground,
+                            ),
+                            padding: const EdgeInsets.all(13),
+                            child: Icon(
+                              Atlas.camera,
+                              weight: 400,
+                              color: iconColor,
+                              size: 24,
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () =>
+                              controller.takePicture(ImageSource.gallery),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: buttonBorder,
+                              borderRadius: BorderRadius.circular(10),
+                              color: buttonBackground,
+                            ),
+                            padding: const EdgeInsets.all(13),
+                            child: Icon(
+                              Atlas.image_gallery,
+                              color: iconColor,
+                              size: 24,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
   }
 
-  Widget _ownerBottomRowButtons(CommunitySettingsController controller) {
+  Widget _bottomRowButtons(CommunitySettingsController controller) {
     return Builder(
       builder: (context) {
         return Row(
           children: [
-            // Expanded(
-            //   child: Obx(
-            //     () {
-            //       return ElevatedButton(
-            //         onPressed: controller.editing.value ? () {} : controller.enableEditing,
-            //         child: Text(controller.editing.value ? 'Save' : 'Edit'),
-            //       );
-            //     },
-            //   ),
-            // ),
-            const VerticalDivider(),
             Expanded(
               child: Obx(
-                () {
-                  return OutlinedButton(
-                    onPressed: controller.editing.value ? controller.cancelEditing : controller.deleteCommunity,
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: controller.editing.value ? null : Theme.of(context).colorScheme.error,
-                      side: BorderSide(
-                        color: controller.editing.value
-                            ? Theme.of(context).colorScheme.primary
-                            : Theme.of(context).colorScheme.error,
-                      ),
-                    ),
-                    child: Text(
-                      controller.editing.value ? 'Cancel' : 'Delete',
+                 () {
+                  return ElevatedButton(
+                    onPressed: controller.edited.value ? controller.onSubmit : null,
+                  			
+                    child: const Text(
+                      'Save',
                     ),
                   );
                 },
               ),
             ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _memberBottomRowButtons(CommunitySettingsController controller) {
-    return Builder(
-      builder: (context) {
-        return OutlinedButton(
-          onPressed: controller.leaveCommunity,
-          style: OutlinedButton.styleFrom(
-            foregroundColor: Theme.of(context).colorScheme.error,
-            side: BorderSide(
-              color: Theme.of(context).colorScheme.error,
-            ),
-          ),
-          child: const Text(
-            'Leave',
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _communityNameField(CommunitySettingsController controller) {
-    return Builder(
-      builder: (context) {
-        return Obx(
-          () {
-            return TextField(
-              controller: controller.textEditingController,
-              enabled: controller.editing.value,
-              style: TextStyle(
-                color: controller.editing.value
-                    ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).colorScheme.onSurface,
-              ),
-              decoration: InputDecoration(
-                disabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
+            const VerticalDivider(width: 10),
+            Expanded(
+              child: OutlinedButton(
+                onPressed: () {},
+                child: const Text(
+                  'Delete',
                 ),
               ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _selectNewAvatar(CommunitySettingsController controller) {
-    return Builder(
-      builder: (context) {
-        return Obx(
-          () => Visibility(
-            visible: controller.editing.value,
-            child: SizedBox(
-              height: 50,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Select new avatar',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  const VerticalDivider(),
-                  IconButton(
-                    onPressed: () => controller.takePicture(ImageSource.camera),
-                    icon: Icon(Icons.camera_alt, size: 30, color: Theme.of(context).colorScheme.primary),
-                  ),
-                  const VerticalDivider(),
-                  IconButton(
-                    onPressed: () => controller.takePicture(ImageSource.gallery),
-                    icon: Icon(Icons.image, size: 30, color: Theme.of(context).colorScheme.primary),
-                  ),
-                ],
-              ),
             ),
-          ),
+          ],
         );
       },
     );
@@ -166,31 +193,39 @@ class CommunitySettingsPage extends StatelessWidget {
     return GetBuilder(
       init: CommunitySettingsController(),
       builder: (controller) {
-        return CustomScrollView(
-          slivers: [
-            SliverFillRemaining(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      children: [
-                        _communityNameField(controller),
-                        const Divider(height: 30),
-                        _communityAvatar(controller),
-                        const Divider(height: 30),
-                        _selectNewAvatar(controller),
-                      ],
-                    ),
-                    controller.community.isCurrentUserOwner
-                        ? _ownerBottomRowButtons(controller)
-                        : _memberBottomRowButtons(controller),
-                  ],
-                ),
+        return Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            title: const Text('Settings'),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+            child: Form(
+              key: controller.formKey,
+              child: Column(
+                children: [
+                  _imageSelector(controller),
+                  const Divider(height: 20),
+                  CommonTextField(
+                    callback: controller.onNameChange,
+                    label: 'Name',
+                    initialValue: controller.community.name,
+                    validator: (value) => controller.stringValidator(value, 4),
+                  ),
+                  CommonTextField(
+                    callback: controller.onDescriptorChange,
+                    label: 'Description (Optional)',
+                    initialValue: controller.community.description,
+                    minLines: 5,
+                    maxLines: 10,
+                    validator: (value) => controller.stringValidator(value, 4),
+                  ),
+                  const Divider(height: 20),
+                  _bottomRowButtons(controller),
+                ],
               ),
             ),
-          ],
+          ),
         );
       },
     );

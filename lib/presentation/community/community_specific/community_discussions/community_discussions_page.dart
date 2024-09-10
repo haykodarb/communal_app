@@ -1,4 +1,5 @@
 import 'package:communal/models/discussion.dart';
+import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_search_bar.dart';
@@ -10,7 +11,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class CommunityDiscussionsPage extends StatelessWidget {
-  const CommunityDiscussionsPage({super.key, required this.communityController});
+  const CommunityDiscussionsPage(
+      {super.key, required this.communityController});
 
   final CommunitySpecificController communityController;
 
@@ -68,7 +70,7 @@ class CommunityDiscussionsPage extends StatelessWidget {
                     itemCount: controller.topics.length,
                     padding: const EdgeInsets.all(10),
                     separatorBuilder: (context, index) {
-                      return const Divider();
+                      return const Divider(height: 5);
                     },
                     itemBuilder: (context, index) {
                       final DiscussionTopic topic = controller.topics[index];
@@ -84,60 +86,102 @@ class CommunityDiscussionsPage extends StatelessWidget {
                               children: [
                                 Text(
                                   topic.name,
-                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600),
                                 ),
                                 const Divider(height: 15),
-                                Row(
-                                  children: [
-                                    CommonCircularAvatar(profile: topic.last_message.sender, radius: 25),
-                                    const VerticalDivider(width: 10),
-                                    Expanded(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        mainAxisSize: MainAxisSize.max,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  topic.last_message.sender.username,
-                                                  maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                  style: const TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
-                                              ),
-                                              Text(
-                                                DateFormat.MMMEd().format(topic.last_message.created_at),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                                  fontStyle: FontStyle.italic,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const Divider(height: 0),
-                                          Text(
-                                            topic.last_message.content,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400,
-                                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                            ),
-                                          ),
-                                        ],
+                                Visibility(
+                                  visible: topic.last_message == null,
+                                  child: Container(
+				  alignment: Alignment.bottomLeft,
+                                    height: 50,
+                                    child: Text(
+                                      'Empty',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant,
+                                        fontStyle: FontStyle.italic,
                                       ),
                                     ),
-                                  ],
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: topic.last_message != null,
+                                  child: Row(
+                                    children: [
+                                      CommonCircularAvatar(
+                                        profile: topic.last_message?.sender ??
+                                            Profile.empty(),
+                                        radius: 25,
+                                      ),
+                                      const VerticalDivider(width: 10),
+                                      Expanded(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          mainAxisSize: MainAxisSize.max,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    topic.last_message?.sender
+                                                            .username ??
+                                                        '',
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  DateFormat.MMMEd().format(
+                                                    topic.last_message
+                                                            ?.created_at ??
+                                                        DateTime.now(),
+                                                  ),
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .onSurfaceVariant,
+                                                    fontStyle: FontStyle.italic,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const Divider(height: 0),
+                                            Text(
+                                              topic.last_message?.content ?? '',
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onSurfaceVariant,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),

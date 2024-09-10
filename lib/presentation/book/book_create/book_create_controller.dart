@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:barcode_scan2/barcode_scan2.dart';
 
 class BookCreateController extends GetxController {
   final Rx<Book> bookForm = Book.empty().obs;
@@ -34,6 +33,7 @@ class BookCreateController extends GetxController {
   }
 
   Future<void> scanBook() async {
+    /*
     var result = await BarcodeScanner.scan();
 
     if (result.type == ResultType.Barcode && result.rawContent.isNotEmpty) {
@@ -57,6 +57,7 @@ class BookCreateController extends GetxController {
         bookForm.refresh();
       }
     }
+*/
   }
 
   Future<void> takePicture(ImageSource source) async {

@@ -3,13 +3,18 @@ import 'package:communal/presentation/community/community_specific/community_boo
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_page.dart';
 import 'package:communal/presentation/community/community_specific/community_members/community_members_page.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_controller.dart';
+import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CommunitySpecificPage extends StatelessWidget {
   const CommunitySpecificPage({super.key});
 
-  static const List<IconData> _icons = <IconData>[Atlas.book, Atlas.chats, Atlas.users];
+  static const List<IconData> _icons = <IconData>[
+    Atlas.book,
+    Atlas.chats,
+    Atlas.users
+  ];
 
   static const List<String> _labels = <String>['Books', 'Discuss', 'Members'];
 
@@ -83,6 +88,22 @@ class CommunitySpecificPage extends StatelessWidget {
           extendBody: true,
           appBar: AppBar(
             title: Text(controller.community.name),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  Get.toNamed(
+                    RouteNames.communitySettingsPage,
+                    arguments: {
+                      'community': controller.community,
+                    },
+                  );
+                },
+                icon: const Icon(
+                  Atlas.gear,
+                ),
+                iconSize: 24,
+              )
+            ],
           ),
           floatingActionButton: Obx(
             () {
@@ -93,7 +114,8 @@ class CommunitySpecificPage extends StatelessWidget {
                     child: ScaleTransition(
                       scale: controller.floatingActionButtonAnimation,
                       child: FloatingActionButton(
-                        onPressed: controller.discussionsController.goToDiscussionsTopicCreate,
+                        onPressed: controller
+                            .discussionsController.goToDiscussionsTopicCreate,
                         child: const Icon(Atlas.add_messages),
                       ),
                     ),
@@ -127,7 +149,8 @@ class CommunitySpecificPage extends StatelessWidget {
                 position: controller.bottomBarAnimation,
                 child: Container(
                   color: Colors.transparent,
-                  margin: const EdgeInsets.only(bottom: 10, right: 10, left: 10),
+                  margin:
+                      const EdgeInsets.only(bottom: 10, right: 10, left: 10),
                   height: 70,
                   child: Container(
                     padding: const EdgeInsets.all(10),
@@ -152,7 +175,8 @@ class CommunitySpecificPage extends StatelessWidget {
 
                               // print(constraints.maxWidth);
 
-                              final double offset = ((constraints.maxWidth - 150) / 2) / 150;
+                              final double offset =
+                                  ((constraints.maxWidth - 150) / 2) / 150;
 
                               return AnimatedSlide(
                                 offset: Offset(offset * index, 0),
@@ -161,7 +185,8 @@ class CommunitySpecificPage extends StatelessWidget {
                                 child: Container(
                                   width: 150,
                                   decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.primary,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
                                     borderRadius: BorderRadius.circular(40),
                                   ),
                                 ),
@@ -193,9 +218,11 @@ class CommunitySpecificPage extends StatelessWidget {
                   case 0:
                     return CommunityBooksPage(communityController: controller);
                   case 1:
-                    return CommunityDiscussionsPage(communityController: controller);
+                    return CommunityDiscussionsPage(
+                        communityController: controller);
                   case 2:
-                    return CommunityMembersPage(communityController: controller);
+                    return CommunityMembersPage(
+                        communityController: controller);
                   default:
                     return const Text('ERROR');
                 }

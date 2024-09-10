@@ -141,22 +141,6 @@ class BookCreatePage extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                      InkWell(
-                                        onTap: controller.scanBook,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            border: buttonBorder,
-                                            borderRadius: BorderRadius.circular(10),
-                                            color: buttonBackground,
-                                          ),
-                                          padding: const EdgeInsets.all(13),
-                                          child: Icon(
-                                            Atlas.barcode,
-                                            color: iconColor,
-                                            size: 24,
-                                          ),
-                                        ),
-                                      ),
                                     ],
                                   );
                                 },

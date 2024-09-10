@@ -90,6 +90,7 @@ class CommunityMembersPage extends StatelessWidget {
                         },
                       ),
                     ),
+		    const VerticalDivider(width: 10),
                     Builder(
                       builder: (context) {
                         if (user.id == UsersBackend.currentUserId) {
@@ -107,8 +108,7 @@ class CommunityMembersPage extends StatelessWidget {
                           );
                         }
 
-                        if (controller.community.isCurrentUserAdmin != null &&
-                            controller.community.isCurrentUserAdmin!) {
+                        if (controller.community.isCurrentUserOwner) {
                           return PopupMenuButton(
                             itemBuilder: (context) {
                               return <PopupMenuEntry>[

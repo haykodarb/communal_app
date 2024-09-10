@@ -3,6 +3,7 @@ import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class CommonCircularAvatar extends StatelessWidget {
@@ -69,31 +70,36 @@ class CommonCircularAvatar extends StatelessWidget {
   }
 
   Widget _iconAvatar() {
+    int sum = 0;
+    for (var i = 0; i < profile.username.length && i <= 5; i++) {
+      sum += profile.username.codeUnitAt(i);
+    }
+
+    int icon_index = sum % 6;
+
     return Builder(
       builder: (context) {
         return CircleAvatar(
           radius: radius,
           backgroundColor: Theme.of(context).colorScheme.primary,
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return Container(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
-                  padding: EdgeInsets.all(constraints.maxWidth * 0.15),
-                  child: FittedBox(
-                    fit: BoxFit.cover,
-                    child: Text(
-                      profile.username.isNotEmpty ? profile.username.substring(0, 2).toUpperCase() : '',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Container(
+          		  padding: EdgeInsets.all(constraints.maxWidth * 0.175),
+                width: constraints.maxWidth,
+                height: constraints.maxHeight,
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: SvgPicture.asset(
+                    'assets/default_avatars/$icon_index.svg',
+                    colorFilter: ColorFilter.mode(
+                      Theme.of(context).colorScheme.onPrimary,
+                      BlendMode.srcIn,
                     ),
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            },
           ),
         );
       },

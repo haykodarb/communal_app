@@ -32,7 +32,8 @@ class CommunityDiscussionsTopicMessagesController extends GetxController {
 
     loadMessages();
 
-    subscription ??= RealtimeBackend.streamController.stream.listen(_realtimeListener);
+    subscription ??=
+        RealtimeBackend.streamController.stream.listen(_realtimeListener);
   }
 
   @override
@@ -49,16 +50,44 @@ class CommunityDiscussionsTopicMessagesController extends GetxController {
 
     if (realtimeMessage.new_row['sender'] == UsersBackend.currentUserId) return;
 
-    final BackendResponse response = await DiscussionsBackend.getDiscussionMessageById(realtimeMessage.new_row['id']);
+    if (realtimeMessage.new_row['topic'] != topic.id) return;
 
-    if (!response.success) return;
+    final DiscussionMessage? existingMessageForProfile =
+        messages.firstWhereOrNull(
+      (element) => element.sender.id == realtimeMessage.new_row['sender'],
+    );
 
-    messages.insert(0, response.payload);
+    DiscussionMessage? newMessage;
+
+    if (existingMessageForProfile != null) {
+      newMessage = DiscussionMessage(
+        id: realtimeMessage.new_row['id'],
+        created_at: DateTime.parse(
+          realtimeMessage.new_row['created_at'],
+        ),
+        sender: existingMessageForProfile.sender,
+        content: realtimeMessage.new_row['content'],
+        topicId: realtimeMessage.new_row['topic'],
+      );
+    } else {
+      final BackendResponse response =
+          await DiscussionsBackend.getDiscussionMessageById(
+        realtimeMessage.new_row['id'],
+      );
+
+      if (!response.success) return;
+
+      newMessage = response.payload;
+    }
+
+    if (newMessage == null) return;
+    messages.insert(0, newMessage);
   }
 
   Future<void> loadMessages() async {
     loading.value = true;
-    final BackendResponse response = await DiscussionsBackend.getDiscussionMessagesForTopic(topic);
+    final BackendResponse response =
+        await DiscussionsBackend.getDiscussionMessagesForTopic(topic);
 
     if (response.success) {
       messages.value = response.payload;
@@ -91,20 +120,28 @@ class CommunityDiscussionsTopicMessagesController extends GetxController {
         show_email: false,
       ),
       content: typedMessage,
+      topicId: topic.id,
     );
 
     messages.insert(0, newMessage);
 
-    final BackendResponse response = await DiscussionsBackend.insertDiscussionMessageInTopic(topic, typedMessage);
+    final BackendResponse response =
+        await DiscussionsBackend.insertDiscussionMessageInTopic(
+            topic, typedMessage);
 
     if (response.success) {
-      final int index = messages.indexWhere((element) => element.id == randomID);
+      final int index =
+          messages.indexWhere((element) => element.id == randomID);
 
       messages[index] = response.payload;
     } else {
       messages.removeWhere((element) => element.id == randomID);
 
-      Get.dialog(CommonAlertDialog(title: 'Could not send message, error: ${response.payload}.'));
+      Get.dialog(
+        CommonAlertDialog(
+          title: 'Could not send message, error: ${response.payload}.',
+        ),
+      );
     }
 
     typedMessage = '';

@@ -54,7 +54,8 @@ class ProfileOwnPage extends StatelessWidget {
                           profile.email ?? '',
                           style: TextStyle(
                             fontWeight: FontWeight.w400,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                             fontSize: 16,
                           ),
                         ),
@@ -158,7 +159,8 @@ class ProfileOwnPage extends StatelessWidget {
               ],
             ),
             child: TabBar(
-              labelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+              labelStyle:
+                  const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
               indicator: BoxDecoration(
                 borderRadius: BorderRadius.circular(40),
                 color: Theme.of(context).colorScheme.primary,
@@ -232,7 +234,8 @@ class ProfileOwnPage extends StatelessWidget {
     return Builder(
       builder: (context) {
         return Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -262,7 +265,9 @@ class ProfileOwnPage extends StatelessWidget {
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
                               height: 1.2,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                           ),
                           const Divider(height: 5),
@@ -273,7 +278,9 @@ class ProfileOwnPage extends StatelessWidget {
                               fontWeight: FontWeight.w400,
                               fontStyle: FontStyle.italic,
                               height: 1.2,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -349,7 +356,9 @@ class ProfileOwnPage extends StatelessWidget {
         return Scaffold(
           extendBody: true,
           appBar: AppBar(
-            title: const Text('My Profile'),
+            title: const Text(
+              'My Profile',
+            ),
             actions: [
               IconButton(
                 onPressed: () => Get.toNamed(
@@ -383,12 +392,16 @@ class ProfileOwnPage extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Obx(() => _avatarRow(UsersBackend.currentUserProfile.value)),
+                          Obx(() => _avatarRow(
+                              UsersBackend.currentUserProfile.value)),
                           const Divider(height: 10),
                           Obx(
                             () => Visibility(
-                              visible: UsersBackend.currentUserProfile.value.bio != null,
-                              child: _bio(UsersBackend.currentUserProfile.value),
+                              visible:
+                                  UsersBackend.currentUserProfile.value.bio !=
+                                      null,
+                              child:
+                                  _bio(UsersBackend.currentUserProfile.value),
                             ),
                           ),
                           const Divider(height: 10),

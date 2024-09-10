@@ -10,7 +10,7 @@ class Loan {
   DateTime? returned_at;
   DateTime? rejected_at;
   DateTime? latest_date;
-  Community community;
+  Community? community;
   Book book;
   Profile loanee;
   Profile owner;
@@ -61,6 +61,7 @@ class Loan {
           id: map['communities']['id'],
           name: map['communities']['name'],
           owner: map['communities']['owner'],
+	  user_count: map['communities']['user_count'],
           image_path: map['communities']['image_path'],
         ),
         book = map['books'] != null ? Book.fromMap(map['books']) : Book.empty(),

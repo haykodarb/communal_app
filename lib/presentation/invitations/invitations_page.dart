@@ -109,38 +109,35 @@ class InvitationsPage extends StatelessWidget {
           body: Obx(
             () => CommonLoadingBody(
               loading: controller.loading.value,
-              child: RefreshIndicator(
-                onRefresh: controller.loadInvitations,
-                child: Obx(
-                  () {
-                    if (controller.invitationsList.isEmpty) {
-                      return const CustomScrollView(
-                        slivers: [
-                          SliverFillRemaining(
-                            child: Center(
-                              child: Text(
-                                'You have not received\nany invitations yet.',
-                                style: TextStyle(fontSize: 14),
-                                textAlign: TextAlign.center,
-                              ),
+              child: Obx(
+                () {
+                  if (controller.invitationsList.isEmpty) {
+                    return const CustomScrollView(
+                      slivers: [
+                        SliverFillRemaining(
+                          child: Center(
+                            child: Text(
+                              'You have not received\nany invitations yet.',
+                              style: TextStyle(fontSize: 14),
+                              textAlign: TextAlign.center,
                             ),
                           ),
-                        ],
-                      );
-                    }
-
-                    return ListView.separated(
-                      itemCount: controller.invitationsList.length,
-                      padding: const EdgeInsets.symmetric(vertical: 30),
-                      itemBuilder: (context, index) {
-                        return _invitationElement(controller, controller.invitationsList[index]);
-                      },
-                      separatorBuilder: (context, index) {
-                        return const Divider();
-                      },
+                        ),
+                      ],
                     );
-                  },
-                ),
+                  }
+              
+                  return ListView.separated(
+                    itemCount: controller.invitationsList.length,
+                    padding: const EdgeInsets.symmetric(vertical: 30),
+                    itemBuilder: (context, index) {
+                      return _invitationElement(controller, controller.invitationsList[index]);
+                    },
+                    separatorBuilder: (context, index) {
+                      return const Divider();
+                    },
+                  );
+                },
               ),
             ),
           ),
