@@ -69,8 +69,6 @@ class UserPreferences {
       await box.put('pinned_communities', []);
     }
 
-    print(pinned_communities);
-
     final bool exists = pinned_communities.any((element) => element == id);
 
     if (exists && shouldPin) {

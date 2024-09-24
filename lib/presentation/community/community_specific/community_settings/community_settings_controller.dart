@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CommunitySettingsController extends GetxController {
-  final Community community = Get.arguments['community'];
+  Community community = Get.arguments['community'];
 
   final TextEditingController textEditingController =
       TextEditingController.fromValue(
@@ -35,8 +35,8 @@ class CommunitySettingsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    communityForm.value = Community.copy(community); 
-    
+    communityForm.value = Community.copy(community);
+
     communityForm.refresh();
   }
 
@@ -150,12 +150,10 @@ class CommunitySettingsController extends GetxController {
         selectedFile.value,
       );
 
-      loading.value = false;
-
       if (response.success) {
-        Get.back<dynamic>(
-          result: true,
-        );
+        community = Community.copy(communityForm.value);
+	_checkIfEdited();
+        loading.value = false;
       } else {
         Get.dialog(
           CommonAlertDialog(

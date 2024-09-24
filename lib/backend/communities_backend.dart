@@ -116,7 +116,6 @@ class CommunitiesBackend {
     try {
       final String userId = UsersBackend.currentUserId;
 
-      print(community.isCurrentUserOwner);
       if (!community.isCurrentUserOwner) {
         return BackendResponse(
           success: false,

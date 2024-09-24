@@ -93,7 +93,7 @@ class CommonCircularAvatar extends StatelessWidget {
                   child: SvgPicture.asset(
                     'assets/default_avatars/$icon_index.svg',
                     colorFilter: ColorFilter.mode(
-                      Theme.of(context).colorScheme.onPrimary,
+                      Theme.of(context).colorScheme.surfaceContainer,
                       BlendMode.srcIn,
                     ),
                   ),

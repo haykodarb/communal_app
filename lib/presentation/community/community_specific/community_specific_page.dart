@@ -173,8 +173,6 @@ class CommunitySpecificPage extends StatelessWidget {
                             () {
                               final int index = controller.selectedIndex.value;
 
-                              // print(constraints.maxWidth);
-
                               final double offset =
                                   ((constraints.maxWidth - 150) / 2) / 150;
 

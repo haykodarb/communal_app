@@ -192,7 +192,8 @@ class BooksBackend {
 
       if (query != null) {
         if (query.search_query != null) {
-          filter = filter.or('title.ilike.%${query.search_query}%, author.ilike.%${query.search_query}%');
+          filter = filter.or(
+              'title.ilike.%${query.search_query}%, author.ilike.%${query.search_query}%');
         }
 
         if (query.loaned != null) {
@@ -240,14 +241,17 @@ class BooksBackend {
   }
 
   static Future<BackendResponse> getBooksInCommunity(
-      Community community, int index, String query) async {
+    Community community,
+    int index,
+    String query,
+  ) async {
     try {
       final List<dynamic> booksResponse = await _client
           .rpc(
             'get_books_community',
             params: {
               'community_id': community.id,
-              'offset_num': index * 10,
+              'offset_num': index,
               'limit_num': 10,
               'search_query': query,
             },

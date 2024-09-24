@@ -22,7 +22,6 @@ class CommunityBooksPage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: CommonSearchBar(
           searchCallback: controller.searchBooks,
-          filterCallback: () {},
           focusNode: controller.focusScope,
         ),
       );
@@ -50,48 +49,39 @@ class CommunityBooksPage extends StatelessWidget {
                 ),
               ];
             },
-            body: Obx(
-              () => CommonLoadingBody(
-                loading: controller.firstLoad.value,
-                child: PagedMasonryGridView.count(
-                  pagingController: PagingController.fromValue(
-                    PagingState(itemList: controller.booksLoaded),
-                    firstPageKey: 0,
-                  ),
-                  mainAxisSpacing: 5,
-                  crossAxisSpacing: 5,
-                  padding: const EdgeInsets.only(top: 10, bottom: 20, right: 10, left: 10),
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  builderDelegate: PagedChildBuilderDelegate(
-                    noItemsFoundIndicatorBuilder: (context) {
-                      return const SizedBox(
-                        height: 100,
-                        child: Center(child: Text('No books found.')),
-                      );
-                    },
-                    itemBuilder: (context, item, index) {
-                      final Book book = controller.booksLoaded[index];
-
-                      return CommonKeepaliveWrapper(
-                        child: InkWell(
-                          onTap: () {
-                            Get.toNamed(
-                              RouteNames.communitySpecificBookPage,
-                              arguments: {
-                                'book': book,
-                                'community': controller.community,
-                              },
-                            );
+            body: PagedMasonryGridView<int, Book>.count(
+              pagingController: controller.pagingController,
+              mainAxisSpacing: 5,
+              crossAxisSpacing: 5,
+              padding: const EdgeInsets.only(
+                  top: 10, bottom: 20, right: 10, left: 10),
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              builderDelegate: PagedChildBuilderDelegate(
+                noItemsFoundIndicatorBuilder: (context) {
+                  return const SizedBox(
+                    height: 100,
+                    child: Center(child: Text('No books found.')),
+                  );
+                },
+                itemBuilder: (context, item, index) {
+                  return CommonKeepaliveWrapper(
+                    child: InkWell(
+                      onTap: () {
+                        Get.toNamed(
+                          RouteNames.communitySpecificBookPage,
+                          arguments: {
+                            'book': item,
+                            'community': controller.community,
                           },
-                          child: CommonVerticalBookCard(
-                            book: book,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                        );
+                      },
+                      child: CommonVerticalBookCard(
+                        book: item,
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ),

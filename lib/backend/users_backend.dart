@@ -18,8 +18,11 @@ class UsersBackend {
   }
 
   static Future<bool> validateUsername(String username) async {
-    final Map<String, dynamic>? foundUsername =
-        await _client.from('profiles').select().eq('username', username).maybeSingle();
+    final Map<String, dynamic>? foundUsername = await _client
+        .from('profiles')
+        .select()
+        .eq('username', username)
+        .maybeSingle();
 
     return foundUsername == null || foundUsername.isEmpty;
   }
@@ -40,16 +43,20 @@ class UsersBackend {
 
   static Future<Uint8List?> getProfileAvatar(Profile profile) async {
     if (profile.avatar_path != null) {
-      FileInfo? file = await DefaultCacheManager().getFileFromCache(profile.avatar_path!);
+      FileInfo? file =
+          await DefaultCacheManager().getFileFromCache(profile.avatar_path!);
 
       Uint8List bytes;
 
       if (file != null) {
         bytes = await file.file.openRead().toBytes();
       } else {
-        bytes = await _client.storage.from('profile_avatars').download(profile.avatar_path!);
+        bytes = await _client.storage
+            .from('profile_avatars')
+            .download(profile.avatar_path!);
 
-        await DefaultCacheManager().putFile(profile.avatar_path!, bytes, key: profile.avatar_path!);
+        await DefaultCacheManager()
+            .putFile(profile.avatar_path!, bytes, key: profile.avatar_path!);
       }
 
       return bytes;
@@ -58,10 +65,12 @@ class UsersBackend {
     return null;
   }
 
-  static Future<BackendResponse> updateProfile(Profile profile, File? image) async {
+  static Future<BackendResponse> updateProfile(
+      Profile profile, File? image) async {
     try {
       final String userId = _client.auth.currentUser!.id;
-      final String currentTime = DateTime.now().millisecondsSinceEpoch.toString();
+      final String currentTime =
+          DateTime.now().millisecondsSinceEpoch.toString();
 
       String? fileName;
 
@@ -99,7 +108,9 @@ class UsersBackend {
 
       return BackendResponse(
         success: response.isNotEmpty,
-        payload: response.isNotEmpty ? Profile.fromMap(response) : 'Could not update profile. Please try again.',
+        payload: response.isNotEmpty
+            ? Profile.fromMap(response)
+            : 'Could not update profile. Please try again.',
       );
     } on StorageException catch (error) {
       return BackendResponse(success: false, payload: error.message);
@@ -113,14 +124,16 @@ class UsersBackend {
   static String getCurrentUsername() {
     if (_client.auth.currentUser == null &&
         _client.auth.currentUser!.userMetadata == null &&
-        _client.auth.currentUser!.userMetadata!['username'] == null) return 'No user';
+        _client.auth.currentUser!.userMetadata!['username'] == null)
+      return 'No user';
 
     return _client.auth.currentUser!.userMetadata!['username'];
   }
 
   static Future<BackendResponse> getUserProfile(String id) async {
     try {
-      final Map<String, dynamic> response = await _client.from('profiles').select().eq('id', id).single();
+      final Map<String, dynamic> response =
+          await _client.from('profiles').select().eq('id', id).single();
 
       return BackendResponse(
         success: response.isNotEmpty,
@@ -134,8 +147,12 @@ class UsersBackend {
   static Future<BackendResponse> searchUsers(String query) async {
     final String userId = _client.auth.currentUser!.id;
 
-    final List<Map<String, dynamic>> response =
-        await _client.from('profiles').select().neq('id', userId).ilike('username', '%$query%').limit(10);
+    final List<Map<String, dynamic>> response = await _client
+        .from('profiles')
+        .select()
+        .neq('id', userId)
+        .ilike('username', '%$query%')
+        .limit(10);
 
     final List<Profile> profiles = response
         .map(
@@ -149,18 +166,21 @@ class UsersBackend {
     );
   }
 
-  static Future<BackendResponse> respondToInvitation(Membership invitation, bool accept) async {
-    final Map<String, dynamic> response = await _client
+  static Future<BackendResponse> respondToInvitation(
+    String membershipId,
+    bool accept,
+  ) async {
+    final Map<String, dynamic>? response = await _client
         .from('memberships')
         .update({
           'accepted': accept,
           'joined_at': 'now()',
         })
-        .eq('id', invitation.id)
+        .eq('id', membershipId)
         .select()
-        .single();
+        .maybeSingle();
 
-    return BackendResponse(success: response.isNotEmpty, payload: response);
+    return BackendResponse(success: response?.isNotEmpty ?? false, payload: response);
   }
 
   static Future<BackendResponse> getMembershipByID(String id) async {
@@ -179,7 +199,8 @@ class UsersBackend {
           payload: Membership.fromMap(response),
         );
       } else {
-        return BackendResponse(success: false, payload: 'Could not find membership with this ID.');
+        return BackendResponse(
+            success: false, payload: 'Could not find membership with this ID.');
       }
     } on PostgrestException catch (error) {
       return BackendResponse(success: false, payload: error.message);
@@ -223,9 +244,11 @@ class UsersBackend {
     );
   }
 
-  static Future<BackendResponse> changeUserAdminStatus(Community community, Profile user, bool shouldBeAdmin) async {
+  static Future<BackendResponse> changeUserAdminStatus(
+      Community community, Profile user, bool shouldBeAdmin) async {
     try {
-      final List<dynamic> updateMembershipResponse = await _client.from('memberships').update(
+      final List<dynamic> updateMembershipResponse =
+          await _client.from('memberships').update(
         {
           'is_admin': shouldBeAdmin,
         },
@@ -248,7 +271,8 @@ class UsersBackend {
     }
   }
 
-  static Future<BackendResponse> inviteUserToCommunity(Community community, Profile user) async {
+  static Future<BackendResponse> inviteUserToCommunity(
+      Community community, Profile user) async {
     try {
       final Map<String, dynamic> createMembershipResponse = await _client
           .from('memberships')
@@ -263,7 +287,8 @@ class UsersBackend {
           .single();
 
       if (createMembershipResponse.isEmpty) {
-        return BackendResponse(success: false, payload: 'Error in sending out invitation.');
+        return BackendResponse(
+            success: false, payload: 'Error in sending out invitation.');
       }
 
       return BackendResponse(
@@ -275,9 +300,11 @@ class UsersBackend {
     }
   }
 
-  static Future<BackendResponse> removeUserFromCommunity(Community community, Profile user) async {
+  static Future<BackendResponse> removeUserFromCommunity(
+      Community community, Profile user) async {
     try {
-      final List<dynamic> response = await _client.from('memberships').delete().match(
+      final List<dynamic> response =
+          await _client.from('memberships').delete().match(
         {
           'member': user.id,
           'community': community.id,
@@ -296,10 +323,12 @@ class UsersBackend {
     }
   }
 
-  static Future<BackendResponse> removeCurrentUserFromCommunity(Community community) async {
+  static Future<BackendResponse> removeCurrentUserFromCommunity(
+      Community community) async {
     final String userId = _client.auth.currentUser!.id;
 
-    final Map<String, dynamic>? memberExistsResponse = await _client.from('memberships').select().match({
+    final Map<String, dynamic>? memberExistsResponse =
+        await _client.from('memberships').select().match({
       'community': community.id,
       'member': userId,
       'accepted': true,
@@ -325,27 +354,29 @@ class UsersBackend {
         .select()
         .single();
 
-    return BackendResponse(success: deleteMembershipResponse.isNotEmpty, payload: deleteMembershipResponse);
+    return BackendResponse(
+        success: deleteMembershipResponse.isNotEmpty,
+        payload: deleteMembershipResponse);
   }
 
-  static Future<BackendResponse<List<Profile>>> getUsersInCommunity(Community community) async {
-    final List<dynamic> membershipResponse = await _client.from('memberships').select('*, profiles(*)').match(
+  static Future<BackendResponse<List<Profile>>> getUsersInCommunity(
+      Community community) async {
+    final List<dynamic> membershipResponse =
+        await _client.from('memberships').select('*, profiles(*)').match(
       {
         'community': community.id,
         'accepted': true,
       },
     );
 
-    final List<Profile> listOfProfiles = membershipResponse
-        .map(
-          (e) {
-	    Profile profile = Profile.fromMap(e['profiles']);
-	    profile.is_admin = e['is_admin'];
-		
-            return profile;
-          },
-        )
-        .toList();
+    final List<Profile> listOfProfiles = membershipResponse.map(
+      (e) {
+        Profile profile = Profile.fromMap(e['profiles']);
+        profile.is_admin = e['is_admin'];
+
+        return profile;
+      },
+    ).toList();
 
     return BackendResponse(
       success: listOfProfiles.isNotEmpty,

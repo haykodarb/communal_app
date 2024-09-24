@@ -158,32 +158,38 @@ class CommunitySettingsPage extends StatelessWidget {
   Widget _bottomRowButtons(CommunitySettingsController controller) {
     return Builder(
       builder: (context) {
-        return Row(
-          children: [
-            Expanded(
-              child: Obx(
-                 () {
-                  return ElevatedButton(
-                    onPressed: controller.edited.value ? controller.onSubmit : null,
-                  			
-                    child: const Text(
-                      'Save',
-                    ),
-                  );
-                },
-              ),
-            ),
-            const VerticalDivider(width: 10),
-            Expanded(
-              child: OutlinedButton(
-                onPressed: () {},
-                child: const Text(
-                  'Delete',
+        return Obx(() {
+          return CommonLoadingBody(
+            loading: controller.loading.value,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Obx(
+                    () {
+                      return ElevatedButton(
+                        onPressed: controller.edited.value
+                            ? controller.onSubmit
+                            : null,
+                        child: const Text(
+                          'Save',
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              ),
+                const VerticalDivider(width: 10),
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {},
+                    child: const Text(
+                      'Delete',
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        );
+          );
+        });
       },
     );
   }

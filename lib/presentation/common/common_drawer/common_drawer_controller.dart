@@ -18,6 +18,8 @@ class CommonDrawerController extends GetxController {
   final RxInt messageNotifications = 0.obs;
   final RxInt globalNotifications = 0.obs;
 
+  Timer? debounceTimer;
+
   StreamSubscription? realtimeSubscription;
 
   void goToRoute(String routeName) {
@@ -32,7 +34,8 @@ class CommonDrawerController extends GetxController {
 
     await UsersBackend.updateCurrentUserProfile();
 
-    final BackendResponse notificationResponse = await NotificationsBackend.getUnreadNotificationsCount();
+    final BackendResponse notificationResponse =
+        await NotificationsBackend.getUnreadNotificationsCount();
 
     if (notificationResponse.success) {
       globalNotifications.value = notificationResponse.payload;
@@ -40,7 +43,8 @@ class CommonDrawerController extends GetxController {
 
     getUnreadChats();
 
-    realtimeSubscription ??= RealtimeBackend.streamController.stream.listen(realtimeChangeHandler);
+    realtimeSubscription ??=
+        RealtimeBackend.streamController.stream.listen(realtimeChangeHandler);
   }
 
   @override
@@ -52,18 +56,37 @@ class CommonDrawerController extends GetxController {
     super.onClose();
   }
 
-  Future<void> realtimeChangeHandler(RealtimeMessage realtimeMessage) async {
-    switch (realtimeMessage.table) {
+  Future<void> realtimeChangeHandler(RealtimeMessage realtime) async {
+    switch (realtime.table) {
       case 'messages':
-        if (realtimeMessage.eventType == PostgresChangeEvent.insert ||
-            realtimeMessage.eventType == PostgresChangeEvent.update) {
-          if (realtimeMessage.new_row['receiver'] == UsersBackend.currentUserId) {
-            getUnreadChats();
+        if (realtime.eventType == PostgresChangeEvent.insert ||
+            realtime.eventType == PostgresChangeEvent.update) {
+          if (realtime.new_row['receiver'] == UsersBackend.currentUserId) {
+            debounceTimer?.cancel();
+
+            debounceTimer = Timer(
+              const Duration(milliseconds: 1000),
+              () async {
+                await getUnreadChats();
+              },
+            );
           }
         }
         break;
 
       case 'notifications':
+        if (realtime.new_row['receiver'] != UsersBackend.currentUserId) return;
+
+        if (realtime.eventType == PostgresChangeEvent.insert) {
+          globalNotifications.value++;
+        }
+
+        if (realtime.eventType == PostgresChangeEvent.update) {
+          if (realtime.new_row['seen']) {
+            globalNotifications.value = 0;
+          }
+        }
+
         break;
 
       default:
@@ -80,7 +103,8 @@ class CommonDrawerController extends GetxController {
       int unreadCount = 0;
 
       for (int i = 0; i < messages.length; i++) {
-        if (!messages[i].is_read && messages[i].receiver.id == UsersBackend.currentUserId) {
+        if (!messages[i].is_read &&
+            messages[i].receiver.id == UsersBackend.currentUserId) {
           unreadCount += messages[i].unread_messages ?? 1;
         }
       }
@@ -90,7 +114,8 @@ class CommonDrawerController extends GetxController {
   }
 
   Future<void> changeThemeMode() async {
-    final ThemeMode newThemeMode = Get.isDarkMode ? ThemeMode.light : ThemeMode.dark;
+    final ThemeMode newThemeMode =
+        Get.isDarkMode ? ThemeMode.light : ThemeMode.dark;
 
     Get.changeThemeMode(newThemeMode);
 

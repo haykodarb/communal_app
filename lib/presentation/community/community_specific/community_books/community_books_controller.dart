@@ -6,34 +6,46 @@ import 'package:communal/models/book.dart';
 import 'package:communal/models/community.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class CommunityBooksController extends GetxController {
   final Community community = Get.arguments['community'];
 
-  final RxList<Book> booksLoaded = <Book>[].obs;
   final FocusNode focusScope = FocusNode();
 
-  final RxBool loadingMore = false.obs;
-  final RxBool firstLoad = true.obs;
-
   int loadingIndex = 0;
+  String currentQuery = '';
+
+  PagingController<int, Book> pagingController = PagingController(
+    firstPageKey: 0,
+  );
 
   Timer? searchDebounceTimer;
   Timer? loadMoreDebounceTimer;
 
   @override
   Future<void> onInit() async {
-    await searchBooks('');
-
     super.onInit();
+
+    pagingController.addPageRequestListener(loadBooks);
   }
 
-  Future<void> reloadPage() async {
-    loadingIndex = 0;
+  Future<void> loadBooks(int pageKey) async {
+    final BackendResponse response = await BooksBackend.getBooksInCommunity(
+      community,
+      pageKey,
+      currentQuery,
+    );
 
-    firstLoad.value = true;
-    await searchBooks('');
-    firstLoad.value = false;
+    if (response.success) {
+      List<Book> books = response.payload;
+      if (books.length < 10) {
+        pagingController.appendLastPage(books);
+        return;
+      }
+
+      pagingController.appendPage(books, pageKey + books.length);
+    }
   }
 
   Future<void> searchBooks(String string_query) async {
@@ -42,17 +54,9 @@ class CommunityBooksController extends GetxController {
     searchDebounceTimer = Timer(
       const Duration(milliseconds: 500),
       () async {
-        firstLoad.value = true;
+        currentQuery = string_query;
 
-        final BackendResponse response = await BooksBackend.getBooksInCommunity(community, 0, string_query);
-
-        if (response.success) {
-          booksLoaded.value = response.payload;
-          booksLoaded.refresh();
-          loadingIndex++;
-        }
-
-        firstLoad.value = false;
+        pagingController.refresh();
       },
     );
   }

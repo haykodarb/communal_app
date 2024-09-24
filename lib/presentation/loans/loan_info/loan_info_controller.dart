@@ -70,8 +70,6 @@ class LoanInfoController extends GetxController {
           CommonAlertDialog(title: response.payload),
         );
       }
-
-      loading.value = false;
     }
   }
 
@@ -96,7 +94,7 @@ class LoanInfoController extends GetxController {
 
         inheritedLoan?.accepted = true;
         inheritedLoan?.accepted_at = DateTime.now();
-        loansController!.loanList.refresh();
+        loansController?.loanList.refresh();
       } else {
         Get.dialog(
           CommonAlertDialog(title: response.payload),

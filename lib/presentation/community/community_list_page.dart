@@ -1,6 +1,7 @@
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/communities_backend.dart';
 import 'package:communal/models/community.dart';
+import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
@@ -179,7 +180,7 @@ class CommunityListPage extends StatelessWidget {
           drawer: CommonDrawerWidget(),
           body: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-	    crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 child: Obx(
@@ -192,6 +193,7 @@ class CommunityListPage extends StatelessWidget {
                           () {
                             if (controller.communities.isNotEmpty) {
                               return ListView.separated(
+                                addAutomaticKeepAlives: true,
                                 padding: const EdgeInsets.only(
                                   top: 10,
                                   right: 20,
@@ -202,9 +204,11 @@ class CommunityListPage extends StatelessWidget {
                                 separatorBuilder: (context, index) =>
                                     const Divider(height: 10),
                                 itemBuilder: (context, index) {
-                                  return _communityCard(
-                                    controller,
-                                    controller.communities[index],
+                                  return CommonKeepaliveWrapper(
+                                    child: _communityCard(
+                                      controller,
+                                      controller.communities[index],
+                                    ),
                                   );
                                 },
                               );
