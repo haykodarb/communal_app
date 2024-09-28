@@ -57,7 +57,9 @@ class LoanInfoPage extends StatelessWidget {
           overlayColor: WidgetStateColor.transparent,
           onTap: () {
             Get.toNamed(
-              loan.isOwned ? RouteNames.bookOwnedPage : RouteNames.communitySpecificBookPage,
+              loan.isOwned
+                  ? RouteNames.bookOwnedPage
+                  : RouteNames.communitySpecificBookPage,
               arguments: {
                 'book': loan.book,
                 'community': loan.community,
@@ -65,7 +67,8 @@ class LoanInfoPage extends StatelessWidget {
             );
           },
           child: Container(
-            padding: const EdgeInsets.only(left: 20, top: 20, bottom: 20, right: 10),
+            padding:
+                const EdgeInsets.only(left: 20, top: 20, bottom: 20, right: 10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
               color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
@@ -158,14 +161,18 @@ class LoanInfoPage extends StatelessWidget {
       builder: (context) {
         return Row(
           children: [
-            Expanded(child: _dateContainer('Requested', DateFormat('d/MM/yy').format(loan.created_at))),
+            Expanded(
+                child: _dateContainer('Requested',
+                    DateFormat('d/MM/yy').format(loan.created_at))),
             const VerticalDivider(width: 5),
             Visibility(
               visible: loan.rejected,
               child: Expanded(
                 child: _dateContainer(
                   'Rejected',
-                  loan.rejected_at == null ? '-' : DateFormat('d/MM/yy').format(loan.rejected_at!),
+                  loan.rejected_at == null
+                      ? '-'
+                      : DateFormat('d/MM/yy').format(loan.rejected_at!),
                 ),
               ),
             ),
@@ -178,14 +185,18 @@ class LoanInfoPage extends StatelessWidget {
                     Expanded(
                       child: _dateContainer(
                         'Approved',
-                        loan.accepted_at == null ? '-' : DateFormat('d/MM/yy').format(loan.accepted_at!),
+                        loan.accepted_at == null
+                            ? '-'
+                            : DateFormat('d/MM/yy').format(loan.accepted_at!),
                       ),
                     ),
                     const VerticalDivider(width: 5),
                     Expanded(
                       child: _dateContainer(
                         'Returned',
-                        loan.returned_at == null ? '-' : DateFormat('d/MM/yy').format(loan.returned_at!),
+                        loan.returned_at == null
+                            ? '-'
+                            : DateFormat('d/MM/yy').format(loan.returned_at!),
                       ),
                     ),
                   ],
@@ -212,22 +223,26 @@ class LoanInfoPage extends StatelessWidget {
                 children: [
                   Visibility(
                     visible: loan.review != null,
-                    child: Column(
-                      children: [
-                        Text(
-                          'Review by ${controller.loan.value.loanee.username}',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary,
-                            fontWeight: FontWeight.w500,
+                    child: SizedBox(
+                      width: double.maxFinite,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Review by ${controller.loan.value.loanee.username}',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
-                        ),
-                        Text(
-                          loan.review ?? '',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w400,
+                          Text(
+                            loan.review ?? '',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w400,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   Visibility(
@@ -292,12 +307,14 @@ class LoanInfoPage extends StatelessWidget {
                       maxLines: 10,
                       onChanged: controller.onReviewTextChanged,
                       controller: TextEditingController.fromValue(
-                        TextEditingValue(text: controller.loan.value.review ?? ''),
+                        TextEditingValue(
+                            text: controller.loan.value.review ?? ''),
                       ),
                       style: const TextStyle(fontSize: 13, height: 1.3),
                       decoration: InputDecoration(
                         hintText: 'Write a review...',
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 10),
                         hintStyle: TextStyle(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                           fontSize: 14,
@@ -438,9 +455,13 @@ class LoanInfoPage extends StatelessWidget {
                             const Divider(height: 20),
                             Obx(
                               () {
-                                if (controller.loan.value.isOwned) return _ownerBottomHalf(controller);
+                                if (controller.loan.value.isOwned) {
+                                  return _ownerBottomHalf(controller);
+                                }
 
-                                if (controller.loan.value.isBorrowed) return _borrowerBottomHalf(controller);
+                                if (controller.loan.value.isBorrowed) {
+                                  return _borrowerBottomHalf(controller);
+                                }
 
                                 return const Text('Error');
                               },

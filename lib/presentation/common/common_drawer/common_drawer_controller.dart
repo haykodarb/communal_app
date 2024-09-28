@@ -13,10 +13,12 @@ import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class CommonDrawerController extends GetxController {
   final RxInt messageNotifications = 0.obs;
   final RxInt globalNotifications = 0.obs;
+  final RxString versionNumber = ''.obs;
 
   Timer? debounceTimer;
 
@@ -31,6 +33,10 @@ class CommonDrawerController extends GetxController {
   @override
   Future<void> onReady() async {
     super.onReady();
+
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    versionNumber.value = 'Version: ${packageInfo.version}+${packageInfo.buildNumber}';
 
     await UsersBackend.updateCurrentUserProfile();
 

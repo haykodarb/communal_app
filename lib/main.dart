@@ -12,6 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -79,8 +80,9 @@ class MyApp extends StatelessWidget {
       themeMode: themeMode,
       getPages: routes,
       color: Theme.of(context).colorScheme.surface,
-      initialRoute:
-          Supabase.instance.client.auth.currentUser == null ? RouteNames.startPage : RouteNames.communityListPage,
+      initialRoute: Supabase.instance.client.auth.currentUser == null
+          ? RouteNames.startPage
+          : RouteNames.communityListPage,
     );
   }
 }

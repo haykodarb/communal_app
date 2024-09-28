@@ -21,8 +21,11 @@ class CommonSearchBar extends StatelessWidget {
           child: SizedBox(
             height: 50,
             child: TextField(
+              expands: true,
               onChanged: searchCallback,
               focusNode: focusNode,
+	      minLines:  null,
+	      maxLines: null,
               onTapOutside: (event) {
                 focusNode.unfocus();
               },
@@ -80,8 +83,10 @@ class CommonSearchBar extends StatelessWidget {
                 iconSize: 20,
                 highlightColor: Colors.transparent,
                 style: IconButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  backgroundColor:
+                      Theme.of(context).colorScheme.surfaceContainer,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
                   fixedSize: const Size(50, 50),
                 ),
                 icon: Icon(
