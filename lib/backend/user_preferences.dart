@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class UserPreferences {
+  static bool isDarkMode(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark;
+  }
+
   static Future<ThemeMode> getSelectedThemeMode() async {
     final Box box = await Hive.openBox<dynamic>('preferences');
 
     final bool? isDarkMode = box.get('isDarkMode');
 
     if (isDarkMode == null) {
-      return ThemeMode.system;
+      return ThemeMode.light;
     }
 
     await box.close();
@@ -50,13 +54,17 @@ class UserPreferences {
 
   static Future<List<String>> getPinnedCommunitiesIds() async {
     final Box box = await Hive.openBox<dynamic>('preferences');
-    final List<String>? pinned_communities = box.get('pinned_communities');
-
-    if (pinned_communities == null) return <String>[];
+    final List<dynamic>? pinned_communities =
+        box.get('pinned_communities') as List<dynamic>?;
 
     await box.close();
 
-    return pinned_communities;
+    if (pinned_communities == null) return <String>[];
+
+    final List<String> formatted_list =
+        pinned_communities.map((e) => e as String).toList();
+
+    return formatted_list;
   }
 
   static Future<void> setPinnedCommunityValue(String id, bool shouldPin) async {
@@ -77,7 +85,7 @@ class UserPreferences {
     }
 
     if (shouldPin && !exists) {
-        pinned_communities.add(id);
+      pinned_communities.add(id);
     }
 
     if (exists && !shouldPin) {

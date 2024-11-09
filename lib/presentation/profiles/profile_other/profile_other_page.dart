@@ -6,17 +6,24 @@ import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/common/common_vertical_book_card.dart';
 import 'package:communal/presentation/profiles/profile_other/profile_other_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
 
 class ProfileOtherPage extends StatelessWidget {
-  const ProfileOtherPage({super.key});
+  const ProfileOtherPage({
+    super.key,
+    required this.userId,
+  });
+
+  final String userId;
 
   Widget _avatarRow(Profile profile) {
     return Builder(
@@ -52,7 +59,8 @@ class ProfileOtherPage extends StatelessWidget {
                           profile.email ?? '',
                           style: TextStyle(
                             fontWeight: FontWeight.w400,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                             fontSize: 16,
                           ),
                         ),
@@ -156,7 +164,8 @@ class ProfileOtherPage extends StatelessWidget {
               ],
             ),
             child: TabBar(
-              labelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+              labelStyle:
+                  const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
               indicator: BoxDecoration(
                 borderRadius: BorderRadius.circular(40),
                 color: Theme.of(context).colorScheme.primary,
@@ -210,9 +219,11 @@ class ProfileOtherPage extends StatelessWidget {
             return CommonKeepaliveWrapper(
               child: InkWell(
                 onTap: () {
-                  Get.toNamed(
-                    RouteNames.communitySpecificBookPage,
-                    arguments: {'book': book},
+                  context.push(
+                    RouteNames.profileOtherPage
+                            .replaceFirst(':userId', userId) +
+                        RouteNames.profileOtherBookPage
+                            .replaceFirst(':bookId', book.id),
                   );
                 },
                 child: CommonVerticalBookCard(
@@ -230,7 +241,8 @@ class ProfileOtherPage extends StatelessWidget {
     return Builder(
       builder: (context) {
         return Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -260,7 +272,9 @@ class ProfileOtherPage extends StatelessWidget {
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
                               height: 1.2,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                           ),
                           const Divider(height: 5),
@@ -271,7 +285,9 @@ class ProfileOtherPage extends StatelessWidget {
                               fontWeight: FontWeight.w400,
                               fontStyle: FontStyle.italic,
                               height: 1.2,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -302,7 +318,9 @@ class ProfileOtherPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: 10, left: 10),
       child: PagedListView.separated(
-        pagingController: PagingController.fromValue(PagingState(itemList: controller.userReviews), firstPageKey: 0),
+        pagingController: PagingController.fromValue(
+            PagingState(itemList: controller.userReviews),
+            firstPageKey: 0),
         padding: const EdgeInsets.only(top: 10, bottom: 10),
         separatorBuilder: (context, index) => const Divider(),
         shrinkWrap: true,
@@ -351,78 +369,78 @@ class ProfileOtherPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: ProfileOtherController(),
+      init: ProfileOtherController(userId: userId),
       builder: (ProfileOtherController controller) {
-        return Scaffold(
-          extendBody: true,
-          appBar: AppBar(
-            title: const Text('Profile'),
-            actions: [
-              IconButton(
-                onPressed: () => Get.toNamed(
-                  RouteNames.messagesSpecificPage,
-                  arguments: {
-                    'user': controller.profile.value,
-                  },
+        return CommonResponsivePage(
+          child: Scaffold(
+            extendBody: true,
+            appBar: AppBar(
+              title: const Text('Profile'),
+              actions: [
+                IconButton(
+                  onPressed: () => context.push(
+                    '${RouteNames.messagesPage}/${controller.profile.value.id}',
+                  ),
+                  iconSize: 24,
+                  icon: const Icon(Atlas.message),
                 ),
-                iconSize: 24,
-                icon: const Icon(Atlas.message),
-              ),
-            ],
-          ),
-          body: DefaultTabController(
-            length: 2,
-            animationDuration: Duration.zero,
-            child: ScrollConfiguration(
-              behavior: const ScrollBehavior().copyWith(
-                physics: const ClampingScrollPhysics(),
-                overscroll: false,
-              ),
-              child: Obx(
-                () => CommonLoadingBody(
-                  loading: controller.loadingProfile.value,
-                  child: ExtendedNestedScrollView(
-                    controller: controller.scrollController,
-                    key: controller.nestedScrollViewKey,
-                    physics: const NeverScrollableScrollPhysics(),
-                    onlyOneScrollInBody: true,
-                    headerSliverBuilder: (context, innerBoxIsScrolled) {
-                      return [
-                        SliverToBoxAdapter(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Obx(
-                                () => _avatarRow(controller.profile.value),
-                              ),
-                              const Divider(height: 10),
-                              Obx(
-                                () => Visibility(
-                                  visible: controller.profile.value.bio != null,
-                                  child: _bio(controller.profile.value),
+              ],
+            ),
+            body: DefaultTabController(
+              length: 2,
+              animationDuration: Duration.zero,
+              child: ScrollConfiguration(
+                behavior: const ScrollBehavior().copyWith(
+                  physics: const ClampingScrollPhysics(),
+                  overscroll: false,
+                ),
+                child: Obx(
+                  () => CommonLoadingBody(
+                    loading: controller.loadingProfile.value,
+                    child: ExtendedNestedScrollView(
+                      controller: controller.scrollController,
+                      key: controller.nestedScrollViewKey,
+                      physics: const NeverScrollableScrollPhysics(),
+                      onlyOneScrollInBody: true,
+                      headerSliverBuilder: (context, innerBoxIsScrolled) {
+                        return [
+                          SliverToBoxAdapter(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Obx(
+                                  () => _avatarRow(controller.profile.value),
                                 ),
-                              ),
-                              const Divider(height: 10),
-                              _loanCount(controller),
-                              const Divider(height: 10),
-                            ],
+                                const Divider(height: 10),
+                                Obx(
+                                  () => Visibility(
+                                    visible:
+                                        controller.profile.value.bio != null,
+                                    child: _bio(controller.profile.value),
+                                  ),
+                                ),
+                                const Divider(height: 10),
+                                _loanCount(controller),
+                                const Divider(height: 10),
+                              ],
+                            ),
                           ),
-                        ),
-                        SliverAppBar(
-                          backgroundColor: Colors.transparent,
-                          forceMaterialTransparency: true,
-                          scrolledUnderElevation: 0,
-                          title: _tabBar(controller),
-                          titleSpacing: 0,
-                          toolbarHeight: 80,
-                          centerTitle: true,
-                          automaticallyImplyLeading: false,
-                          floating: true,
-                          pinned: true,
-                        ),
-                      ];
-                    },
-                    body: _tabBarView(controller),
+                          SliverAppBar(
+                            backgroundColor: Colors.transparent,
+                            forceMaterialTransparency: true,
+                            scrolledUnderElevation: 0,
+                            title: _tabBar(controller),
+                            titleSpacing: 0,
+                            toolbarHeight: 80,
+                            centerTitle: true,
+                            automaticallyImplyLeading: false,
+                            floating: true,
+                            pinned: true,
+                          ),
+                        ];
+                      },
+                      body: _tabBarView(controller),
+                    ),
                   ),
                 ),
               ),

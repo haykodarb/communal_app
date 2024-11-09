@@ -7,19 +7,21 @@ import 'package:communal/models/discussion.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/models/realtime_message.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
+import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CommunityDiscussionsTopicMessagesController extends GetxController {
-  final RxList<DiscussionMessage> messages = <DiscussionMessage>[].obs;
+  CommunityDiscussionsTopicMessagesController({required this.topicId});
+  final String topicId;
+  late DiscussionTopic topic;
 
-  final DiscussionTopic topic = Get.arguments['topic'];
+  final RxList<DiscussionMessage> messages = <DiscussionMessage>[].obs;
 
   final TextEditingController textEditingController = TextEditingController();
 
   final RxBool loading = false.obs;
-
   final RxBool sending = false.obs;
 
   String typedMessage = '';
@@ -27,13 +29,35 @@ class CommunityDiscussionsTopicMessagesController extends GetxController {
   StreamSubscription<RealtimeMessage>? subscription;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
+
+    loading.value = true;
+    final CommunityDiscussionsController communityDiscussionsController =
+        Get.find();
+
+    DiscussionTopic? tmp =
+        communityDiscussionsController.topics.firstWhereOrNull(
+      (element) => element.id == topicId,
+    );
+
+    if (tmp != null) {
+      topic = tmp;
+    } else {
+      final BackendResponse response =
+          await DiscussionsBackend.getDiscussionTopicById(topicId);
+
+      if (response.success) {
+        topic = response.payload;
+      }
+    }
 
     loadMessages();
 
     subscription ??=
         RealtimeBackend.streamController.stream.listen(_realtimeListener);
+
+    loading.value = false;
   }
 
   @override
@@ -50,7 +74,7 @@ class CommunityDiscussionsTopicMessagesController extends GetxController {
 
     if (realtimeMessage.new_row['sender'] == UsersBackend.currentUserId) return;
 
-    if (realtimeMessage.new_row['topic'] != topic.id) return;
+    if (realtimeMessage.new_row['topic'] != topicId) return;
 
     final DiscussionMessage? existingMessageForProfile =
         messages.firstWhereOrNull(
@@ -85,15 +109,12 @@ class CommunityDiscussionsTopicMessagesController extends GetxController {
   }
 
   Future<void> loadMessages() async {
-    loading.value = true;
     final BackendResponse response =
-        await DiscussionsBackend.getDiscussionMessagesForTopic(topic);
+        await DiscussionsBackend.getDiscussionMessagesForTopic(topicId);
 
     if (response.success) {
       messages.value = response.payload;
     }
-
-    loading.value = false;
   }
 
   void onTypedMessageChanged(String? value) {
@@ -120,14 +141,16 @@ class CommunityDiscussionsTopicMessagesController extends GetxController {
         show_email: false,
       ),
       content: typedMessage,
-      topicId: topic.id,
+      topicId: topicId,
     );
 
     messages.insert(0, newMessage);
 
     final BackendResponse response =
         await DiscussionsBackend.insertDiscussionMessageInTopic(
-            topic, typedMessage);
+      topicId,
+      typedMessage,
+    );
 
     if (response.success) {
       final int index =

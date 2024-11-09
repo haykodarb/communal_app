@@ -1,6 +1,8 @@
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/message.dart';
+import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/messages/messages_specific/messages_specific_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -8,24 +10,34 @@ import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class MessagesSpecificPage extends StatelessWidget {
-  const MessagesSpecificPage({super.key});
+  const MessagesSpecificPage({
+    super.key,
+    required this.userId,
+    this.userProfile,
+  });
+
+  final String userId;
+  final Profile? userProfile;
 
   Widget _messageBubble(MessagesSpecificController controller, int index) {
     final Message message = controller.messages[index];
 
-    final Message? nextMessage = index == 0 ? null : controller.messages[index - 1];
+    final Message? nextMessage =
+        index == 0 ? null : controller.messages[index - 1];
 
-    bool showTime = nextMessage == null || nextMessage.sender.id != message.sender.id;
+    bool showTime =
+        nextMessage == null || nextMessage.sender.id != message.sender.id;
 
     if (nextMessage != null) {
-      final int differenceMinutes = nextMessage.created_at.difference(message.created_at).inMinutes;
+      final int differenceMinutes =
+          nextMessage.created_at.difference(message.created_at).inMinutes;
 
       if (differenceMinutes > 10) {
         showTime = true;
       }
     }
 
-    final bool isReceived = message.sender.id == controller.user.id;
+    final bool isReceived = message.sender.id == controller.userId;
 
     final bool isFirstMessage = index == 0;
 
@@ -40,10 +52,14 @@ class MessagesSpecificPage extends StatelessWidget {
             Expanded(
               flex: 2,
               child: Column(
-                crossAxisAlignment: isReceived ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+                crossAxisAlignment: isReceived
+                    ? CrossAxisAlignment.start
+                    : CrossAxisAlignment.end,
                 children: [
                   Container(
-                    alignment: isReceived ? Alignment.centerLeft : Alignment.centerRight,
+                    alignment: isReceived
+                        ? Alignment.centerLeft
+                        : Alignment.centerRight,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -55,8 +71,14 @@ class MessagesSpecificPage extends StatelessWidget {
                               shape: BoxShape.rectangle,
                               borderRadius: BorderRadius.circular(15),
                               color: isReceived
-                                  ? Theme.of(context).colorScheme.secondary.withOpacity(0.25)
-                                  : Theme.of(context).colorScheme.primary.withOpacity(0.25),
+                                  ? Theme.of(context)
+                                      .colorScheme
+                                      .secondary
+                                      .withOpacity(0.25)
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(0.25),
                             ),
                             child: Text(
                               message.content,
@@ -76,7 +98,9 @@ class MessagesSpecificPage extends StatelessWidget {
                   Visibility(
                     visible: showTime,
                     child: Text(
-                      DateFormat.MMMd().add_Hm().format(message.created_at.toLocal()),
+                      DateFormat.MMMd()
+                          .add_Hm()
+                          .format(message.created_at.toLocal()),
                       textAlign: isReceived ? TextAlign.left : TextAlign.right,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -85,7 +109,9 @@ class MessagesSpecificPage extends StatelessWidget {
                     ),
                   ),
                   Visibility(
-                    visible: isFirstMessage && message.is_read && message.sender.id == UsersBackend.currentUserId,
+                    visible: isFirstMessage &&
+                        message.is_read &&
+                        message.sender.id == UsersBackend.currentUserId,
                     child: Text(
                       'Seen',
                       textAlign: isReceived ? TextAlign.left : TextAlign.right,
@@ -128,21 +154,30 @@ class MessagesSpecificPage extends StatelessWidget {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                       borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.15),
                         width: 2,
                       ),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                       borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.15),
                         width: 2,
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                       borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.15),
                         width: 2,
                       ),
                     ),
@@ -167,7 +202,9 @@ class MessagesSpecificPage extends StatelessWidget {
                 child: Obx(
                   () {
                     return InkWell(
-                      onTap: controller.sending.value ? null : controller.onMessageSubmit,
+                      onTap: controller.sending.value
+                          ? null
+                          : controller.onMessageSubmit,
                       enableFeedback: false,
                       splashColor: Colors.transparent,
                       highlightColor: Colors.transparent,
@@ -177,7 +214,8 @@ class MessagesSpecificPage extends StatelessWidget {
                             () {
                               if (controller.sending.value) {
                                 return CircularProgressIndicator(
-                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
                                 );
                               }
 
@@ -204,61 +242,71 @@ class MessagesSpecificPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: MessagesSpecificController(),
+      init: MessagesSpecificController(
+        userId: userId,
+        receivedProfile: userProfile,
+      ),
       builder: (MessagesSpecificController controller) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(controller.user.username),
-          ),
-          body: Stack(
-            children: [
-              Column(
-                children: [
-                  Obx(
-                    () => Visibility(
-                      visible: controller.showLoadingMore.value,
-                      child: Container(
-                        color: Colors.transparent,
-                        child: LoadingAnimationWidget.horizontalRotatingDots(
-                          color: Theme.of(context).colorScheme.primary,
-                          size: 30,
+        return CommonResponsivePage(
+          child: Scaffold(
+            appBar: AppBar(
+              title: Obx(
+                () {
+                  return Text(controller.userProfile.value?.username ?? '');
+                },
+              ),
+            ),
+            body: Stack(
+              children: [
+                Column(
+                  children: [
+                    Obx(
+                      () => Visibility(
+                        visible: controller.showLoadingMore.value,
+                        child: Container(
+                          color: Colors.transparent,
+                          child: LoadingAnimationWidget.horizontalRotatingDots(
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 30,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    child: Obx(
-                      () => CommonLoadingBody(
-                        loading: controller.loading.value,
-                        child: Obx(
-                          () {
-                            return ListView.separated(
-                              reverse: true,
-                              itemCount: controller.messages.length,
-                              controller: controller.scrollController,
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              padding: const EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 90),
-                              separatorBuilder: (context, index) {
-                                return const Divider(
-                                  height: 7.5,
-                                );
-                              },
-                              itemBuilder: (context, index) {
-                                return _messageBubble(controller, index);
-                              },
-                            );
-                          },
+                    Expanded(
+                      child: Obx(
+                        () => CommonLoadingBody(
+                          loading: controller.loading.value,
+                          child: Obx(
+                            () {
+                              return ListView.separated(
+                                reverse: true,
+                                itemCount: controller.messages.length,
+                                controller: controller.scrollController,
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                padding: const EdgeInsets.only(
+                                    right: 20, left: 20, top: 20, bottom: 90),
+                                separatorBuilder: (context, index) {
+                                  return const Divider(
+                                    height: 7.5,
+                                  );
+                                },
+                                itemBuilder: (context, index) {
+                                  return _messageBubble(controller, index);
+                                },
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: _textInput(controller),
-              ),
-            ],
+                  ],
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: _textInput(controller),
+                ),
+              ],
+            ),
           ),
         );
       },

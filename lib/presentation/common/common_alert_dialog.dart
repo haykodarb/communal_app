@@ -43,7 +43,7 @@ class CommonAlertDialog extends StatelessWidget {
               width: 100,
               height: 50,
               child: ElevatedButton(
-                onPressed: confirmCallback ?? () => Get.back(),
+                onPressed: confirmCallback ?? () => Navigator.of(context).pop(),
                 child: Text(confirmationText),
               ),
             ),

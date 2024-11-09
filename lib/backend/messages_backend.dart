@@ -4,7 +4,10 @@ import 'package:communal/models/profile.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MessagesBackend {
-  static Future<BackendResponse> submitMessage(Profile receiver, String content) async {
+  static Future<BackendResponse> submitMessage(
+    String receiverId,
+    String content,
+  ) async {
     final SupabaseClient client = Supabase.instance.client;
     final String userId = client.auth.currentUser!.id;
 
@@ -14,11 +17,12 @@ class MessagesBackend {
           .insert(
             {
               'sender': userId,
-              'receiver': receiver.id,
+              'receiver': receiverId,
               'content': content,
             },
           )
-          .select('*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
+          .select(
+              '*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
           .single();
 
       return BackendResponse(
@@ -37,7 +41,8 @@ class MessagesBackend {
 
     final List<Map<String, dynamic>> distinctChats = await client
         .from('distinct_chats')
-        .select('*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
+        .select(
+            '*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
         .order('created_at');
 
     final List<Message> messages = <Message>[];
@@ -47,9 +52,12 @@ class MessagesBackend {
 
       final bool shouldAdd = !distinctChats.any(
         (Map<String, dynamic> element) {
-          final bool chatExists = element['sender'] == message.receiver.id && element['receiver'] == message.sender.id;
+          final bool chatExists = element['sender'] == message.receiver.id &&
+              element['receiver'] == message.sender.id;
 
-          final bool chatIsMoreRecent = message.created_at.compareTo(DateTime.parse(element['created_at'])) < 0;
+          final bool chatIsMoreRecent = message.created_at
+                  .compareTo(DateTime.parse(element['created_at'])) <
+              0;
 
           return chatExists && chatIsMoreRecent;
         },
@@ -71,7 +79,8 @@ class MessagesBackend {
 
     final Map<String, dynamic>? response = await client
         .from('distinct_chats')
-        .select('*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
+        .select(
+            '*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
         .eq('id', uuid)
         .maybeSingle();
 
@@ -102,17 +111,21 @@ class MessagesBackend {
     }
   }
 
-  static Future<BackendResponse> getMessagesWithUser(Profile user, int currentIndex) async {
+  static Future<BackendResponse> getMessagesWithUser(
+    String userId,
+    int currentIndex,
+  ) async {
     try {
       final SupabaseClient client = Supabase.instance.client;
       final String currentUserId = client.auth.currentUser!.id;
 
       final String filter =
-          'and(sender.eq.$currentUserId, receiver.eq.${user.id}), and(sender.eq.${user.id}, receiver.eq.$currentUserId)';
+          'and(sender.eq.$currentUserId, receiver.eq.$userId), and(sender.eq.$userId, receiver.eq.$currentUserId)';
 
       final List<dynamic> response = await client
           .from('messages')
-          .select('*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
+          .select(
+              '*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
           .or(filter)
           .range(currentIndex * 100, currentIndex * 100 + 100 - 1)
           .order(
@@ -135,12 +148,12 @@ class MessagesBackend {
     }
   }
 
-  static Future<void> markMessagesWithUserAsRead(Profile user) async {
+  static Future<void> markMessagesWithUserAsRead(String userId) async {
     final SupabaseClient client = Supabase.instance.client;
     final String currentUserId = client.auth.currentUser!.id;
 
     final String filter =
-        'and(sender.eq.$currentUserId, receiver.eq.${user.id}), and(sender.eq.${user.id}, receiver.eq.$currentUserId)';
+        'and(sender.eq.$currentUserId, receiver.eq.$userId), and(sender.eq.$userId, receiver.eq.$currentUserId)';
 
     await client
         .from('messages')
@@ -156,7 +169,8 @@ class MessagesBackend {
 
     final Map<String, dynamic>? response = await client
         .from('messages')
-        .select('*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
+        .select(
+            '*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
         .eq('id', uuid)
         .maybeSingle();
 

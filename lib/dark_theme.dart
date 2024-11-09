@@ -165,6 +165,7 @@ final ActionIconThemeData _actionIconThemeData = ActionIconThemeData(
 final ThemeData darkTheme = ThemeData(
   useMaterial3: true,
   colorScheme: _darkScheme,
+  brightness: Brightness.dark,
   fontFamily: 'Poppins',
   elevatedButtonTheme: _elevatedButtonThemeData,
   outlinedButtonTheme: _outlinedButtonThemeData,

@@ -1,22 +1,21 @@
 import 'dart:async';
-
 import 'package:communal/backend/discussions_backend.dart';
 import 'package:communal/backend/realtime_backend.dart';
 import 'package:communal/models/backend_response.dart';
-import 'package:communal/models/community.dart';
 import 'package:communal/models/discussion.dart';
-import 'package:communal/models/profile.dart';
 import 'package:communal/models/realtime_message.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CommunityDiscussionsController extends GetxController {
+  CommunityDiscussionsController({required this.communityId});
+
   final TextEditingController textEditingController = TextEditingController();
 
-  final Community community = Get.arguments['community'];
-
+  final String communityId;
   final RxList<DiscussionTopic> topics = <DiscussionTopic>[].obs;
 
   final RxBool firstLoad = false.obs;
@@ -34,11 +33,10 @@ class CommunityDiscussionsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getDiscussionTopics();
-
     _subscription ??=
         RealtimeBackend.streamController.stream.listen(streamListener);
 
+    getDiscussionTopics();
   }
 
   @override
@@ -46,10 +44,11 @@ class CommunityDiscussionsController extends GetxController {
     await _subscription?.cancel();
 
     super.onClose();
-
   }
 
   Future<void> streamListener(RealtimeMessage realtimeMessage) async {
+    print(realtimeMessage.new_row);
+
     if (realtimeMessage.table != 'discussion_topics') return;
 
     Map<String, dynamic> messageMap = realtimeMessage.new_row;
@@ -101,7 +100,7 @@ class CommunityDiscussionsController extends GetxController {
     firstLoad.value = true;
 
     final BackendResponse response =
-        await DiscussionsBackend.getDiscussionTopicsForCommunity(community);
+        await DiscussionsBackend.getDiscussionTopicsForCommunity(communityId);
 
     if (response.success) {
       topics.value = response.payload;
@@ -120,27 +119,17 @@ class CommunityDiscussionsController extends GetxController {
     topics.refresh();
   }
 
-  Future<void> goToTopicMessages(DiscussionTopic topic) async {
-    Get.toNamed(
-      RouteNames.communityDiscussionsTopicMessages,
-      arguments: {
-        'topic': topic,
-        'controller': this,
-      },
+  Future<void> goToTopicMessages(
+      DiscussionTopic topic, BuildContext context) async {
+    context.go(
+      '${RouteNames.communityListPage}/$communityId/discussions/${topic.id}',
     );
   }
 
-  Future<void> goToDiscussionsTopicCreate() async {
-    final DiscussionTopic? topic = await Get.toNamed<dynamic>(
-      RouteNames.communityDiscussionsTopicCreate,
-      arguments: {
-        'community': community,
-      },
+  Future<void> goToDiscussionsTopicCreate(BuildContext context) async {
+    context.go(
+      '${RouteNames.communityListPage}/$communityId/discussions/create',
     );
-
-    if (topic != null) {
-      topics.add(topic);
-    }
   }
 
   Future<void> searchTopics(String string_query) async {

@@ -7,6 +7,7 @@ import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class BookListController extends GetxController {
   final RxList<Book> userBooks = <Book>[].obs;
@@ -32,18 +33,10 @@ class BookListController extends GetxController {
   Future<void> deleteBook(Book book) async {
     book.loading.value = true;
 
-    final BackendResponse response = await BooksBackend.deleteBook(book);
+    userBooks.remove(book);
+    userBooks.refresh();
 
-    if (response.success) {
-      userBooks.remove(book);
-      userBooks.refresh();
-    } else {
-      book.loading.value = false;
-
-      Get.dialog(
-        CommonAlertDialog(title: '${response.payload}'),
-      );
-    }
+    book.loading.value = false;
   }
 
   Future<void> searchBooks(String stringQuery) async {
@@ -82,13 +75,8 @@ class BookListController extends GetxController {
     }
   }
 
-  Future<void> goToAddBookPage() async {
-    final dynamic result = await Get.toNamed(RouteNames.bookCreatePage);
-
-    if (result != null) {
-      userBooks.add(result);
-      userBooks.refresh();
-    }
+  Future<void> goToAddBookPage(BuildContext context) async {
+    context.go('${RouteNames.myBooks}${RouteNames.bookCreatePage}');
   }
 
   void onFilterByChanged(int value) {

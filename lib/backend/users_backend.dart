@@ -66,7 +66,9 @@ class UsersBackend {
   }
 
   static Future<BackendResponse> updateProfile(
-      Profile profile, File? image) async {
+    Profile profile,
+    Uint8List? image,
+  ) async {
     try {
       final String userId = _client.auth.currentUser!.id;
       final String currentTime =
@@ -75,11 +77,11 @@ class UsersBackend {
       String? fileName;
 
       if (image != null) {
-        final String imageExtension = image.path.split('.').last;
+        const String imageExtension = 'png';
 
         fileName = '/$userId/$currentTime.$imageExtension';
 
-        await _client.storage.from('profile_avatars').upload(
+        await _client.storage.from('profile_avatars').uploadBinary(
               fileName,
               image,
               retryAttempts: 5,
@@ -124,8 +126,9 @@ class UsersBackend {
   static String getCurrentUsername() {
     if (_client.auth.currentUser == null &&
         _client.auth.currentUser!.userMetadata == null &&
-        _client.auth.currentUser!.userMetadata!['username'] == null)
+        _client.auth.currentUser!.userMetadata!['username'] == null) {
       return 'No user';
+    }
 
     return _client.auth.currentUser!.userMetadata!['username'];
   }
@@ -180,7 +183,8 @@ class UsersBackend {
         .select()
         .maybeSingle();
 
-    return BackendResponse(success: response?.isNotEmpty ?? false, payload: response);
+    return BackendResponse(
+        success: response?.isNotEmpty ?? false, payload: response);
   }
 
   static Future<BackendResponse> getMembershipByID(String id) async {
@@ -245,7 +249,7 @@ class UsersBackend {
   }
 
   static Future<BackendResponse> changeUserAdminStatus(
-      Community community, Profile user, bool shouldBeAdmin) async {
+      String communityId, Profile user, bool shouldBeAdmin) async {
     try {
       final List<dynamic> updateMembershipResponse =
           await _client.from('memberships').update(
@@ -255,7 +259,7 @@ class UsersBackend {
       ).match(
         {
           'member': user.id,
-          'community': community.id,
+          'community': communityId,
         },
       ).select();
 
@@ -301,13 +305,13 @@ class UsersBackend {
   }
 
   static Future<BackendResponse> removeUserFromCommunity(
-      Community community, Profile user) async {
+      String communityId, String userId) async {
     try {
       final List<dynamic> response =
           await _client.from('memberships').delete().match(
         {
-          'member': user.id,
-          'community': community.id,
+          'member': userId,
+          'community': communityId,
         },
       ).select();
 
@@ -360,11 +364,11 @@ class UsersBackend {
   }
 
   static Future<BackendResponse<List<Profile>>> getUsersInCommunity(
-      Community community) async {
+      String communityId) async {
     final List<dynamic> membershipResponse =
         await _client.from('memberships').select('*, profiles(*)').match(
       {
-        'community': community.id,
+        'community': communityId,
         'accepted': true,
       },
     );

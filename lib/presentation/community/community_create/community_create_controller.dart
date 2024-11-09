@@ -1,11 +1,10 @@
-import 'dart:io';
-
+import 'dart:typed_data';
 import 'package:communal/backend/communities_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/community.dart';
+import 'package:communal/presentation/common/common_image_cropper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CommunityCreateController extends GetxController {
@@ -17,7 +16,7 @@ class CommunityCreateController extends GetxController {
   final RxString errorMessage = ''.obs;
 
   final ImagePicker imagePicker = ImagePicker();
-  final Rxn<File> selectedFile = Rxn<File>();
+  final Rxn<Uint8List> selectedBytes = Rxn<Uint8List>();
 
   void onNameChange(String value) {
     communityForm.update(
@@ -42,35 +41,26 @@ class CommunityCreateController extends GetxController {
 
     if (pickedImage == null) return;
 
-    CroppedFile? croppedFile = await ImageCropper().cropImage(
-      sourcePath: pickedImage.path,
-      aspectRatio: const CropAspectRatio(ratioX: 16, ratioY: 9),
-      uiSettings: [
-        AndroidUiSettings(
-          toolbarTitle: 'Crop',
-          toolbarColor: Theme.of(Get.context!).colorScheme.surfaceContainer,
-          toolbarWidgetColor: Colors.white,
-          initAspectRatio: CropAspectRatioPreset.original,
-          lockAspectRatio: true,
-          hideBottomControls: true,
-        ),
-        IOSUiSettings(
-          title: 'Crop',
-        ),
-      ],
+    final Uint8List? croppedBytes = await Get.dialog<Uint8List?>(
+      CommonImageCropper(
+        image: Image.memory(await pickedImage.readAsBytes()),
+        aspectRatio: 2,
+      ),
     );
 
-    if (croppedFile == null) return;
+    if (croppedBytes == null || croppedBytes.isEmpty) return;
 
-    selectedFile.value = File(croppedFile.path);
+    selectedBytes.value = croppedBytes;
   }
 
-  String? stringValidator(String? value, int length) {
-    if (value == null || value.isEmpty) {
+  String? stringValidator(String? value, int length, bool optional) {
+    if ((value == null || value.isEmpty) && !optional) {
       return 'Please enter something.';
     }
 
-    if (value.length < length) {
+    if (optional && (value == null || value.isEmpty)) return null;
+
+    if (value != null && value.length < length) {
       return 'Must be at least $length characters long.';
     }
 
@@ -84,7 +74,7 @@ class CommunityCreateController extends GetxController {
 
       final BackendResponse response = await CommunitiesBackend.createCommunity(
         communityForm.value,
-        selectedFile.value,
+        selectedBytes.value,
       );
 
       loading.value = false;

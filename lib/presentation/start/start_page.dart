@@ -1,8 +1,11 @@
 import 'package:atlas_icons/atlas_icons.dart';
+import 'package:communal/backend/user_preferences.dart';
+import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:communal/presentation/start/start_controller.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:collection/collection.dart';
@@ -120,13 +123,15 @@ class StartPage extends StatelessWidget {
                     width: 40,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Get.isDarkMode ? Colors.transparent : Theme.of(context).colorScheme.primary,
+                      color: UserPreferences.isDarkMode(context)
+                          ? Colors.transparent
+                          : Theme.of(context).colorScheme.primary,
                     ),
                     padding: EdgeInsets.zero,
                     child: Icon(
                       Atlas.sunny,
                       size: 22,
-                      color: Get.isDarkMode
+                      color: UserPreferences.isDarkMode(context)
                           ? Theme.of(context).colorScheme.primary
                           : Theme.of(context).colorScheme.onPrimary,
                     ),
@@ -136,13 +141,15 @@ class StartPage extends StatelessWidget {
                     width: 40,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Get.isDarkMode ? Theme.of(context).colorScheme.primary : Colors.transparent,
+                      color: UserPreferences.isDarkMode(context)
+                          ? Theme.of(context).colorScheme.primary
+                          : Colors.transparent,
                     ),
                     padding: EdgeInsets.zero,
                     child: Icon(
                       Atlas.moon,
                       size: 22,
-                      color: Get.isDarkMode
+                      color: UserPreferences.isDarkMode(context)
                           ? Theme.of(context).colorScheme.onPrimary
                           : Theme.of(context).colorScheme.primary,
                     ),
@@ -157,61 +164,69 @@ class StartPage extends StatelessWidget {
   }
 
   Widget _loginButton(StartController controller) {
-    return ElevatedButton(
-      onPressed: controller.loginButtonCallback,
-      child: Text(
-        'login'.tr,
-      ),
+    return Builder(
+      builder: (context) {
+        return ElevatedButton(
+          onPressed: () => context.go(RouteNames.loginPage),
+          child: Text(
+            'login'.tr,
+          ),
+        );
+      },
     );
   }
 
   Widget _registerButton(StartController controller) {
-    return OutlinedButton(
-      onPressed: controller.registerButtonCallback,
-      child: Text(
-        'register'.tr,
-      ),
+    return Builder(
+      builder: (context) {
+        return OutlinedButton(
+          onPressed: () => context.go(RouteNames.registerPage),
+          child: Text(
+            'register'.tr,
+          ),
+        );
+      },
     );
   }
 
   Widget _logo() {
-    final BuildContext context = Get.context!;
+    return Builder(builder: (context) {
+      final LinearGradient gradient = LinearGradient(
+        colors: [
+          Theme.of(context).colorScheme.primary,
+          Theme.of(context).colorScheme.tertiary,
+        ],
+      );
 
-    final LinearGradient gradient = LinearGradient(
-      colors: [
-        Theme.of(context).colorScheme.primary,
-        Theme.of(context).colorScheme.tertiary,
-      ],
-    );
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 50,
-      ),
-      child: ShaderMask(
-        blendMode: BlendMode.srcIn,
-        shaderCallback: (bounds) => gradient.createShader(
-          Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+      return Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 50,
         ),
-        child: Column(
-          children: [
-            SvgPicture.asset(
-              'assets/crow.svg',
-              height: 300,
-            ),
-            Text(
-              'Communal',
-              textAlign: TextAlign.center,
-              style: GoogleFonts.russoOne(
-                fontSize: 50,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.primary,
+        child: ShaderMask(
+          blendMode: BlendMode.srcIn,
+          shaderCallback: (bounds) => gradient.createShader(
+            Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+          ),
+          child: Column(
+            children: [
+              SvgPicture.asset(
+                'assets/crow.svg',
+                height: 300,
               ),
-            ),
-          ],
+              Text(
+                'Communal',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.russoOne(
+                  fontSize: 50,
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   @override
@@ -229,25 +244,28 @@ class StartPage extends StatelessWidget {
                 vertical: 30,
               ),
               child: SafeArea(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _dropdownLanguageButton(controller),
-                        _changeThemeButton(controller),
-                      ],
-                    ),
-                    const Divider(height: 20),
-                    _logo(),
-                    const Divider(height: 20),
-                    _loginButton(controller),
-                    const Divider(height: 10),
-                    _registerButton(controller),
-                    const Expanded(child: SizedBox()),
-                  ],
+                child: SizedBox(
+                  width: 600,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _dropdownLanguageButton(controller),
+                          _changeThemeButton(controller),
+                        ],
+                      ),
+                      const Divider(height: 20),
+                      _logo(),
+                      const Divider(height: 20),
+                      _loginButton(controller),
+                      const Divider(height: 10),
+                      _registerButton(controller),
+                      const Expanded(child: SizedBox()),
+                    ],
+                  ),
                 ),
               ),
             ),

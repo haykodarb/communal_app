@@ -3,6 +3,8 @@ import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/book/book_owned/book_owned_controller.dart';
 import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
+import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/common/common_username_button.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +12,14 @@ import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class BookOwnedPage extends StatelessWidget {
-  const BookOwnedPage({super.key});
+  const BookOwnedPage({
+    super.key,
+    required this.bookId,
+    this.inheritedBook,
+  });
+
+  final String bookId;
+  final Book? inheritedBook;
 
   Widget _bookTitle(Book book) {
     return Builder(
@@ -34,7 +43,8 @@ class BookOwnedPage extends StatelessWidget {
                   book.author,
                   style: TextStyle(
                     fontSize: 20,
-                    color: Theme.of(context).colorScheme.onSurface.withAlpha(150),
+                    color:
+                        Theme.of(context).colorScheme.onSurface.withAlpha(150),
                     fontWeight: FontWeight.w400,
                   ),
                   textAlign: TextAlign.center,
@@ -54,7 +64,8 @@ class BookOwnedPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: InkWell(
             onTap: () {
-              controller.expandCarouselItem.value = !controller.expandCarouselItem.value;
+              controller.expandCarouselItem.value =
+                  !controller.expandCarouselItem.value;
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,7 +81,8 @@ class BookOwnedPage extends StatelessWidget {
                     const VerticalDivider(width: 10),
                     Text(
                       controller.book.value.owner.username,
-                      style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary),
                     ),
                   ],
                 ),
@@ -97,45 +109,53 @@ class BookOwnedPage extends StatelessWidget {
   Widget _reviewCard(BookOwnedController controller, int index) {
     final Loan loan = controller.completedLoans[index];
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: InkWell(
-        onTap: () {
-          controller.expandCarouselItem.value = !controller.expandCarouselItem.value;
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            color: Theme.of(Get.context!).colorScheme.surfaceContainer,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+    return Builder(
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: InkWell(
+            onTap: () {
+              controller.expandCarouselItem.value =
+                  !controller.expandCarouselItem.value;
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: Theme.of(context).colorScheme.surfaceContainer,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CommonCircularAvatar(
-                    profile: loan.loanee,
-                    radius: 20,
-                    clickable: true,
+                  Row(
+                    children: [
+                      CommonCircularAvatar(
+                        profile: loan.loanee,
+                        radius: 20,
+                        clickable: true,
+                      ),
+                      const VerticalDivider(width: 10),
+                      CommonUsernameButton(user: loan.loanee),
+                    ],
                   ),
-                  const VerticalDivider(width: 10),
-                  CommonUsernameButton(user: loan.loanee),
+                  const Divider(),
+                  Expanded(
+                    child: Obx(
+                      () => Text(
+                        loan.review ?? '',
+                        overflow: controller.expandCarouselItem.value
+                            ? TextOverflow.visible
+                            : TextOverflow.ellipsis,
+                        maxLines:
+                            controller.expandCarouselItem.value ? null : 4,
+                      ),
+                    ),
+                  ),
                 ],
               ),
-              const Divider(),
-              Expanded(
-                child: Obx(
-                  () => Text(
-                    loan.review ?? '',
-                    overflow: controller.expandCarouselItem.value ? TextOverflow.visible : TextOverflow.ellipsis,
-                    maxLines: controller.expandCarouselItem.value ? null : 4,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -145,7 +165,8 @@ class BookOwnedPage extends StatelessWidget {
         return Center(
           child: Obx(
             () {
-              bool ownerHasReview = controller.book.value.review != null && controller.book.value.review!.isNotEmpty;
+              bool ownerHasReview = controller.book.value.review != null &&
+                  controller.book.value.review!.isNotEmpty;
 
               if (controller.completedLoans.isEmpty && !ownerHasReview) {
                 return const Center(child: Text('No reviews.'));
@@ -155,10 +176,16 @@ class BookOwnedPage extends StatelessWidget {
                 children: [
                   Expanded(
                     child: PageView.builder(
-                      itemCount: controller.completedLoans.length + (ownerHasReview ? 1 : 0),
+                      itemCount: controller.completedLoans.length +
+                          (ownerHasReview ? 1 : 0),
                       scrollDirection: Axis.horizontal,
+                      onPageChanged: (index) {
+                        controller.carouselIndex.value = index;
+                      },
                       itemBuilder: (context, index) {
-                        if (index == 0 && ownerHasReview) return _ownerReviewCard(controller);
+                        if (index == 0 && ownerHasReview) {
+                          return _ownerReviewCard(controller);
+                        }
 
                         if (controller.loadingCarousel.value) {
                           return SizedBox(
@@ -171,18 +198,22 @@ class BookOwnedPage extends StatelessWidget {
                           );
                         }
 
-                        return _reviewCard(controller, index - (ownerHasReview ? 1 : 0));
+                        return _reviewCard(
+                            controller, index - (ownerHasReview ? 1 : 0));
                       },
                     ),
                   ),
                   Visibility(
-                    visible: controller.completedLoans.length + (ownerHasReview ? 1 : 0) >= 2,
+                    visible: controller.completedLoans.length +
+                            (ownerHasReview ? 1 : 0) >=
+                        2,
                     child: Container(
                       alignment: Alignment.center,
                       height: 10,
                       width: double.maxFinite,
                       child: ListView.builder(
-                        itemCount: controller.completedLoans.length + (ownerHasReview ? 1 : 0),
+                        itemCount: controller.completedLoans.length +
+                            (ownerHasReview ? 1 : 0),
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
@@ -194,7 +225,10 @@ class BookOwnedPage extends StatelessWidget {
                                 shape: BoxShape.circle,
                                 color: index == controller.carouselIndex.value
                                     ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context).colorScheme.primary.withOpacity(0.25),
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withOpacity(0.25),
                               ),
                             ),
                           );
@@ -217,23 +251,31 @@ class BookOwnedPage extends StatelessWidget {
         return Stack(
           children: [
             Visibility(
-              visible: (!controller.book.value.loaned || !controller.book.value.public),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: controller.editBook,
-                      child: const Text('Edit'),
+              visible: (!controller.book.value.loaned ||
+                  !controller.book.value.public),
+              child: Obx(
+                () {
+                  return CommonLoadingBody(
+                    loading: controller.deleting.value,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () => controller.editBook(context),
+                            child: const Text('Edit'),
+                          ),
+                        ),
+                        const VerticalDivider(),
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () => controller.deleteBook(context),
+                            child: const Text('Delete'),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  const VerticalDivider(),
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: controller.deleteBook,
-                      child: const Text('Delete'),
-                    ),
-                  ),
-                ],
+                  );
+                },
               ),
             ),
             Visibility(
@@ -252,133 +294,166 @@ class BookOwnedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: BookOwnedController(),
+      init: BookOwnedController(bookId: bookId, inheritedBook: inheritedBook),
       builder: (BookOwnedController controller) {
-        return Scaffold(
-          appBar: AppBar(),
-          body: DefaultTabController(
-            length: 2,
-            child: SafeArea(
-              child: Stack(
-                children: [
-                  Column(
-                    children: [
-                      const SizedBox(
-                        height: 350 / 2,
-                      ),
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surfaceContainer,
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(30),
-                              topRight: Radius.circular(30),
+        return CommonResponsivePage(
+          child: Obx(
+            () {
+              return CommonLoadingBody(
+                loading: controller.firstLoad.value,
+                child: Scaffold(
+                  appBar: AppBar(),
+                  body: DefaultTabController(
+                    length: 2,
+                    child: SafeArea(
+                      child: Stack(
+                        children: [
+                          Column(
+                            children: [
+                              const SizedBox(
+                                height: 350 / 2,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .surfaceContainer,
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(30),
+                                      topRight: Radius.circular(30),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
+                              children: [
+                                Container(
+                                  height: 325,
+                                  decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        offset: const Offset(2, 1),
+                                        blurRadius: 20,
+                                        spreadRadius: 12,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .surface,
+                                      ),
+                                    ],
+                                  ),
+                                  child: CommonBookCover(controller.book.value),
+                                ),
+                                const Divider(height: 20),
+                                Obx(() => _bookTitle(controller.book.value)),
+                                const Divider(height: 20),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color:
+                                        Theme.of(context).colorScheme.surface,
+                                    borderRadius: BorderRadius.circular(40),
+                                  ),
+                                  width: double.maxFinite,
+                                  height: 65,
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'Owner',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurfaceVariant,
+                                            ),
+                                          ),
+                                          FittedBox(
+                                            fit: BoxFit.fitWidth,
+                                            child: Text(
+                                              controller
+                                                  .book.value.owner.username,
+                                              style:
+                                                  const TextStyle(fontSize: 16),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'Added',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurfaceVariant,
+                                            ),
+                                          ),
+                                          Text(
+                                            DateFormat('dd/MM/yy',
+                                                    Get.locale?.languageCode)
+                                                .format(controller
+                                                    .book.value.created_at),
+                                            style:
+                                                const TextStyle(fontSize: 16),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'Status',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurfaceVariant,
+                                            ),
+                                          ),
+                                          Text(
+                                            controller.book.value.loaned
+                                                ? 'Loaned'
+                                                : 'Available',
+                                            style:
+                                                const TextStyle(fontSize: 16),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Divider(height: 20),
+                                Expanded(
+                                  child: _reviewsTab(controller),
+                                ),
+                                const Divider(height: 20),
+                                _buttonRow(controller),
+                                const Divider(height: 20),
+                              ],
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 325,
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                offset: const Offset(2, 1),
-                                blurRadius: 20,
-                                spreadRadius: 12,
-                                color: Theme.of(context).colorScheme.surface,
-                              ),
-                            ],
-                          ),
-                          child: CommonBookCover(controller.book.value),
-                        ),
-                        const Divider(height: 20),
-                        Obx(() => _bookTitle(controller.book.value)),
-                        const Divider(height: 20),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surface,
-                            borderRadius: BorderRadius.circular(40),
-                          ),
-                          width: double.maxFinite,
-                          height: 65,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Owner',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                    ),
-                                  ),
-                                  FittedBox(
-                                    fit: BoxFit.fitWidth,
-                                    child: Text(
-                                      controller.book.value.owner.username,
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Added',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                    ),
-                                  ),
-                                  Text(
-                                    DateFormat('dd/MM/yy', Get.locale?.languageCode)
-                                        .format(controller.book.value.created_at),
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Status',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                    ),
-                                  ),
-                                  Text(
-                                    controller.book.value.loaned ? 'Loaned' : 'Available',
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Divider(height: 20),
-                        Expanded(
-                          child: _reviewsTab(controller),
-                        ),
-                        const Divider(height: 20),
-                        _buttonRow(controller),
-                        const Divider(height: 20),
-                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           ),
         );
       },

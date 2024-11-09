@@ -6,8 +6,10 @@ import 'package:communal/presentation/common/common_drawer/common_drawer_widget.
 import 'package:communal/presentation/common/common_filter_bottomsheet.dart';
 import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/common/common_search_bar.dart';
 import 'package:communal/presentation/loans/loans_controller.dart';
+import 'package:communal/responsive.dart';
 import 'package:communal/routes.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
@@ -285,55 +287,58 @@ class LoansPage extends StatelessWidget {
       builder: (LoansController controller) {
         return DefaultTabController(
           length: 3,
-          child: Scaffold(
-            appBar: AppBar(
-              title: const Text('Loans'),
-            ),
-            drawer: CommonDrawerWidget(),
-            body: ExtendedNestedScrollView(
-              floatHeaderSlivers: true,
-              headerSliverBuilder: (context, innerBoxIsScrolled) {
-                return [
-                  SliverAppBar(
-                    title: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: CommonSearchBar(
-                        focusNode: FocusNode(),
-                        searchCallback: controller.onSearchTextChanged,
-                        filterCallback: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            builder: (context) => _bottomSheet(controller),
-                          );
+          child: CommonResponsivePage(
+            child: Scaffold(
+              appBar: AppBar(
+                title: const Text('Loans'),
+              ),
+              drawer:
+                  Responsive.isMobile(context) ? CommonDrawerWidget() : null,
+              body: ExtendedNestedScrollView(
+                floatHeaderSlivers: true,
+                headerSliverBuilder: (context, innerBoxIsScrolled) {
+                  return [
+                    SliverAppBar(
+                      title: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: CommonSearchBar(
+                          focusNode: FocusNode(),
+                          searchCallback: controller.onSearchTextChanged,
+                          filterCallback: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (context) => _bottomSheet(controller),
+                            );
+                          },
+                        ),
+                      ),
+                      titleSpacing: 0,
+                      toolbarHeight: 55,
+                      centerTitle: true,
+                      automaticallyImplyLeading: false,
+                      floating: true,
+                    ),
+                  ];
+                },
+                body: Obx(
+                  () => CommonLoadingBody(
+                    loading: controller.firstLoad.value,
+                    child: Obx(
+                      () => ListView.separated(
+                        padding: const EdgeInsets.only(
+                            top: 10, bottom: 10, left: 10, right: 10),
+                        separatorBuilder: (context, index) =>
+                            const Divider(height: 5),
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: controller.loanList.length,
+                        itemBuilder: (context, index) {
+                          final Loan loan = controller.loanList[index];
+                          return CommonKeepaliveWrapper(
+                              child: _loanCard(loan, controller));
                         },
                       ),
-                    ),
-                    titleSpacing: 0,
-                    toolbarHeight: 55,
-                    centerTitle: true,
-                    automaticallyImplyLeading: false,
-                    floating: true,
-                  ),
-                ];
-              },
-              body: Obx(
-                () => CommonLoadingBody(
-                  loading: controller.firstLoad.value,
-                  child: Obx(
-                    () => ListView.separated(
-                      padding: const EdgeInsets.only(
-                          top: 10, bottom: 10, left: 10, right: 10),
-                      separatorBuilder: (context, index) =>
-                          const Divider(height: 5),
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: controller.loanList.length,
-                      itemBuilder: (context, index) {
-                        final Loan loan = controller.loanList[index];
-                        return CommonKeepaliveWrapper(
-                            child: _loanCard(loan, controller));
-                      },
                     ),
                   ),
                 ),

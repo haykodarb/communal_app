@@ -2,6 +2,7 @@ import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/loans/loan_info/loan_info_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,14 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class LoanInfoPage extends StatelessWidget {
-  const LoanInfoPage({super.key});
+  const LoanInfoPage({
+    super.key,
+    required this.loanId,
+    this.loan,
+  });
+
+  final String loanId;
+  final Loan? loan;
 
   Widget _userData(Loan loan) {
     return Builder(
@@ -162,8 +170,11 @@ class LoanInfoPage extends StatelessWidget {
         return Row(
           children: [
             Expanded(
-                child: _dateContainer('Requested',
-                    DateFormat('d/MM/yy').format(loan.created_at))),
+              child: _dateContainer(
+                'Requested',
+                DateFormat('d/MM/yy').format(loan.created_at),
+              ),
+            ),
             const VerticalDivider(width: 5),
             Visibility(
               visible: loan.rejected,
@@ -421,52 +432,54 @@ class LoanInfoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: LoanInfoController(),
+      init: LoanInfoController(loanId: loanId, inheritedLoan: loan),
       builder: (LoanInfoController controller) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('Loan'),
-          ),
-          body: Obx(
-            () => CommonLoadingBody(
-              loading: controller.loadingPage.value,
-              child: Scrollbar(
-                thumbVisibility: true,
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Card(
-                      margin: EdgeInsets.zero,
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          children: [
-                            Obx(
-                              () => _userData(controller.loan.value),
-                            ),
-                            const Divider(height: 20),
-                            Obx(
-                              () => _bookCard(controller.loan.value),
-                            ),
-                            const Divider(height: 20),
-                            Obx(
-                              () => _datesCard(controller.loan.value),
-                            ),
-                            const Divider(height: 20),
-                            Obx(
-                              () {
-                                if (controller.loan.value.isOwned) {
-                                  return _ownerBottomHalf(controller);
-                                }
+        return CommonResponsivePage(
+          child: Scaffold(
+            appBar: AppBar(
+              title: const Text('Loan'),
+            ),
+            body: Obx(
+              () => CommonLoadingBody(
+                loading: controller.loadingPage.value,
+                child: Scrollbar(
+                  thumbVisibility: true,
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Card(
+                        margin: EdgeInsets.zero,
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            children: [
+                              Obx(
+                                () => _userData(controller.loan.value),
+                              ),
+                              const Divider(height: 20),
+                              Obx(
+                                () => _bookCard(controller.loan.value),
+                              ),
+                              const Divider(height: 20),
+                              Obx(
+                                () => _datesCard(controller.loan.value),
+                              ),
+                              const Divider(height: 20),
+                              Obx(
+                                () {
+                                  if (controller.loan.value.isOwned) {
+                                    return _ownerBottomHalf(controller);
+                                  }
 
-                                if (controller.loan.value.isBorrowed) {
-                                  return _borrowerBottomHalf(controller);
-                                }
+                                  if (controller.loan.value.isBorrowed) {
+                                    return _borrowerBottomHalf(controller);
+                                  }
 
-                                return const Text('Error');
-                              },
-                            ),
-                          ],
+                                  return const Text('Error');
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

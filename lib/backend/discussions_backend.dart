@@ -1,5 +1,4 @@
 import 'package:communal/models/backend_response.dart';
-import 'package:communal/models/community.dart';
 import 'package:communal/models/discussion.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -8,7 +7,7 @@ class DiscussionsBackend {
 
   static Future<BackendResponse> createDiscussionTopic({
     required String name,
-    required Community community,
+    required String communityId,
   }) async {
     try {
       final String userId = _client.auth.currentUser!.id;
@@ -17,7 +16,7 @@ class DiscussionsBackend {
           .from('discussion_topics')
           .insert({
             'creator': userId,
-            'community': community.id,
+            'community': communityId,
             'name': name,
           })
           .select('*, profiles(*), communities(*)')
@@ -40,7 +39,7 @@ class DiscussionsBackend {
   }
 
   static Future<BackendResponse> getDiscussionTopicsForCommunity(
-      Community community) async {
+      String communityId) async {
     try {
       final List<dynamic> response = await _client
           .from('discussion_topics')
@@ -49,7 +48,7 @@ class DiscussionsBackend {
           )
           .eq(
             'community',
-            community.id,
+            communityId,
           );
 
       final List<DiscussionTopic> topics =
@@ -70,14 +69,14 @@ class DiscussionsBackend {
   }
 
   static Future<BackendResponse> getDiscussionMessagesForTopic(
-      DiscussionTopic topic) async {
+      String topicId) async {
     try {
       final List<dynamic> response = await _client
           .from('discussion_messages')
           .select(
             '*, profiles(*)',
           )
-          .eq('topic', topic.id)
+          .eq('topic', topicId)
           .order(
             'created_at',
             ascending: false,
@@ -101,7 +100,7 @@ class DiscussionsBackend {
   }
 
   static Future<BackendResponse> insertDiscussionMessageInTopic(
-      DiscussionTopic topic, String content) async {
+      String topicId, String content) async {
     try {
       final String userId = _client.auth.currentUser!.id;
 
@@ -109,7 +108,7 @@ class DiscussionsBackend {
           .from('discussion_messages')
           .insert({
             'sender': userId,
-            'topic': topic.id,
+            'topic': topicId,
             'content': content,
           })
           .select(
@@ -152,7 +151,7 @@ class DiscussionsBackend {
       return BackendResponse(success: false, payload: error.message);
     }
   }
-  
+
   static Future<BackendResponse> getDiscussionTopicById(String id) async {
     try {
       final Map<String, dynamic>? response = await _client

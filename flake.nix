@@ -31,14 +31,17 @@
         devShells.default =
           with pkgs; mkShell {
             ANDROID_SDK_ROOT = "${androidSdk}/libexec/android-sdk";
+
             packages = [
               bashInteractive
               flutter
               androidSdk
+              google-chrome
               jdk11
             ];
             shellHook = ''
-              $SHELL -c "./dev.sh"
+            export CHROME_EXECUTABLE=$(which chromium); 
+            $SHELL -c "./dev.sh"
             '';
           };
       });

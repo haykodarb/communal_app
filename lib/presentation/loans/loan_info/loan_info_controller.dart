@@ -7,7 +7,14 @@ import 'package:communal/presentation/loans/loans_controller.dart';
 import 'package:get/get.dart';
 
 class LoanInfoController extends GetxController {
-  final Loan? inheritedLoan = Get.arguments['loan'];
+  LoanInfoController({
+    required this.loanId,
+    this.inheritedLoan,
+  });
+
+  final String loanId;
+  Loan? inheritedLoan;
+
   final Rx<Loan> loan = Loan.empty().obs;
 
   final RxBool loading = false.obs;
@@ -18,10 +25,20 @@ class LoanInfoController extends GetxController {
 
   String? newReview = '';
 
-  final LoansController? loansController = Get.arguments['loansController'];
+  LoansController? loansController;
 
   @override
   Future<void> onInit() async {
+    if (Get.isRegistered<LoansController>()) {
+      loansController = Get.find();
+    }
+
+    if (loansController != null) {
+      inheritedLoan = loansController?.loanList.firstWhereOrNull(
+        (element) => element.id == loanId,
+      );
+    }
+
     if (inheritedLoan != null) {
       loan.value = inheritedLoan!;
       newReview = inheritedLoan!.review;
@@ -29,9 +46,7 @@ class LoanInfoController extends GetxController {
     } else {
       loadingPage.value = true;
 
-      final String loan_id = Get.arguments['loan_id'];
-
-      final BackendResponse response = await LoansBackend.getLoanById(loan_id);
+      final BackendResponse response = await LoansBackend.getLoanById(loanId);
 
       if (response.success) {
         loan.value = response.payload;
@@ -59,7 +74,8 @@ class LoanInfoController extends GetxController {
     if (confirm != null && confirm) {
       loading.value = true;
 
-      final BackendResponse response = await LoansBackend.deleteLoan(loan.value);
+      final BackendResponse response =
+          await LoansBackend.deleteLoan(loan.value);
 
       if (response.success) {
         loansController?.removeItemById(inheritedLoan!.id);
@@ -83,7 +99,8 @@ class LoanInfoController extends GetxController {
     if (confirm != null && confirm) {
       loading.value = true;
 
-      final BackendResponse response = await LoansBackend.setLoanParameterTrue(loan.value, 'accepted');
+      final BackendResponse response =
+          await LoansBackend.setLoanParameterTrue(loan.value, 'accepted');
 
       loading.value = false;
 
@@ -113,7 +130,8 @@ class LoanInfoController extends GetxController {
     if (confirm != null && confirm) {
       loading.value = true;
 
-      final BackendResponse response = await LoansBackend.setLoanParameterTrue(loan.value, 'rejected');
+      final BackendResponse response =
+          await LoansBackend.setLoanParameterTrue(loan.value, 'rejected');
 
       if (response.success && inheritedLoan != null) {
         loansController?.loanList.removeWhere(
@@ -123,7 +141,8 @@ class LoanInfoController extends GetxController {
 
       if (!response.success) {
         Get.dialog(
-          const CommonAlertDialog(title: 'Could not reject this loan, please try again.'),
+          const CommonAlertDialog(
+              title: 'Could not reject this loan, please try again.'),
         );
       }
 
@@ -141,7 +160,8 @@ class LoanInfoController extends GetxController {
     if (confirm != null && confirm) {
       loading.value = true;
 
-      final BackendResponse response = await LoansBackend.setLoanParameterTrue(loan.value, 'returned');
+      final BackendResponse response =
+          await LoansBackend.setLoanParameterTrue(loan.value, 'returned');
 
       if (response.success) {
         loan.value.returned = true;
@@ -153,7 +173,8 @@ class LoanInfoController extends GetxController {
         );
       } else {
         Get.dialog(
-          const CommonAlertDialog(title: 'Could not mark book as returned, please try again.'),
+          const CommonAlertDialog(
+              title: 'Could not mark book as returned, please try again.'),
         );
       }
 
@@ -171,7 +192,8 @@ class LoanInfoController extends GetxController {
   Future<void> onReviewDelete() async {
     deleting.value = true;
 
-    final BackendResponse response = await LoansBackend.updateLoanReview(loan.value, null);
+    final BackendResponse response =
+        await LoansBackend.updateLoanReview(loan.value, null);
 
     if (response.success) {
       loan.value.review = null;
@@ -185,7 +207,8 @@ class LoanInfoController extends GetxController {
   Future<void> onReviewSubmit() async {
     loading.value = true;
 
-    final BackendResponse response = await LoansBackend.updateLoanReview(loan.value, newReview);
+    final BackendResponse response =
+        await LoansBackend.updateLoanReview(loan.value, newReview);
 
     if (response.success) {
       loan.value.review = newReview;

@@ -1,11 +1,13 @@
 import 'package:communal/backend/discussions_backend.dart';
 import 'package:communal/models/backend_response.dart';
-import 'package:communal/models/community.dart';
+import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class CommunityDiscussionsTopicCreateController extends GetxController {
-  final Community community = Get.arguments['community'];
+  CommunityDiscussionsTopicCreateController({required this.communityId});
+  final String communityId;
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -30,22 +32,27 @@ class CommunityDiscussionsTopicCreateController extends GetxController {
     return null;
   }
 
-  Future<void> onSubmit() async {
+  Future<void> onSubmit(BuildContext context) async {
     if (formKey.currentState!.validate()) {
       loading.value = true;
       errorMessage.value = '';
 
-      final BackendResponse response = await DiscussionsBackend.createDiscussionTopic(
+      final BackendResponse response =
+          await DiscussionsBackend.createDiscussionTopic(
         name: name.value,
-        community: community,
+        communityId: communityId,
       );
 
       loading.value = false;
 
       if (response.success) {
-        Get.back<dynamic>(
-          result: response.payload,
-        );
+        final CommunityDiscussionsController communityDiscussionsController =
+            Get.find();
+
+        communityDiscussionsController.topics.add(response.payload);
+        if (context.mounted) {
+          context.pop();
+        }
       } else {
         errorMessage.value = 'Creating topic failed.';
       }

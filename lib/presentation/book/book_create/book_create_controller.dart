@@ -1,12 +1,13 @@
-import 'dart:io';
+import 'dart:typed_data';
 import 'package:communal/backend/books_backend.dart';
-import 'package:communal/backend/openlibrary_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
+import 'package:communal/presentation/book/book_list_controller.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
+import 'package:communal/presentation/common/common_image_cropper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_cropper/image_cropper.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 class BookCreateController extends GetxController {
@@ -18,19 +19,15 @@ class BookCreateController extends GetxController {
   final RxBool loading = false.obs;
 
   final ImagePicker imagePicker = ImagePicker();
-  final Rxn<File> selectedFile = Rxn<File>();
+  final Rxn<Uint8List> selectedBytes = Rxn<Uint8List>();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+  final BookListController bookListController = Get.find();
+
   final TextEditingController titleController = TextEditingController();
   final TextEditingController authorController = TextEditingController();
-
-  Future<void> getOpenLibraryImage(String isbnCode) async {
-    final File? cover = await OpenLibraryBackend.getCoverByISBN(isbnCode);
-    if (cover != null) {
-      selectedFile.value = File(cover.path);
-    }
-  }
+  final TextEditingController reviewController = TextEditingController();
 
   Future<void> scanBook() async {
     /*
@@ -60,7 +57,7 @@ class BookCreateController extends GetxController {
 */
   }
 
-  Future<void> takePicture(ImageSource source) async {
+  Future<void> takePicture(ImageSource source, BuildContext context) async {
     XFile? pickedImage = await imagePicker.pickImage(
       source: source,
       imageQuality: 100,
@@ -70,28 +67,21 @@ class BookCreateController extends GetxController {
     );
 
     if (pickedImage == null) return;
+    final Uint8List pickedBytes = await pickedImage.readAsBytes();
 
-    CroppedFile? croppedFile = await ImageCropper().cropImage(
-      sourcePath: pickedImage.path,
-      aspectRatio: const CropAspectRatio(ratioX: 3, ratioY: 4),
-      uiSettings: [
-        AndroidUiSettings(
-          toolbarTitle: 'Crop',
-          toolbarColor: Theme.of(Get.context!).colorScheme.surfaceContainer,
-          toolbarWidgetColor: Colors.white,
-          initAspectRatio: CropAspectRatioPreset.original,
-          lockAspectRatio: true,
-          hideBottomControls: true,
-        ),
-        IOSUiSettings(
-          title: 'Crop',
-        ),
-      ],
+    if (!context.mounted) return;
+
+    final Uint8List? croppedBytes = await showDialog<Uint8List?>(
+      context: context,
+      builder: (context) => CommonImageCropper(
+        image: Image.memory(pickedBytes),
+        aspectRatio: 3 / 4,
+      ),
     );
 
-    if (croppedFile == null) return;
+    if (croppedBytes == null || croppedBytes.isEmpty) return;
 
-    selectedFile.value = File(croppedFile.path);
+    selectedBytes.value = croppedBytes;
   }
 
   void onAddReviewChange(int? index) {
@@ -140,41 +130,52 @@ class BookCreateController extends GetxController {
     );
   }
 
-  String? stringValidator(String? value, int length) {
-    if (value == null || value.isEmpty) {
+  String? stringValidator(String? value, int length, bool optional) {
+    if ((value == null || value.isEmpty) && !optional) {
       return 'Please enter something.';
     }
 
-    if (value.length < length) {
+    if (optional && (value == null || value.isEmpty)) return null;
+
+    if (value != null && value.length < length) {
       return 'Must be at least $length characters long.';
     }
 
     return null;
   }
 
-  Future<void> onSubmitButton() async {
+  Future<void> onSubmitButton(BuildContext context) async {
     if (formKey.currentState!.validate()) {
       loading.value = true;
 
-      if (selectedFile.value == null) {
-        Get.dialog(const CommonAlertDialog(title: 'Please add a book cover image.'));
+      if (selectedBytes.value == null) {
+        showDialog(
+          context: context,
+          builder: (context) => const CommonAlertDialog(
+            title: 'Please add a book cover image.',
+          ),
+        );
         loading.value = false;
         return;
       }
 
       final BackendResponse response = await BooksBackend.addBook(
         bookForm.value,
-        File(selectedFile.value!.path),
+        selectedBytes.value!,
       );
-
-      loading.value = false;
+      if (!context.mounted) return;
 
       if (response.success) {
-        Get.back<Book>(
-          result: response.payload,
-        );
+        bookListController.userBooks.insert(0, response.payload);
+        context.pop(response.payload);
       } else {
-        Get.dialog(const CommonAlertDialog(title: 'Network error, please try again.'));
+        showDialog(
+          context: context,
+          builder: (context) => const CommonAlertDialog(
+            title: 'Network error, please try again.',
+          ),
+        );
+        loading.value = false;
       }
     }
   }

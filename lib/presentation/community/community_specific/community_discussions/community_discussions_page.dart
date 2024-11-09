@@ -76,7 +76,7 @@ class CommunityDiscussionsPage extends StatelessWidget {
                       final DiscussionTopic topic = controller.topics[index];
 
                       return InkWell(
-                        onTap: () => controller.goToTopicMessages(topic),
+                        onTap: () => controller.goToTopicMessages(topic, context),
                         child: Card(
                           margin: EdgeInsets.zero,
                           child: Padding(
@@ -94,7 +94,7 @@ class CommunityDiscussionsPage extends StatelessWidget {
                                 Visibility(
                                   visible: topic.last_message == null,
                                   child: Container(
-				  alignment: Alignment.bottomLeft,
+                                    alignment: Alignment.bottomLeft,
                                     height: 50,
                                     child: Text(
                                       'Empty',

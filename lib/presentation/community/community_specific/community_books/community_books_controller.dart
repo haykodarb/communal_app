@@ -1,15 +1,14 @@
 import 'dart:async';
-
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
-import 'package:communal/models/community.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class CommunityBooksController extends GetxController {
-  final Community community = Get.arguments['community'];
+  CommunityBooksController({required this.communityId});
+  final String communityId;
 
   final FocusNode focusScope = FocusNode();
 
@@ -32,7 +31,7 @@ class CommunityBooksController extends GetxController {
 
   Future<void> loadBooks(int pageKey) async {
     final BackendResponse response = await BooksBackend.getBooksInCommunity(
-      community,
+      communityId,
       pageKey,
       currentQuery,
     );

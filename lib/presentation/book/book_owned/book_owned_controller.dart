@@ -1,18 +1,28 @@
+import 'package:communal/backend/books_backend.dart';
 import 'package:communal/backend/loans_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/book/book_list_controller.dart';
+import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/presentation/common/common_confirmation_dialog.dart';
+import 'package:communal/presentation/profiles/profile_own/profile_own_controller.dart';
 import 'package:communal/routes.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class BookOwnedController extends GetxController {
+  BookOwnedController({required this.bookId, this.inheritedBook});
+
+  final String bookId;
+  Book? inheritedBook;
+
   final Rx<Book> book = Book.empty().obs;
 
-  final BookListController? myBooksController = Get.arguments['controller'];
-
   final RxBool loading = false.obs;
+  final RxBool firstLoad = false.obs;
+  final RxBool deleting = false.obs;
 
   final RxInt carouselIndex = 0.obs;
   final RxBool loadingCarousel = false.obs;
@@ -20,12 +30,39 @@ class BookOwnedController extends GetxController {
 
   final RxBool expandCarouselItem = false.obs;
 
+  BookListController? bookListController;
+  ProfileOwnController? profileOwnController;
+
   Rxn<Loan> currentLoan = Rxn<Loan>();
 
   @override
   Future<void> onInit() async {
-    book.value = Get.arguments['book'];
-    book.refresh();
+    if (Get.isRegistered<BookListController>()) {
+      bookListController = Get.find<BookListController>();
+    }
+
+    if (Get.isRegistered<ProfileOwnController>()) {
+      profileOwnController = Get.find<ProfileOwnController>();
+    }
+
+    inheritedBook = bookListController?.userBooks.firstWhereOrNull(
+      (element) => element.id == bookId,
+    );
+
+    inheritedBook ??=
+        profileOwnController?.booksPagingController.itemList?.firstWhereOrNull(
+      (element) => element.id == bookId,
+    );
+    if (inheritedBook == null) {
+      firstLoad.value = true;
+      final BackendResponse response = await BooksBackend.getBookById(bookId);
+      firstLoad.value = false;
+      if (response.success) {
+        book.value = response.payload;
+      }
+    } else {
+      book.value = inheritedBook!;
+    }
 
     await loadCurrentLoan();
 
@@ -33,7 +70,10 @@ class BookOwnedController extends GetxController {
 
     completedLoans.clear();
 
-    final BackendResponse response = await LoansBackend.getCompletedLoansForItem(book: book.value);
+    final BackendResponse response =
+        await LoansBackend.getCompletedLoansForItem(
+      bookId: bookId,
+    );
 
     if (response.success) {
       completedLoans.addAll(response.payload);
@@ -44,26 +84,45 @@ class BookOwnedController extends GetxController {
     super.onInit();
   }
 
-  Future<void> deleteBook() async {
-    final bool deleteConfirm = await Get.dialog<bool>(
-          CommonConfirmationDialog(
+  Future<void> deleteBook(BuildContext context) async {
+    final bool deleteConfirm = await showDialog<bool>(
+          context: context,
+          builder: (context) => CommonConfirmationDialog(
             title: 'Delete book?',
-            confirmCallback: () => Get.back<bool>(result: true),
-            cancelCallback: () => Get.back<bool>(result: false),
+            confirmCallback: () => Navigator.of(context).pop(true),
+            cancelCallback: () => Navigator.of(context).pop(false),
           ),
         ) ??
         false;
 
     if (deleteConfirm) {
-      myBooksController?.deleteBook(book.value);
-      Get.back();
+      deleting.value = true;
+      final BackendResponse response =
+          await BooksBackend.deleteBook(book.value);
+
+      if (response.success) {
+        bookListController?.deleteBook(book.value);
+        profileOwnController?.deleteBook(bookId);
+        if (context.mounted) {
+          context.pop();
+        }
+      } else {
+        deleting.value = false;
+        if (context.mounted) {
+          showDialog(
+            context: context,
+            builder: (context) => CommonAlertDialog(title: response.payload),
+          );
+        }
+      }
     }
   }
 
   Future<void> loadCurrentLoan() async {
     loading.value = true;
 
-    final BackendResponse response = await LoansBackend.getCurrentLoanForBook(book.value);
+    final BackendResponse response =
+        await LoansBackend.getCurrentLoanForBook(bookId);
 
     if (response.success) {
       currentLoan.value = response.payload;
@@ -73,17 +132,9 @@ class BookOwnedController extends GetxController {
     loading.value = false;
   }
 
-  Future<void> editBook() async {
-    final Book? response = await Get.toNamed<dynamic>(
-      RouteNames.bookEditPage,
-      arguments: {
-        'book': book.value,
-      },
+  Future<void> editBook(BuildContext context) async {
+    context.push(
+      '${RouteNames.myBooks}/$bookId/edit',
     );
-
-    if (response != null) {
-      book.value = response;
-      book.refresh();
-    }
   }
 }

@@ -1,6 +1,5 @@
 import 'package:communal/models/book.dart';
 import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
-import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_search_bar.dart';
 import 'package:communal/presentation/common/common_vertical_book_card.dart';
 import 'package:communal/presentation/community/community_specific/community_books/community_books_controller.dart';
@@ -9,6 +8,7 @@ import 'package:communal/routes.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class CommunityBooksPage extends StatelessWidget {
@@ -68,12 +68,8 @@ class CommunityBooksPage extends StatelessWidget {
                   return CommonKeepaliveWrapper(
                     child: InkWell(
                       onTap: () {
-                        Get.toNamed(
-                          RouteNames.communitySpecificBookPage,
-                          arguments: {
-                            'book': item,
-                            'community': controller.community,
-                          },
+                        context.go(
+                          '${RouteNames.communityListPage}/${communityController.communityId}/book/${item.id}',
                         );
                       },
                       child: CommonVerticalBookCard(

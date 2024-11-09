@@ -3,8 +3,10 @@ import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/messages/messages_controller.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
+import 'package:communal/responsive.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -22,7 +24,7 @@ class MessagesPage extends StatelessWidget {
     return Builder(
       builder: (context) {
         return InkWell(
-          onTap: () => controller.goToSpecificChat(staticChatter),
+          onTap: () => controller.goToSpecificChat(staticChatter, context),
           onLongPress: () => controller.deleteChatsWithUsers(staticChatter),
           splashColor: Colors.transparent,
           child: Card(
@@ -155,31 +157,33 @@ class MessagesPage extends StatelessWidget {
     return GetBuilder(
       init: MessagesController(),
       builder: (MessagesController controller) {
-        return Scaffold(
-          drawer: CommonDrawerWidget(),
-          appBar: AppBar(
-            title: const Text(
-              'Messages',
+        return CommonResponsivePage(
+          child: Scaffold(
+            drawer: Responsive.isMobile(context) ? CommonDrawerWidget() : null,
+            appBar: AppBar(
+              title: const Text(
+                'Messages',
+              ),
             ),
-          ),
-          body: Obx(
-            () => CommonLoadingBody(
-              loading: controller.loading.value,
-              child: Obx(
-                () {
-                  return ListView.separated(
-                    padding: const EdgeInsets.all(10),
-                    itemCount: controller.distinctChats.length,
-                    separatorBuilder: (context, index) {
-                      return const Divider(height: 5);
-                    },
-                    itemBuilder: (context, index) {
-                      return CommonKeepaliveWrapper(
-                        child: _chatCard(controller, index),
-                      );
-                    },
-                  );
-                },
+            body: Obx(
+              () => CommonLoadingBody(
+                loading: controller.loading.value,
+                child: Obx(
+                  () {
+                    return ListView.separated(
+                      padding: const EdgeInsets.all(10),
+                      itemCount: controller.distinctChats.length,
+                      separatorBuilder: (context, index) {
+                        return const Divider(height: 5);
+                      },
+                      itemBuilder: (context, index) {
+                        return CommonKeepaliveWrapper(
+                          child: _chatCard(controller, index),
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
             ),
           ),

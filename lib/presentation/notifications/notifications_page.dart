@@ -2,7 +2,9 @@ import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/notifications_backend.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/notifications/notifications_controller.dart';
+import 'package:communal/responsive.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -253,38 +255,40 @@ class NotificationsPage extends StatelessWidget {
     return GetBuilder(
       init: NotificationsController(),
       builder: (NotificationsController controller) {
-        return Scaffold(
-          drawer: CommonDrawerWidget(),
-          appBar: AppBar(
-            title: Text('notifications'.tr),
-          ),
-          body: Obx(
-            () {
-              return CommonLoadingBody(
-                loading: controller.loading.value,
-                child: Center(
-                  child: Obx(
-                    () => ListView.separated(
-                      padding: const EdgeInsets.all(10),
-                      itemCount: controller.notifications.length,
-                      separatorBuilder: (BuildContext context, int int) =>
-                          const Divider(height: 5),
-                      itemBuilder: (context, index) {
-                        if (controller.notifications.isEmpty) {
-                          return const Center(
-                            child: Text('No notifications'),
-                          );
-                        }
+        return CommonResponsivePage(
+          child: Scaffold(
+            drawer: Responsive.isMobile(context) ? CommonDrawerWidget() : null,
+            appBar: AppBar(
+              title: Text('notifications'.tr),
+            ),
+            body: Obx(
+              () {
+                return CommonLoadingBody(
+                  loading: controller.loading.value,
+                  child: Center(
+                    child: Obx(
+                      () => ListView.separated(
+                        padding: const EdgeInsets.all(10),
+                        itemCount: controller.notifications.length,
+                        separatorBuilder: (BuildContext context, int int) =>
+                            const Divider(height: 5),
+                        itemBuilder: (context, index) {
+                          if (controller.notifications.isEmpty) {
+                            return const Center(
+                              child: Text('No notifications'),
+                            );
+                          }
 
-                        final CustomNotification notification =
-                            controller.notifications[index];
-                        return _notificationCard(controller, notification);
-                      },
+                          final CustomNotification notification =
+                              controller.notifications[index];
+                          return _notificationCard(controller, notification);
+                        },
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         );
       },

@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:communal/backend/communities_backend.dart';
 import 'package:communal/backend/notifications_backend.dart';
 import 'package:communal/backend/realtime_backend.dart';
 import 'package:communal/backend/users_backend.dart';
@@ -13,8 +11,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class NotificationsController extends GetxController {
   final RxList<CustomNotification> notifications = <CustomNotification>[].obs;
   final RxBool loading = false.obs;
-
-  RealtimeChannel? subscription;
 
   StreamSubscription? streamSubscription;
 
@@ -31,12 +27,11 @@ class NotificationsController extends GetxController {
   }
 
   Future<void> realtimeListener(RealtimeMessage realtime) async {
-    if (realtime.eventType != PostgresChangeEvent.insert) return;
+    if (realtime.eventType != PostgresChangeEvent.insert ||
+        realtime.eventType != PostgresChangeEvent.update) return;
 
     if (realtime.table != 'notifications') return;
     if (realtime.new_row.isEmpty) return;
-
-    print(realtime.new_row);
 
     final BackendResponse response =
         await NotificationsBackend.getNotificationById(
@@ -90,15 +85,17 @@ class NotificationsController extends GetxController {
       if (indexOfNotification > 0) {
         if (value) {
           notifications[indexOfNotification].type.event = 'accepted';
-          notifications.refresh();
         } else {
           notifications.removeAt(indexOfNotification);
         }
+
+        notifications.refresh();
       }
     } else {
       Get.dialog(
         const CommonAlertDialog(
-            title: 'Could not accept invitation, server error.'),
+          title: 'Could not accept invitation, server error.',
+        ),
       );
     }
   }

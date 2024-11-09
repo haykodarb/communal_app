@@ -5,6 +5,7 @@ import 'package:communal/presentation/common/common_drawer/common_drawer_control
 import 'package:communal/routes.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:string_validator/string_validator.dart';
 
 class LoginController extends GetxController {
@@ -56,23 +57,25 @@ class LoginController extends GetxController {
     return null;
   }
 
-  Future<void> loginButtonCallback() async {
+  Future<bool> loginButtonCallback() async {
     if (formKey.currentState!.validate()) {
       loading.value = true;
       errorMessage.value = '';
 
-      final BackendResponse response = await LoginBackend.login(form: form.value);
+      final BackendResponse response =
+          await LoginBackend.login(form: form.value);
 
       loading.value = false;
 
       if (response.success) {
         errorMessage.value = '';
-        Get.put(CommonDrawerController());
-
-        Get.offAllNamed(RouteNames.bookListPage);
+        Get.put(CommonDrawerController(), permanent: true);
+        return true;
       } else {
         errorMessage.value = response.payload;
       }
     }
+
+    return false;
   }
 }

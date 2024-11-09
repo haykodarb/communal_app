@@ -12,6 +12,7 @@ import 'package:communal/models/realtime_message.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -24,9 +25,9 @@ class CommonDrawerController extends GetxController {
 
   StreamSubscription? realtimeSubscription;
 
-  void goToRoute(String routeName) {
+  void goToRoute(String routeName, BuildContext context) {
     if (Get.currentRoute != routeName) {
-      Get.offAllNamed(routeName);
+      context.go(routeName);
     }
   }
 
@@ -36,7 +37,8 @@ class CommonDrawerController extends GetxController {
 
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-    versionNumber.value = 'Version: ${packageInfo.version}+${packageInfo.buildNumber}';
+    versionNumber.value =
+        'Version: ${packageInfo.version}+${packageInfo.buildNumber}';
 
     await UsersBackend.updateCurrentUserProfile();
 
@@ -71,7 +73,7 @@ class CommonDrawerController extends GetxController {
             debounceTimer?.cancel();
 
             debounceTimer = Timer(
-              const Duration(milliseconds: 1000),
+              const Duration(milliseconds: 500),
               () async {
                 await getUnreadChats();
               },
@@ -119,18 +121,18 @@ class CommonDrawerController extends GetxController {
     }
   }
 
-  Future<void> changeThemeMode() async {
+  Future<void> changeThemeMode(BuildContext context) async {
     final ThemeMode newThemeMode =
-        Get.isDarkMode ? ThemeMode.light : ThemeMode.dark;
+        UserPreferences.isDarkMode(context) ? ThemeMode.light : ThemeMode.dark;
 
     Get.changeThemeMode(newThemeMode);
 
     UserPreferences.setSelectedThemeMode(newThemeMode);
   }
 
-  void handleLogout() {
+  void handleLogout(BuildContext context) {
     LoginBackend.logout();
     Get.deleteAll();
-    Get.offAllNamed(RouteNames.startPage);
+    context.go(RouteNames.startPage);
   }
 }

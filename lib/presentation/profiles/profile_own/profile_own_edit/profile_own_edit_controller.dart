@@ -1,12 +1,12 @@
 import 'dart:async';
-import 'dart:io';
+import 'dart:typed_data';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
+import 'package:communal/presentation/common/common_image_cropper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide debounce;
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:string_validator/string_validator.dart';
 
@@ -15,7 +15,7 @@ class ProfileOwnEditController extends GetxController {
   Rx<Profile> profileForm = Profile.empty().obs;
 
   final ImagePicker imagePicker = ImagePicker();
-  final Rxn<File> selectedFile = Rxn<File>();
+  final Rxn<Uint8List> selectedBytes = Rxn<Uint8List>();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -46,29 +46,17 @@ class ProfileOwnEditController extends GetxController {
 
     if (pickedImage == null) return;
 
-    CroppedFile? croppedFile = await ImageCropper().cropImage(
-      sourcePath: pickedImage.path,
-      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-      cropStyle: CropStyle.circle,
-      uiSettings: [
-        AndroidUiSettings(
-          toolbarTitle: 'Crop',
-          toolbarColor: Theme.of(Get.context!).colorScheme.surfaceContainer,
-          toolbarWidgetColor: Colors.white,
-          initAspectRatio: CropAspectRatioPreset.original,
-          lockAspectRatio: true,
-          hideBottomControls: true,
-        ),
-        IOSUiSettings(
-          title: 'Crop',
-        ),
-      ],
+    final Uint8List? croppedBytes = await Get.dialog<Uint8List?>(
+      CommonImageCropper(
+        image: Image.memory(await pickedImage.readAsBytes()),
+        aspectRatio: 1,
+      ),
     );
 
-    if (croppedFile == null) return;
+    if (croppedBytes == null) return;
 
-    selectedFile.value = File(croppedFile.path);
-    selectedFile.refresh();
+    selectedBytes.value = croppedBytes;
+    selectedBytes.refresh();
   }
 
   void onUsernameChanged(String value) {
@@ -159,7 +147,7 @@ class ProfileOwnEditController extends GetxController {
 
       final BackendResponse response = await UsersBackend.updateProfile(
         profileForm.value,
-        selectedFile.value == null ? null : File(selectedFile.value!.path),
+        selectedBytes.value,
       );
 
       loading.value = false;

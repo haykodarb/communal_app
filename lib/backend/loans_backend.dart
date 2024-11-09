@@ -1,7 +1,6 @@
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
-import 'package:communal/models/community.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/models/profile.dart';
 import 'package:get/get.dart';
@@ -121,7 +120,7 @@ class LoansBackend {
       final Map<String, dynamic> response = await client
           .from('loans')
           .select(
-            '*, communities(*), books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
+            '*, books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
           )
           .eq('id', id)
           .single();
@@ -142,7 +141,7 @@ class LoansBackend {
     final List<dynamic> response = await client
         .from('loans')
         .select(
-          '*, communities(*), books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
+          '*, books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
         )
         .match(
       {
@@ -178,18 +177,18 @@ class LoansBackend {
   /// If book is already loaned to another user, returns true and that loan.
   /// If book is not loaned and current user has already requested it, returns true and that loan.
   /// Else returns false and no payload.
-  static Future<BackendResponse> getCurrentLoanForBook(Book book) async {
+  static Future<BackendResponse> getCurrentLoanForBook(String bookId) async {
     final SupabaseClient client = Supabase.instance.client;
     final String userId = client.auth.currentUser!.id;
 
     final List<dynamic> response = await client
         .from('loans')
         .select(
-          '*, communities(*), books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
+          '*, books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
         )
         .match(
       {
-        'book': book.id,
+        'book': bookId,
         'returned': false,
       },
     ).or('loanee.eq.$userId, accepted.eq.true');
@@ -225,7 +224,7 @@ class LoansBackend {
       final String userId = UsersBackend.currentUserId;
 
       PostgrestFilterBuilder filter = client.from('loans').select(
-            '*, communities(*), books!inner(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
+            '*, books!inner(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
           );
 
       filter = filter.not('books', 'is', null);
@@ -275,7 +274,7 @@ class LoansBackend {
   }
 
   static Future<BackendResponse> getCompletedLoansForItem({
-    required Book book,
+    required String bookId,
   }) async {
     try {
       final SupabaseClient client = Supabase.instance.client;
@@ -283,9 +282,9 @@ class LoansBackend {
       final List<Map<String, dynamic>> response = await client
           .from('loans')
           .select(
-            '*, communities(*), books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
+            '*, books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
           )
-          .eq('book', book.id)
+          .eq('book', bookId)
           .eq('accepted', true)
           .not('review', 'is', null);
 
@@ -305,7 +304,7 @@ class LoansBackend {
       final List<Map<String, dynamic>> response = await client
           .from('loans')
           .select(
-            '*, communities(*), books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
+            '*, books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
           )
           .eq('accepted', true)
           .eq('loanee', user.id)
@@ -321,26 +320,27 @@ class LoansBackend {
     }
   }
 
-  static Future<BackendResponse> requestItemLoanInCommunity({
-    required Book book,
-    Community? community,
+  static Future<BackendResponse> requestBookLoan({
+    required String bookId,
   }) async {
     final SupabaseClient client = Supabase.instance.client;
 
     final String userId = client.auth.currentUser!.id;
 
     try {
+      print(userId);
+      print(bookId);
+
       final Map<String, dynamic> response = await client
           .from('loans')
           .insert(
             {
               'loanee': userId,
-              'book': book.id,
-              'community': community?.id,
+              'book': bookId,
             },
           )
           .select(
-              '*, communities(*), books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)')
+              '*, books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)')
           .single();
 
       return BackendResponse(
@@ -348,6 +348,8 @@ class LoansBackend {
         payload: Loan.fromMap(response),
       );
     } on PostgrestException catch (error) {
+      print(error);
+
       return BackendResponse(
         success: false,
         payload: error.message,

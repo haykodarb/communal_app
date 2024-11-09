@@ -4,7 +4,8 @@ import 'package:communal/models/realtime_message.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RealtimeBackend {
-  static final StreamController<RealtimeMessage> streamController = StreamController<RealtimeMessage>.broadcast();
+  static final StreamController<RealtimeMessage> streamController =
+      StreamController<RealtimeMessage>.broadcast();
 
   static Future<void> subscribeToDatabaseChanges() async {
     final SupabaseClient client = Supabase.instance.client;
@@ -20,6 +21,8 @@ class RealtimeBackend {
           event: PostgresChangeEvent.all,
           schema: 'public',
           callback: (PostgresChangePayload payload) {
+            print(payload);
+
             if (payload.newRecord.isNotEmpty || payload.oldRecord.isNotEmpty) {
               final RealtimeMessage realtimeMessage = RealtimeMessage(
                 table: payload.table,

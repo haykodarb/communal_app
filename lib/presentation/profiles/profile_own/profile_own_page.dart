@@ -8,12 +8,15 @@ import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/common/common_vertical_book_card.dart';
 import 'package:communal/presentation/profiles/profile_own/profile_own_controller.dart';
+import 'package:communal/responsive.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
+import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
 
@@ -189,43 +192,31 @@ class ProfileOwnPage extends StatelessWidget {
   }
 
   Widget _bookTab(ProfileOwnController controller) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 10, left: 10),
-      child: PagedMasonryGridView.count(
-        pagingController: PagingController.fromValue(
-          PagingState(itemList: controller.userBooks),
-          firstPageKey: 0,
-        ),
-        mainAxisSpacing: 5,
-        crossAxisSpacing: 5,
-        padding: const EdgeInsets.only(top: 10, bottom: 20),
-        crossAxisCount: 2,
-        physics: const NeverScrollableScrollPhysics(),
-        builderDelegate: PagedChildBuilderDelegate(
-          noItemsFoundIndicatorBuilder: (context) {
-            return const SizedBox(
-              height: 100,
-              child: Center(child: Text('No items found')),
-            );
-          },
-          itemBuilder: (context, item, index) {
-            final Book book = controller.userBooks[index];
-
-            return CommonKeepaliveWrapper(
-              child: InkWell(
-                onTap: () {
-                  Get.toNamed(
-                    RouteNames.bookOwnedPage,
-                    arguments: {'book': book},
-                  );
-                },
-                child: CommonVerticalBookCard(
-                  book: book,
-                ),
+    return PagedMasonryGridView.count(
+      pagingController: controller.booksPagingController,
+      mainAxisSpacing: 5,
+      crossAxisSpacing: 5,
+      padding: const EdgeInsets.only(top: 10, bottom: 20, right: 10, left: 10),
+      crossAxisCount: 2,
+      builderDelegate: PagedChildBuilderDelegate(
+        noItemsFoundIndicatorBuilder: (context) {
+          return const SizedBox(
+            height: 100,
+            child: Center(child: Text('No items found')),
+          );
+        },
+        itemBuilder: (context, Book item, index) {
+          return CommonKeepaliveWrapper(
+            child: InkWell(
+              onTap: () {
+                context.push('${RouteNames.myBooks}/${item.id}');
+              },
+              child: CommonVerticalBookCard(
+                book: item,
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -353,78 +344,77 @@ class ProfileOwnPage extends StatelessWidget {
     return GetBuilder(
       init: ProfileOwnController(),
       builder: (ProfileOwnController controller) {
-        return Scaffold(
-          extendBody: true,
-          appBar: AppBar(
-            title: const Text(
-              'My Profile',
-            ),
-            actions: [
-              IconButton(
-                onPressed: () => Get.toNamed(
-                  RouteNames.profileOwnEditPage,
-                  arguments: {
-                    'profile': UsersBackend.currentUserProfile.value,
+        return CommonResponsivePage(
+          child: Scaffold(
+            extendBody: true,
+            appBar: AppBar(
+              title: const Text(
+                'My Profile',
+              ),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    context.go(
+                      RouteNames.profileOwnPage + RouteNames.profileOwnEditPage,
+                    );
                   },
+                  iconSize: 24,
+                  icon: const Icon(Atlas.pencil),
                 ),
-                iconSize: 24,
-                icon: const Icon(Atlas.pencil),
-              ),
-            ],
-          ),
-          drawer: CommonDrawerWidget(),
-          body: DefaultTabController(
-            length: 2,
-            animationDuration: Duration.zero,
-            child: ScrollConfiguration(
-              behavior: const ScrollBehavior().copyWith(
-                physics: const ClampingScrollPhysics(),
-                overscroll: false,
-              ),
-              child: ExtendedNestedScrollView(
-                controller: controller.scrollController,
-                key: controller.nestedScrollViewKey,
-                physics: const NeverScrollableScrollPhysics(),
-                onlyOneScrollInBody: true,
-                headerSliverBuilder: (context, innerBoxIsScrolled) {
-                  return [
-                    SliverToBoxAdapter(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Obx(() => _avatarRow(
-                              UsersBackend.currentUserProfile.value)),
-                          const Divider(height: 10),
-                          Obx(
-                            () => Visibility(
-                              visible:
-                                  UsersBackend.currentUserProfile.value.bio !=
-                                      null,
-                              child:
-                                  _bio(UsersBackend.currentUserProfile.value),
+              ],
+            ),
+            drawer: Responsive.isMobile(context) ? CommonDrawerWidget() : null,
+            body: DefaultTabController(
+              length: 2,
+              animationDuration: Duration.zero,
+              child: ScrollConfiguration(
+                behavior: const ScrollBehavior().copyWith(
+                  physics: const ClampingScrollPhysics(),
+                  overscroll: false,
+                ),
+                child: ExtendedNestedScrollView(
+                  controller: controller.scrollController,
+                  key: controller.nestedScrollViewKey,
+                  onlyOneScrollInBody: true,
+                  headerSliverBuilder: (context, innerBoxIsScrolled) {
+                    return [
+                      SliverToBoxAdapter(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Obx(() => _avatarRow(
+                                UsersBackend.currentUserProfile.value)),
+                            const Divider(height: 10),
+                            Obx(
+                              () => Visibility(
+                                visible:
+                                    UsersBackend.currentUserProfile.value.bio !=
+                                        null,
+                                child:
+                                    _bio(UsersBackend.currentUserProfile.value),
+                              ),
                             ),
-                          ),
-                          const Divider(height: 10),
-                          _loanCount(controller),
-                          const Divider(height: 10),
-                        ],
+                            const Divider(height: 10),
+                            _loanCount(controller),
+                            const Divider(height: 10),
+                          ],
+                        ),
                       ),
-                    ),
-                    SliverAppBar(
-                      backgroundColor: Colors.transparent,
-                      forceMaterialTransparency: true,
-                      scrolledUnderElevation: 0,
-                      title: _tabBar(controller, innerBoxIsScrolled),
-                      titleSpacing: 0,
-                      toolbarHeight: 80,
-                      centerTitle: true,
-                      automaticallyImplyLeading: false,
-                      floating: true,
-                      pinned: true,
-                    ),
-                  ];
-                },
-                body: _tabBarView(controller),
+                      SliverAppBar(
+                        backgroundColor: Colors.transparent,
+                        forceMaterialTransparency: true,
+                        scrolledUnderElevation: 0,
+                        title: _tabBar(controller, innerBoxIsScrolled),
+                        titleSpacing: 0,
+                        toolbarHeight: 80,
+                        centerTitle: true,
+                        automaticallyImplyLeading: false,
+                        pinned: true,
+                      ),
+                    ];
+                  },
+                  body: _tabBarView(controller),
+                ),
               ),
             ),
           ),

@@ -57,13 +57,6 @@ class Loan {
         rejected_at = DateTime.tryParse(map['rejected_at'] ?? '')?.toLocal(),
         latest_date = DateTime.tryParse(map['latest_date'] ?? '')?.toLocal(),
         review = map['review'],
-        community = Community(
-          id: map['communities']['id'],
-          name: map['communities']['name'],
-          owner: map['communities']['owner'],
-	  user_count: map['communities']['user_count'],
-          image_path: map['communities']['image_path'],
-        ),
         book = map['books'] != null ? Book.fromMap(map['books']) : Book.empty(),
         owner = Profile.fromMap(map['owner_profile']),
         loanee = Profile.fromMap(map['loanee_profile']),

@@ -3,7 +3,9 @@ import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/routes.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class CommunityListController extends GetxController {
   final RxList<Community> communities = <Community>[].obs;
@@ -55,15 +57,9 @@ class CommunityListController extends GetxController {
     }
   }
 
-  Future<void> goToCommunitySpecific(Community community) async {
-    Get.toNamed(
-      RouteNames.communitySpecificPage,
-      arguments: {
-        'community': community,
-      },
-    )?.then(
-      (value) => fetchAllCommunities(),
-    );
+  Future<void> goToCommunitySpecific(
+      Community community, BuildContext context) async {
+    context.go('${RouteNames.communityListPage}/${community.id}');
   }
 
   Future<void> toggleCommunityPinnedValue(Community community) async {

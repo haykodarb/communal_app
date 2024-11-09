@@ -10,7 +10,12 @@ import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 
 class ProfileOtherController extends GetxController {
-  final Profile inheritedProfile = Get.arguments['user'];
+  ProfileOtherController({
+    required this.userId,
+  });
+
+  final String userId;
+
   final Rx<Profile> profile = Profile.empty().obs;
 
   RxBool loadingProfile = true.obs;
@@ -22,7 +27,8 @@ class ProfileOtherController extends GetxController {
   final ScrollController scrollController = ScrollController();
   final RxInt currentTabIndex = 0.obs;
 
-  final GlobalKey<ExtendedNestedScrollViewState> nestedScrollViewKey = GlobalKey<ExtendedNestedScrollViewState>();
+  final GlobalKey<ExtendedNestedScrollViewState> nestedScrollViewKey =
+      GlobalKey<ExtendedNestedScrollViewState>();
 
   void onTabTapped(int value) {
     if (value != currentTabIndex.value) {
@@ -36,7 +42,7 @@ class ProfileOtherController extends GetxController {
 
     loadingProfile.value = true;
 
-    final BackendResponse response = await UsersBackend.getUserProfile(inheritedProfile.id);
+    final BackendResponse response = await UsersBackend.getUserProfile(userId);
 
     if (response.success) {
       profile.value = response.payload;
@@ -56,7 +62,8 @@ class ProfileOtherController extends GetxController {
 
   Future<void> loadBooks() async {
     loadingBooks.value = true;
-    final BackendResponse response = await BooksBackend.getAllBooksForUser(userToQuery: profile.value.id);
+    final BackendResponse response =
+        await BooksBackend.getAllBooksForUser(userToQuery: profile.value.id);
     loadingBooks.value = false;
 
     if (response.success) {
@@ -67,7 +74,8 @@ class ProfileOtherController extends GetxController {
 
   Future<void> loadReviews() async {
     loadingReviews.value = true;
-    final BackendResponse response = await LoansBackend.getBooksReviewedByUser(profile.value);
+    final BackendResponse response =
+        await LoansBackend.getBooksReviewedByUser(profile.value);
     loadingReviews.value = false;
 
     if (response.success) {

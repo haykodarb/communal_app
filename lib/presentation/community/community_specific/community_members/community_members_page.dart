@@ -10,6 +10,7 @@ import 'package:communal/routes.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class CommunityMembersPage extends StatelessWidget {
   const CommunityMembersPage({super.key, required this.communityController});
@@ -31,111 +32,119 @@ class CommunityMembersPage extends StatelessWidget {
   }
 
   Widget _userElement(CommunityMembersController controller, Profile user) {
-    return Card(
-      child: InkWell(
-        onTap: user.id == UsersBackend.currentUserId
-            ? null
-            : () {
-                Get.toNamed(
-                  RouteNames.profileOtherPage,
-                  arguments: {
-                    'user': user,
-                  },
-                );
-              },
-        enableFeedback: false,
-        highlightColor: Colors.transparent,
-        splashColor: Colors.transparent,
-        child: SizedBox(
-          height: 60,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 15, right: 15),
-            child: Obx(
-              () => CommonLoadingBody(
-                loading: user.loading.value,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CommonCircularAvatar(
-                      profile: user,
-                      radius: 20,
-                      clickable: true,
+    return Builder(builder: (context) {
+      return Card(
+        child: InkWell(
+          onTap: user.id == UsersBackend.currentUserId
+              ? null
+              : () {
+                  context.push(
+                    RouteNames.profileOtherPage.replaceFirst(
+                      ':userId',
+                      user.id,
                     ),
-                    const VerticalDivider(width: 10),
-                    Expanded(
-                      child: Text(
-                        user.username,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w500,
+                  );
+                },
+          enableFeedback: false,
+          highlightColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          child: SizedBox(
+            height: 60,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 15, right: 15),
+              child: Obx(
+                () => CommonLoadingBody(
+                  loading: user.loading.value,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CommonCircularAvatar(
+                        profile: user,
+                        radius: 20,
+                        clickable: true,
+                      ),
+                      const VerticalDivider(width: 10),
+                      Expanded(
+                        child: Text(
+                          user.username,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
-                    ),
-                    Visibility(
-                      visible: user.is_admin,
-                      child: Builder(
+                      Visibility(
+                        visible: user.is_admin,
+                        child: Builder(
+                          builder: (context) {
+                            return Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                  20,
+                                ),
+                                border: Border.all(
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                              child: const Text('admin'),
+                            );
+                          },
+                        ),
+                      ),
+                      const VerticalDivider(width: 10),
+                      Builder(
                         builder: (context) {
-                          return Container(
-                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(
-                                20,
+                          if (user.id == UsersBackend.currentUserId) {
+                            return Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                  20,
+                                ),
+                                border: Border.all(
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
                               ),
-                              border: Border.all(
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                            ),
-                            child: const Text('admin'),
-                          );
+                              child: const Text('you'),
+                            );
+                          }
+
+                          if (communityController
+                              .community.isCurrentUserOwner) {
+                            return PopupMenuButton(
+                              itemBuilder: (context) {
+                                return <PopupMenuEntry>[
+                                  PopupMenuItem(
+                                    onTap: () => controller.changeUserAdmin(
+                                        user, !user.is_admin),
+                                    child: Text(user.is_admin
+                                        ? 'Remove as admin'
+                                        : 'Make admin'),
+                                  ),
+                                  PopupMenuItem(
+                                    onTap: () => controller.removeUser(user),
+                                    child: const Text('Remove'),
+                                  ),
+                                ];
+                              },
+                            );
+                          }
+
+                          return const SizedBox.shrink();
                         },
                       ),
-                    ),
-		    const VerticalDivider(width: 10),
-                    Builder(
-                      builder: (context) {
-                        if (user.id == UsersBackend.currentUserId) {
-                          return Container(
-                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(
-                                20,
-                              ),
-                              border: Border.all(
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                            ),
-                            child: const Text('you'),
-                          );
-                        }
-
-                        if (controller.community.isCurrentUserOwner) {
-                          return PopupMenuButton(
-                            itemBuilder: (context) {
-                              return <PopupMenuEntry>[
-                                PopupMenuItem(
-                                  onTap: () => controller.changeUserAdmin(user, !user.is_admin),
-                                  child: Text(user.is_admin ? 'Remove as admin' : 'Make admin'),
-                                ),
-                                PopupMenuItem(
-                                  onTap: () => controller.removeUser(user),
-                                  child: const Text('Remove'),
-                                ),
-                              ];
-                            },
-                          );
-                        }
-
-                        return const SizedBox.shrink();
-                      },
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   @override

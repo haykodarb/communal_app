@@ -34,7 +34,6 @@ class CommonTextField extends StatelessWidget {
       style: const TextStyle(fontSize: 14),
       minLines: minLines,
       maxLines: maxLines,
-      maxLength: maxLength,
       decoration: InputDecoration(
         counter: const SizedBox.shrink(),
         label: Text(label),

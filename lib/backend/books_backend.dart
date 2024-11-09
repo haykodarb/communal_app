@@ -39,7 +39,7 @@ class BooksBackend {
     return bytes;
   }
 
-  static Future<BackendResponse> updateBook(Book book, File? image) async {
+  static Future<BackendResponse> updateBook(Book book, Uint8List? image) async {
     try {
       final String userId = _client.auth.currentUser!.id;
       final String currentTime =
@@ -48,11 +48,11 @@ class BooksBackend {
       String fileName;
 
       if (image != null) {
-        final String imageExtension = image.path.split('.').last;
+        const String imageExtension = 'png';
 
         fileName = '/$userId/$currentTime.$imageExtension';
 
-        await _client.storage.from('book_covers').upload(
+        await _client.storage.from('book_covers').uploadBinary(
               fileName,
               image,
               retryAttempts: 5,
@@ -91,18 +91,21 @@ class BooksBackend {
     }
   }
 
-  static Future<BackendResponse> addBook(Book book, File image) async {
+  static Future<BackendResponse> addBook(
+    Book book,
+    Uint8List imageBytes,
+  ) async {
     try {
       final String userId = _client.auth.currentUser!.id;
       final String currentTime =
           DateTime.now().millisecondsSinceEpoch.toString();
-      final String imageExtension = image.path.split('.').last;
+      const String imageExtension = 'png';
 
       final String pathToUpload = '/$userId/$currentTime.$imageExtension';
 
-      await _client.storage.from('book_covers').upload(
+      await _client.storage.from('book_covers').uploadBinary(
             pathToUpload,
-            image,
+            imageBytes,
             retryAttempts: 5,
           );
 
@@ -241,7 +244,7 @@ class BooksBackend {
   }
 
   static Future<BackendResponse> getBooksInCommunity(
-    Community community,
+    String communityId,
     int index,
     String query,
   ) async {
@@ -250,7 +253,7 @@ class BooksBackend {
           .rpc(
             'get_books_community',
             params: {
-              'community_id': community.id,
+              'community_id': communityId,
               'offset_num': index,
               'limit_num': 10,
               'search_query': query,

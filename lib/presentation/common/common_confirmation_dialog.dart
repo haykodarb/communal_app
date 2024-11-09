@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class CommonConfirmationDialog extends StatelessWidget {
   const CommonConfirmationDialog({
@@ -22,6 +23,7 @@ class CommonConfirmationDialog extends StatelessWidget {
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Container(
+        width: 400,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: Theme.of(context).colorScheme.surface,
@@ -50,7 +52,7 @@ class CommonConfirmationDialog extends StatelessWidget {
                   width: 100,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: confirmCallback ?? () => Get.back(result: true),
+                    onPressed: confirmCallback ?? () => context.pop(true),
                     child: Text(confirmationText),
                   ),
                 ),
@@ -58,7 +60,7 @@ class CommonConfirmationDialog extends StatelessWidget {
                   width: 100,
                   height: 50,
                   child: OutlinedButton(
-                    onPressed: cancelCallback ?? () => Get.back(result: false),
+                    onPressed: cancelCallback ?? () => context.pop(false),
                     child: Text(cancelText),
                   ),
                 ),

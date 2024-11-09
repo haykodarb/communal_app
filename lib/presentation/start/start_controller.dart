@@ -4,12 +4,9 @@ import 'package:get/get.dart';
 import 'package:communal/routes.dart';
 
 class StartController extends GetxController {
-  void loginButtonCallback() {
-    Get.toNamed(RouteNames.loginPage);
-  }
-
   Future<void> changeThemeMode() async {
-    final ThemeMode newThemeMode = Get.isDarkMode ? ThemeMode.light : ThemeMode.dark;
+    final ThemeMode newThemeMode =
+        Get.isDarkMode ? ThemeMode.light : ThemeMode.dark;
 
     Get.changeThemeMode(newThemeMode);
 
@@ -22,9 +19,5 @@ class StartController extends GetxController {
 
     Get.updateLocale(value);
     UserPreferences.setSelectedLocale(value);
-  }
-
-  void registerButtonCallback() {
-    Get.toNamed(RouteNames.registerPage);
   }
 }

@@ -4,6 +4,7 @@ import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/communities_backend.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
+import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/community/community_specific/community_settings/community_settings_controller.dart';
 import 'package:flutter/material.dart';
@@ -199,36 +200,38 @@ class CommunitySettingsPage extends StatelessWidget {
     return GetBuilder(
       init: CommunitySettingsController(),
       builder: (controller) {
-        return Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            title: const Text('Settings'),
-          ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-            child: Form(
-              key: controller.formKey,
-              child: Column(
-                children: [
-                  _imageSelector(controller),
-                  const Divider(height: 20),
-                  CommonTextField(
-                    callback: controller.onNameChange,
-                    label: 'Name',
-                    initialValue: controller.community.name,
-                    validator: (value) => controller.stringValidator(value, 4),
-                  ),
-                  CommonTextField(
-                    callback: controller.onDescriptorChange,
-                    label: 'Description (Optional)',
-                    initialValue: controller.community.description,
-                    minLines: 5,
-                    maxLines: 10,
-                    validator: (value) => controller.stringValidator(value, 4),
-                  ),
-                  const Divider(height: 20),
-                  _bottomRowButtons(controller),
-                ],
+        return CommonResponsivePage(
+          child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            appBar: AppBar(
+              title: const Text('Settings'),
+            ),
+            body: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+              child: Form(
+                key: controller.formKey,
+                child: Column(
+                  children: [
+                    _imageSelector(controller),
+                    const Divider(height: 20),
+                    CommonTextField(
+                      callback: controller.onNameChange,
+                      label: 'Name',
+                      initialValue: controller.community.name,
+                      validator: (value) => controller.stringValidator(value, 4),
+                    ),
+                    CommonTextField(
+                      callback: controller.onDescriptorChange,
+                      label: 'Description (Optional)',
+                      initialValue: controller.community.description,
+                      minLines: 5,
+                      maxLines: 10,
+                      validator: (value) => controller.stringValidator(value, 4),
+                    ),
+                    const Divider(height: 20),
+                    _bottomRowButtons(controller),
+                  ],
+                ),
               ),
             ),
           ),
