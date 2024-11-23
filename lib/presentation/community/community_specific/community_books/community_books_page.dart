@@ -68,8 +68,11 @@ class CommunityBooksPage extends StatelessWidget {
                   return CommonKeepaliveWrapper(
                     child: InkWell(
                       onTap: () {
-                        context.go(
-                          '${RouteNames.communityListPage}/${communityController.communityId}/book/${item.id}',
+                        context.push(
+                          RouteNames.foreignBooksPage.replaceFirst(
+                            ':bookId',
+                            item.id,
+                          ),
                         );
                       },
                       child: CommonVerticalBookCard(

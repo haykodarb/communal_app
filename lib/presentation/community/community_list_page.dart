@@ -5,7 +5,6 @@ import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
-import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/community/community_list_controller.dart';
 import 'package:communal/responsive.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +12,6 @@ import 'package:get/get.dart';
 
 class CommunityListPage extends StatelessWidget {
   const CommunityListPage({super.key});
-
 
   Widget _communityCard(
     CommunityListController controller,
@@ -169,72 +167,64 @@ class CommunityListPage extends StatelessWidget {
     return GetBuilder(
       init: CommunityListController(),
       builder: (controller) {
-        return CommonResponsivePage(
-          child: Scaffold(
-            floatingActionButton: FloatingActionButton(
-              onPressed: controller.goToCommunityCreate,
-              child: const Icon(
-                Icons.add,
-                size: 35,
-              ),
+        return Scaffold(
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => controller.goToCommunityCreate(context),
+            child: const Icon(
+              Icons.add,
+              size: 35,
             ),
-            appBar: AppBar(
-              title: const Text('Communities'),
-            ),
-            drawer: Responsive.isMobile(context) ? CommonDrawerWidget() : null,
-            body: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Obx(
-                    () => CommonLoadingBody(
-                      loading: controller.loading.value,
-                      child: Obx(
-                        () {
-                          if (controller.communities.isNotEmpty) {
-                            return ListView.separated(
-                              addAutomaticKeepAlives: true,
-                              padding: const EdgeInsets.only(
-                                top: 10,
-                                right: 20,
-                                left: 20,
-                                bottom: 90,
-                              ),
-                              itemCount: controller.communities.length,
-                              separatorBuilder: (context, index) =>
-                                  const Divider(height: 10),
-                              itemBuilder: (context, index) {
-                                return CommonKeepaliveWrapper(
-                                  child: _communityCard(
-                                    controller,
-                                    controller.communities[index],
-                                  ),
-                                );
-                              },
-                            );
-                          } else {
-                            return const CustomScrollView(
-                              slivers: [
-                                SliverFillRemaining(
-                                  child: Center(
-                                    child: Text(
-                                      'You have not joined\nany communities yet.',
-                                      style: TextStyle(fontSize: 14),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
+          ),
+          appBar: AppBar(
+            title: const Text('Communities'),
+          ),
+          drawer:
+              Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Obx(
+                  () => CommonLoadingBody(
+                    loading: controller.loading.value,
+                    child: Obx(
+                      () {
+                        if (controller.communities.isNotEmpty) {
+                          return ListView.separated(
+                            addAutomaticKeepAlives: true,
+                            padding: const EdgeInsets.only(
+                              top: 10,
+                              right: 20,
+                              left: 20,
+                              bottom: 90,
+                            ),
+                            itemCount: controller.communities.length,
+                            separatorBuilder: (context, index) =>
+                                const Divider(height: 10),
+                            itemBuilder: (context, index) {
+                              return CommonKeepaliveWrapper(
+                                child: _communityCard(
+                                  controller,
+                                  controller.communities[index],
                                 ),
-                              ],
-                            );
-                          }
-                        },
-                      ),
+                              );
+                            },
+                          );
+                        } else {
+                          return const Center(
+                            child: Text(
+                              'You have not joined any communities yet.\nGet started by creating your own or asking someone for an invitation.',
+                              textAlign: TextAlign.center,
+                            ),
+                          );
+                        }
+                      },
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

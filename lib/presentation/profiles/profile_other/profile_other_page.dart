@@ -220,10 +220,10 @@ class ProfileOtherPage extends StatelessWidget {
               child: InkWell(
                 onTap: () {
                   context.push(
-                    RouteNames.profileOtherPage
-                            .replaceFirst(':userId', userId) +
-                        RouteNames.profileOtherBookPage
-                            .replaceFirst(':bookId', book.id),
+                    RouteNames.foreignBooksPage.replaceFirst(
+                      ':bookId',
+                      book.id,
+                    ),
                   );
                 },
                 child: CommonVerticalBookCard(
@@ -371,76 +371,72 @@ class ProfileOtherPage extends StatelessWidget {
     return GetBuilder(
       init: ProfileOtherController(userId: userId),
       builder: (ProfileOtherController controller) {
-        return CommonResponsivePage(
-          child: Scaffold(
-            extendBody: true,
-            appBar: AppBar(
-              title: const Text('Profile'),
-              actions: [
-                IconButton(
-                  onPressed: () => context.push(
-                    '${RouteNames.messagesPage}/${controller.profile.value.id}',
-                  ),
-                  iconSize: 24,
-                  icon: const Icon(Atlas.message),
+        return Scaffold(
+          extendBody: true,
+          appBar: AppBar(
+            title: const Text('Profile'),
+            actions: [
+              IconButton(
+                onPressed: () => context.push(
+                  '${RouteNames.messagesPage}/${controller.profile.value.id}',
                 ),
-              ],
-            ),
-            body: DefaultTabController(
-              length: 2,
-              animationDuration: Duration.zero,
-              child: ScrollConfiguration(
-                behavior: const ScrollBehavior().copyWith(
-                  physics: const ClampingScrollPhysics(),
-                  overscroll: false,
-                ),
-                child: Obx(
-                  () => CommonLoadingBody(
-                    loading: controller.loadingProfile.value,
-                    child: ExtendedNestedScrollView(
-                      controller: controller.scrollController,
-                      key: controller.nestedScrollViewKey,
-                      physics: const NeverScrollableScrollPhysics(),
-                      onlyOneScrollInBody: true,
-                      headerSliverBuilder: (context, innerBoxIsScrolled) {
-                        return [
-                          SliverToBoxAdapter(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Obx(
-                                  () => _avatarRow(controller.profile.value),
+                iconSize: 24,
+                icon: const Icon(Atlas.message),
+              ),
+            ],
+          ),
+          body: DefaultTabController(
+            length: 2,
+            animationDuration: Duration.zero,
+            child: ScrollConfiguration(
+              behavior: const ScrollBehavior().copyWith(
+                physics: const ClampingScrollPhysics(),
+                overscroll: false,
+              ),
+              child: Obx(
+                () => CommonLoadingBody(
+                  loading: controller.loadingProfile.value,
+                  child: ExtendedNestedScrollView(
+                    controller: controller.scrollController,
+                    key: controller.nestedScrollViewKey,
+                    onlyOneScrollInBody: true,
+                    headerSliverBuilder: (context, innerBoxIsScrolled) {
+                      return [
+                        SliverToBoxAdapter(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Obx(
+                                () => _avatarRow(controller.profile.value),
+                              ),
+                              const Divider(height: 10),
+                              Obx(
+                                () => Visibility(
+                                  visible: controller.profile.value.bio != null,
+                                  child: _bio(controller.profile.value),
                                 ),
-                                const Divider(height: 10),
-                                Obx(
-                                  () => Visibility(
-                                    visible:
-                                        controller.profile.value.bio != null,
-                                    child: _bio(controller.profile.value),
-                                  ),
-                                ),
-                                const Divider(height: 10),
-                                _loanCount(controller),
-                                const Divider(height: 10),
-                              ],
-                            ),
+                              ),
+                              const Divider(height: 10),
+                              // _loanCount(controller),
+                              const Divider(height: 10),
+                            ],
                           ),
-                          SliverAppBar(
-                            backgroundColor: Colors.transparent,
-                            forceMaterialTransparency: true,
-                            scrolledUnderElevation: 0,
-                            title: _tabBar(controller),
-                            titleSpacing: 0,
-                            toolbarHeight: 80,
-                            centerTitle: true,
-                            automaticallyImplyLeading: false,
-                            floating: true,
-                            pinned: true,
-                          ),
-                        ];
-                      },
-                      body: _tabBarView(controller),
-                    ),
+                        ),
+                        SliverAppBar(
+                          backgroundColor: Colors.transparent,
+                          forceMaterialTransparency: true,
+                          scrolledUnderElevation: 0,
+                          title: _tabBar(controller),
+                          titleSpacing: 0,
+                          toolbarHeight: 80,
+                          centerTitle: true,
+                          automaticallyImplyLeading: false,
+                          floating: true,
+                          pinned: true,
+                        ),
+                      ];
+                    },
+                    body: _tabBarView(controller),
                   ),
                 ),
               ),

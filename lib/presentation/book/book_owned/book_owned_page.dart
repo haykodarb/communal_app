@@ -76,7 +76,6 @@ class BookOwnedPage extends StatelessWidget {
                     CommonCircularAvatar(
                       profile: controller.book.value.owner,
                       radius: 20,
-                      clickable: true,
                     ),
                     const VerticalDivider(width: 10),
                     Text(
@@ -165,42 +164,84 @@ class BookOwnedPage extends StatelessWidget {
         return Center(
           child: Obx(
             () {
+              if (controller.loadingCarousel.value) {
+                return const CommonLoadingBody();
+              }
+
               bool ownerHasReview = controller.book.value.review != null &&
                   controller.book.value.review!.isNotEmpty;
 
-              if (controller.completedLoans.isEmpty && !ownerHasReview) {
+              final int reviewsCount =
+                  controller.completedLoans.length + (ownerHasReview ? 1 : 0);
+
+              if (reviewsCount == 0) {
                 return const Center(child: Text('No reviews.'));
               }
 
               return Column(
                 children: [
                   Expanded(
-                    child: PageView.builder(
-                      itemCount: controller.completedLoans.length +
-                          (ownerHasReview ? 1 : 0),
-                      scrollDirection: Axis.horizontal,
-                      onPageChanged: (index) {
-                        controller.carouselIndex.value = index;
-                      },
-                      itemBuilder: (context, index) {
-                        if (index == 0 && ownerHasReview) {
-                          return _ownerReviewCard(controller);
-                        }
+                    child: Row(
+                      children: [
+                        Obx(
+                          () {
+                            if (controller.carouselIndex.value == 0 ||
+                                reviewsCount <= 1) {
+                              return const SizedBox();
+                            }
 
-                        if (controller.loadingCarousel.value) {
-                          return SizedBox(
-                            height: 100,
-                            width: double.maxFinite,
-                            child: LoadingAnimationWidget.threeArchedCircle(
-                              color: Theme.of(context).colorScheme.primary,
-                              size: 30,
-                            ),
-                          );
-                        }
+                            return IconButton(
+                              onPressed: () {
+                                controller.reviewsPageController.previousPage(
+                                  duration: const Duration(milliseconds: 100),
+                                  curve: Curves.easeIn,
+                                );
+                              },
+                              icon: const Icon(Icons.chevron_left),
+                            );
+                          },
+                        ),
+                        Expanded(
+                          child: PageView.builder(
+                            itemCount: controller.completedLoans.length +
+                                (ownerHasReview ? 1 : 0),
+                            scrollDirection: Axis.horizontal,
+                            controller: controller.reviewsPageController,
+                            onPageChanged: (index) {
+                              controller.carouselIndex.value = index;
+                            },
+                            itemBuilder: (context, index) {
+                              if (index == 0 && ownerHasReview) {
+                                return _ownerReviewCard(controller);
+                              }
 
-                        return _reviewCard(
-                            controller, index - (ownerHasReview ? 1 : 0));
-                      },
+                              return _reviewCard(
+                                controller,
+                                index - (ownerHasReview ? 1 : 0),
+                              );
+                            },
+                          ),
+                        ),
+                        Obx(
+                          () {
+                            if (controller.carouselIndex.value ==
+                                    reviewsCount - 1 ||
+                                reviewsCount < 2) {
+                              return const SizedBox();
+                            }
+
+                            return IconButton(
+                              onPressed: () {
+                                controller.reviewsPageController.nextPage(
+                                  duration: const Duration(milliseconds: 100),
+                                  curve: Curves.easeIn,
+                                );
+                              },
+                              icon: const Icon(Icons.chevron_right),
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ),
                   Visibility(
@@ -296,165 +337,154 @@ class BookOwnedPage extends StatelessWidget {
     return GetBuilder(
       init: BookOwnedController(bookId: bookId, inheritedBook: inheritedBook),
       builder: (BookOwnedController controller) {
-        return CommonResponsivePage(
-          child: Obx(
-            () {
-              return CommonLoadingBody(
-                loading: controller.firstLoad.value,
-                child: Scaffold(
-                  appBar: AppBar(),
-                  body: DefaultTabController(
-                    length: 2,
-                    child: SafeArea(
-                      child: Stack(
+        return Obx(
+          () {
+            return CommonLoadingBody(
+              loading: controller.firstLoad.value,
+              child: Scaffold(
+                appBar: AppBar(),
+                body: SafeArea(
+                  child: Stack(
+                    children: [
+                      Column(
                         children: [
-                          Column(
-                            children: [
-                              const SizedBox(
-                                height: 350 / 2,
-                              ),
-                              Expanded(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .surfaceContainer,
-                                    borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(30),
-                                      topRight: Radius.circular(30),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                          const Expanded(
+                            child: SizedBox(),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: 325,
-                                  decoration: BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
-                                        offset: const Offset(2, 1),
-                                        blurRadius: 20,
-                                        spreadRadius: 12,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .surface,
-                                      ),
-                                    ],
-                                  ),
-                                  child: CommonBookCover(controller.book.value),
+                          Expanded(
+                            flex: 3,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainer,
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(30),
+                                  topRight: Radius.circular(30),
                                 ),
-                                const Divider(height: 20),
-                                Obx(() => _bookTitle(controller.book.value)),
-                                const Divider(height: 20),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color:
-                                        Theme.of(context).colorScheme.surface,
-                                    borderRadius: BorderRadius.circular(40),
-                                  ),
-                                  width: double.maxFinite,
-                                  height: 65,
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            'Owner',
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurfaceVariant,
-                                            ),
-                                          ),
-                                          FittedBox(
-                                            fit: BoxFit.fitWidth,
-                                            child: Text(
-                                              controller
-                                                  .book.value.owner.username,
-                                              style:
-                                                  const TextStyle(fontSize: 16),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            'Added',
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurfaceVariant,
-                                            ),
-                                          ),
-                                          Text(
-                                            DateFormat('dd/MM/yy',
-                                                    Get.locale?.languageCode)
-                                                .format(controller
-                                                    .book.value.created_at),
-                                            style:
-                                                const TextStyle(fontSize: 16),
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            'Status',
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurfaceVariant,
-                                            ),
-                                          ),
-                                          Text(
-                                            controller.book.value.loaned
-                                                ? 'Loaned'
-                                                : 'Available',
-                                            style:
-                                                const TextStyle(fontSize: 16),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const Divider(height: 20),
-                                Expanded(
-                                  child: _reviewsTab(controller),
-                                ),
-                                const Divider(height: 20),
-                                _buttonRow(controller),
-                                const Divider(height: 20),
-                              ],
+                              ),
                             ),
                           ),
                         ],
                       ),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          children: [
+                            Expanded(
+                              flex: 3,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      offset: const Offset(2, 1),
+                                      blurRadius: 20,
+                                      spreadRadius: 12,
+                                      color:
+                                          Theme.of(context).colorScheme.surface,
+                                    ),
+                                  ],
+                                ),
+                                child: CommonBookCover(controller.book.value),
+                              ),
+                            ),
+                            const Divider(height: 20),
+                            Obx(() => _bookTitle(controller.book.value)),
+                            const Divider(height: 20),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.surface,
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                              width: double.maxFinite,
+                              height: 65,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Owner',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurfaceVariant,
+                                        ),
+                                      ),
+                                      FittedBox(
+                                        fit: BoxFit.fitWidth,
+                                        child: Text(
+                                          controller.book.value.owner.username,
+                                          style: const TextStyle(fontSize: 16),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Added',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurfaceVariant,
+                                        ),
+                                      ),
+                                      Text(
+                                        DateFormat('dd/MM/yy',
+                                                Get.locale?.languageCode)
+                                            .format(controller
+                                                .book.value.created_at),
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Status',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurfaceVariant,
+                                        ),
+                                      ),
+                                      Text(
+                                        controller.book.value.loaned
+                                            ? 'Loaned'
+                                            : 'Available',
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Divider(height: 20),
+                            Expanded(
+                              flex: 2,
+                              child: _reviewsTab(controller),
+                            ),
+                            const Divider(height: 20),
+                            _buttonRow(controller),
+                            const Divider(height: 20),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         );
       },
     );

@@ -5,6 +5,7 @@ import 'package:communal/models/community.dart';
 import 'package:communal/presentation/common/common_image_cropper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CommunityCreateController extends GetxController {
@@ -27,11 +28,14 @@ class CommunityCreateController extends GetxController {
   }
 
   void onDescriptorChange(String value) {
-    communityForm.value.description = value;
-    communityForm.refresh();
+    communityForm.update(
+      (Community? val) {
+        val!.description = value;
+      },
+    );
   }
 
-  Future<void> takePicture(ImageSource source) async {
+  Future<void> takePicture(ImageSource source, BuildContext context) async {
     XFile? pickedImage = await imagePicker.pickImage(
       source: source,
       imageQuality: 100,
@@ -40,10 +44,14 @@ class CommunityCreateController extends GetxController {
     );
 
     if (pickedImage == null) return;
+    final Uint8List bytes = await pickedImage.readAsBytes();
 
-    final Uint8List? croppedBytes = await Get.dialog<Uint8List?>(
-      CommonImageCropper(
-        image: Image.memory(await pickedImage.readAsBytes()),
+    if (!context.mounted) return;
+
+    final Uint8List? croppedBytes = await showDialog<Uint8List?>(
+      context: context,
+      builder: (context) => CommonImageCropper(
+        image: Image.memory(bytes),
         aspectRatio: 2,
       ),
     );
@@ -67,7 +75,7 @@ class CommunityCreateController extends GetxController {
     return null;
   }
 
-  Future<void> onSubmit() async {
+  Future<void> onSubmit(BuildContext context) async {
     if (formKey.currentState!.validate()) {
       loading.value = true;
       errorMessage.value = '';
@@ -79,10 +87,8 @@ class CommunityCreateController extends GetxController {
 
       loading.value = false;
 
-      if (response.success) {
-        Get.back<dynamic>(
-          result: true,
-        );
+      if (response.success && context.mounted) {
+        context.pop(true);
       } else {
         errorMessage.value = 'Creating Community failed.';
       }

@@ -43,7 +43,7 @@ class BookEditController extends GetxController {
       if (response.success) {
         bookForm.value = response.payload;
       } else {
-        Get.back();
+        return;
       }
     }
 
@@ -52,7 +52,7 @@ class BookEditController extends GetxController {
     bookForm.refresh();
   }
 
-  Future<void> takePicture(ImageSource source) async {
+  Future<void> takePicture(ImageSource source, BuildContext context) async {
     XFile? pickedImage = await imagePicker.pickImage(
       source: source,
       imageQuality: 100,
@@ -62,13 +62,13 @@ class BookEditController extends GetxController {
     );
 
     if (pickedImage == null) return;
+    final Uint8List pickedBytes = await pickedImage.readAsBytes();
 
-    final Uint8List? croppedBytes = await Get.dialog<Uint8List?>(
-      CommonImageCropper(
-        image: Image.memory(await pickedImage.readAsBytes()),
-        aspectRatio: 3 / 4,
-      ),
-    );
+    if (!context.mounted) return;
+    final Uint8List? croppedBytes = await CommonImageCropper(
+      image: Image.memory(pickedBytes),
+      aspectRatio: 3 / 4,
+    ).open(context);
 
     if (croppedBytes == null || croppedBytes.isEmpty) return;
 
@@ -97,10 +97,10 @@ class BookEditController extends GetxController {
     );
   }
 
-  void onPublicChange(int? index) {
+  void onPublicChange() {
     bookForm.update(
       (Book? val) {
-        val!.public = index == 0;
+        val!.public = !val.public;
       },
     );
   }
@@ -121,12 +121,14 @@ class BookEditController extends GetxController {
     );
   }
 
-  String? stringValidator(String? value, int length) {
-    if (value == null || value.isEmpty) {
+  String? stringValidator(String? value, int length, bool optional) {
+    if ((value == null || value.isEmpty) && !optional) {
       return 'Please enter something.';
     }
 
-    if (value.length < length) {
+    if (optional && (value == null || value.isEmpty)) return null;
+
+    if (value != null && value.length < length) {
       return 'Must be at least $length characters long.';
     }
 
@@ -143,12 +145,14 @@ class BookEditController extends GetxController {
       loading.value = false;
 
       if (response.success) {
-        bookOwnedController?.book.value = bookForm.value;
+        bookOwnedController.book.value = bookForm.value;
         if (context.mounted) {
           context.pop();
         }
       } else {
-        Get.dialog(CommonAlertDialog(title: response.payload));
+        if (context.mounted) {
+          CommonAlertDialog(title: response.payload).open(context);
+        }
       }
     }
   }

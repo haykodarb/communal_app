@@ -4,14 +4,17 @@ import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
+import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
 import 'package:communal/presentation/common/common_image_cropper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide debounce;
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:string_validator/string_validator.dart';
 
 class ProfileOwnEditController extends GetxController {
-  final Profile inheritedProfile = Get.arguments['profile'];
+  final Profile inheritedProfile =
+      Get.find<CommonDrawerController>().currentUserProfile.value;
   Rx<Profile> profileForm = Profile.empty().obs;
 
   final ImagePicker imagePicker = ImagePicker();
@@ -35,7 +38,7 @@ class ProfileOwnEditController extends GetxController {
     addBio.value = inheritedProfile.bio != null;
   }
 
-  Future<void> takePicture(ImageSource source) async {
+  Future<void> takePicture(ImageSource source, BuildContext context) async {
     XFile? pickedImage = await imagePicker.pickImage(
       source: source,
       imageQuality: 80,
@@ -45,13 +48,13 @@ class ProfileOwnEditController extends GetxController {
     );
 
     if (pickedImage == null) return;
+    final Uint8List pickedBytes = await pickedImage.readAsBytes();
 
-    final Uint8List? croppedBytes = await Get.dialog<Uint8List?>(
-      CommonImageCropper(
-        image: Image.memory(await pickedImage.readAsBytes()),
-        aspectRatio: 1,
-      ),
-    );
+    if (!context.mounted) return;
+    final Uint8List? croppedBytes = await CommonImageCropper(
+      image: Image.memory(pickedBytes),
+      aspectRatio: 1,
+    ).open(context);
 
     if (croppedBytes == null) return;
 
@@ -67,7 +70,11 @@ class ProfileOwnEditController extends GetxController {
 
   void onBioChanged(String value) {
     profileForm.update((val) {
-      val!.bio = value;
+      if (value.isEmpty) {
+        val!.bio = null;
+      } else {
+        val!.bio = value;
+      }
     });
   }
 
@@ -135,15 +142,9 @@ class ProfileOwnEditController extends GetxController {
     return null;
   }
 
-  Future<void> onSubmit() async {
+  Future<void> onSubmit(BuildContext context) async {
     if (formKey.currentState!.validate()) {
       loading.value = true;
-
-      if (!addBio.value) {
-        profileForm.update((val) {
-          val!.bio = null;
-        });
-      }
 
       final BackendResponse response = await UsersBackend.updateProfile(
         profileForm.value,
@@ -153,11 +154,16 @@ class ProfileOwnEditController extends GetxController {
       loading.value = false;
 
       if (response.success) {
-        Get.back<Profile>(
-          result: response.payload,
-        );
-      } else {
-        Get.dialog(CommonAlertDialog(title: response.payload));
+        Get.find<CommonDrawerController>().currentUserProfile.value =
+            response.payload;
+      }
+
+      if (context.mounted) {
+        if (response.success) {
+          context.pop(response.payload);
+        } else {
+          CommonAlertDialog(title: response.payload).open(context);
+        }
       }
     }
   }

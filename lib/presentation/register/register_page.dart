@@ -21,6 +21,7 @@ class RegisterPage extends StatelessWidget {
             CommonTextField(
               validator: controller.emailValidator,
               callback: controller.onEmailChange,
+              submitCallback: (value) => controller.onSubmitButton(),
               label: 'email'.tr,
             ),
             const Divider(height: 5),
@@ -30,11 +31,13 @@ class RegisterPage extends StatelessWidget {
               duration: const Duration(milliseconds: 500),
               asyncValidator: controller.asyncUsernameValidator,
               syncValidator: controller.usernameValidator,
+              submitCallback: (value) => controller.onSubmitButton(),
             ),
             const Divider(height: 5),
             CommonPasswordField(
               validator: controller.passwordValidator,
               callback: controller.onPasswordChange,
+              submitCallback: (value) => controller.onSubmitButton(),
               label: 'password'.tr,
             ),
             const Divider(height: 5),
@@ -53,7 +56,7 @@ class RegisterPage extends StatelessWidget {
                   textAlign: TextAlign.right,
                 ),
                 onPressed: () {
-                  context.go(RouteNames.registerResendPage);
+                  context.push(RouteNames.registerResendPage);
                 },
               ),
             ),
@@ -120,7 +123,9 @@ class RegisterPage extends StatelessWidget {
                             const Divider(height: 100),
                             OutlinedButton(
                               onPressed: () {
-                                Get.offNamed(RouteNames.loginPage);
+                                context.go(
+                                  RouteNames.startPage + RouteNames.loginPage,
+                                );
                               },
                               child: const Text('Login'),
                             ),
@@ -133,7 +138,7 @@ class RegisterPage extends StatelessWidget {
                                 ),
                               ),
                               onPressed: () {
-                                context.go(RouteNames.registerResendPage);
+                                context.push(RouteNames.registerResendPage);
                               },
                             ),
                           ],
@@ -154,17 +159,24 @@ class RegisterPage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 50),
-                          child: Text(
-                            'create-account'.tr,
-                            textAlign: TextAlign.left,
-                            style: GoogleFonts.lora(
-                              fontSize: 40,
-                              height: 1.2,
-                              fontWeight: FontWeight.w700,
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                context.pop();
+                              },
+                              icon: const Icon(Icons.chevron_left_rounded),
+                              iconSize: 36,
                             ),
-                          ),
+                            Text(
+                              'create-account'.tr,
+                              textAlign: TextAlign.left,
+                              style: GoogleFonts.lora(
+                                fontSize: 40,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
                         ),
                         const Divider(height: 40),
                         _registerForm(controller),

@@ -5,6 +5,8 @@ import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/realtime_message.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
+import 'package:communal/presentation/common/common_confirmation_dialog.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -71,32 +73,41 @@ class NotificationsController extends GetxController {
     loading.value = false;
   }
 
-  Future<void> respondToInvitation(String membershipId, bool value) async {
+  Future<void> respondToInvitation(
+    String membershipId,
+    CustomNotification notification,
+    bool value,
+    BuildContext context,
+  ) async {
+    final bool accept = await CommonConfirmationDialog(
+      title: '${value ? 'Accept' : 'Reject'} this invitation?',
+    ).open(context);
+
+    if (!accept) return;
+    notification.loading.value = true;
+
     final BackendResponse response = await UsersBackend.respondToInvitation(
       membershipId,
       value,
     );
 
     if (response.success) {
-      final int indexOfNotification = notifications.indexWhere(
-        (element) => element.membership?.id == membershipId,
-      );
-
-      if (indexOfNotification > 0) {
-        if (value) {
-          notifications[indexOfNotification].type.event = 'accepted';
-        } else {
-          notifications.removeAt(indexOfNotification);
-        }
-
-        notifications.refresh();
+      if (value) {
+        notification.type.event = 'accepted';
+      } else {
+        notifications.removeWhere((element) => element.id == notification.id);
       }
+
+      notifications.refresh();
+
+      notification.loading.value = false;
     } else {
-      Get.dialog(
-        const CommonAlertDialog(
-          title: 'Could not accept invitation, server error.',
-        ),
-      );
+      notification.loading.value = false;
+      if (!context.mounted) return;
+
+      const CommonAlertDialog(
+        title: 'Could not accept invitation, server error.',
+      ).open(context);
     }
   }
 }

@@ -328,9 +328,6 @@ class LoansBackend {
     final String userId = client.auth.currentUser!.id;
 
     try {
-      print(userId);
-      print(bookId);
-
       final Map<String, dynamic> response = await client
           .from('loans')
           .insert(

@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:communal/backend/loans_backend.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_book_cover.dart';
@@ -6,7 +5,6 @@ import 'package:communal/presentation/common/common_drawer/common_drawer_widget.
 import 'package:communal/presentation/common/common_filter_bottomsheet.dart';
 import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
-import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/common/common_search_bar.dart';
 import 'package:communal/presentation/loans/loans_controller.dart';
 import 'package:communal/responsive.dart';
@@ -14,77 +12,11 @@ import 'package:communal/routes.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class LoansPage extends StatelessWidget {
   const LoansPage({super.key});
-
-  Widget _filterRow({
-    required String title,
-    required List<String> options,
-    required int selectedOption,
-    required void Function(int) onSelectedChange,
-  }) {
-    return Builder(
-      builder: (context) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const Divider(height: 10),
-            Wrap(
-              spacing: 5,
-              runSpacing: 5,
-              children: options.mapIndexed(
-                (index, string) {
-                  Color color = Theme.of(context).colorScheme.onSurfaceVariant;
-                  double borderWidth = 0.5;
-                  FontWeight fontWeight = FontWeight.w400;
-
-                  if (index == selectedOption) {
-                    color = Theme.of(context).colorScheme.primary;
-                    borderWidth = 1.5;
-                    fontWeight = FontWeight.w500;
-                  }
-
-                  return InkWell(
-                    onTap: () => onSelectedChange(index),
-                    highlightColor: Colors.transparent,
-                    overlayColor: WidgetStateColor.transparent,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 15),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(40),
-                        border: Border.all(
-                          width: borderWidth,
-                          color: color,
-                        ),
-                      ),
-                      child: Text(
-                        string,
-                        style: TextStyle(
-                          fontWeight: fontWeight,
-                          fontSize: 14,
-                          color: color,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ).toList(),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   Widget _bottomSheet(LoansController controller) {
     LoansFilterParams filterParams = controller.filterParams.value;
@@ -155,13 +87,9 @@ class LoansPage extends StatelessWidget {
         return InkWell(
           overlayColor: WidgetStateColor.transparent,
           highlightColor: Colors.transparent,
-          onTap: () => Get.toNamed(
-            RouteNames.loanInfoPage,
-            arguments: {
-              'loansController': controller,
-              'loan': loan,
-            },
-          ),
+          onTap: () {
+            context.push('${RouteNames.loansPage}/${loan.id}');
+          },
           child: Card(
             margin: EdgeInsets.zero,
             shape:
@@ -201,7 +129,7 @@ class LoansPage extends StatelessWidget {
                           children: [
                             Text(
                               loan.loanee.isCurrentUser
-                                  ? loan.owner.username
+                                  ? loan.book.owner.username
                                   : loan.loanee.username,
                               style: const TextStyle(
                                 fontSize: 12,
@@ -287,47 +215,57 @@ class LoansPage extends StatelessWidget {
       builder: (LoansController controller) {
         return DefaultTabController(
           length: 3,
-          child: CommonResponsivePage(
-            child: Scaffold(
-              appBar: AppBar(
-                title: const Text('Loans'),
-              ),
-              drawer:
-                  Responsive.isMobile(context) ? CommonDrawerWidget() : null,
-              body: ExtendedNestedScrollView(
-                floatHeaderSlivers: true,
-                headerSliverBuilder: (context, innerBoxIsScrolled) {
-                  return [
-                    SliverAppBar(
-                      title: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: CommonSearchBar(
-                          focusNode: FocusNode(),
-                          searchCallback: controller.onSearchTextChanged,
-                          filterCallback: () {
-                            showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              builder: (context) => _bottomSheet(controller),
-                            );
-                          },
-                        ),
+          child: Scaffold(
+            appBar: AppBar(
+              title: const Text('Loans'),
+            ),
+            drawer: Responsive.isMobile(context)
+                ? const CommonDrawerWidget()
+                : null,
+            body: ExtendedNestedScrollView(
+              floatHeaderSlivers: true,
+              headerSliverBuilder: (context, innerBoxIsScrolled) {
+                return [
+                  SliverAppBar(
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: CommonSearchBar(
+                        focusNode: FocusNode(),
+                        searchCallback: controller.onSearchTextChanged,
+                        filterCallback: () {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            builder: (context) => _bottomSheet(controller),
+                          );
+                        },
                       ),
-                      titleSpacing: 0,
-                      toolbarHeight: 55,
-                      centerTitle: true,
-                      automaticallyImplyLeading: false,
-                      floating: true,
                     ),
-                  ];
-                },
-                body: Obx(
-                  () => CommonLoadingBody(
-                    loading: controller.firstLoad.value,
-                    child: Obx(
-                      () => ListView.separated(
-                        padding: const EdgeInsets.only(
-                            top: 10, bottom: 10, left: 10, right: 10),
+                    titleSpacing: 0,
+                    toolbarHeight: 55,
+                    centerTitle: true,
+                    automaticallyImplyLeading: false,
+                    floating: true,
+                  ),
+                ];
+              },
+              body: Obx(
+                () => CommonLoadingBody(
+                  loading: controller.firstLoad.value,
+                  child: Obx(
+                    () {
+                      if (controller.loanList.isEmpty) {
+                        return Container(
+                          padding: const EdgeInsets.all(20),
+                          alignment: Alignment.center,
+                          child: const Text(
+                            'You have no outgoing or incoming loans.\nGet started by joining a community and requesting books from your peers.',
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      }
+                      return ListView.separated(
+                        padding: const EdgeInsets.all(10),
                         separatorBuilder: (context, index) =>
                             const Divider(height: 5),
                         shrinkWrap: true,
@@ -338,8 +276,8 @@ class LoansPage extends StatelessWidget {
                           return CommonKeepaliveWrapper(
                               child: _loanCard(loan, controller));
                         },
-                      ),
-                    ),
+                      );
+                    },
                   ),
                 ),
               ),

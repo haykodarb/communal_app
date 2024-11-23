@@ -123,7 +123,7 @@ class CommunityDiscussionsTopicMessagesController extends GetxController {
     }
   }
 
-  Future<void> onMessageSubmit() async {
+  Future<void> onMessageSubmit(BuildContext context) async {
     if (typedMessage.isEmpty) return;
 
     sending.value = true;
@@ -153,18 +153,18 @@ class CommunityDiscussionsTopicMessagesController extends GetxController {
     );
 
     if (response.success) {
-      final int index =
-          messages.indexWhere((element) => element.id == randomID);
+      final int index = messages.indexWhere(
+        (element) => element.id == randomID,
+      );
 
       messages[index] = response.payload;
     } else {
       messages.removeWhere((element) => element.id == randomID);
-
-      Get.dialog(
+      if (context.mounted) {
         CommonAlertDialog(
           title: 'Could not send message, error: ${response.payload}.',
-        ),
-      );
+        ).open(context);
+      }
     }
 
     typedMessage = '';

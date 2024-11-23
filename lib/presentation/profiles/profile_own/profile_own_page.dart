@@ -1,5 +1,4 @@
 import 'package:atlas_icons/atlas_icons.dart';
-import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/models/profile.dart';
@@ -8,7 +7,6 @@ import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
-import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/common/common_vertical_book_card.dart';
 import 'package:communal/presentation/profiles/profile_own/profile_own_controller.dart';
 import 'package:communal/responsive.dart';
@@ -202,7 +200,7 @@ class ProfileOwnPage extends StatelessWidget {
         noItemsFoundIndicatorBuilder: (context) {
           return const SizedBox(
             height: 100,
-            child: Center(child: Text('No items found')),
+            child: Center(child: Text('No books.')),
           );
         },
         itemBuilder: (context, Book item, index) {
@@ -224,73 +222,78 @@ class ProfileOwnPage extends StatelessWidget {
   Widget _reviewCard(Loan loan) {
     return Builder(
       builder: (context) {
-        return Card(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            loan.book.title,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              height: 1.2,
+        return InkWell(
+          onTap: () {
+            context.push('${RouteNames.loansPage}/${loan.id}');
+          },
+          child: Card(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              loan.book.title,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                height: 1.2,
+                              ),
                             ),
-                          ),
-                          const Divider(height: 5),
-                          Text(
-                            loan.book.author,
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400,
-                              height: 1.2,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
+                            const Divider(height: 5),
+                            Text(
+                              loan.book.author,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                                height: 1.2,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
+                              ),
                             ),
-                          ),
-                          const Divider(height: 5),
-                          Text(
-                            '${DateFormat('MMM d, y', Get.locale?.languageCode).format(loan.latest_date!).capitalizeFirst}',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400,
-                              fontStyle: FontStyle.italic,
-                              height: 1.2,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
+                            const Divider(height: 5),
+                            Text(
+                              '${DateFormat('MMM d, y', Get.locale?.languageCode).format(loan.latest_date!).capitalizeFirst}',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.italic,
+                                height: 1.2,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 100,
-                      child: CommonBookCover(loan.book),
-                    ),
-                  ],
-                ),
-                Text(
-                  loan.review!,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
+                      SizedBox(
+                        height: 100,
+                        child: CommonBookCover(loan.book),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                  Text(
+                    loan.review!,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -299,6 +302,12 @@ class ProfileOwnPage extends StatelessWidget {
   }
 
   Widget _reviewsTab(ProfileOwnController controller) {
+    if (controller.userReviews.isEmpty) {
+      return const Center(
+        child: Text('No reviews.'),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.only(right: 10, left: 10),
       child: ListView.separated(
@@ -344,77 +353,82 @@ class ProfileOwnPage extends StatelessWidget {
     return GetBuilder(
       init: ProfileOwnController(),
       builder: (ProfileOwnController controller) {
-        return CommonResponsivePage(
-          child: Scaffold(
-            extendBody: true,
-            appBar: AppBar(
-              title: const Text(
-                'My Profile',
-              ),
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    context.go(
-                      RouteNames.profileOwnPage + RouteNames.profileOwnEditPage,
-                    );
-                  },
-                  iconSize: 24,
-                  icon: const Icon(Atlas.pencil),
-                ),
-              ],
+        return Scaffold(
+          extendBody: true,
+          appBar: AppBar(
+            title: const Text(
+              'My Profile',
             ),
-            drawer: Responsive.isMobile(context) ? CommonDrawerWidget() : null,
-            body: DefaultTabController(
-              length: 2,
-              animationDuration: Duration.zero,
-              child: ScrollConfiguration(
-                behavior: const ScrollBehavior().copyWith(
-                  physics: const ClampingScrollPhysics(),
-                  overscroll: false,
-                ),
-                child: ExtendedNestedScrollView(
-                  controller: controller.scrollController,
-                  key: controller.nestedScrollViewKey,
-                  onlyOneScrollInBody: true,
-                  headerSliverBuilder: (context, innerBoxIsScrolled) {
-                    return [
-                      SliverToBoxAdapter(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Obx(() => _avatarRow(
-                                UsersBackend.currentUserProfile.value)),
-                            const Divider(height: 10),
-                            Obx(
-                              () => Visibility(
-                                visible:
-                                    UsersBackend.currentUserProfile.value.bio !=
-                                        null,
-                                child:
-                                    _bio(UsersBackend.currentUserProfile.value),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  context.push(
+                    RouteNames.profileOwnPage + RouteNames.profileOwnEditPage,
+                  );
+                },
+                iconSize: 24,
+                icon: const Icon(Atlas.pencil),
+              ),
+            ],
+          ),
+          drawer:
+              Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
+          body: DefaultTabController(
+            length: 2,
+            animationDuration: Duration.zero,
+            child: ScrollConfiguration(
+              behavior: const ScrollBehavior().copyWith(
+                physics: const ClampingScrollPhysics(),
+                overscroll: false,
+              ),
+              child: ExtendedNestedScrollView(
+                controller: controller.scrollController,
+                key: controller.nestedScrollViewKey,
+                onlyOneScrollInBody: true,
+                headerSliverBuilder: (context, innerBoxIsScrolled) {
+                  return [
+                    SliverToBoxAdapter(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Obx(
+                            () => _avatarRow(
+                              controller.commonDrawerController
+                                  .currentUserProfile.value,
+                            ),
+                          ),
+                          const Divider(height: 10),
+                          Obx(
+                            () => Visibility(
+                              visible: controller.commonDrawerController
+                                      .currentUserProfile.value.bio !=
+                                  null,
+                              child: _bio(
+                                controller.commonDrawerController
+                                    .currentUserProfile.value,
                               ),
                             ),
-                            const Divider(height: 10),
-                            _loanCount(controller),
-                            const Divider(height: 10),
-                          ],
-                        ),
+                          ),
+                          const Divider(height: 10),
+                          // _loanCount(controller),
+                          const Divider(height: 10),
+                        ],
                       ),
-                      SliverAppBar(
-                        backgroundColor: Colors.transparent,
-                        forceMaterialTransparency: true,
-                        scrolledUnderElevation: 0,
-                        title: _tabBar(controller, innerBoxIsScrolled),
-                        titleSpacing: 0,
-                        toolbarHeight: 80,
-                        centerTitle: true,
-                        automaticallyImplyLeading: false,
-                        pinned: true,
-                      ),
-                    ];
-                  },
-                  body: _tabBarView(controller),
-                ),
+                    ),
+                    SliverAppBar(
+                      backgroundColor: Colors.transparent,
+                      forceMaterialTransparency: true,
+                      scrolledUnderElevation: 0,
+                      title: _tabBar(controller, innerBoxIsScrolled),
+                      titleSpacing: 0,
+                      toolbarHeight: 80,
+                      centerTitle: true,
+                      automaticallyImplyLeading: false,
+                      pinned: true,
+                    ),
+                  ];
+                },
+                body: _tabBarView(controller),
               ),
             ),
           ),

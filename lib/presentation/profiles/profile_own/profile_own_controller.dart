@@ -4,6 +4,7 @@ import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/loan.dart';
+import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,6 +20,8 @@ class ProfileOwnController extends GetxController {
   final PagingController<int, Book> booksPagingController = PagingController(
     firstPageKey: 0,
   );
+
+  final CommonDrawerController commonDrawerController = Get.find();
 
   final GlobalKey<ExtendedNestedScrollViewState> nestedScrollViewKey =
       GlobalKey<ExtendedNestedScrollViewState>();
@@ -62,8 +65,11 @@ class ProfileOwnController extends GetxController {
 
   Future<void> loadReviews() async {
     loadingReviews.value = true;
+
     final BackendResponse response = await LoansBackend.getBooksReviewedByUser(
-        UsersBackend.currentUserProfile.value);
+      commonDrawerController.currentUserProfile.value,
+    );
+
     loadingReviews.value = false;
 
     if (response.success) {

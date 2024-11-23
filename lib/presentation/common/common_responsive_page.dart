@@ -3,7 +3,10 @@ import 'package:communal/responsive.dart';
 import 'package:flutter/material.dart';
 
 class CommonResponsivePage extends StatelessWidget {
-  const CommonResponsivePage({super.key, required this.child});
+  const CommonResponsivePage({
+    super.key,
+    required this.child,
+  });
 
   final Widget child;
 
@@ -13,7 +16,10 @@ class CommonResponsivePage extends StatelessWidget {
         Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.5);
 
     return Responsive(
-      mobile: child,
+      mobile: Scaffold(
+        drawer: const CommonDrawerWidget(),
+        body: child,
+      ),
       tablet: Scaffold(
         body: Row(
           children: [
@@ -25,7 +31,7 @@ class CommonResponsivePage extends StatelessWidget {
               width: 1,
               color: borderColor,
             ),
-            SizedBox(
+            const SizedBox(
               width: 300,
               child: CommonDrawerWidget(),
             ),
@@ -61,7 +67,7 @@ class CommonResponsivePage extends StatelessWidget {
               width: 1,
               color: borderColor,
             ),
-            Expanded(
+            const Expanded(
               flex: 2,
               child: CommonDrawerWidget(),
             ),

@@ -4,7 +4,6 @@ import 'package:communal/presentation/common/common_filter_bottomsheet.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/book/book_list_controller.dart';
-import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/common/common_search_bar.dart';
 import 'package:communal/responsive.dart';
 import 'package:communal/routes.dart';
@@ -14,7 +13,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 class BookListPage extends StatelessWidget {
-  BookListPage({super.key});
+  const BookListPage({super.key});
 
   Widget _bookCard(Book book) {
     return SizedBox(
@@ -172,86 +171,82 @@ class BookListPage extends StatelessWidget {
     return GetBuilder(
       init: BookListController(),
       builder: (BookListController controller) {
-        return CommonResponsivePage(
-          child: Scaffold(
-            drawer: Responsive.isMobile(context) ? CommonDrawerWidget() : null,
-            appBar: AppBar(
-              elevation: 10,
-              title: const Text('My Books'),
+        return Scaffold(
+          drawer:
+              Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
+          appBar: AppBar(
+            elevation: 10,
+            title: const Text('My Books'),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => controller.goToAddBookPage(context),
+            child: const Icon(
+              Icons.add,
+              size: 35,
             ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () => controller.goToAddBookPage(context),
-              child: const Icon(
-                Icons.add,
-                size: 35,
-              ),
-            ),
-            body: ExtendedNestedScrollView(
-              floatHeaderSlivers: true,
-              headerSliverBuilder: (context, innerBoxIsScrolled) {
-                return [
-                  SliverAppBar(
-                    title: _searchRow(controller),
-                    titleSpacing: 0,
-                    toolbarHeight: 55,
-                    centerTitle: true,
-                    automaticallyImplyLeading: false,
-                    floating: true,
-                  ),
-                ];
-              },
-              body: Align(
-                alignment: Alignment.topCenter,
-                child: Obx(
-                  () => CommonLoadingBody(
-                    loading: controller.loading.value,
-                    child: Obx(
-                      () {
-                        if (controller.userBooks.isEmpty) {
-                          return const Center(
-                            child: Text(
-                              'No books.',
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          );
-                        } else {
-                          return ListView.separated(
-                            itemCount: controller.userBooks.length,
-                            padding: const EdgeInsets.only(
-                                right: 10, left: 10, top: 5, bottom: 90),
-                            cacheExtent: 2000,
-                            separatorBuilder: (context, index) {
-                              return const SizedBox(height: 5);
-                            },
-                            itemBuilder: (context, index) {
-                              final Book book = controller.userBooks[index];
+          ),
+          body: ExtendedNestedScrollView(
+            floatHeaderSlivers: true,
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  title: _searchRow(controller),
+                  titleSpacing: 0,
+                  toolbarHeight: 55,
+                  centerTitle: true,
+                  automaticallyImplyLeading: false,
+                  floating: true,
+                ),
+              ];
+            },
+            body: Align(
+              alignment: Alignment.topCenter,
+              child: Obx(
+                () => CommonLoadingBody(
+                  loading: controller.loading.value,
+                  child: Obx(
+                    () {
+                      if (controller.userBooks.isEmpty) {
+                        return const Center(
+                          child: Text(
+                            'You haven\'t added any books yet. \nPress the plus button on the bottom right to get started.',
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      } else {
+                        return ListView.separated(
+                          itemCount: controller.userBooks.length,
+                          padding: const EdgeInsets.only(
+                              right: 10, left: 10, top: 5, bottom: 90),
+                          cacheExtent: 2000,
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(height: 5);
+                          },
+                          itemBuilder: (context, index) {
+                            final Book book = controller.userBooks[index];
 
-                              return InkWell(
-                                highlightColor: Colors.transparent,
-                                splashColor: Colors.transparent,
-                                onTap: () async {
-                                  if (controller.focusScope.hasFocus) {
-                                    controller.focusScope.unfocus();
-                                  }
+                            return InkWell(
+                              highlightColor: Colors.transparent,
+                              splashColor: Colors.transparent,
+                              onTap: () async {
+                                if (controller.focusScope.hasFocus) {
+                                  controller.focusScope.unfocus();
+                                }
 
-                                  context.go(
-                                    '${RouteNames.myBooks}/${book.id}',
-                                  );
+                                context.push(
+                                  '${RouteNames.myBooks}/${book.id}',
+                                );
 
-                                  if (controller.focusScope.hasFocus) {
-                                    controller.focusScope.unfocus();
-                                  }
-                                },
-                                child: _bookCard(book),
-                              );
-                            },
-                          );
-                        }
-                      },
-                    ),
+                                if (controller.focusScope.hasFocus) {
+                                  controller.focusScope.unfocus();
+                                }
+                              },
+                              child: _bookCard(book),
+                            );
+                          },
+                        );
+                      }
+                    },
                   ),
                 ),
               ),

@@ -4,7 +4,9 @@ import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/presentation/common/common_confirmation_dialog.dart';
 import 'package:communal/presentation/loans/loans_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class LoanInfoController extends GetxController {
   LoanInfoController({
@@ -29,8 +31,9 @@ class LoanInfoController extends GetxController {
 
   @override
   Future<void> onInit() async {
+    loadingPage.value = true;
     if (Get.isRegistered<LoansController>()) {
-      loansController = Get.find();
+      loansController = Get.find<LoansController>();
     }
 
     if (loansController != null) {
@@ -44,8 +47,6 @@ class LoanInfoController extends GetxController {
       newReview = inheritedLoan!.review;
       loan.refresh();
     } else {
-      loadingPage.value = true;
-
       final BackendResponse response = await LoansBackend.getLoanById(loanId);
 
       if (response.success) {
@@ -53,10 +54,9 @@ class LoanInfoController extends GetxController {
         newReview = loan.value.review;
         loan.refresh();
       }
-
-      loadingPage.value = false;
     }
 
+    loadingPage.value = false;
     super.onInit();
   }
 
@@ -64,14 +64,12 @@ class LoanInfoController extends GetxController {
     editing.value = !editing.value;
   }
 
-  Future<void> withdrawLoanRequest() async {
-    final bool? confirm = await Get.dialog(
-      const CommonConfirmationDialog(
-        title: 'Withdraw your request for this book?',
-      ),
-    );
+  Future<void> withdrawLoanRequest(BuildContext context) async {
+    final bool confirm = await const CommonConfirmationDialog(
+      title: 'Withdraw your request for this book?',
+    ).open(context);
 
-    if (confirm != null && confirm) {
+    if (confirm) {
       loading.value = true;
 
       final BackendResponse response =
@@ -80,23 +78,22 @@ class LoanInfoController extends GetxController {
       if (response.success) {
         loansController?.removeItemById(inheritedLoan!.id);
 
-        Get.back();
+        if (!context.mounted) return;
+        context.pop();
       } else {
-        Get.dialog(
-          CommonAlertDialog(title: response.payload),
-        );
+        if (context.mounted) {
+          CommonAlertDialog(title: response.payload).open(context);
+        }
       }
     }
   }
 
-  Future<void> acceptLoanRequest() async {
-    final bool? confirm = await Get.dialog(
-      const CommonConfirmationDialog(
-        title: 'Accept this loan?',
-      ),
-    );
+  Future<void> acceptLoanRequest(BuildContext context) async {
+    final bool confirm = await const CommonConfirmationDialog(
+      title: 'Accept this loan?',
+    ).open(context);
 
-    if (confirm != null && confirm) {
+    if (confirm) {
       loading.value = true;
 
       final BackendResponse response =
@@ -113,21 +110,19 @@ class LoanInfoController extends GetxController {
         inheritedLoan?.accepted_at = DateTime.now();
         loansController?.loanList.refresh();
       } else {
-        Get.dialog(
-          CommonAlertDialog(title: response.payload),
-        );
+        if (context.mounted) {
+          CommonAlertDialog(title: response.payload).open(context);
+        }
       }
     }
   }
 
-  Future<void> rejectLoanRequest() async {
-    final bool? confirm = await Get.dialog(
-      const CommonConfirmationDialog(
-        title: 'Reject this loan?',
-      ),
-    );
+  Future<void> rejectLoanRequest(BuildContext context) async {
+    final bool confirm = await const CommonConfirmationDialog(
+      title: 'Reject this loan?',
+    ).open(context);
 
-    if (confirm != null && confirm) {
+    if (confirm) {
       loading.value = true;
 
       final BackendResponse response =
@@ -139,25 +134,24 @@ class LoanInfoController extends GetxController {
         );
       }
 
-      if (!response.success) {
-        Get.dialog(
-          const CommonAlertDialog(
-              title: 'Could not reject this loan, please try again.'),
-        );
+      if (!response.success && context.mounted) {
+        const CommonAlertDialog(
+          title: 'Could not reject this loan, please try again.',
+        ).open(context);
       }
 
-      Get.back();
+      if (context.mounted) {
+        context.pop();
+      }
     }
   }
 
-  Future<void> markLoanReturned() async {
-    final bool? confirm = await Get.dialog(
-      const CommonConfirmationDialog(
-        title: 'Mark this book as returned?',
-      ),
-    );
+  Future<void> markLoanReturned(BuildContext context) async {
+    final bool confirm = await const CommonConfirmationDialog(
+      title: 'Mark this book as returned?',
+    ).open(context);
 
-    if (confirm != null && confirm) {
+    if (confirm) {
       loading.value = true;
 
       final BackendResponse response =
@@ -172,10 +166,11 @@ class LoanInfoController extends GetxController {
           (element) => element.id == inheritedLoan?.id,
         );
       } else {
-        Get.dialog(
+        if (context.mounted) {
           const CommonAlertDialog(
-              title: 'Could not mark book as returned, please try again.'),
-        );
+            title: 'Could not mark book as returned, please try again.',
+          ).open(context);
+        }
       }
 
       loading.value = false;

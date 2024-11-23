@@ -2,7 +2,6 @@ import 'package:communal/backend/realtime_backend.dart';
 import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/dark_theme.dart';
 import 'package:communal/localization.dart';
-import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -13,7 +12,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,11 +40,6 @@ void main() async {
 
   GoRouter.optionURLReflectsImperativeAPIs = true;
 
-  if (Supabase.instance.client.auth.currentUser != null) {
-    RealtimeBackend.subscribeToDatabaseChanges();
-    Get.put(CommonDrawerController(), permanent: true);
-  }
-
   runApp(
     MyApp(
       themeMode: await UserPreferences.getSelectedThemeMode(),
@@ -64,9 +57,18 @@ class MyApp extends StatelessWidget {
 
   final ThemeMode themeMode;
   final Locale locale;
+
   final GoRouter router = GoRouter(
     debugLogDiagnostics: true,
+    navigatorKey: GlobalKey<NavigatorState>(),
     routes: routes,
+    onException: (_, GoRouterState state, GoRouter router) {
+      if (Supabase.instance.client.auth.currentUser != null) {
+        router.go(RouteNames.communityListPage);
+      } else {
+        router.go(RouteNames.startPage);
+      }
+    },
     initialLocation: Supabase.instance.client.auth.currentUser == null
         ? RouteNames.startPage
         : RouteNames.communityListPage,

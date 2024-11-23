@@ -121,13 +121,13 @@ class CommunityDiscussionsController extends GetxController {
 
   Future<void> goToTopicMessages(
       DiscussionTopic topic, BuildContext context) async {
-    context.go(
+    context.push(
       '${RouteNames.communityListPage}/$communityId/discussions/${topic.id}',
     );
   }
 
   Future<void> goToDiscussionsTopicCreate(BuildContext context) async {
-    context.go(
+    context.push(
       '${RouteNames.communityListPage}/$communityId/discussions/create',
     );
   }

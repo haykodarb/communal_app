@@ -1,11 +1,15 @@
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/book/book_create/book_create_page.dart';
 import 'package:communal/presentation/book/book_edit/book_edit_page.dart';
+import 'package:communal/presentation/book/book_foreign/book_foreign_page.dart';
+import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
+import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/community/community_create/community_create_page.dart';
+import 'package:communal/presentation/community/community_invite/community_invite_page.dart';
 import 'package:communal/presentation/community/community_list_page.dart';
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_topic_create/community_discussions_topic_create_page.dart';
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_topic_messages/community_discussions_topic_messages_page.dart';
-import 'package:communal/presentation/community/community_specific/community_specific_book/community_specific_book_page.dart';
+import 'package:communal/presentation/community/community_specific/community_settings/community_settings_page.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_page.dart';
 import 'package:communal/presentation/loans/loan_info/loan_info_page.dart';
 import 'package:communal/presentation/loans/loans_page.dart';
@@ -16,13 +20,17 @@ import 'package:communal/presentation/messages/messages_page.dart';
 import 'package:communal/presentation/messages/messages_specific/messages_specific_page.dart';
 import 'package:communal/presentation/notifications/notifications_page.dart';
 import 'package:communal/presentation/profiles/profile_other/profile_other_page.dart';
+import 'package:communal/presentation/profiles/profile_own/profile_own_edit/profile_own_edit_page.dart';
 import 'package:communal/presentation/profiles/profile_own/profile_own_page.dart';
 import 'package:communal/presentation/register/register_page.dart';
 import 'package:communal/presentation/start/start_page.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RouteNames {
-  static const String startPage = '/';
+  static const String startPage = '/auth';
 
   static const String loginPage = '/login';
   static const String loginRecoveryPage = '/login/recovery';
@@ -34,19 +42,19 @@ class RouteNames {
   static const String profileOwnEditPage = '/edit';
 
   static const String profileOtherPage = '/profile/:userId';
-  static const String profileOtherBookPage = '/book/:bookId';
 
   static const String myBooks = '/my-books';
   static const String bookCreatePage = '/create';
   static const String bookOwnedPage = '/:bookId';
   static const String bookEditPage = '/edit';
 
+  static const String foreignBooksPage = '/book/:bookId';
+
   static const String communityListPage = '/communities';
   static const String communityCreatePage = '/create';
   static const String communitySpecificPage = '/:communityId';
   static const String communitySettingsPage = '/settings';
-  static const String communitySpecificBookPage = '/book/:bookId';
-  static const String communityInvitePage = '/invite';
+  static const String communityInvitePage = '/members/invite';
   static const String communityDiscussionsTopicCreate = '/discussions/create';
   static const String communityDiscussionsTopic = '/discussions/:topicId';
 
@@ -61,8 +69,12 @@ class RouteNames {
   static const String notificationsPage = '/notifications';
 }
 
+final GlobalKey<NavigatorState> _shellNavigatorKey =
+    GlobalKey<NavigatorState>();
+
 final GoRoute _myBooksRoutes = GoRoute(
   path: RouteNames.myBooks,
+  parentNavigatorKey: _shellNavigatorKey,
   pageBuilder: (context, state) {
     return NoTransitionPage(
       child: BookListPage(),
@@ -71,12 +83,14 @@ final GoRoute _myBooksRoutes = GoRoute(
   routes: [
     GoRoute(
       path: RouteNames.bookCreatePage,
+      parentNavigatorKey: _shellNavigatorKey,
       pageBuilder: (context, state) => const NoTransitionPage(
         child: BookCreatePage(),
       ),
     ),
     GoRoute(
       path: RouteNames.bookOwnedPage,
+      parentNavigatorKey: _shellNavigatorKey,
       pageBuilder: (context, state) {
         return NoTransitionPage(
           child: BookOwnedPage(
@@ -87,6 +101,7 @@ final GoRoute _myBooksRoutes = GoRoute(
       routes: [
         GoRoute(
           path: RouteNames.bookEditPage,
+          parentNavigatorKey: _shellNavigatorKey,
           pageBuilder: (context, state) {
             return NoTransitionPage(
               child: BookEditPage(
@@ -102,33 +117,42 @@ final GoRoute _myBooksRoutes = GoRoute(
 
 final GoRoute _startRoutes = GoRoute(
   path: RouteNames.startPage,
-  builder: (context, state) => const StartPage(),
+  pageBuilder: (context, state) => const NoTransitionPage(
+    child: StartPage(),
+  ),
   routes: [
     GoRoute(
       path: RouteNames.loginPage,
-      builder: (context, state) => const LoginPage(),
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: LoginPage(),
+      ),
     ),
     GoRoute(
       path: RouteNames.registerPage,
-      builder: (context, state) => const RegisterPage(),
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: RegisterPage(),
+      ),
     ),
   ],
 );
 
 final GoRoute _communityRoutes = GoRoute(
   path: RouteNames.communityListPage,
+  parentNavigatorKey: _shellNavigatorKey,
   pageBuilder: (context, state) => const NoTransitionPage(
     child: CommunityListPage(),
   ),
   routes: [
     GoRoute(
       path: RouteNames.communityCreatePage,
+      parentNavigatorKey: _shellNavigatorKey,
       pageBuilder: (context, state) => const NoTransitionPage(
         child: CommunityCreatePage(),
       ),
     ),
     GoRoute(
       path: RouteNames.communitySpecificPage,
+      parentNavigatorKey: _shellNavigatorKey,
       pageBuilder: (context, state) {
         return NoTransitionPage(
           child: CommunitySpecificPage(
@@ -138,17 +162,8 @@ final GoRoute _communityRoutes = GoRoute(
       },
       routes: [
         GoRoute(
-          path: RouteNames.communitySpecificBookPage,
-          pageBuilder: (context, state) {
-            return NoTransitionPage(
-              child: CommunitySpecificBookPage(
-                bookId: state.pathParameters['bookId']!,
-              ),
-            );
-          },
-        ),
-        GoRoute(
           path: RouteNames.communityDiscussionsTopicCreate,
+          parentNavigatorKey: _shellNavigatorKey,
           pageBuilder: (context, state) {
             return NoTransitionPage(
               child: CommunityDiscussionsTopicCreatePage(
@@ -159,6 +174,7 @@ final GoRoute _communityRoutes = GoRoute(
         ),
         GoRoute(
           path: RouteNames.communityDiscussionsTopic,
+          parentNavigatorKey: _shellNavigatorKey,
           pageBuilder: (context, state) {
             return NoTransitionPage(
               child: CommunityDiscussionsTopicMessagesPage(
@@ -167,6 +183,22 @@ final GoRoute _communityRoutes = GoRoute(
             );
           },
         ),
+        GoRoute(
+          path: RouteNames.communitySettingsPage,
+          parentNavigatorKey: _shellNavigatorKey,
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: CommunitySettingsPage(),
+          ),
+        ),
+        GoRoute(
+          path: RouteNames.communityInvitePage,
+          parentNavigatorKey: _shellNavigatorKey,
+          pageBuilder: (context, state) => NoTransitionPage(
+            child: CommunityInvitePage(
+              communityId: state.pathParameters['communityId']!,
+            ),
+          ),
+        ),
       ],
     ),
   ],
@@ -174,12 +206,14 @@ final GoRoute _communityRoutes = GoRoute(
 
 final GoRoute _messagesRoutes = GoRoute(
   path: RouteNames.messagesPage,
+  parentNavigatorKey: _shellNavigatorKey,
   pageBuilder: (context, state) => const NoTransitionPage(
     child: MessagesPage(),
   ),
   routes: [
     GoRoute(
       path: RouteNames.messagesSpecificPage,
+      parentNavigatorKey: _shellNavigatorKey,
       pageBuilder: (context, state) {
         return NoTransitionPage(
           child: MessagesSpecificPage(
@@ -194,6 +228,7 @@ final GoRoute _messagesRoutes = GoRoute(
 
 final GoRoute _profilesRoutes = GoRoute(
   path: RouteNames.profileOtherPage,
+  parentNavigatorKey: _shellNavigatorKey,
   pageBuilder: (context, state) {
     return NoTransitionPage(
       child: ProfileOtherPage(
@@ -201,57 +236,97 @@ final GoRoute _profilesRoutes = GoRoute(
       ),
     );
   },
-  routes: [
-    GoRoute(
-      path: RouteNames.profileOtherBookPage,
-      pageBuilder: (context, state) {
-        return NoTransitionPage(
-          child: CommunitySpecificBookPage(
-            bookId: state.pathParameters['bookId']!,
-          ),
-        );
-      },
-    ),
-  ],
 );
 
 final GoRoute _notificationsRoutes = GoRoute(
   path: RouteNames.notificationsPage,
+  parentNavigatorKey: _shellNavigatorKey,
   pageBuilder: (context, state) => const NoTransitionPage(
     child: NotificationsPage(),
   ),
 );
 
-final GoRoute _loansRoutes = GoRoute(
-    path: RouteNames.loansPage,
-    pageBuilder: (context, state) => const NoTransitionPage(
-          child: LoansPage(),
-        ),
-    routes: [
-      GoRoute(
-        path: RouteNames.loanInfoPage,
-        pageBuilder: (context, state) {
-          return NoTransitionPage(
-            child: LoanInfoPage(
-              loanId: state.pathParameters['loanId']!,
-            ),
-          );
-        },
-      )
-    ]);
+final GoRoute _foreignBookPage = GoRoute(
+  path: RouteNames.foreignBooksPage,
+  parentNavigatorKey: _shellNavigatorKey,
+  pageBuilder: (context, state) {
+    return NoTransitionPage(
+      child: BookForeignPage(
+        bookId: state.pathParameters['bookId']!,
+      ),
+    );
+  },
+);
 
-final List<GoRoute> routes = <GoRoute>[
-  GoRoute(
-    path: RouteNames.profileOwnPage,
-    pageBuilder: (context, state) => const NoTransitionPage(
-      child: ProfileOwnPage(),
-    ),
+final GoRoute _loansRoutes = GoRoute(
+  path: RouteNames.loansPage,
+  parentNavigatorKey: _shellNavigatorKey,
+  pageBuilder: (context, state) => const NoTransitionPage(
+    child: LoansPage(),
   ),
-  _loansRoutes,
-  _communityRoutes,
-  _profilesRoutes,
-  _myBooksRoutes,
+  routes: [
+    GoRoute(
+      path: RouteNames.loanInfoPage,
+      parentNavigatorKey: _shellNavigatorKey,
+      pageBuilder: (context, state) {
+        return NoTransitionPage(
+          child: LoanInfoPage(
+            loanId: state.pathParameters['loanId']!,
+          ),
+        );
+      },
+    )
+  ],
+);
+
+final GoRoute _myProfileRoutes = GoRoute(
+  path: RouteNames.profileOwnPage,
+  parentNavigatorKey: _shellNavigatorKey,
+  pageBuilder: (context, state) => const NoTransitionPage(
+    child: ProfileOwnPage(),
+  ),
+  routes: [
+    GoRoute(
+      path: RouteNames.profileOwnEditPage,
+      parentNavigatorKey: _shellNavigatorKey,
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: ProfileOwnEditPage(),
+      ),
+    ),
+  ],
+);
+
+final List<RouteBase> routes = <RouteBase>[
   _startRoutes,
-  _messagesRoutes,
-  _notificationsRoutes,
+  ShellRoute(
+    navigatorKey: _shellNavigatorKey,
+    redirect: (context, state) {
+      if (Supabase.instance.client.auth.currentUser == null) {
+        return RouteNames.startPage;
+      }
+
+      return null;
+    },
+    builder: (context, state, child) {
+      print(state.matchedLocation);
+      if (!Get.isRegistered<CommonDrawerController>()) {
+        Get.put(
+          CommonDrawerController(initialRoute: state.matchedLocation),
+          permanent: true,
+        );
+      }
+
+      return CommonResponsivePage(child: child);
+    },
+    routes: [
+      _loansRoutes,
+      _communityRoutes,
+      _myProfileRoutes,
+      _profilesRoutes,
+      _myBooksRoutes,
+      _messagesRoutes,
+      _notificationsRoutes,
+      _foreignBookPage,
+    ],
+  ),
 ];

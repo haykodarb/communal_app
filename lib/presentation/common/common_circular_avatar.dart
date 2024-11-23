@@ -4,7 +4,7 @@ import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class CommonCircularAvatar extends StatelessWidget {
   const CommonCircularAvatar({
@@ -70,6 +70,8 @@ class CommonCircularAvatar extends StatelessWidget {
   }
 
   Widget _iconAvatar() {
+    if (profile.id.isEmpty) return const SizedBox.shrink();
+
     int sum = 0;
     for (var i = 0; i < profile.username.length && i <= 5; i++) {
       sum += profile.username.codeUnitAt(i);
@@ -85,7 +87,7 @@ class CommonCircularAvatar extends StatelessWidget {
           child: LayoutBuilder(
             builder: (context, constraints) {
               return Container(
-          		  padding: EdgeInsets.all(constraints.maxWidth * 0.175),
+                padding: EdgeInsets.all(constraints.maxWidth * 0.175),
                 width: constraints.maxWidth,
                 height: constraints.maxHeight,
                 child: FittedBox(
@@ -111,11 +113,8 @@ class CommonCircularAvatar extends StatelessWidget {
     return InkWell(
       onTap: clickable
           ? () {
-              Get.toNamed(
-                RouteNames.profileOtherPage,
-                arguments: {
-                  'user': profile,
-                },
+              context.push(
+                RouteNames.profileOtherPage.replaceFirst(':userId', profile.id),
               );
             }
           : null,
@@ -124,7 +123,7 @@ class CommonCircularAvatar extends StatelessWidget {
           shape: BoxShape.circle,
         ),
         child: (profile.avatar_path == null && image == null)
-            ? _iconAvatar()
+            ? (_iconAvatar())
             : CommonKeepaliveWrapper(child: _imageAvatar()),
       ),
     );

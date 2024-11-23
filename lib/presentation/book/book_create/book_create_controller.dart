@@ -25,10 +25,6 @@ class BookCreateController extends GetxController {
 
   final BookListController bookListController = Get.find();
 
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController authorController = TextEditingController();
-  final TextEditingController reviewController = TextEditingController();
-
   Future<void> scanBook() async {
     /*
     var result = await BarcodeScanner.scan();

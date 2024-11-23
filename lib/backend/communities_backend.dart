@@ -122,8 +122,10 @@ class CommunitiesBackend {
 
       if (response.isEmpty) {
         return BackendResponse(
-            success: false,
-            payload: 'You have not joined any communities yet.');
+          success: false,
+          payload:
+              'You have not joined any communities yet.\nGet started by creating your own or asking someone for an invitation.',
+        );
       }
 
       final List<Community> listOfCommunities = response
@@ -243,6 +245,7 @@ class CommunitiesBackend {
           .insert(
             {
               'name': community.name,
+              'description': community.description,
               'owner': userId,
               'image_path': pathToUpload,
             },

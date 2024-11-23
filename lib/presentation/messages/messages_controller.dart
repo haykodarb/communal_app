@@ -91,17 +91,16 @@ class MessagesController extends GetxController {
   }
 
   Future<void> goToSpecificChat(Profile chatter, BuildContext context) async {
-    context.go('${RouteNames.messagesPage}/${chatter.id}', extra: chatter);
+    context.push('${RouteNames.messagesPage}/${chatter.id}', extra: chatter);
   }
 
-  Future<void> deleteChatsWithUsers(Profile chatter) async {
-    final bool deleteConfirm = await Get.dialog<bool>(
-          CommonConfirmationDialog(
-            title: 'Delete chat?',
-            confirmCallback: () => Get.back<bool>(result: true),
-            cancelCallback: () => Get.back<bool>(result: false),
-          ),
-        ) ??
+  Future<void> deleteChatsWithUsers(
+    Profile chatter,
+    BuildContext context,
+  ) async {
+    final bool deleteConfirm = await const CommonConfirmationDialog(
+          title: 'Delete chat?',
+        ).open(context) ??
         false;
 
     if (deleteConfirm) {

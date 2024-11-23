@@ -7,6 +7,7 @@ import 'package:communal/presentation/loans/loan_info/loan_info_controller.dart'
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class LoanInfoPage extends StatelessWidget {
@@ -25,13 +26,13 @@ class LoanInfoPage extends StatelessWidget {
         return Row(
           children: [
             CommonCircularAvatar(
-              profile: loan.isOwned ? loan.loanee : loan.owner,
+              profile: loan.isOwned ? loan.loanee : loan.book.owner,
               radius: 25,
               clickable: true,
             ),
             const VerticalDivider(width: 5),
             Text(
-              loan.isOwned ? loan.loanee.username : loan.owner.username,
+              loan.isOwned ? loan.loanee.username : loan.book.owner.username,
             ),
             const VerticalDivider(width: 5),
             Container(
@@ -64,15 +65,10 @@ class LoanInfoPage extends StatelessWidget {
           highlightColor: Colors.transparent,
           overlayColor: WidgetStateColor.transparent,
           onTap: () {
-            Get.toNamed(
-              loan.isOwned
-                  ? RouteNames.bookOwnedPage
-                  : RouteNames.communitySpecificBookPage,
-              arguments: {
-                'book': loan.book,
-                'community': loan.community,
-              },
-            );
+            context.push(loan.isOwned
+                ? '${RouteNames.myBooks}/${loan.book.id}'
+                : RouteNames.foreignBooksPage
+                    .replaceFirst(':bookId', loan.book.id));
           },
           child: Container(
             padding:
@@ -262,7 +258,7 @@ class LoanInfoPage extends StatelessWidget {
                       () => CommonLoadingBody(
                         loading: controller.loading.value,
                         child: ElevatedButton(
-                          onPressed: controller.markLoanReturned,
+                          onPressed: () => controller.markLoanReturned(context),
                           child: const Text('Mark as returned'),
                         ),
                       ),
@@ -279,14 +275,14 @@ class LoanInfoPage extends StatelessWidget {
                   children: [
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: controller.acceptLoanRequest,
+                        onPressed: () => controller.acceptLoanRequest(context),
                         child: const Text('Approve'),
                       ),
                     ),
                     const VerticalDivider(width: 10),
                     Expanded(
                       child: OutlinedButton(
-                        onPressed: controller.rejectLoanRequest,
+                        onPressed: () => controller.rejectLoanRequest(context),
                         child: const Text('Reject'),
                       ),
                     ),
@@ -313,44 +309,41 @@ class LoanInfoPage extends StatelessWidget {
               if (controller.editing.value) {
                 return Column(
                   children: [
-                    TextField(
+                    TextFormField(
                       minLines: 3,
                       maxLines: 10,
                       onChanged: controller.onReviewTextChanged,
+                      onFieldSubmitted: (_) => controller.onReviewSubmit(),
                       controller: TextEditingController.fromValue(
                         TextEditingValue(
-                            text: controller.loan.value.review ?? ''),
+                          text: controller.loan.value.review ?? '',
+                        ),
                       ),
-                      style: const TextStyle(fontSize: 13, height: 1.3),
                       decoration: InputDecoration(
                         hintText: 'Write a review...',
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 15, vertical: 10),
                         hintStyle: TextStyle(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          fontSize: 14,
                         ),
                         border: OutlineInputBorder(
                           borderSide: BorderSide(
                             color: Theme.of(context).colorScheme.primary,
-                            width: 0.5,
                           ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
                             color: Theme.of(context).colorScheme.primary,
-                            width: 0.5,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
                             color: Theme.of(context).colorScheme.primary,
-                            width: 0.5,
                           ),
                         ),
                       ),
                     ),
-                    const Divider(height: 10),
+                    const Divider(height: 20),
                     Obx(
                       () => CommonLoadingBody(
                         loading: controller.loading.value,
@@ -418,7 +411,7 @@ class LoanInfoPage extends StatelessWidget {
               () => CommonLoadingBody(
                 loading: controller.loading.value,
                 child: ElevatedButton(
-                  onPressed: controller.withdrawLoanRequest,
+                  onPressed: () => controller.withdrawLoanRequest(context),
                   child: const Text('Withdraw request'),
                 ),
               ),
@@ -431,55 +424,57 @@ class LoanInfoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ScrollController scrollController = ScrollController();
+
     return GetBuilder(
       init: LoanInfoController(loanId: loanId, inheritedLoan: loan),
       builder: (LoanInfoController controller) {
-        return CommonResponsivePage(
-          child: Scaffold(
-            appBar: AppBar(
-              title: const Text('Loan'),
-            ),
-            body: Obx(
-              () => CommonLoadingBody(
-                loading: controller.loadingPage.value,
-                child: Scrollbar(
-                  thumbVisibility: true,
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Card(
-                        margin: EdgeInsets.zero,
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Column(
-                            children: [
-                              Obx(
-                                () => _userData(controller.loan.value),
-                              ),
-                              const Divider(height: 20),
-                              Obx(
-                                () => _bookCard(controller.loan.value),
-                              ),
-                              const Divider(height: 20),
-                              Obx(
-                                () => _datesCard(controller.loan.value),
-                              ),
-                              const Divider(height: 20),
-                              Obx(
-                                () {
-                                  if (controller.loan.value.isOwned) {
-                                    return _ownerBottomHalf(controller);
-                                  }
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Loan'),
+          ),
+          body: Obx(
+            () => CommonLoadingBody(
+              loading: controller.loadingPage.value,
+              child: Scrollbar(
+                thumbVisibility: true,
+                controller: scrollController,
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Card(
+                      margin: EdgeInsets.zero,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          children: [
+                            Obx(
+                              () => _userData(controller.loan.value),
+                            ),
+                            const Divider(height: 20),
+                            Obx(
+                              () => _bookCard(controller.loan.value),
+                            ),
+                            const Divider(height: 20),
+                            Obx(
+                              () => _datesCard(controller.loan.value),
+                            ),
+                            const Divider(height: 20),
+                            Obx(
+                              () {
+                                if (controller.loan.value.isOwned) {
+                                  return _ownerBottomHalf(controller);
+                                }
 
-                                  if (controller.loan.value.isBorrowed) {
-                                    return _borrowerBottomHalf(controller);
-                                  }
+                                if (controller.loan.value.isBorrowed) {
+                                  return _borrowerBottomHalf(controller);
+                                }
 
-                                  return const Text('Error');
-                                },
-                              ),
-                            ],
-                          ),
+                                return const Text('Error');
+                              },
+                            ),
+                          ],
                         ),
                       ),
                     ),

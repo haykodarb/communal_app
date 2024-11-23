@@ -35,9 +35,80 @@
 
 	<title>Communal</title>
 	<link rel="manifest" href="manifest.json">
+
+	<!-- Custom CSS styling for the loading spinner -->
+	<style>
+		.loading-div {
+			display: flex;
+			flex-direction: column;
+			gap: 20px;
+			justify-content: center;
+			align-items: center;
+			margin: 0;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			-ms-transform: translate(-50%, -50%);
+			transform: translate(-50%, -50%);
+		}
+
+		.loader-text {
+			color: #d7827e;
+			font-weight: 700;
+			font-size: 30px;
+			font-family: Verdana, Geneva, Tahoma, sans-serif;
+		}
+
+		.loader-spin {
+			/* border and border-top should match the app theme */
+			border: 6px solid #f2e9e1;
+			border-top: 6px solid #d7827e;
+			border-radius: 50%;
+			/* similar size to CircularProgressIndicator */
+			width: 40px;
+			height: 40px;
+			/* similar animation to CircularProgressIndicator */
+			animation: spin 1s linear infinite;
+		}
+
+		@keyframes spin {
+			0% {
+				transform: rotate(0deg);
+			}
+
+			100% {
+				transform: rotate(360deg);
+			}
+		}
+	</style>
 </head>
 
-<body>
+<body style="background-color: #f2e9e1;">
+	<script>
+		if ('serviceWorker' in navigator) {
+			console.log('Entering If Statement.');
+			window.addEventListener('load', function () {
+				xmlhttp = new XMLHttpRequest();
+				xmlhttp.open("GET", './version.json', true);
+				xmlhttp.onload = function () {
+					if (xmlhttp.status == 200) {
+						var version = xmlhttp.responseText.split(',')[1];
+						var currentVersion = window.localStorage.getItem('version');
+						console.log('currentVersion is ' + currentVersion);
+						console.log('version is ' + version);
+						if (currentVersion && currentVersion != version) {
+							console.log('clearing cache');
+							caches.delete('flutter-app-manifest');
+							caches.delete('flutter-temp-cache');
+							caches.delete('flutter-app-cache');
+						}
+						window.localStorage.setItem('version', version);
+					}
+				};
+				xmlhttp.send();
+			});
+		}
+	</script>
 	<script src="flutter_bootstrap.js" async></script>
 </body>
 

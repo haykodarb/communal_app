@@ -17,6 +17,7 @@ class CommonAsyncTextField extends StatelessWidget {
     required this.asyncValidator,
     required this.syncValidator,
     required this.duration,
+    this.submitCallback,
     this.minLines = 1,
     this.maxLines = 1,
     this.maxLength = 60,
@@ -26,6 +27,7 @@ class CommonAsyncTextField extends StatelessWidget {
   final void Function(String) callback;
   final Future<String?> Function(String?) asyncValidator;
   final String? Function(String?) syncValidator;
+  final void Function(String)? submitCallback;
   final Duration duration;
   final int minLines;
   final int maxLines;
@@ -35,7 +37,8 @@ class CommonAsyncTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController textController = TextEditingController(text: initialValue);
+    final TextEditingController textController =
+        TextEditingController(text: initialValue);
 
     return GetBuilder<CommonAsyncTextFieldController>(
       init: CommonAsyncTextFieldController(),
@@ -43,7 +46,8 @@ class CommonAsyncTextField extends StatelessWidget {
         return Obx(
           () {
             final bool isValidating = controller.isValidating.value;
-            final String? asyncValidationMessage = controller.asyncValidationMessage.value;
+            final String? asyncValidationMessage =
+                controller.asyncValidationMessage.value;
 
             return TextFormField(
               validator: (String? value) {
@@ -78,7 +82,8 @@ class CommonAsyncTextField extends StatelessWidget {
                   duration,
                   () async {
                     controller.isValidating.value = true;
-                    controller.asyncValidationMessage.value = await asyncValidator(value);
+                    controller.asyncValidationMessage.value =
+                        await asyncValidator(value);
                     controller.isValidating.value = false;
                   },
                 );
@@ -87,6 +92,7 @@ class CommonAsyncTextField extends StatelessWidget {
               minLines: minLines,
               maxLines: maxLines,
               maxLength: maxLength,
+              onFieldSubmitted: submitCallback,
               decoration: InputDecoration(
                 counter: const SizedBox.shrink(),
                 suffixIcon: Visibility(

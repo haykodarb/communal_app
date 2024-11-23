@@ -6,13 +6,9 @@ import 'package:communal/presentation/common/common_drawer/common_drawer_control
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 
 class CommonDrawerWidget extends StatelessWidget {
-  CommonDrawerWidget({super.key});
-
-  final CommonDrawerController _commonDrawerController =
-      Get.find<CommonDrawerController>();
+  const CommonDrawerWidget({super.key});
 
   Widget _drawerButton({
     required IconData icon,
@@ -34,7 +30,7 @@ class CommonDrawerWidget extends StatelessWidget {
                 return Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: 20,
-                    vertical: constraints.maxHeight * 0.1,
+                    vertical: constraints.maxHeight * 0.2,
                   ),
                   child: Builder(
                     builder: (context) {
@@ -115,7 +111,7 @@ class CommonDrawerWidget extends StatelessWidget {
     );
   }
 
-  Widget _drawerHeader() {
+  Widget _drawerHeader(CommonDrawerController controller) {
     return SizedBox(
       height: 150,
       child: DrawerHeader(
@@ -132,14 +128,14 @@ class CommonDrawerWidget extends StatelessWidget {
                 children: [
                   Obx(
                     () => CommonCircularAvatar(
-                      profile: UsersBackend.currentUserProfile.value,
+                      profile: controller.currentUserProfile.value,
                       radius: 40,
                     ),
                   ),
                   const VerticalDivider(),
                   Obx(
                     () => Text(
-                      UsersBackend.currentUserProfile.value.username,
+                      controller.currentUserProfile.value.username,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 16,
@@ -160,10 +156,10 @@ class CommonDrawerWidget extends StatelessWidget {
     const double dividerHeight = 7.5;
 
     return GetBuilder(
-      init: _commonDrawerController,
+      init: Get.find<CommonDrawerController>(),
+      global: true,
       builder: (CommonDrawerController controller) {
         final Color dividerColor = Theme.of(context).colorScheme.surface;
-
         return Drawer(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(0),
@@ -175,7 +171,7 @@ class CommonDrawerWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                _drawerHeader(),
+                _drawerHeader(controller),
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -185,94 +181,106 @@ class CommonDrawerWidget extends StatelessWidget {
                         color: Colors.transparent,
                         height: dividerHeight,
                       ),
-                      _drawerButton(
-                        text: 'profile'.tr,
-                        icon: Atlas.account,
-                        selected: GoRouterState.of(context)
-                            .uri
-                            .toString()
-                            .contains(RouteNames.profileOwnPage),
-                        callback: () => _commonDrawerController.goToRoute(
-                            RouteNames.profileOwnPage, context),
+                      Obx(() {
+                        return _drawerButton(
+                          text: 'profile'.tr,
+                          icon: Atlas.account,
+                          selected: controller.currentRoute.value ==
+                              RouteNames.profileOwnPage,
+                          callback: () => controller.goToRoute(
+                              RouteNames.profileOwnPage, context),
+                        );
+                      }),
+                      Divider(
+                        thickness: 2,
+                        color: dividerColor,
+                        height: dividerHeight,
+                      ),
+                      Obx(() {
+                        return _drawerButton(
+                          text: 'notifications'.tr,
+                          icon: Atlas.bell,
+                          selected: controller.currentRoute.value ==
+                              RouteNames.notificationsPage,
+                          callback: () => controller.goToRoute(
+                            RouteNames.notificationsPage,
+                            context,
+                          ),
+                          notifications: controller.globalNotifications,
+                        );
+                      }),
+                      Divider(
+                        thickness: 2,
+                        color: dividerColor,
+                        height: dividerHeight,
+                      ),
+                      Obx(
+                        () {
+                          return _drawerButton(
+                            text: 'messages'.tr,
+                            icon: Atlas.chats,
+                            selected: controller.currentRoute.value ==
+                                RouteNames.messagesPage,
+                            callback: () => controller.goToRoute(
+                                RouteNames.messagesPage, context),
+                            notifications: controller.messageNotifications,
+                          );
+                        },
                       ),
                       Divider(
                         thickness: 2,
                         color: dividerColor,
                         height: dividerHeight,
                       ),
-                      _drawerButton(
-                        text: 'notifications'.tr,
-                        icon: Atlas.bell,
-                        selected: GoRouterState.of(context)
-                            .uri
-                            .toString()
-                            .contains(RouteNames.notificationsPage),
-                        callback: () => _commonDrawerController.goToRoute(
-                            RouteNames.notificationsPage, context),
-                        notifications:
-                            _commonDrawerController.globalNotifications,
+                      Obx(
+                        () {
+                          return _drawerButton(
+                            text: 'my-books'.tr,
+                            icon: Atlas.library,
+                            selected: controller.currentRoute.value ==
+                                RouteNames.myBooks,
+                            callback: () => controller.goToRoute(
+                                RouteNames.myBooks, context),
+                          );
+                        },
                       ),
                       Divider(
                         thickness: 2,
                         color: dividerColor,
                         height: dividerHeight,
                       ),
-                      _drawerButton(
-                        text: 'messages'.tr,
-                        icon: Atlas.chats,
-                        selected: GoRouterState.of(context)
-                            .uri
-                            .toString()
-                            .contains(RouteNames.messagesPage),
-                        callback: () => _commonDrawerController.goToRoute(
-                            RouteNames.messagesPage, context),
-                        notifications:
-                            _commonDrawerController.messageNotifications,
+                      Obx(
+                        () {
+                          return _drawerButton(
+                            text: 'communities'.tr,
+                            selected: controller.currentRoute.value ==
+                                RouteNames.communityListPage,
+                            icon: Atlas.users,
+                            callback: () => controller.goToRoute(
+                              RouteNames.communityListPage,
+                              context,
+                            ),
+                          );
+                        },
                       ),
                       Divider(
                         thickness: 2,
                         color: dividerColor,
                         height: dividerHeight,
                       ),
-                      _drawerButton(
-                        text: 'my-books'.tr,
-                        icon: Atlas.library,
-                        selected: GoRouterState.of(context)
-                            .uri
-                            .toString()
-                            .contains(RouteNames.myBooks),
-                        callback: () => _commonDrawerController.goToRoute(
-                            RouteNames.myBooks, context),
-                      ),
-                      Divider(
-                        thickness: 2,
-                        color: dividerColor,
-                        height: dividerHeight,
-                      ),
-                      _drawerButton(
-                        text: 'communities'.tr,
-                        selected: GoRouterState.of(context)
-                            .uri
-                            .toString()
-                            .contains(RouteNames.communityListPage),
-                        icon: Atlas.users,
-                        callback: () => _commonDrawerController.goToRoute(
-                            RouteNames.communityListPage, context),
-                      ),
-                      Divider(
-                        thickness: 2,
-                        color: dividerColor,
-                        height: dividerHeight,
-                      ),
-                      _drawerButton(
-                        text: 'loans'.tr,
-                        selected: GoRouterState.of(context)
-                            .uri
-                            .toString()
-                            .contains(RouteNames.loansPage),
-                        icon: Atlas.account_arrows,
-                        callback: () => _commonDrawerController.goToRoute(
-                            RouteNames.loansPage, context),
+                      Obx(
+                        () {
+                          return _drawerButton(
+                            text: 'loans'.tr,
+                            selected: controller.currentRoute.value ==
+                                RouteNames.loansPage,
+                            icon: Atlas.account_arrows,
+                            callback: () => controller.goToRoute(
+                              RouteNames.loansPage,
+                              context,
+                            ),
+                          );
+                        },
                       ),
                       Divider(
                         thickness: 2,
@@ -287,8 +295,7 @@ class CommonDrawerWidget extends StatelessWidget {
                         text: UserPreferences.isDarkMode(context)
                             ? 'light'.tr
                             : 'dark'.tr,
-                        callback: () =>
-                            _commonDrawerController.changeThemeMode(context),
+                        callback: () => controller.changeThemeMode(context),
                       ),
                       Divider(
                         thickness: 2,
@@ -299,8 +306,8 @@ class CommonDrawerWidget extends StatelessWidget {
                         selected: false,
                         icon: Atlas.language_translation,
                         text: Get.locale == const Locale('es', 'ES')
-                            ? 'Español'
-                            : 'English',
+                            ? 'English'
+                            : 'Español',
                         callback: () async {
                           final Locale newLocale =
                               Get.locale == const Locale('es', 'ES')
@@ -328,9 +335,10 @@ class CommonDrawerWidget extends StatelessWidget {
                             controller.versionNumber.value,
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                            ),
                           ),
                         ),
                       ),
@@ -344,7 +352,7 @@ class CommonDrawerWidget extends StatelessWidget {
                         selected: false,
                         icon: Atlas.double_arrow_right_circle,
                         callback: () {
-                          _commonDrawerController.handleLogout(context);
+                          controller.handleLogout(context);
                         },
                       ),
                       const Divider(height: 10),

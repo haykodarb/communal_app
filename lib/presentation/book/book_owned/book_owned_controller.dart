@@ -30,6 +30,8 @@ class BookOwnedController extends GetxController {
 
   final RxBool expandCarouselItem = false.obs;
 
+  final PageController reviewsPageController = PageController();
+
   BookListController? bookListController;
   ProfileOwnController? profileOwnController;
 
@@ -44,6 +46,12 @@ class BookOwnedController extends GetxController {
     if (Get.isRegistered<ProfileOwnController>()) {
       profileOwnController = Get.find<ProfileOwnController>();
     }
+
+    reviewsPageController.addListener(() {
+      carouselIndex.value = reviewsPageController.page?.toInt() ?? 0;
+    });
+
+    loadingCarousel.value = true;
 
     inheritedBook = bookListController?.userBooks.firstWhereOrNull(
       (element) => element.id == bookId,
@@ -65,8 +73,6 @@ class BookOwnedController extends GetxController {
     }
 
     await loadCurrentLoan();
-
-    loadingCarousel.value = true;
 
     completedLoans.clear();
 

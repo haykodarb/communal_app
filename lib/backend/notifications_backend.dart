@@ -3,6 +3,7 @@ import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/models/membership.dart';
 import 'package:communal/models/profile.dart';
+import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class NotificationType {
@@ -35,6 +36,8 @@ class CustomNotification {
   Profile? sender;
   Profile receiver;
   bool seen;
+
+  RxBool loading = false.obs;
 
   CustomNotification({
     required this.id,
@@ -88,7 +91,7 @@ class NotificationsBackend {
       final Map<String, dynamic> result = await client
           .from('notifications')
           .select(
-            '*, type(*), receiver:profiles!receiver(*), sender:profiles!sender(*), loans!left(*, books!left(*, profiles(*)), communities(*), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)), memberships!left(*, communities(*), profiles(*))',
+            '*, type(*), receiver:profiles!receiver(*), sender:profiles!sender(*), loans!left(*, books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)), memberships!left(*, communities(*), profiles(*))',
           )
           .eq('id', id)
           .single();
@@ -131,7 +134,7 @@ class NotificationsBackend {
       final List<Map<String, dynamic>> result = await client
           .from('notifications')
           .select(
-            '*, type(*), receiver:profiles!receiver(*), sender:profiles!sender(*), loans!left(*, books!left(*, profiles(*)), communities(*), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)), memberships!left(*, communities(*), profiles(*))',
+            '*, type(*), receiver:profiles!receiver(*), sender:profiles!sender(*), loans!left(*, books!left(*, profiles(*)),  loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)), memberships!left(*, communities(*), profiles(*))',
           )
           .eq('receiver', userId)
           .order('created_at', ascending: false);

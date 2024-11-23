@@ -2,8 +2,8 @@ import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/message.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
-import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/messages/messages_specific/messages_specific_controller.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -139,100 +139,129 @@ class MessagesSpecificPage extends StatelessWidget {
       builder: (context) {
         return Padding(
           padding: const EdgeInsets.all(10),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Expanded(
-                child: TextField(
-                  onChanged: controller.onTypedMessageChanged,
-                  onEditingComplete: controller.onMessageSubmit,
-                  controller: controller.textEditingController,
-                  style: const TextStyle(fontSize: 14),
-                  maxLines: 4,
-                  minLines: 1,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withOpacity(0.15),
-                        width: 2,
-                      ),
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    onChanged: controller.onTypedMessageChanged,
+                    focusNode: FocusNode(
+                      onKeyEvent: (node, event) {
+                        if (!HardwareKeyboard.instance.isShiftPressed &&
+                            event.logicalKey.keyLabel == 'Enter') {
+                          if (event is KeyDownEvent) {
+                            controller.onMessageSubmit(context);
+                          }
+                          return KeyEventResult.handled;
+                        }
+
+                        return KeyEventResult.ignored;
+                      },
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withOpacity(0.15),
-                        width: 2,
+                    onFieldSubmitted: (_) =>
+                        controller.onMessageSubmit(context),
+                    controller: controller.textEditingController,
+                    onTapOutside: (_) {},
+                    style: const TextStyle(fontSize: 14),
+                    minLines: 1,
+                    maxLines: 4,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 25,
+                        horizontal: 20,
                       ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withOpacity(0.15),
-                        width: 2,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withOpacity(0.15),
+                          width: 2,
+                        ),
                       ),
-                    ),
-                    hintText: 'Type something...',
-                    hintStyle: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withOpacity(0.15),
+                          width: 2,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withOpacity(0.15),
+                          width: 2,
+                        ),
+                      ),
+                      hintText: 'Type something...',
+                      hintStyle: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const VerticalDivider(width: 5),
-              Container(
-                padding: EdgeInsets.zero,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                height: 60,
-                width: 60,
-                child: Obx(
-                  () {
-                    return InkWell(
-                      onTap: controller.sending.value
-                          ? null
-                          : controller.onMessageSubmit,
-                      enableFeedback: false,
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      child: SizedBox.expand(
-                        child: Center(
-                          child: Obx(
-                            () {
-                              if (controller.sending.value) {
-                                return CircularProgressIndicator(
+                const VerticalDivider(width: 5),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    height: 60,
+                    width: 60,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    alignment: Alignment.bottomCenter,
+                    child: Obx(
+                      () {
+                        return InkWell(
+                          onTap: controller.sending.value
+                              ? null
+                              : () => controller.onMessageSubmit(context),
+                          enableFeedback: false,
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Obx(
+                              () {
+                                if (controller.sending.value) {
+                                  return SizedBox(
+                                    width: 25,
+                                    height: 25,
+                                    child: CircularProgressIndicator(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary,
+                                    ),
+                                  );
+                                }
+
+                                return Icon(
+                                  Icons.send_rounded,
                                   color:
                                       Theme.of(context).colorScheme.onPrimary,
+                                  size: 30,
                                 );
-                              }
-
-                              return Icon(
-                                Icons.send_rounded,
-                                color: Theme.of(context).colorScheme.onPrimary,
-                                size: 30,
-                              );
-                            },
+                              },
+                            ),
                           ),
-                        ),
-                      ),
-                    );
-                  },
+                        );
+                      },
+                    ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -247,66 +276,64 @@ class MessagesSpecificPage extends StatelessWidget {
         receivedProfile: userProfile,
       ),
       builder: (MessagesSpecificController controller) {
-        return CommonResponsivePage(
-          child: Scaffold(
-            appBar: AppBar(
-              title: Obx(
-                () {
-                  return Text(controller.userProfile.value?.username ?? '');
-                },
+        return Scaffold(
+          appBar: AppBar(
+            title: Obx(
+              () {
+                return Text(controller.userProfile.value?.username ?? '');
+              },
+            ),
+          ),
+          body: Stack(
+            children: [
+              Column(
+                children: [
+                  Obx(
+                    () => Visibility(
+                      visible: controller.showLoadingMore.value,
+                      child: Container(
+                        color: Colors.transparent,
+                        child: LoadingAnimationWidget.horizontalRotatingDots(
+                          color: Theme.of(context).colorScheme.primary,
+                          size: 30,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Obx(
+                      () => CommonLoadingBody(
+                        loading: controller.loading.value,
+                        child: Obx(
+                          () {
+                            return ListView.separated(
+                              reverse: true,
+                              itemCount: controller.messages.length,
+                              controller: controller.scrollController,
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              padding: const EdgeInsets.only(
+                                  right: 20, left: 20, top: 20, bottom: 90),
+                              separatorBuilder: (context, index) {
+                                return const Divider(
+                                  height: 7.5,
+                                );
+                              },
+                              itemBuilder: (context, index) {
+                                return _messageBubble(controller, index);
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            body: Stack(
-              children: [
-                Column(
-                  children: [
-                    Obx(
-                      () => Visibility(
-                        visible: controller.showLoadingMore.value,
-                        child: Container(
-                          color: Colors.transparent,
-                          child: LoadingAnimationWidget.horizontalRotatingDots(
-                            color: Theme.of(context).colorScheme.primary,
-                            size: 30,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Obx(
-                        () => CommonLoadingBody(
-                          loading: controller.loading.value,
-                          child: Obx(
-                            () {
-                              return ListView.separated(
-                                reverse: true,
-                                itemCount: controller.messages.length,
-                                controller: controller.scrollController,
-                                physics: const AlwaysScrollableScrollPhysics(),
-                                padding: const EdgeInsets.only(
-                                    right: 20, left: 20, top: 20, bottom: 90),
-                                separatorBuilder: (context, index) {
-                                  return const Divider(
-                                    height: 7.5,
-                                  );
-                                },
-                                itemBuilder: (context, index) {
-                                  return _messageBubble(controller, index);
-                                },
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: _textInput(controller),
-                ),
-              ],
-            ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: _textInput(controller),
+              ),
+            ],
           ),
         );
       },

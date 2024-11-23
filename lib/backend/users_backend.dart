@@ -11,7 +11,6 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class UsersBackend {
   static final SupabaseClient _client = Supabase.instance.client;
-  static Rx<Profile> currentUserProfile = Profile.empty().obs;
 
   static String get currentUserId {
     return _client.auth.currentUser!.id;
@@ -25,20 +24,6 @@ class UsersBackend {
         .maybeSingle();
 
     return foundUsername == null || foundUsername.isEmpty;
-  }
-
-  static Future<void> updateCurrentUserProfile() async {
-    final BackendResponse response = await getUserProfile(currentUserId);
-
-    if (response.success) {
-      currentUserProfile.value = response.payload;
-      currentUserProfile.refresh();
-    }
-  }
-
-  static void removeCurrentUserProfile() {
-    currentUserProfile.value = Profile.empty();
-    currentUserProfile.refresh();
   }
 
   static Future<Uint8List?> getProfileAvatar(Profile profile) async {
@@ -104,10 +89,6 @@ class UsersBackend {
           .select('*')
           .single();
 
-      if (response.isNotEmpty && profile.id == currentUserId) {
-        currentUserProfile.value = Profile.fromMap(response);
-      }
-
       return BackendResponse(
         success: response.isNotEmpty,
         payload: response.isNotEmpty
@@ -147,15 +128,20 @@ class UsersBackend {
     }
   }
 
-  static Future<BackendResponse> searchUsers(String query) async {
-    final String userId = _client.auth.currentUser!.id;
-
-    final List<Map<String, dynamic>> response = await _client
-        .from('profiles')
-        .select()
-        .neq('id', userId)
-        .ilike('username', '%$query%')
-        .limit(10);
+  static Future<BackendResponse> searchUsersNotInCommunity(
+    String communityId,
+    String query,
+    int index,
+  ) async {
+    final List<Map<String, dynamic>> response = await _client.rpc(
+      'get_users_not_in_community',
+      params: {
+        'community_id': communityId,
+        'search_query': query,
+        'offset_num': index,
+        'limit_num': 10,
+      },
+    );
 
     final List<Profile> profiles = response
         .map(
@@ -184,7 +170,9 @@ class UsersBackend {
         .maybeSingle();
 
     return BackendResponse(
-        success: response?.isNotEmpty ?? false, payload: response);
+      success: response?.isNotEmpty ?? false,
+      payload: response,
+    );
   }
 
   static Future<BackendResponse> getMembershipByID(String id) async {
@@ -276,14 +264,16 @@ class UsersBackend {
   }
 
   static Future<BackendResponse> inviteUserToCommunity(
-      Community community, Profile user) async {
+    String communityId,
+    Profile user,
+  ) async {
     try {
       final Map<String, dynamic> createMembershipResponse = await _client
           .from('memberships')
           .insert(
             {
               'member': user.id,
-              'community': community.id,
+              'community': communityId,
               'is_admin': false,
             },
           )
@@ -305,7 +295,9 @@ class UsersBackend {
   }
 
   static Future<BackendResponse> removeUserFromCommunity(
-      String communityId, String userId) async {
+    String communityId,
+    String userId,
+  ) async {
     try {
       final List<dynamic> response =
           await _client.from('memberships').delete().match(
@@ -328,39 +320,31 @@ class UsersBackend {
   }
 
   static Future<BackendResponse> removeCurrentUserFromCommunity(
-      Community community) async {
-    final String userId = _client.auth.currentUser!.id;
+    Community community,
+  ) async {
+    try {
+      final String userId = _client.auth.currentUser!.id;
 
-    final Map<String, dynamic>? memberExistsResponse =
-        await _client.from('memberships').select().match({
-      'community': community.id,
-      'member': userId,
-      'accepted': true,
-    }).maybeSingle();
+      final Map<String, dynamic>? deleteMembershipResponse = await _client
+          .from('memberships')
+          .delete()
+          .match(
+            {
+              'member': userId,
+              'community': community.id,
+              'accepted': true,
+            },
+          )
+          .select()
+          .maybeSingle();
 
-    if (memberExistsResponse == null || memberExistsResponse.isEmpty) {
       return BackendResponse(
-        success: false,
-        payload: 'User does not exist in this community.',
+        success: deleteMembershipResponse?.isNotEmpty ?? false,
+        payload: deleteMembershipResponse,
       );
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
     }
-
-    final Map<String, dynamic> deleteMembershipResponse = await _client
-        .from('memberships')
-        .delete()
-        .match(
-          {
-            'member': userId,
-            'community': community.id,
-            'is_admin': false,
-          },
-        )
-        .select()
-        .single();
-
-    return BackendResponse(
-        success: deleteMembershipResponse.isNotEmpty,
-        payload: deleteMembershipResponse);
   }
 
   static Future<BackendResponse<List<Profile>>> getUsersInCommunity(

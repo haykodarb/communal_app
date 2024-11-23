@@ -19,6 +19,7 @@ class LoginPage extends StatelessWidget {
           children: [
             CommonTextField(
               validator: controller.emailValidator,
+              submitCallback: (_) => controller.loginButtonCallback(context),
               callback: controller.onEmailChange,
               label: 'email'.tr,
             ),
@@ -26,6 +27,7 @@ class LoginPage extends StatelessWidget {
             CommonPasswordField(
               validator: controller.passwordValidator,
               callback: controller.onPasswordChange,
+              submitCallback: (_) => controller.loginButtonCallback(context),
               label: 'password'.tr,
             ),
             const Divider(height: 5),
@@ -44,7 +46,7 @@ class LoginPage extends StatelessWidget {
                   textAlign: TextAlign.right,
                 ),
                 onPressed: () {
-                  context.go(RouteNames.loginRecoveryPage);
+                  context.push(RouteNames.loginRecoveryPage);
                 },
               ),
             ),
@@ -63,12 +65,7 @@ class LoginPage extends StatelessWidget {
                 loading: controller.loading.value,
                 size: 40,
                 child: ElevatedButton(
-                  onPressed: () async {
-                    final bool result = await controller.loginButtonCallback();
-                    if (result && context.mounted) {
-                      GoRouter.of(context).go(RouteNames.myBooks);
-                    }
-                  },
+                  onPressed: () => controller.loginButtonCallback(context),
                   child: Text(
                     'login'.tr,
                   ),
@@ -101,16 +98,24 @@ class LoginPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 50),
-                      child: Text(
-                        'sign-in'.tr,
-                        textAlign: TextAlign.left,
-                        style: GoogleFonts.lora(
-                          fontSize: 40,
-                          fontWeight: FontWeight.w700,
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            context.pop();
+                          },
+                          icon: const Icon(Icons.chevron_left_rounded),
+                          iconSize: 36,
                         ),
-                      ),
+                        Text(
+                          'sign-in'.tr,
+                          textAlign: TextAlign.left,
+                          style: GoogleFonts.lora(
+                            fontSize: 40,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
                     ),
                     const Divider(height: 40),
                     _loginForm(controller),

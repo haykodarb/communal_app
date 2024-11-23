@@ -48,9 +48,10 @@ class CommunityListController extends GetxController {
     loading.value = false;
   }
 
-  Future<void> goToCommunityCreate() async {
-    final bool? createdCommunity =
-        await Get.toNamed<dynamic>(RouteNames.communityCreatePage);
+  Future<void> goToCommunityCreate(BuildContext context) async {
+    final bool? createdCommunity = await context.push(
+      RouteNames.communityListPage + RouteNames.communityCreatePage,
+    );
 
     if (createdCommunity != null && createdCommunity) {
       fetchAllCommunities();
@@ -59,7 +60,7 @@ class CommunityListController extends GetxController {
 
   Future<void> goToCommunitySpecific(
       Community community, BuildContext context) async {
-    context.go('${RouteNames.communityListPage}/${community.id}');
+    context.push('${RouteNames.communityListPage}/${community.id}');
   }
 
   Future<void> toggleCommunityPinnedValue(Community community) async {

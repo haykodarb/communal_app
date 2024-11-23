@@ -7,7 +7,7 @@ class RealtimeBackend {
   static final StreamController<RealtimeMessage> streamController =
       StreamController<RealtimeMessage>.broadcast();
 
-  static Future<void> subscribeToDatabaseChanges() async {
+  static void subscribeToDatabaseChanges() {
     final SupabaseClient client = Supabase.instance.client;
 
     client
@@ -21,8 +21,6 @@ class RealtimeBackend {
           event: PostgresChangeEvent.all,
           schema: 'public',
           callback: (PostgresChangePayload payload) {
-            print(payload);
-
             if (payload.newRecord.isNotEmpty || payload.oldRecord.isNotEmpty) {
               final RealtimeMessage realtimeMessage = RealtimeMessage(
                 table: payload.table,

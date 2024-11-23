@@ -3,7 +3,9 @@ import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/routes.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class CommunityMembersController extends GetxController {
   CommunityMembersController({required this.communityId});
@@ -19,13 +21,12 @@ class CommunityMembersController extends GetxController {
     loadUsers();
   }
 
-  void addUser() {
-    Get.toNamed(
-      RouteNames.communityInvitePage,
-    );
+  void addUser(BuildContext context) {
+    context.push(
+        '${RouteNames.communityListPage}/$communityId${RouteNames.communityInvitePage}');
   }
 
-  Future<void> removeUser(Profile user) async {
+  Future<void> removeUser(Profile user, BuildContext context) async {
     user.loading.value = true;
 
     final BackendResponse response =
@@ -34,13 +35,19 @@ class CommunityMembersController extends GetxController {
     if (response.success) {
       listOfMembers.remove(user);
     } else {
-      Get.dialog(CommonAlertDialog(title: response.payload));
+      if (context.mounted) {
+        CommonAlertDialog(title: response.payload).open(context);
+      }
     }
 
     user.loading.value = false;
   }
 
-  Future<void> changeUserAdmin(Profile user, bool shouldBeAdmin) async {
+  Future<void> changeUserAdmin(
+    Profile user,
+    bool shouldBeAdmin,
+    BuildContext context,
+  ) async {
     user.loading.value = true;
 
     final BackendResponse response = await UsersBackend.changeUserAdminStatus(
@@ -52,7 +59,9 @@ class CommunityMembersController extends GetxController {
     if (response.success) {
       user.is_admin = shouldBeAdmin;
     } else {
-      Get.dialog(CommonAlertDialog(title: response.payload));
+      if (context.mounted) {
+        CommonAlertDialog(title: response.payload).open(context);
+      }
     }
 
     user.loading.value = false;

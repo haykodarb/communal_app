@@ -3,7 +3,6 @@ import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
-import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/messages/messages_controller.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/responsive.dart';
@@ -25,7 +24,10 @@ class MessagesPage extends StatelessWidget {
       builder: (context) {
         return InkWell(
           onTap: () => controller.goToSpecificChat(staticChatter, context),
-          onLongPress: () => controller.deleteChatsWithUsers(staticChatter),
+          onLongPress: () => controller.deleteChatsWithUsers(
+            staticChatter,
+            context,
+          ),
           splashColor: Colors.transparent,
           child: Card(
             margin: EdgeInsets.zero,
@@ -35,7 +37,10 @@ class MessagesPage extends StatelessWidget {
               child: Row(
                 children: [
                   CommonCircularAvatar(
-                      profile: staticChatter, radius: 25, clickable: true),
+                    profile: staticChatter,
+                    radius: 25,
+                    clickable: true,
+                  ),
                   const VerticalDivider(width: 20),
                   Obx(
                     () {
@@ -91,52 +96,60 @@ class MessagesPage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    message.content,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      overflow: TextOverflow.ellipsis,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurfaceVariant,
-                                      height: 1,
-                                    ),
-                                  ),
-                                ),
-                                const VerticalDivider(width: 10),
-                                Visibility(
-                                  visible: hightlightMessage,
-                                  child: Container(
-                                    height: 25,
-                                    width: 25,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 5, horizontal: 5),
-                                    decoration: BoxDecoration(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Center(
+                            Expanded(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      height: double.maxFinite,
+                                      alignment: Alignment.bottomLeft,
                                       child: Text(
-                                        message.unread_messages.toString(),
+                                        message.content,
+                                        maxLines: 1,
                                         style: TextStyle(
                                           fontSize: 12,
                                           overflow: TextOverflow.ellipsis,
                                           color: Theme.of(context)
                                               .colorScheme
-                                              .onPrimary,
-                                          fontWeight: FontWeight.w600,
+                                              .onSurfaceVariant,
                                           height: 1,
                                         ),
                                       ),
                                     ),
                                   ),
-                                )
-                              ],
+                                  const VerticalDivider(width: 10),
+                                  Visibility(
+                                    visible: hightlightMessage,
+                                    child: Container(
+                                      height: 25,
+                                      width: 25,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5, horizontal: 5),
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          message.unread_messages.toString(),
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            overflow: TextOverflow.ellipsis,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onPrimary,
+                                            fontWeight: FontWeight.w600,
+                                            height: 1,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -157,33 +170,40 @@ class MessagesPage extends StatelessWidget {
     return GetBuilder(
       init: MessagesController(),
       builder: (MessagesController controller) {
-        return CommonResponsivePage(
-          child: Scaffold(
-            drawer: Responsive.isMobile(context) ? CommonDrawerWidget() : null,
-            appBar: AppBar(
-              title: const Text(
-                'Messages',
-              ),
+        return Scaffold(
+          drawer:
+              Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
+          appBar: AppBar(
+            title: const Text(
+              'Messages',
             ),
-            body: Obx(
-              () => CommonLoadingBody(
-                loading: controller.loading.value,
-                child: Obx(
-                  () {
-                    return ListView.separated(
-                      padding: const EdgeInsets.all(10),
-                      itemCount: controller.distinctChats.length,
-                      separatorBuilder: (context, index) {
-                        return const Divider(height: 5);
-                      },
-                      itemBuilder: (context, index) {
-                        return CommonKeepaliveWrapper(
-                          child: _chatCard(controller, index),
-                        );
-                      },
+          ),
+          body: Obx(
+            () => CommonLoadingBody(
+              loading: controller.loading.value,
+              child: Obx(
+                () {
+                  if (controller.distinctChats.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        'You haven\'t messaged anyone yet.\n',
+                      ),
                     );
-                  },
-                ),
+                  }
+
+                  return ListView.separated(
+                    padding: const EdgeInsets.all(10),
+                    itemCount: controller.distinctChats.length,
+                    separatorBuilder: (context, index) {
+                      return const Divider(height: 5);
+                    },
+                    itemBuilder: (context, index) {
+                      return CommonKeepaliveWrapper(
+                        child: _chatCard(controller, index),
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ),

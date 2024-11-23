@@ -11,6 +11,8 @@ class CommonTextField extends StatelessWidget {
     this.maxLength = 60,
     this.initialValue,
     this.inheritedController,
+    this.submitCallback,
+    this.enabled = true,
   });
 
   final void Function(String) callback;
@@ -20,20 +22,25 @@ class CommonTextField extends StatelessWidget {
   final int? maxLength;
   final String? initialValue;
   final TextEditingController? inheritedController;
+  final void Function(String)? submitCallback;
   final String label;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController controller = inheritedController ?? TextEditingController(text: initialValue);
+    final TextEditingController controller =
+        inheritedController ?? TextEditingController(text: initialValue);
 
     return TextFormField(
       validator: validator,
       cursorColor: Theme.of(context).colorScheme.primary,
       onChanged: callback,
+      enabled: enabled,
       controller: controller,
       style: const TextStyle(fontSize: 14),
       minLines: minLines,
       maxLines: maxLines,
+      onFieldSubmitted: submitCallback,
       decoration: InputDecoration(
         counter: const SizedBox.shrink(),
         label: Text(label),
@@ -51,6 +58,7 @@ class CommonPasswordField extends StatefulWidget {
     required this.validator,
     this.minLines = 1,
     this.maxLines = 1,
+    this.submitCallback,
     this.maxLength = 60,
   });
 
@@ -60,6 +68,7 @@ class CommonPasswordField extends StatefulWidget {
   final int maxLines;
   final int? maxLength;
   final String label;
+  final void Function(String)? submitCallback;
   @override
   State<CommonPasswordField> createState() => _CommonPasswordFieldState();
 }
@@ -76,6 +85,7 @@ class _CommonPasswordFieldState extends State<CommonPasswordField> {
       obscureText: !isVisible,
       minLines: widget.minLines,
       maxLines: widget.maxLines,
+      onFieldSubmitted: widget.submitCallback,
       maxLength: widget.maxLength,
       style: const TextStyle(fontSize: 14),
       decoration: InputDecoration(
@@ -88,7 +98,9 @@ class _CommonPasswordFieldState extends State<CommonPasswordField> {
             icon: Icon(
               isVisible ? Icons.visibility : Icons.visibility_off,
               size: 26,
-              color: isVisible ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurfaceVariant,
+              color: isVisible
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.onSurfaceVariant,
             ),
             onPressed: () {
               setState(

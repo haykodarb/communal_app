@@ -15,7 +15,7 @@ class CommunitySpecificController extends GetxController
 
   RxBool loading = false.obs;
   late Community community;
-  final CommunityListController communityListController = Get.find();
+  CommunityListController? communityListController;
 
   final ScrollController scrollController = ScrollController();
 
@@ -46,12 +46,15 @@ class CommunitySpecificController extends GetxController
   Future<void> onInit() async {
     super.onInit();
     loading.value = true;
+    if (Get.isRegistered<CommunityListController>()) {
+      communityListController = Get.find<CommunityListController>();
+    }
 
     Get.lazyPut(() => CommunityBooksController(communityId: communityId));
     Get.lazyPut(() => CommunityMembersController(communityId: communityId));
     Get.lazyPut(() => CommunityDiscussionsController(communityId: communityId));
 
-    Community? tmp = communityListController.communities.firstWhereOrNull(
+    Community? tmp = communityListController?.communities.firstWhereOrNull(
       (element) => element.id == communityId,
     );
 

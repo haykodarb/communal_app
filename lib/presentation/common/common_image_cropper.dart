@@ -15,6 +15,13 @@ class CommonImageCropper extends StatelessWidget {
   final Image image;
   final double aspectRatio;
 
+  Future<Uint8List?> open(BuildContext context) async {
+    return await showDialog(
+      context: context,
+      builder: build,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final CropController cropController = CropController(

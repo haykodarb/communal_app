@@ -14,7 +14,7 @@ class StartPage extends StatelessWidget {
   const StartPage({super.key});
 
   static const List<Locale> _locales = [Locale('en', 'US'), Locale('es', 'ES')];
-  static const List<String> _languages = ['English', 'Español'];
+  static const List<String> _languages = ['Español', 'English'];
 
   Widget _dropdownLanguageButton(StartController controller) {
     return Builder(
@@ -109,7 +109,7 @@ class StartPage extends StatelessWidget {
           height: 60,
           width: 110,
           child: OutlinedButton(
-            onPressed: controller.changeThemeMode,
+            onPressed: () => controller.changeThemeMode(context),
             style: OutlinedButton.styleFrom(
               padding: EdgeInsets.zero,
             ),
@@ -167,7 +167,9 @@ class StartPage extends StatelessWidget {
     return Builder(
       builder: (context) {
         return ElevatedButton(
-          onPressed: () => context.go(RouteNames.loginPage),
+          onPressed: () => context.push(
+            RouteNames.startPage + RouteNames.loginPage,
+          ),
           child: Text(
             'login'.tr,
           ),
@@ -180,7 +182,9 @@ class StartPage extends StatelessWidget {
     return Builder(
       builder: (context) {
         return OutlinedButton(
-          onPressed: () => context.go(RouteNames.registerPage),
+          onPressed: () => context.push(
+            RouteNames.startPage + RouteNames.registerPage,
+          ),
           child: Text(
             'register'.tr,
           ),
@@ -200,7 +204,7 @@ class StartPage extends StatelessWidget {
 
       return Padding(
         padding: const EdgeInsets.symmetric(
-          vertical: 50,
+          vertical: 20,
         ),
         child: ShaderMask(
           blendMode: BlendMode.srcIn,
@@ -208,10 +212,12 @@ class StartPage extends StatelessWidget {
             Rect.fromLTWH(0, 0, bounds.width, bounds.height),
           ),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SvgPicture.asset(
                 'assets/crow.svg',
                 height: 300,
+                fit: BoxFit.contain,
               ),
               Text(
                 'Communal',
@@ -258,8 +264,10 @@ class StartPage extends StatelessWidget {
                         ],
                       ),
                       const Divider(height: 20),
-                      _logo(),
-                      const Divider(height: 20),
+                      Expanded(
+                        flex: 3,
+                        child: _logo(),
+                      ),
                       _loginButton(controller),
                       const Divider(height: 10),
                       _registerButton(controller),

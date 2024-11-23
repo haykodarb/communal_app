@@ -15,6 +15,7 @@ class RegisterResendPage extends StatelessWidget {
         children: [
           CommonTextField(
             validator: controller.emailValidator,
+            submitCallback: (value) => controller.onSubmit(),
             callback: controller.onEmailChange,
             label: 'Email',
           ),

@@ -71,7 +71,6 @@ class MessagesSpecificController extends GetxController {
       messages.value = messagesResponse.payload;
     }
 
-
     loading.value = false;
     super.onInit();
   }
@@ -181,7 +180,7 @@ class MessagesSpecificController extends GetxController {
     }
   }
 
-  Future<void> onMessageSubmit() async {
+  Future<void> onMessageSubmit(BuildContext context) async {
     if (typedMessage.value.isEmpty) return;
 
     sending.value = true;
@@ -215,9 +214,11 @@ class MessagesSpecificController extends GetxController {
       messages[index] = response.payload;
     } else {
       messages.removeWhere((element) => element.id == randomID);
-
-      Get.dialog(const CommonAlertDialog(
-          title: 'Could not send message, likely network error.'));
+      if (context.mounted) {
+        const CommonAlertDialog(
+          title: 'Could not send message, likely network error.',
+        ).open(context);
+      }
     }
 
     typedMessage.value = '';

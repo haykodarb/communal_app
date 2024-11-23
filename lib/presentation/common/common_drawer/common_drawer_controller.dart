@@ -8,6 +8,7 @@ import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/message.dart';
+import 'package:communal/models/profile.dart';
 import 'package:communal/models/realtime_message.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
@@ -16,31 +17,54 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+const List<String> rootRoutes = [
+  RouteNames.myBooks,
+  RouteNames.profileOwnPage,
+  RouteNames.notificationsPage,
+  RouteNames.communityListPage,
+  RouteNames.messagesPage,
+  RouteNames.loansPage,
+];
+
 class CommonDrawerController extends GetxController {
+  CommonDrawerController({required this.initialRoute});
+
+  final String initialRoute;
   final RxInt messageNotifications = 0.obs;
   final RxInt globalNotifications = 0.obs;
   final RxString versionNumber = ''.obs;
+  final RxString currentRoute = ''.obs;
+  final Rx<Profile> currentUserProfile = Profile.empty().obs;
 
   Timer? debounceTimer;
 
   StreamSubscription? realtimeSubscription;
 
   void goToRoute(String routeName, BuildContext context) {
-    if (Get.currentRoute != routeName) {
-      context.go(routeName);
-    }
+    currentRoute.value = routeName;
+    context.go(routeName);
   }
 
   @override
-  Future<void> onReady() async {
-    super.onReady();
+  Future<void> onInit() async {
+    super.onInit();
+
+    currentRoute.value = '/${initialRoute.split('/')[1]}';
 
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    RealtimeBackend.subscribeToDatabaseChanges();
 
     versionNumber.value =
         'Version: ${packageInfo.version}+${packageInfo.buildNumber}';
 
-    await UsersBackend.updateCurrentUserProfile();
+    final BackendResponse userResponse = await UsersBackend.getUserProfile(
+      UsersBackend.currentUserId,
+    );
+
+    if (userResponse.success) {
+      currentUserProfile.value = userResponse.payload;
+    }
 
     final BackendResponse notificationResponse =
         await NotificationsBackend.getUnreadNotificationsCount();
@@ -57,8 +81,6 @@ class CommonDrawerController extends GetxController {
 
   @override
   Future<void> onClose() async {
-    UsersBackend.removeCurrentUserProfile();
-
     await realtimeSubscription?.cancel();
 
     super.onClose();

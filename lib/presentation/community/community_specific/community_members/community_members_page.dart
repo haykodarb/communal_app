@@ -119,13 +119,21 @@ class CommunityMembersPage extends StatelessWidget {
                                 return <PopupMenuEntry>[
                                   PopupMenuItem(
                                     onTap: () => controller.changeUserAdmin(
-                                        user, !user.is_admin),
-                                    child: Text(user.is_admin
-                                        ? 'Remove as admin'
-                                        : 'Make admin'),
+                                      user,
+                                      !user.is_admin,
+                                      context,
+                                    ),
+                                    child: Text(
+                                      user.is_admin
+                                          ? 'Remove as admin'
+                                          : 'Make admin',
+                                    ),
                                   ),
                                   PopupMenuItem(
-                                    onTap: () => controller.removeUser(user),
+                                    onTap: () => controller.removeUser(
+                                      user,
+                                      context,
+                                    ),
                                     child: const Text('Remove'),
                                   ),
                                 ];
@@ -201,11 +209,8 @@ class CommunityMembersPage extends StatelessWidget {
                             visible: member.id != UsersBackend.currentUserId,
                             child: IconButton(
                               onPressed: () {
-                                Get.toNamed(
-                                  RouteNames.messagesSpecificPage,
-                                  arguments: {
-                                    'user': member,
-                                  },
+                                context.push(
+                                  '${RouteNames.messagesPage}/${member.id}',
                                 );
                               },
                               icon: Icon(

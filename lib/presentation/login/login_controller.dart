@@ -57,7 +57,7 @@ class LoginController extends GetxController {
     return null;
   }
 
-  Future<bool> loginButtonCallback() async {
+  Future<void> loginButtonCallback(BuildContext context) async {
     if (formKey.currentState!.validate()) {
       loading.value = true;
       errorMessage.value = '';
@@ -67,15 +67,11 @@ class LoginController extends GetxController {
 
       loading.value = false;
 
-      if (response.success) {
-        errorMessage.value = '';
-        Get.put(CommonDrawerController(), permanent: true);
-        return true;
+      if (response.success && context.mounted) {
+        GoRouter.of(context).go(RouteNames.communityListPage);
       } else {
         errorMessage.value = response.payload;
       }
     }
-
-    return false;
   }
 }

@@ -11,6 +11,7 @@ import 'package:communal/routes.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -311,11 +312,9 @@ class CommunitySpecificBookPage extends StatelessWidget {
                           child: Center(
                             child: TextButton(
                               onPressed: () {
-                                Get.toNamed(
-                                  RouteNames.profileOtherPage,
-                                  arguments: {
-                                    'user': book.owner,
-                                  },
+                                context.push(
+                                  RouteNames.profileOtherPage
+                                      .replaceFirst(':userId', book.owner.id),
                                 );
                               },
                               child: Text(
@@ -383,20 +382,11 @@ class CommunitySpecificBookPage extends StatelessWidget {
                   visible: !book.loaned && !loanByCurrentUser,
                   child: ElevatedButton(
                     onPressed: () => controller.requestLoan(context),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'request'.tr,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const VerticalDivider(width: 5),
-                        const Icon(
-                          Icons.back_hand_outlined,
-                        ),
-                      ],
+                    child: Text(
+                      'request'.tr,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
@@ -413,111 +403,108 @@ class CommunitySpecificBookPage extends StatelessWidget {
     return GetBuilder(
       init: CommunitySpecificBookController(bookId: bookId),
       builder: (CommunitySpecificBookController controller) {
-        return CommonResponsivePage(
-          child: Obx(() {
-            if (controller.loading.value) return const CommonLoadingBody();
+        return Obx(() {
+          if (controller.loading.value) return const CommonLoadingBody();
 
-            return Scaffold(
+          return Scaffold(
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            appBar: AppBar(
               backgroundColor: Theme.of(context).colorScheme.surface,
-              appBar: AppBar(
-                backgroundColor: Theme.of(context).colorScheme.surface,
-              ),
-              body: DefaultTabController(
-                length: 2,
-                child: SafeArea(
-                  child: Column(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            _bookTitle(controller.book),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(30),
-                                child: Container(
-                                  decoration: const BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
-                                        offset: Offset(2, 1),
-                                        blurRadius: 20,
-                                        spreadRadius: 12,
-                                        color: Color(0x4C3D3D3D),
-                                      ),
+            ),
+            body: DefaultTabController(
+              length: 2,
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          _bookTitle(controller.book),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(30),
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      offset: Offset(2, 1),
+                                      blurRadius: 20,
+                                      spreadRadius: 12,
+                                      color: Color(0x4C3D3D3D),
+                                    ),
+                                  ],
+                                ),
+                                child: CommonBookCover(controller.book),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                          color: Theme.of(context).colorScheme.surfaceContainer,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: DefaultTabController(
+                            length: 2,
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 50,
+                                  child: TabBar(
+                                    isScrollable: false,
+                                    indicatorColor:
+                                        Theme.of(context).colorScheme.primary,
+                                    labelColor:
+                                        Theme.of(context).colorScheme.primary,
+                                    // overlayColor: Colors.blue,
+                                    labelStyle: const TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16),
+                                    unselectedLabelColor: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withOpacity(0.5),
+                                    dividerColor: Colors.transparent,
+                                    enableFeedback: true,
+                                    tabs: [
+                                      Text('information'.tr),
+                                      Text('reviews'.tr),
                                     ],
                                   ),
-                                  child: CommonBookCover(controller.book),
                                 ),
-                              ),
+                                Expanded(
+                                  child: TabBarView(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    children: [
+                                      _informationTab(controller),
+                                      _reviewsTab(controller),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                      Expanded(
-                        flex: 2,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20),
-                            ),
-                            color:
-                                Theme.of(context).colorScheme.surfaceContainer,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: DefaultTabController(
-                              length: 2,
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    height: 50,
-                                    child: TabBar(
-                                      isScrollable: false,
-                                      indicatorColor:
-                                          Theme.of(context).colorScheme.primary,
-                                      labelColor:
-                                          Theme.of(context).colorScheme.primary,
-                                      // overlayColor: Colors.blue,
-                                      labelStyle: const TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 16),
-                                      unselectedLabelColor: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface
-                                          .withOpacity(0.5),
-                                      dividerColor: Colors.transparent,
-                                      enableFeedback: true,
-                                      tabs: [
-                                        Text('information'.tr),
-                                        Text('reviews'.tr),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: TabBarView(
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      children: [
-                                        _informationTab(controller),
-                                        _reviewsTab(controller),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
+                    )
+                  ],
                 ),
               ),
-            );
-          }),
-        );
+            ),
+          );
+        });
       },
     );
   }

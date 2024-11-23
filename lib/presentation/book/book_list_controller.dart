@@ -76,7 +76,7 @@ class BookListController extends GetxController {
   }
 
   Future<void> goToAddBookPage(BuildContext context) async {
-    context.go('${RouteNames.myBooks}${RouteNames.bookCreatePage}');
+    context.push('${RouteNames.myBooks}${RouteNames.bookCreatePage}');
   }
 
   void onFilterByChanged(int value) {

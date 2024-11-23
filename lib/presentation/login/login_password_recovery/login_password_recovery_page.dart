@@ -15,6 +15,7 @@ class LoginPasswordRecoveryPage extends StatelessWidget {
         children: [
           CommonTextField(
             validator: controller.emailValidator,
+            submitCallback: (_) => controller.onSubmit(),
             callback: controller.onEmailChange,
             label: 'Email',
           ),
