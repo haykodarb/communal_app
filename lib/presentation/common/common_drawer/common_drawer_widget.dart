@@ -1,4 +1,5 @@
 import 'package:atlas_icons/atlas_icons.dart';
+import 'package:communal/backend/login_backend.dart';
 import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
@@ -6,6 +7,7 @@ import 'package:communal/presentation/common/common_drawer/common_drawer_control
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class CommonDrawerWidget extends StatelessWidget {
   const CommonDrawerWidget({super.key});
@@ -351,8 +353,12 @@ class CommonDrawerWidget extends StatelessWidget {
                         text: 'logout'.tr,
                         selected: false,
                         icon: Atlas.double_arrow_right_circle,
-                        callback: () {
-                          controller.handleLogout(context);
+                        callback: () async {
+                          await LoginBackend.logout();
+                          Get.deleteAll();
+                          if (context.mounted) {
+                            context.go(RouteNames.startPage);
+                          }
                         },
                       ),
                       const Divider(height: 10),

@@ -4,7 +4,6 @@ import 'package:communal/presentation/book/book_foreign/book_foreign_controller.
 import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
-import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/common/common_username_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -69,13 +68,13 @@ class BookForeignPage extends StatelessWidget {
                 Row(
                   children: [
                     CommonCircularAvatar(
-                      profile: controller.book.owner,
+                      profile: controller.book!.owner,
                       radius: 20,
                       clickable: true,
                     ),
                     const VerticalDivider(width: 10),
                     Text(
-                      controller.book.owner.username,
+                      controller.book?.owner.username ?? '',
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.primary),
                     ),
@@ -84,7 +83,7 @@ class BookForeignPage extends StatelessWidget {
                 const Divider(height: 5),
                 Expanded(
                   child: Text(
-                    controller.book.review ?? '',
+                    controller.book?.review ?? '',
                     overflow: TextOverflow.fade,
                     style: const TextStyle(
                       fontSize: 13,
@@ -155,11 +154,12 @@ class BookForeignPage extends StatelessWidget {
   Widget _reviewsTab(BookForeignController controller) {
     return Builder(
       builder: (context) {
+        if (controller.book == null) return const SizedBox.shrink();
         return Center(
           child: Obx(
             () {
-              bool ownerHasReview = controller.book.review != null &&
-                  controller.book.review!.isNotEmpty;
+              bool ownerHasReview = controller.book!.review != null &&
+                  controller.book!.review!.isNotEmpty;
 
               if (controller.completedLoans.isEmpty && !ownerHasReview) {
                 return const Center(child: Text('No reviews.'));
@@ -255,7 +255,9 @@ class BookForeignPage extends StatelessWidget {
             }
 
             final Loan? currentLoan = controller.currentLoan.value;
-            final Book book = controller.book;
+
+            final Book book = controller.book!;
+
             bool requestByCurrentUser =
                 currentLoan?.loanee.isCurrentUser ?? false;
 
@@ -302,174 +304,176 @@ class BookForeignPage extends StatelessWidget {
       builder: (BookForeignController controller) {
         return Obx(
           () {
-            return CommonLoadingBody(
-              loading: controller.firstLoad.value,
-              child: Scaffold(
-                appBar: AppBar(),
-                body: DefaultTabController(
-                  length: 2,
-                  child: SafeArea(
-                    child: Stack(
-                      children: [
-                        Column(
+            if (controller.firstLoad.value) return const CommonLoadingBody();
+
+            if (controller.book == null) {
+              return const Center(
+                child: Text('Server error.'),
+              );
+            }
+
+            return Scaffold(
+              appBar: AppBar(),
+              body: DefaultTabController(
+                length: 2,
+                child: SafeArea(
+                  child: Stack(
+                    children: [
+                      Column(
+                        children: [
+                          const SizedBox(
+                            height: 350 / 2,
+                          ),
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainer,
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(30),
+                                  topRight: Radius.circular(30),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
                           children: [
-                            const SizedBox(
-                              height: 350 / 2,
-                            ),
-                            Expanded(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .surfaceContainer,
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(30),
-                                    topRight: Radius.circular(30),
+                            Container(
+                              height: 325,
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    offset: const Offset(2, 1),
+                                    blurRadius: 20,
+                                    spreadRadius: 12,
+                                    color:
+                                        Theme.of(context).colorScheme.surface,
                                   ),
-                                ),
+                                ],
                               ),
+                              child: CommonBookCover(controller.book!),
                             ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Column(
-                            children: [
-                              Container(
-                                height: 325,
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      offset: const Offset(2, 1),
-                                      blurRadius: 20,
-                                      spreadRadius: 12,
-                                      color:
-                                          Theme.of(context).colorScheme.surface,
-                                    ),
-                                  ],
-                                ),
-                                child: CommonBookCover(controller.book),
+                            const Divider(height: 20),
+                            _bookTitle(controller.book!),
+                            const Divider(height: 20),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.surface,
+                                borderRadius: BorderRadius.circular(40),
                               ),
-                              const Divider(height: 20),
-                              _bookTitle(controller.book),
-                              const Divider(height: 20),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.surface,
-                                  borderRadius: BorderRadius.circular(40),
-                                ),
-                                padding: EdgeInsets.symmetric(horizontal: 20),
-                                width: double.maxFinite,
-                                height: 65,
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            'Owner',
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurfaceVariant,
-                                            ),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              width: double.maxFinite,
+                              height: 65,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Owner',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant,
                                           ),
-                                          FittedBox(
-                                            fit: BoxFit.fitWidth,
-                                            child: Text(
-                                              controller.book.owner.username,
-                                              style:
-                                                  const TextStyle(fontSize: 16),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            'Added',
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurfaceVariant,
-                                            ),
-                                          ),
-                                          Text(
-                                            DateFormat('dd/MM/yy',
-                                                    Get.locale?.languageCode)
-                                                .format(
-                                              controller.book.created_at,
-                                            ),
+                                        ),
+                                        FittedBox(
+                                          fit: BoxFit.fitWidth,
+                                          child: Text(
+                                            controller.book!.owner.username,
                                             style:
                                                 const TextStyle(fontSize: 16),
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-                                    Expanded(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            'Status',
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurfaceVariant,
-                                            ),
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Added',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant,
                                           ),
-                                          Obx(() {
-                                            if (controller.loading.value) {
-                                              return const Text('');
-                                            }
-
-                                            final bool requestByCurrentUser =
-                                                controller
-                                                        .currentLoan
-                                                        .value
-                                                        ?.loanee
-                                                        .isCurrentUser ??
-                                                    false;
-
-                                            return Text(
-                                              controller.book.loaned
-                                                  ? (requestByCurrentUser
-                                                      ? 'loaned'.tr
-                                                      : 'unavailable'.tr)
-                                                  : (requestByCurrentUser
-                                                      ? 'requested'.tr
-                                                      : 'available'.tr),
-                                            );
-                                          }),
-                                        ],
-                                      ),
+                                        ),
+                                        Text(
+                                          DateFormat('dd/MM/yy',
+                                                  Get.locale?.languageCode)
+                                              .format(
+                                            controller.book!.created_at,
+                                          ),
+                                          style: const TextStyle(fontSize: 16),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Status',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant,
+                                          ),
+                                        ),
+                                        Obx(() {
+                                          if (controller.loading.value) {
+                                            return const Text('');
+                                          }
+
+                                          final bool requestByCurrentUser =
+                                              controller.currentLoan.value
+                                                      ?.loanee.isCurrentUser ??
+                                                  false;
+
+                                          return Text(
+                                            controller.book!.loaned
+                                                ? (requestByCurrentUser
+                                                    ? 'loaned'.tr
+                                                    : 'unavailable'.tr)
+                                                : (requestByCurrentUser
+                                                    ? 'requested'.tr
+                                                    : 'available'.tr),
+                                          );
+                                        }),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const Divider(height: 20),
-                              Expanded(
-                                child: _reviewsTab(controller),
-                              ),
-                              const Divider(height: 20),
-                              _buttonRow(controller),
-                              const Divider(height: 20),
-                            ],
-                          ),
+                            ),
+                            const Divider(height: 20),
+                            Expanded(
+                              child: _reviewsTab(controller),
+                            ),
+                            const Divider(height: 20),
+                            _buttonRow(controller),
+                            const Divider(height: 20),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),

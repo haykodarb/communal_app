@@ -76,7 +76,7 @@ final GoRoute _myBooksRoutes = GoRoute(
   path: RouteNames.myBooks,
   parentNavigatorKey: _shellNavigatorKey,
   pageBuilder: (context, state) {
-    return NoTransitionPage(
+    return const NoTransitionPage(
       child: BookListPage(),
     );
   },
@@ -114,28 +114,6 @@ final GoRoute _myBooksRoutes = GoRoute(
     ),
   ],
 );
-
-final GoRoute _startRoutes = GoRoute(
-  path: RouteNames.startPage,
-  pageBuilder: (context, state) => const NoTransitionPage(
-    child: StartPage(),
-  ),
-  routes: [
-    GoRoute(
-      path: RouteNames.loginPage,
-      pageBuilder: (context, state) => const NoTransitionPage(
-        child: LoginPage(),
-      ),
-    ),
-    GoRoute(
-      path: RouteNames.registerPage,
-      pageBuilder: (context, state) => const NoTransitionPage(
-        child: RegisterPage(),
-      ),
-    ),
-  ],
-);
-
 final GoRoute _communityRoutes = GoRoute(
   path: RouteNames.communityListPage,
   parentNavigatorKey: _shellNavigatorKey,
@@ -296,6 +274,27 @@ final GoRoute _myProfileRoutes = GoRoute(
   ],
 );
 
+final GoRoute _startRoutes = GoRoute(
+  path: RouteNames.startPage,
+  pageBuilder: (context, state) => const NoTransitionPage(
+    child: StartPage(),
+  ),
+  routes: [
+    GoRoute(
+      path: RouteNames.loginPage,
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: LoginPage(),
+      ),
+    ),
+    GoRoute(
+      path: RouteNames.registerPage,
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: RegisterPage(),
+      ),
+    ),
+  ],
+);
+
 final List<RouteBase> routes = <RouteBase>[
   _startRoutes,
   ShellRoute(
@@ -307,16 +306,17 @@ final List<RouteBase> routes = <RouteBase>[
 
       return null;
     },
-    builder: (context, state, child) {
+    pageBuilder: (context, state, child) {
       print(state.matchedLocation);
       if (!Get.isRegistered<CommonDrawerController>()) {
         Get.put(
           CommonDrawerController(initialRoute: state.matchedLocation),
-          permanent: true,
         );
       }
 
-      return CommonResponsivePage(child: child);
+      return NoTransitionPage(
+        child: CommonResponsivePage(child: child),
+      );
     },
     routes: [
       _loansRoutes,

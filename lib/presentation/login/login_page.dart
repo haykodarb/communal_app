@@ -1,6 +1,7 @@
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/login/login_controller.dart';
@@ -99,6 +100,7 @@ class LoginPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         IconButton(
                           onPressed: () {
@@ -107,12 +109,17 @@ class LoginPage extends StatelessWidget {
                           icon: const Icon(Icons.chevron_left_rounded),
                           iconSize: 36,
                         ),
-                        Text(
-                          'sign-in'.tr,
-                          textAlign: TextAlign.left,
-                          style: GoogleFonts.lora(
-                            fontSize: 40,
-                            fontWeight: FontWeight.w700,
+                        Expanded(
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              'sign-in'.tr,
+                              textAlign: TextAlign.left,
+                              style: GoogleFonts.lora(
+                                fontSize: 40,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
                           ),
                         ),
                       ],

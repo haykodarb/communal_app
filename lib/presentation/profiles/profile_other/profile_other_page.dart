@@ -6,7 +6,6 @@ import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
-import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/common/common_vertical_book_card.dart';
 import 'package:communal/presentation/profiles/profile_other/profile_other_controller.dart';
 import 'package:communal/routes.dart';
@@ -208,9 +207,8 @@ class ProfileOtherPage extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         builderDelegate: PagedChildBuilderDelegate(
           noItemsFoundIndicatorBuilder: (context) {
-            return const SizedBox(
-              height: 100,
-              child: Center(child: Text('No items found')),
+            return const Center(
+              child: Text('No items found'),
             );
           },
           itemBuilder: (context, item, index) {

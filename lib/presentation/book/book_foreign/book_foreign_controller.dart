@@ -11,13 +11,12 @@ import 'package:communal/presentation/loans/loans_controller.dart';
 import 'package:communal/presentation/profiles/profile_other/profile_other_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 
 class BookForeignController extends GetxController {
   BookForeignController({required this.bookId});
 
   final String bookId;
-  late Book book;
+  Book? book;
   final RxString message = ''.obs;
 
   CommunityBooksController? communityBookController;
@@ -45,27 +44,22 @@ class BookForeignController extends GetxController {
     }
 
     if (Get.isRegistered<CommunityBooksController>()) {
-      print('CommunityBooksController exists');
       communityBookController = Get.find<CommunityBooksController>();
     }
 
     if (Get.isRegistered<ProfileOtherController>()) {
-      print('ProfileOtherController exists');
       profileOtherController = Get.find<ProfileOtherController>();
     }
 
-    Book? tmp =
-        communityBookController?.pagingController.itemList?.firstWhereOrNull(
+    book = communityBookController?.pagingController.itemList?.firstWhereOrNull(
       (element) => element.id == bookId,
     );
 
-    tmp ??= profileOtherController?.userBooks.firstWhereOrNull(
+    book ??= profileOtherController?.userBooks.firstWhereOrNull(
       (element) => element.id == bookId,
     );
 
-    if (tmp != null) {
-      book = tmp;
-    } else {
+    if (book == null) {
       final BackendResponse response = await BooksBackend.getBookById(bookId);
       if (response.success) {
         book = response.payload;
@@ -73,6 +67,7 @@ class BookForeignController extends GetxController {
     }
 
     firstLoad.value = false;
+
     checkLoanStatus();
 
     loadingCarousel.value = true;

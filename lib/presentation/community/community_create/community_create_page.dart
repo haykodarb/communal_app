@@ -3,6 +3,7 @@ import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/community/community_create/community_create_controller.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -90,6 +91,26 @@ class CommunityCreatePage extends StatelessWidget {
                                             .primary,
                                         width: 2)
                                     : null;
+
+                                if (kIsWeb) {
+                                  return InkWell(
+                                    onTap: () => controller.takePicture(
+                                        ImageSource.gallery, context),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: buttonBorder,
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: buttonBackground,
+                                      ),
+                                      padding: const EdgeInsets.all(13),
+                                      child: Icon(
+                                        Atlas.image_gallery,
+                                        color: iconColor,
+                                        size: 24,
+                                      ),
+                                    ),
+                                  );
+                                }
 
                                 return Column(
                                   mainAxisAlignment:

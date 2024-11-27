@@ -5,6 +5,7 @@ import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/profiles/profile_own/profile_own_edit/profile_own_edit_controller.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -101,29 +102,9 @@ class ProfileOwnEditPage extends StatelessWidget {
                         ),
                       ),
                       const Divider(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          InkWell(
-                            onTap: () => controller.takePicture(
-                              ImageSource.camera,
-                              context,
-                            ),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                              padding: const EdgeInsets.all(13),
-                              child: Icon(
-                                Atlas.camera,
-                                color: Theme.of(context).colorScheme.onPrimary,
-                                size: 24,
-                              ),
-                            ),
-                          ),
-                          const VerticalDivider(width: 25),
-                          InkWell(
+                      Builder(builder: (context) {
+                        if (kIsWeb) {
+                          return InkWell(
                             onTap: () => controller.takePicture(
                               ImageSource.gallery,
                               context,
@@ -140,9 +121,54 @@ class ProfileOwnEditPage extends StatelessWidget {
                                 size: 24,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
+                          );
+                        }
+
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            InkWell(
+                              onTap: () => controller.takePicture(
+                                ImageSource.camera,
+                                context,
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                                padding: const EdgeInsets.all(13),
+                                child: Icon(
+                                  Atlas.camera,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
+                                  size: 24,
+                                ),
+                              ),
+                            ),
+                            const VerticalDivider(width: 25),
+                            InkWell(
+                              onTap: () => controller.takePicture(
+                                ImageSource.gallery,
+                                context,
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                                padding: const EdgeInsets.all(13),
+                                child: Icon(
+                                  Atlas.image_gallery,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
+                                  size: 24,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
                       const Divider(height: 30),
                       Form(
                         child: Column(

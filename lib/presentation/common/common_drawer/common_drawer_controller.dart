@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:communal/backend/login_backend.dart';
 import 'package:communal/backend/messages_backend.dart';
 import 'package:communal/backend/notifications_backend.dart';
 import 'package:communal/backend/realtime_backend.dart';
@@ -49,6 +47,8 @@ class CommonDrawerController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
 
+    print('Init runs');
+
     currentRoute.value = '/${initialRoute.split('/')[1]}';
 
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -82,6 +82,8 @@ class CommonDrawerController extends GetxController {
   @override
   Future<void> onClose() async {
     await realtimeSubscription?.cancel();
+
+    print('Close runs');
 
     super.onClose();
   }
@@ -150,11 +152,5 @@ class CommonDrawerController extends GetxController {
     Get.changeThemeMode(newThemeMode);
 
     UserPreferences.setSelectedThemeMode(newThemeMode);
-  }
-
-  void handleLogout(BuildContext context) {
-    LoginBackend.logout();
-    Get.deleteAll();
-    context.go(RouteNames.startPage);
   }
 }

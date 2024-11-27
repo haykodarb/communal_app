@@ -13,7 +13,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 class BookOwnedController extends GetxController {
-  BookOwnedController({required this.bookId, this.inheritedBook});
+  BookOwnedController({required this.bookId});
 
   final String bookId;
   Book? inheritedBook;
@@ -61,13 +61,14 @@ class BookOwnedController extends GetxController {
         profileOwnController?.booksPagingController.itemList?.firstWhereOrNull(
       (element) => element.id == bookId,
     );
+
     if (inheritedBook == null) {
       firstLoad.value = true;
       final BackendResponse response = await BooksBackend.getBookById(bookId);
-      firstLoad.value = false;
       if (response.success) {
         book.value = response.payload;
       }
+      firstLoad.value = false;
     } else {
       book.value = inheritedBook!;
     }

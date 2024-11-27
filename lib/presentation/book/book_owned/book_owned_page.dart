@@ -4,22 +4,18 @@ import 'package:communal/presentation/book/book_owned/book_owned_controller.dart
 import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
-import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/common/common_username_button.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class BookOwnedPage extends StatelessWidget {
   const BookOwnedPage({
     super.key,
     required this.bookId,
-    this.inheritedBook,
   });
 
   final String bookId;
-  final Book? inheritedBook;
 
   Widget _bookTitle(Book book) {
     return Builder(
@@ -335,7 +331,7 @@ class BookOwnedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: BookOwnedController(bookId: bookId, inheritedBook: inheritedBook),
+      init: BookOwnedController(bookId: bookId),
       builder: (BookOwnedController controller) {
         return Obx(
           () {

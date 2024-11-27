@@ -2,6 +2,7 @@ import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:communal/presentation/start/start_controller.dart';
@@ -14,7 +15,7 @@ class StartPage extends StatelessWidget {
   const StartPage({super.key});
 
   static const List<Locale> _locales = [Locale('en', 'US'), Locale('es', 'ES')];
-  static const List<String> _languages = ['Español', 'English'];
+  static const List<String> _languages = ['English', 'Español'];
 
   Widget _dropdownLanguageButton(StartController controller) {
     return Builder(
@@ -214,18 +215,21 @@ class StartPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset(
-                'assets/crow.svg',
-                height: 300,
-                fit: BoxFit.contain,
+              Expanded(
+                child: SvgPicture.asset(
+                  'assets/crow.svg',
+                  fit: BoxFit.contain,
+                ),
               ),
-              Text(
-                'Communal',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.russoOne(
-                  fontSize: 50,
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.primary,
+              FittedBox(
+                child: Text(
+                  'Communal',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.lora(
+                    fontSize: 50,
+                    fontWeight: FontWeight.w900,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
               ),
             ],
@@ -249,31 +253,33 @@ class StartPage extends StatelessWidget {
                 horizontal: 30,
                 vertical: 30,
               ),
-              child: SafeArea(
-                child: SizedBox(
-                  width: 600,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: SizedBox(
+                width: 600,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _dropdownLanguageButton(controller),
+                        _changeThemeButton(controller),
+                      ],
+                    ),
+                    Flexible(
+                      flex: 2,
+                      child: _logo(),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Column(
                         children: [
-                          _dropdownLanguageButton(controller),
-                          _changeThemeButton(controller),
+                          _loginButton(controller),
+                          const Divider(height: 10),
+                          _registerButton(controller),
                         ],
                       ),
-                      const Divider(height: 20),
-                      Expanded(
-                        flex: 3,
-                        child: _logo(),
-                      ),
-                      _loginButton(controller),
-                      const Divider(height: 10),
-                      _registerButton(controller),
-                      const Expanded(child: SizedBox()),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),

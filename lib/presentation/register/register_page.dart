@@ -168,12 +168,17 @@ class RegisterPage extends StatelessWidget {
                               icon: const Icon(Icons.chevron_left_rounded),
                               iconSize: 36,
                             ),
-                            Text(
-                              'create-account'.tr,
-                              textAlign: TextAlign.left,
-                              style: GoogleFonts.lora(
-                                fontSize: 40,
-                                fontWeight: FontWeight.w700,
+                            Expanded(
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  'create-account'.tr,
+                                  textAlign: TextAlign.left,
+                                  style: GoogleFonts.lora(
+                                    fontSize: 40,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
                               ),
                             ),
                           ],
