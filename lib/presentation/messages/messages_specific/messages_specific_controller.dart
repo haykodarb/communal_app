@@ -7,6 +7,7 @@ import 'package:communal/models/message.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/models/realtime_message.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
+import 'package:communal/presentation/messages/messages_controller.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -14,11 +15,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class MessagesSpecificController extends GetxController {
   MessagesSpecificController({
     required this.userId,
-    this.receivedProfile,
   });
 
   final String userId;
-  Profile? receivedProfile;
   final Rxn<Profile> userProfile = Rxn<Profile>();
 
   final TextEditingController textEditingController = TextEditingController();
@@ -34,6 +33,8 @@ class MessagesSpecificController extends GetxController {
 
   final ScrollController scrollController = ScrollController();
 
+  MessagesController? messagesController;
+
   Timer? debounceTimer;
 
   int currentIndex = 0;
@@ -42,26 +43,44 @@ class MessagesSpecificController extends GetxController {
 
   @override
   Future<void> onInit() async {
+    if (Get.isRegistered<MessagesController>()) {
+      messagesController = Get.find<MessagesController>();
+    }
+
     loading.value = true;
 
-    if (receivedProfile == null) {
-      final BackendResponse profileResponse =
-          await UsersBackend.getUserProfile(userId);
+    if (messagesController != null) {
+      Profile? profile;
+
+      for (Rx<Message> element in messagesController!.listViewController.itemList) {
+        if (element.value.sender.id == userId) {
+          profile = element.value.sender;
+          break;
+        }
+        if (element.value.receiver.id == userId) {
+          profile = element.value.receiver;
+          break;
+        }
+      }
+
+      if (profile != null) {
+        userProfile.value = profile;
+      }
+    }
+
+    if (userProfile.value == null) {
+      final BackendResponse profileResponse = await UsersBackend.getUserProfile(userId);
 
       if (profileResponse.success) {
         userProfile.value = profileResponse.payload;
       }
-    } else {
-      userProfile.value = receivedProfile;
     }
 
-    final Stream<RealtimeMessage> stream =
-        RealtimeBackend.streamController.stream;
+    final Stream<RealtimeMessage> stream = RealtimeBackend.streamController.stream;
 
     streamSubscription = stream.listen(messageChangeHandler);
 
-    final BackendResponse messagesResponse =
-        await MessagesBackend.getMessagesWithUser(userId, currentIndex);
+    final BackendResponse messagesResponse = await MessagesBackend.getMessagesWithUser(userId, currentIndex);
 
     currentIndex++;
 
@@ -90,8 +109,7 @@ class MessagesSpecificController extends GetxController {
   }
 
   Future<void> scrollControllerListener() async {
-    if (scrollController.position.pixels >
-        scrollController.position.maxScrollExtent * 0.9) {
+    if (scrollController.position.pixels > scrollController.position.maxScrollExtent * 0.9) {
       if (loadingMore) {
         return;
       }
@@ -117,8 +135,7 @@ class MessagesSpecificController extends GetxController {
   }
 
   Future<bool> getMoreMessages() async {
-    final BackendResponse response =
-        await MessagesBackend.getMessagesWithUser(userId, currentIndex);
+    final BackendResponse response = await MessagesBackend.getMessagesWithUser(userId, currentIndex);
 
     if (response.success) {
       final List<Message> newMessages = response.payload;
@@ -141,31 +158,21 @@ class MessagesSpecificController extends GetxController {
     final Message message = Message(
       id: realtimeMessage.new_row['id'],
       created_at: DateTime.parse(realtimeMessage.new_row['created_at']),
-      sender: Profile(
-          id: realtimeMessage.new_row['sender'],
-          username: '',
-          show_email: false),
-      receiver: Profile(
-          id: realtimeMessage.new_row['receiver'],
-          username: '',
-          show_email: false),
+      sender: Profile(id: realtimeMessage.new_row['sender'], username: '', show_email: false),
+      receiver: Profile(id: realtimeMessage.new_row['receiver'], username: '', show_email: false),
       content: realtimeMessage.new_row['content'],
       is_read: realtimeMessage.new_row['is_read'],
     );
 
-    final bool isCurrentChat =
-        message.receiver.id == userId && message.sender.isCurrentUser ||
-            message.sender.id == userId && message.receiver.isCurrentUser;
+    final bool isCurrentChat = message.receiver.id == userId && message.sender.isCurrentUser ||
+        message.sender.id == userId && message.receiver.isCurrentUser;
 
     if (!isCurrentChat) return;
 
-    final bool messageExists =
-        messages.any((element) => element.id == message.id);
+    final bool messageExists = messages.any((element) => element.id == message.id);
 
     if (messageExists) {
-      messages
-          .firstWhereOrNull((element) => element.id == message.id)
-          ?.is_read = message.is_read;
+      messages.firstWhereOrNull((element) => element.id == message.id)?.is_read = message.is_read;
     } else if (!message.sender.isCurrentUser) {
       messages.insert(0, message);
       MessagesBackend.markMessagesWithUserAsRead(userId);
@@ -204,12 +211,10 @@ class MessagesSpecificController extends GetxController {
 
     messages.insert(0, newMessage);
 
-    final BackendResponse response =
-        await MessagesBackend.submitMessage(userId, typedMessage.value);
+    final BackendResponse response = await MessagesBackend.submitMessage(userId, typedMessage.value);
 
     if (response.success) {
-      final int index =
-          messages.indexWhere((element) => element.id == randomID);
+      final int index = messages.indexWhere((element) => element.id == randomID);
 
       messages[index] = response.payload;
     } else {

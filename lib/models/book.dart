@@ -50,4 +50,6 @@ class Book {
         loaned = true,
         public = true,
         owner = Profile.empty();
+
+  get value => null;
 }

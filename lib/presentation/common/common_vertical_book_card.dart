@@ -10,12 +10,14 @@ class CommonVerticalBookCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
       clipBehavior: Clip.hardEdge,
       margin: EdgeInsets.zero,
       child: Container(
         padding: const EdgeInsets.all(5),
-        width: 180,
+        width: double.maxFinite,
         child: Column(
           children: [
             CommonBookCover(book),

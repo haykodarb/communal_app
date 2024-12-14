@@ -4,12 +4,11 @@ import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/common/common_filter_bottomsheet.dart';
 import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
-import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/presentation/common/common_search_bar.dart';
 import 'package:communal/presentation/loans/loans_controller.dart';
 import 'package:communal/responsive.dart';
 import 'package:communal/routes.dart';
-import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -60,13 +59,7 @@ class LoansPage extends StatelessWidget {
         const Divider(height: 20),
         CommonFilterRow(
           title: 'Filtrar por estado',
-          options: const [
-            'Todos',
-            'Pendiente',
-            'Aceptado',
-            'Finalizado',
-            'Rechazado'
-          ],
+          options: const ['Todos', 'Pendiente', 'Aceptado', 'Finalizado', 'Rechazado'],
           initialIndex: filterByStateIndex,
           onIndexChange: controller.onFilterByStatusChanged,
         ),
@@ -92,8 +85,7 @@ class LoansPage extends StatelessWidget {
           },
           child: Card(
             margin: EdgeInsets.zero,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             child: Container(
               height: 160,
               padding: const EdgeInsets.all(20),
@@ -120,17 +112,14 @@ class LoansPage extends StatelessWidget {
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                             height: 1.2,
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                         const Expanded(child: Divider(height: 5)),
                         Row(
                           children: [
                             Text(
-                              loan.loanee.isCurrentUser
-                                  ? loan.book.owner.username
-                                  : loan.loanee.username,
+                              loan.loanee.isCurrentUser ? loan.book.owner.username : loan.loanee.username,
                               style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
@@ -141,18 +130,11 @@ class LoansPage extends StatelessWidget {
                             Container(
                               decoration: BoxDecoration(
                                 color: loan.loanee.isCurrentUser
-                                    ? Theme.of(context)
-                                        .colorScheme
-                                        .tertiary
-                                        .withOpacity(0.25)
-                                    : Theme.of(context)
-                                        .colorScheme
-                                        .primary
-                                        .withOpacity(0.25),
+                                    ? Theme.of(context).colorScheme.tertiary.withOpacity(0.25)
+                                    : Theme.of(context).colorScheme.primary.withOpacity(0.25),
                                 borderRadius: BorderRadius.circular(40),
                               ),
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 2, horizontal: 10),
+                              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
                               child: Text(
                                 loan.loanee.isCurrentUser ? 'Owner' : 'Loanee',
                                 style: const TextStyle(
@@ -177,8 +159,7 @@ class LoansPage extends StatelessWidget {
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                             height: 1.2,
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                         const Divider(height: 5),
@@ -188,8 +169,7 @@ class LoansPage extends StatelessWidget {
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                             height: 1.2,
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ],
@@ -208,6 +188,27 @@ class LoansPage extends StatelessWidget {
     );
   }
 
+  Widget _searchRow(LoansController controller) {
+    return Builder(
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.only(left: 10, right: 10, bottom: 2),
+          child: CommonSearchBar(
+            searchCallback: controller.onSearchTextChanged,
+            filterCallback: () {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                builder: (context) => _bottomSheet(controller),
+              );
+            },
+            focusNode: FocusNode(),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
@@ -219,68 +220,25 @@ class LoansPage extends StatelessWidget {
             appBar: AppBar(
               title: const Text('Loans'),
             ),
-            drawer: Responsive.isMobile(context)
-                ? const CommonDrawerWidget()
-                : null,
-            body: ExtendedNestedScrollView(
-              floatHeaderSlivers: true,
-              headerSliverBuilder: (context, innerBoxIsScrolled) {
-                return [
-                  SliverAppBar(
-                    title: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: CommonSearchBar(
-                        focusNode: FocusNode(),
-                        searchCallback: controller.onSearchTextChanged,
-                        filterCallback: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            builder: (context) => _bottomSheet(controller),
-                          );
-                        },
-                      ),
-                    ),
-                    titleSpacing: 0,
-                    toolbarHeight: 55,
-                    centerTitle: true,
-                    automaticallyImplyLeading: false,
-                    floating: true,
-                  ),
-                ];
-              },
-              body: Obx(
-                () => CommonLoadingBody(
-                  loading: controller.firstLoad.value,
-                  child: Obx(
-                    () {
-                      if (controller.loanList.isEmpty) {
-                        return Container(
-                          padding: const EdgeInsets.all(20),
-                          alignment: Alignment.center,
-                          child: const Text(
-                            'You have no outgoing or incoming loans.\nGet started by joining a community and requesting books from your peers.',
-                            textAlign: TextAlign.center,
-                          ),
-                        );
-                      }
-                      return ListView.separated(
-                        padding: const EdgeInsets.all(10),
-                        separatorBuilder: (context, index) =>
-                            const Divider(height: 5),
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: controller.loanList.length,
-                        itemBuilder: (context, index) {
-                          final Loan loan = controller.loanList[index];
-                          return CommonKeepaliveWrapper(
-                              child: _loanCard(loan, controller));
-                        },
-                      );
-                    },
-                  ),
+            drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
+            body: CustomScrollView(
+              controller: controller.scrollController,
+              slivers: [
+                SliverAppBar(
+                  title: _searchRow(controller),
+                  titleSpacing: 0,
+                  toolbarHeight: 55,
+                  centerTitle: true,
+                  automaticallyImplyLeading: false,
+                  floating: true,
                 ),
-              ),
+                CommonListView<Loan>(
+                  childBuilder: (Loan loan) => CommonKeepaliveWrapper(child: _loanCard(loan, controller)),
+                  controller: controller.listViewController,
+                  scrollController: controller.scrollController,
+                  isSliver: true,
+                ),
+              ],
             ),
           ),
         );

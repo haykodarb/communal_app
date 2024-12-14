@@ -1,3 +1,4 @@
+import 'package:communal/main.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/book/book_owned/book_owned_controller.dart';
@@ -5,8 +6,10 @@ import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_username_button.dart';
+import 'package:communal/routes.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class BookOwnedPage extends StatelessWidget {
@@ -39,8 +42,7 @@ class BookOwnedPage extends StatelessWidget {
                   book.author,
                   style: TextStyle(
                     fontSize: 20,
-                    color:
-                        Theme.of(context).colorScheme.onSurface.withAlpha(150),
+                    color: Theme.of(context).colorScheme.onSurface.withAlpha(150),
                     fontWeight: FontWeight.w400,
                   ),
                   textAlign: TextAlign.center,
@@ -60,8 +62,7 @@ class BookOwnedPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: InkWell(
             onTap: () {
-              controller.expandCarouselItem.value =
-                  !controller.expandCarouselItem.value;
+              controller.expandCarouselItem.value = !controller.expandCarouselItem.value;
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,8 +77,7 @@ class BookOwnedPage extends StatelessWidget {
                     const VerticalDivider(width: 10),
                     Text(
                       controller.book.value.owner.username,
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary),
+                      style: TextStyle(color: Theme.of(context).colorScheme.primary),
                     ),
                   ],
                 ),
@@ -110,8 +110,7 @@ class BookOwnedPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: InkWell(
             onTap: () {
-              controller.expandCarouselItem.value =
-                  !controller.expandCarouselItem.value;
+              controller.expandCarouselItem.value = !controller.expandCarouselItem.value;
             },
             child: Container(
               decoration: BoxDecoration(
@@ -137,11 +136,8 @@ class BookOwnedPage extends StatelessWidget {
                     child: Obx(
                       () => Text(
                         loan.review ?? '',
-                        overflow: controller.expandCarouselItem.value
-                            ? TextOverflow.visible
-                            : TextOverflow.ellipsis,
-                        maxLines:
-                            controller.expandCarouselItem.value ? null : 4,
+                        overflow: controller.expandCarouselItem.value ? TextOverflow.visible : TextOverflow.ellipsis,
+                        maxLines: controller.expandCarouselItem.value ? null : 4,
                       ),
                     ),
                   ),
@@ -164,11 +160,9 @@ class BookOwnedPage extends StatelessWidget {
                 return const CommonLoadingBody();
               }
 
-              bool ownerHasReview = controller.book.value.review != null &&
-                  controller.book.value.review!.isNotEmpty;
+              bool ownerHasReview = controller.book.value.review != null && controller.book.value.review!.isNotEmpty;
 
-              final int reviewsCount =
-                  controller.completedLoans.length + (ownerHasReview ? 1 : 0);
+              final int reviewsCount = controller.completedLoans.length + (ownerHasReview ? 1 : 0);
 
               if (reviewsCount == 0) {
                 return const Center(child: Text('No reviews.'));
@@ -181,8 +175,7 @@ class BookOwnedPage extends StatelessWidget {
                       children: [
                         Obx(
                           () {
-                            if (controller.carouselIndex.value == 0 ||
-                                reviewsCount <= 1) {
+                            if (controller.carouselIndex.value == 0 || reviewsCount <= 1) {
                               return const SizedBox();
                             }
 
@@ -199,8 +192,7 @@ class BookOwnedPage extends StatelessWidget {
                         ),
                         Expanded(
                           child: PageView.builder(
-                            itemCount: controller.completedLoans.length +
-                                (ownerHasReview ? 1 : 0),
+                            itemCount: controller.completedLoans.length + (ownerHasReview ? 1 : 0),
                             scrollDirection: Axis.horizontal,
                             controller: controller.reviewsPageController,
                             onPageChanged: (index) {
@@ -220,9 +212,7 @@ class BookOwnedPage extends StatelessWidget {
                         ),
                         Obx(
                           () {
-                            if (controller.carouselIndex.value ==
-                                    reviewsCount - 1 ||
-                                reviewsCount < 2) {
+                            if (controller.carouselIndex.value == reviewsCount - 1 || reviewsCount < 2) {
                               return const SizedBox();
                             }
 
@@ -241,16 +231,13 @@ class BookOwnedPage extends StatelessWidget {
                     ),
                   ),
                   Visibility(
-                    visible: controller.completedLoans.length +
-                            (ownerHasReview ? 1 : 0) >=
-                        2,
+                    visible: controller.completedLoans.length + (ownerHasReview ? 1 : 0) >= 2,
                     child: Container(
                       alignment: Alignment.center,
                       height: 10,
                       width: double.maxFinite,
                       child: ListView.builder(
-                        itemCount: controller.completedLoans.length +
-                            (ownerHasReview ? 1 : 0),
+                        itemCount: controller.completedLoans.length + (ownerHasReview ? 1 : 0),
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
@@ -262,10 +249,7 @@ class BookOwnedPage extends StatelessWidget {
                                 shape: BoxShape.circle,
                                 color: index == controller.carouselIndex.value
                                     ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context)
-                                        .colorScheme
-                                        .primary
-                                        .withOpacity(0.25),
+                                    : Theme.of(context).colorScheme.primary.withOpacity(0.25),
                               ),
                             ),
                           );
@@ -288,8 +272,7 @@ class BookOwnedPage extends StatelessWidget {
         return Stack(
           children: [
             Visibility(
-              visible: (!controller.book.value.loaned ||
-                  !controller.book.value.public),
+              visible: (!controller.book.value.loaned || !controller.book.value.public),
               child: Obx(
                 () {
                   return CommonLoadingBody(
@@ -318,7 +301,11 @@ class BookOwnedPage extends StatelessWidget {
             Visibility(
               visible: controller.book.value.loaned,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  if (controller.currentLoan.value != null) {
+                    context.push('${RouteNames.loansPage}/${controller.currentLoan.value!.id}');
+                  }
+                },
                 child: const Text('View loan'),
               ),
             ),
@@ -351,9 +338,7 @@ class BookOwnedPage extends StatelessWidget {
                             flex: 3,
                             child: Container(
                               decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .surfaceContainer,
+                                color: Theme.of(context).colorScheme.surfaceContainer,
                                 borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(30),
                                   topRight: Radius.circular(30),
@@ -376,8 +361,7 @@ class BookOwnedPage extends StatelessWidget {
                                       offset: const Offset(2, 1),
                                       blurRadius: 20,
                                       spreadRadius: 12,
-                                      color:
-                                          Theme.of(context).colorScheme.surface,
+                                      color: Theme.of(context).colorScheme.surface,
                                     ),
                                   ],
                                 ),
@@ -396,8 +380,7 @@ class BookOwnedPage extends StatelessWidget {
                               height: 65,
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -406,9 +389,7 @@ class BookOwnedPage extends StatelessWidget {
                                         'Owner',
                                         style: TextStyle(
                                           fontSize: 12,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurfaceVariant,
+                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                                         ),
                                       ),
                                       FittedBox(
@@ -427,16 +408,12 @@ class BookOwnedPage extends StatelessWidget {
                                         'Added',
                                         style: TextStyle(
                                           fontSize: 12,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurfaceVariant,
+                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                                         ),
                                       ),
                                       Text(
-                                        DateFormat('dd/MM/yy',
-                                                Get.locale?.languageCode)
-                                            .format(controller
-                                                .book.value.created_at),
+                                        DateFormat('dd/MM/yy', Get.locale?.languageCode)
+                                            .format(controller.book.value.created_at),
                                         style: const TextStyle(fontSize: 16),
                                       ),
                                     ],
@@ -448,15 +425,11 @@ class BookOwnedPage extends StatelessWidget {
                                         'Status',
                                         style: TextStyle(
                                           fontSize: 12,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurfaceVariant,
+                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                                         ),
                                       ),
                                       Text(
-                                        controller.book.value.loaned
-                                            ? 'Loaned'
-                                            : 'Available',
+                                        controller.book.value.loaned ? 'Loaned' : 'Available',
                                         style: const TextStyle(fontSize: 16),
                                       ),
                                     ],

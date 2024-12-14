@@ -1,25 +1,78 @@
+import 'package:communal/backend/login_backend.dart';
+import 'package:communal/models/backend_response.dart';
+import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
-import 'package:communal/presentation/login/login_password_recovery/login_password_recovery_controller.dart';
-import 'package:get/get.dart';
+import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:string_validator/string_validator.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class LoginPasswordRecoveryPage extends StatelessWidget {
-  const LoginPasswordRecoveryPage({super.key});
+class PasswordResetController extends GetxController {
+  RxBool loading = false.obs;
+  String password = '';
 
-  Widget _recoveryForm(LoginPasswordRecoveryController controller, BuildContext context) {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  void onPasswordChange(String value) {
+    password = value;
+  }
+
+  Future<void> onSubmit(BuildContext context) async {
+    final bool validForm = formKey.currentState?.validate() ?? false;
+
+    if (validForm) {
+      loading.value = true;
+      final BackendResponse response = await LoginBackend.updateUserPassword(password);
+
+      if (context.mounted) {
+        await CommonAlertDialog(title: response.payload).open(context);
+
+        await Supabase.instance.client.auth.signOut();
+
+        if (context.mounted) {
+          context.go(RouteNames.startPage + RouteNames.loginPage);
+        }
+      }
+
+      loading.value = false;
+    }
+  }
+
+  String? passwordValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter something.';
+    }
+
+    if (value.length < 6) {
+      return 'Password must be at least 6 characters long';
+    }
+
+    if (!value.isAscii) {
+      return 'Password should only include ASCII characters';
+    }
+
+    return null;
+  }
+}
+
+class PasswordResetPage extends StatelessWidget {
+  const PasswordResetPage({super.key});
+
+  Widget _recoveryForm(PasswordResetController controller, BuildContext context) {
     return Form(
       key: controller.formKey,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          CommonTextField(
-            validator: controller.emailValidator,
+          CommonPasswordField(
+            validator: controller.passwordValidator,
             submitCallback: (_) => controller.onSubmit(context),
-            callback: controller.onEmailChange,
-            label: 'email'.tr,
+            callback: controller.onPasswordChange,
+            label: 'password'.tr,
           ),
           const Divider(height: 30),
           Obx(
@@ -40,8 +93,22 @@ class LoginPasswordRecoveryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: LoginPasswordRecoveryController(),
-      builder: (LoginPasswordRecoveryController controller) {
+      init: PasswordResetController(),
+      initState: (state) async {
+        Uri? uri = GoRouter.of(context).state?.uri;
+        if (uri != null) {
+          try {
+            await Supabase.instance.client.auth.getSessionFromUrl(uri);
+          } catch (e) {
+            if (context.mounted) {
+              await const CommonAlertDialog(title: 'Wrong link.\nPlease re-request a password reset.').open(context);
+            }
+          }
+        } else {
+          await const CommonAlertDialog(title: 'Wrong link. Please re-request a password reset.').open(context);
+        }
+      },
+      builder: (PasswordResetController controller) {
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.surface,
           resizeToAvoidBottomInset: false,
@@ -74,7 +141,7 @@ class LoginPasswordRecoveryPage extends StatelessWidget {
                               alignment: Alignment.topLeft,
                               fit: BoxFit.scaleDown,
                               child: Text(
-                                'recover-password'.tr,
+                                'Reset password',
                                 textAlign: TextAlign.left,
                                 style: GoogleFonts.lora(
                                   fontSize: 36,
@@ -85,7 +152,7 @@ class LoginPasswordRecoveryPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const Divider(height: 30),
+                      const Divider(height: 40),
                       _recoveryForm(controller, context),
                     ],
                   ),

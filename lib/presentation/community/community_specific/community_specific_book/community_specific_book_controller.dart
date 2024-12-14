@@ -44,12 +44,11 @@ class CommunitySpecificBookController extends GetxController {
       profileOtherController = Get.find<ProfileOtherController>();
     }
 
-    Book? tmp =
-        communityBookController?.pagingController.itemList?.firstWhereOrNull(
+    Book? tmp = communityBookController?.listViewController.itemList.firstWhereOrNull(
       (element) => element.id == bookId,
     );
 
-    tmp ??= profileOtherController?.userBooks.firstWhereOrNull(
+    tmp ??= profileOtherController?.bookListController.itemList.firstWhereOrNull(
       (element) => element.id == bookId,
     );
 
@@ -69,8 +68,7 @@ class CommunitySpecificBookController extends GetxController {
 
     completedLoans.clear();
 
-    final BackendResponse response =
-        await LoansBackend.getCompletedLoansForItem(bookId: bookId);
+    final BackendResponse response = await LoansBackend.getCompletedLoansForItem(bookId: bookId);
 
     if (response.success) {
       completedLoans.addAll(response.payload);
@@ -84,8 +82,7 @@ class CommunitySpecificBookController extends GetxController {
   Future<void> checkLoanStatus() async {
     loading.value = true;
 
-    final BackendResponse currentLoanResponse =
-        await LoansBackend.getCurrentLoanForBook(bookId);
+    final BackendResponse currentLoanResponse = await LoansBackend.getCurrentLoanForBook(bookId);
 
     if (currentLoanResponse.success) {
       currentLoan.value = currentLoanResponse.payload;

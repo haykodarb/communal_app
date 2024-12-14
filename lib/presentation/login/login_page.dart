@@ -1,7 +1,6 @@
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/login/login_controller.dart';
@@ -47,7 +46,9 @@ class LoginPage extends StatelessWidget {
                   textAlign: TextAlign.right,
                 ),
                 onPressed: () {
-                  context.push(RouteNames.loginRecoveryPage);
+                  context.push(
+                    RouteNames.startPage + RouteNames.loginPage + RouteNames.loginRecoveryPage,
+                  );
                 },
               ),
             ),
@@ -100,17 +101,19 @@ class LoginPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         IconButton(
+                          padding: EdgeInsets.zero,
                           onPressed: () {
                             context.pop();
                           },
                           icon: const Icon(Icons.chevron_left_rounded),
                           iconSize: 36,
                         ),
+                        const VerticalDivider(width: 20),
                         Expanded(
                           child: FittedBox(
+                            alignment: Alignment.topLeft,
                             fit: BoxFit.scaleDown,
                             child: Text(
                               'sign-in'.tr,

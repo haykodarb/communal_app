@@ -59,9 +59,7 @@ class CustomNotification {
         seen = map['seen'],
         type = NotificationType.fromMap(map['type']),
         loan = map['loans'] != null ? Loan.fromMap(map['loans']) : null,
-        membership = map['memberships'] != null
-            ? Membership.fromMap(map['memberships'])
-            : null;
+        membership = map['memberships'] != null ? Membership.fromMap(map['memberships']) : null;
 }
 
 class NotificationsBackend {
@@ -71,16 +69,11 @@ class NotificationsBackend {
 
       final String userId = client.auth.currentUser!.id;
 
-      final int result = await client
-          .from('notifications')
-          .count()
-          .eq('receiver', userId)
-          .eq('seen', false);
+      final int result = await client.from('notifications').count().eq('receiver', userId).eq('seen', false);
 
       return BackendResponse(success: true, payload: result);
     } catch (e) {
-      return BackendResponse(
-          success: false, payload: 'Error, please try again.');
+      return BackendResponse(success: false, payload: 'Error, please try again.');
     }
   }
 
@@ -125,7 +118,7 @@ class NotificationsBackend {
         .eq('seen', false);
   }
 
-  static Future<BackendResponse> getNotifications() async {
+  static Future<BackendResponse> getNotifications(int pageKey, int count) async {
     try {
       final SupabaseClient client = Supabase.instance.client;
 
@@ -137,7 +130,8 @@ class NotificationsBackend {
             '*, type(*), receiver:profiles!receiver(*), sender:profiles!sender(*), loans!left(*, books!left(*, profiles(*)),  loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)), memberships!left(*, communities(*), profiles(*))',
           )
           .eq('receiver', userId)
-          .order('created_at', ascending: false);
+          .order('created_at', ascending: false)
+          .range(pageKey, pageKey + (count - 1));
 
       final List<CustomNotification> notifications = result
           .map(
@@ -147,7 +141,6 @@ class NotificationsBackend {
 
       return BackendResponse(success: true, payload: notifications);
     } catch (e) {
-      rethrow;
       return BackendResponse(
         success: false,
         payload: e,

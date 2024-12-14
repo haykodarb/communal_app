@@ -1,15 +1,17 @@
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/profile.dart';
+import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:get/get.dart';
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/backend/loans_backend.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/loan.dart';
-import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 
 class ProfileOtherController extends GetxController {
+  static const int pageSize = 20;
+
   ProfileOtherController({
     required this.userId,
   });
@@ -18,22 +20,27 @@ class ProfileOtherController extends GetxController {
 
   final Rx<Profile> profile = Profile.empty().obs;
 
-  RxBool loadingProfile = true.obs;
-  RxBool loadingBooks = false.obs;
-  RxBool loadingReviews = false.obs;
+  final CommonListViewController<Loan> reviewListController = CommonListViewController(pageSize: pageSize);
+  final CommonListViewController<Book> bookListController = CommonListViewController(pageSize: pageSize);
 
-  final RxList<Book> userBooks = <Book>[].obs;
-  final RxList<Loan> userReviews = <Loan>[].obs;
+  final RxBool loadingProfile = true.obs;
+
   final ScrollController scrollController = ScrollController();
   final RxInt currentTabIndex = 0.obs;
 
-  final GlobalKey<ExtendedNestedScrollViewState> nestedScrollViewKey =
-      GlobalKey<ExtendedNestedScrollViewState>();
-
   void onTabTapped(int value) {
     if (value != currentTabIndex.value) {
-      nestedScrollViewKey.currentState?.outerController.jumpTo(0);
+      scrollController.jumpTo(0);
     }
+
+    currentTabIndex.value = value;
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    reviewListController.registerNewPageCallback(loadReviews);
+    bookListController.registerNewPageCallback(loadBooks);
   }
 
   @override
@@ -49,9 +56,6 @@ class ProfileOtherController extends GetxController {
     }
 
     loadingProfile.value = false;
-
-    loadBooks();
-    loadReviews();
   }
 
   @override
@@ -60,27 +64,31 @@ class ProfileOtherController extends GetxController {
     super.onClose();
   }
 
-  Future<void> loadBooks() async {
-    loadingBooks.value = true;
-    final BackendResponse response =
-        await BooksBackend.getAllBooksForUser(userToQuery: profile.value.id);
-    loadingBooks.value = false;
+  Future<List<Book>> loadBooks(int pageKey) async {
+    final BackendResponse response = await BooksBackend.getAllBooksForUser(
+      pageSize: pageSize,
+      pageKey: pageKey,
+      userToQuery: userId,
+    );
 
     if (response.success) {
-      userBooks.value = response.payload;
-      userBooks.refresh();
+      return response.payload;
     }
+
+    return [];
   }
 
-  Future<void> loadReviews() async {
-    loadingReviews.value = true;
-    final BackendResponse response =
-        await LoansBackend.getBooksReviewedByUser(profile.value);
-    loadingReviews.value = false;
+  Future<List<Loan>> loadReviews(int pageKey) async {
+    final BackendResponse response = await LoansBackend.getBooksReviewedByUser(
+      userId: userId,
+      pageSize: pageSize,
+      pageKey: pageKey,
+    );
 
     if (response.success) {
-      userReviews.value = response.payload;
-      userReviews.refresh();
+      return response.payload;
     }
+
+    return [];
   }
 }

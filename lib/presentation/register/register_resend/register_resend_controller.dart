@@ -1,22 +1,33 @@
+import 'package:communal/backend/register_backend.dart';
+import 'package:communal/models/backend_response.dart';
+import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class RegisterResendController extends GetxController {
   final RxBool loading = false.obs;
 
-  final RxString email = ''.obs;
+  String email = '';
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   void onEmailChange(String value) {
-    email.value = value;
+    email = value;
   }
 
-  Future<void> onSubmit() async {
+  Future<void> onSubmit(BuildContext context) async {
     final bool? validForm = formKey.currentState?.validate();
 
     if (validForm != null && validForm) {
-      // final BackendResponse response = await RegisterBackend.resendEmail(email: email.value);
+      loading.value = true;
+
+      final BackendResponse response = await RegisterBackend.resendEmail(email: email);
+
+      if (context.mounted) {
+        await CommonAlertDialog(title: response.payload).open(context);
+      }
+
+      loading.value = false;
     }
   }
 

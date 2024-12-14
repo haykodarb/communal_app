@@ -1,6 +1,7 @@
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/notifications_backend.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
+import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/notifications/notifications_controller.dart';
 import 'package:communal/responsive.dart';
@@ -102,13 +103,10 @@ class NotificationsPage extends StatelessWidget {
     return Builder(
       builder: (context) {
         return Card(
-          color: notification.seen
-              ? null
-              : Theme.of(context).colorScheme.secondary.withOpacity(0.15),
+          color: notification.seen ? null : Theme.of(context).colorScheme.secondary.withOpacity(0.15),
           child: InkWell(
             onTap: () {
-              if (notification.membership != null &&
-                  notification.type.event == 'accepted') {
+              if (notification.membership != null && notification.type.event == 'accepted') {
                 context.push(
                   '${RouteNames.communityListPage}/${notification.membership!.community.id}',
                 );
@@ -134,13 +132,8 @@ class NotificationsPage extends StatelessWidget {
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
                                 color: notification.seen
-                                    ? Theme.of(context)
-                                        .colorScheme
-                                        .secondary
-                                        .withOpacity(0.25)
-                                    : Theme.of(context)
-                                        .colorScheme
-                                        .surfaceContainer,
+                                    ? Theme.of(context).colorScheme.secondary.withOpacity(0.25)
+                                    : Theme.of(context).colorScheme.surfaceContainer,
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
@@ -158,34 +151,24 @@ class NotificationsPage extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 16,
                                     height: 1.5,
-                                    color:
-                                        Theme.of(context).colorScheme.onSurface,
-                                    fontWeight: notification.seen
-                                        ? FontWeight.w400
-                                        : FontWeight.w500,
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                    fontWeight: notification.seen ? FontWeight.w400 : FontWeight.w500,
                                   ),
                                   children: <TextSpan>[
-                                    TextSpan(
-                                        text: _notificationStart(notification)),
+                                    TextSpan(text: _notificationStart(notification)),
                                     TextSpan(
                                       text: notification.loan?.book.title ??
-                                          notification
-                                              .membership?.community.name ??
+                                          notification.membership?.community.name ??
                                           '',
                                       style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
+                                        color: Theme.of(context).colorScheme.primary,
                                       ),
                                     ),
                                     TextSpan(
                                       text: _notificationEnd(notification),
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () {},
+                                      recognizer: TapGestureRecognizer()..onTap = () {},
                                       style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface,
+                                        color: Theme.of(context).colorScheme.onSurface,
                                         fontSize: 16,
                                         height: 1.5,
                                       ),
@@ -193,9 +176,7 @@ class NotificationsPage extends StatelessWidget {
                                     TextSpan(
                                       text: notification.sender?.username,
                                       style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
+                                        color: Theme.of(context).colorScheme.primary,
                                       ),
                                     ),
                                   ],
@@ -207,8 +188,7 @@ class NotificationsPage extends StatelessWidget {
                           ],
                         ),
                         Visibility(
-                          visible: notification.type.table == 'memberships' &&
-                              notification.type.event == 'created',
+                          visible: notification.type.table == 'memberships' && notification.type.event == 'created',
                           child: Padding(
                             padding: const EdgeInsets.only(top: 20),
                             child: Row(
@@ -216,8 +196,7 @@ class NotificationsPage extends StatelessWidget {
                                 const VerticalDivider(width: 20),
                                 Expanded(
                                   child: ElevatedButton(
-                                    onPressed: () =>
-                                        controller.respondToInvitation(
+                                    onPressed: () => controller.respondToInvitation(
                                       notification.membership!.id,
                                       notification,
                                       true,
@@ -236,8 +215,7 @@ class NotificationsPage extends StatelessWidget {
                                 const VerticalDivider(width: 10),
                                 Expanded(
                                   child: OutlinedButton(
-                                    onPressed: () =>
-                                        controller.respondToInvitation(
+                                    onPressed: () => controller.respondToInvitation(
                                       notification.membership!.id,
                                       notification,
                                       false,
@@ -273,45 +251,21 @@ class NotificationsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: NotificationsController(),
-      builder: (NotificationsController controller) {
-        return Scaffold(
-          drawer:
-              Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
-          appBar: AppBar(
-            title: Text('notifications'.tr),
-          ),
-          body: Obx(
-            () {
-              return CommonLoadingBody(
-                loading: controller.loading.value,
-                child: Center(
-                  child: Obx(
-                    () {
-                      if (controller.notifications.isEmpty) {
-                        return const Center(
-                          child: Text('No notifications.'),
-                        );
-                      }
-                      return ListView.separated(
-                        padding: const EdgeInsets.all(10),
-                        itemCount: controller.notifications.length,
-                        separatorBuilder: (BuildContext context, int int) =>
-                            const Divider(height: 5),
-                        itemBuilder: (context, index) {
-                          final CustomNotification notification =
-                              controller.notifications[index];
-                          return _notificationCard(controller, notification);
-                        },
-                      );
-                    },
-                  ),
-                ),
-              );
-            },
-          ),
-        );
-      },
-    );
+        init: NotificationsController(),
+        builder: (NotificationsController controller) {
+          return Scaffold(
+            drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
+            appBar: AppBar(
+              title: Text('notifications'.tr),
+            ),
+            body: CommonListView<CustomNotification>(
+              childBuilder: (notification) {
+                return _notificationCard(controller, notification);
+              },
+              separator: const Divider(height: 5),
+              controller: controller.listViewController,
+            ),
+          );
+        });
   }
 }

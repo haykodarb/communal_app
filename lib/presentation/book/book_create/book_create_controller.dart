@@ -126,14 +126,16 @@ class BookCreateController extends GetxController {
     );
   }
 
-  String? stringValidator(String? value, int length, bool optional) {
-    if ((value == null || value.isEmpty) && !optional) {
-      return 'Please enter something.';
+  String? stringValidator({required String? value, required int length, required bool optional}) {
+    if (optional) {
+      if (value == null || value.isEmpty) return null;
+    } else {
+      if (value == null || value.isEmpty) {
+        return 'Please enter something.';
+      }
     }
 
-    if (optional && (value == null || value.isEmpty)) return null;
-
-    if (value != null && value.length < length) {
+    if (value.length < length) {
       return 'Must be at least $length characters long.';
     }
 
@@ -162,13 +164,15 @@ class BookCreateController extends GetxController {
       if (!context.mounted) return;
 
       if (response.success) {
-        bookListController.userBooks.insert(0, response.payload);
+        bookListController.listViewController.itemList.insert(0, response.payload);
+        bookListController.listViewController.itemList.refresh();
+        bookListController.listViewController.pageKey++;
         context.pop(response.payload);
       } else {
         showDialog(
           context: context,
-          builder: (context) => const CommonAlertDialog(
-            title: 'Network error, please try again.',
+          builder: (context) => CommonAlertDialog(
+            title: response.payload,
           ),
         );
         loading.value = false;

@@ -1,31 +1,41 @@
 import 'dart:async';
-
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
-import 'package:communal/presentation/common/common_alert_dialog.dart';
+import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 class BookListController extends GetxController {
-  final RxList<Book> userBooks = <Book>[].obs;
+  static const int pageSize = 20;
+
+  final CommonListViewController<Book> listViewController = CommonListViewController(pageSize: 20);
   final RxBool loading = true.obs;
   Timer? debounceTimer;
   final FocusNode focusScope = FocusNode();
 
+  final ScrollController scrollController = ScrollController();
+
   Rx<BooksQuery> query = BooksQuery().obs;
 
   @override
-  Future<void> onReady() async {
-    super.onReady();
+  Future<void> onInit() async {
+    super.onInit();
 
-    await reloadBooks();
+    listViewController.registerNewPageCallback(loadBooks);
 
     query.listen(
       (BooksQuery value) {
-        reloadBooks();
+        debounceTimer?.cancel();
+
+        debounceTimer = Timer(
+          const Duration(milliseconds: 500),
+          () async {
+            await listViewController.reloadList();
+          },
+        );
       },
     );
   }
@@ -33,8 +43,9 @@ class BookListController extends GetxController {
   Future<void> deleteBook(Book book) async {
     book.loading.value = true;
 
-    userBooks.remove(book);
-    userBooks.refresh();
+    listViewController.itemList.removeWhere((element) => element.id == book.id);
+    listViewController.itemList.refresh();
+    listViewController.pageKey--;
 
     book.loading.value = false;
   }
@@ -52,27 +63,28 @@ class BookListController extends GetxController {
   }
 
   Future<void> updateBook(Book book) async {
-    final int indexOfBook =
-        userBooks.indexWhere((element) => element.id == book.id);
+    final int indexOfBook = listViewController.itemList.indexWhere(
+      (element) => element.id == book.id,
+    );
 
     if (indexOfBook >= 0) {
-      userBooks[indexOfBook] = book;
-      userBooks.refresh();
+      listViewController.itemList[indexOfBook] = book;
+      listViewController.itemList.refresh();
     }
   }
 
-  Future<void> reloadBooks() async {
-    loading.value = true;
+  Future<List<Book>> loadBooks(int pageKey) async {
     final BackendResponse response = await BooksBackend.getAllBooksForUser(
       query: query.value,
+      pageKey: pageKey,
+      pageSize: pageSize,
     );
 
-    loading.value = false;
-
     if (response.success) {
-      userBooks.value = response.payload;
-      userBooks.refresh();
+      return response.payload;
     }
+
+    return [];
   }
 
   Future<void> goToAddBookPage(BuildContext context) async {

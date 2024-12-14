@@ -5,8 +5,10 @@ import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_username_button.dart';
+import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -37,8 +39,7 @@ class BookForeignPage extends StatelessWidget {
                   book.author,
                   style: TextStyle(
                     fontSize: 20,
-                    color:
-                        Theme.of(context).colorScheme.onSurface.withAlpha(150),
+                    color: Theme.of(context).colorScheme.onSurface.withAlpha(150),
                     fontWeight: FontWeight.w400,
                   ),
                   textAlign: TextAlign.center,
@@ -58,8 +59,7 @@ class BookForeignPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: InkWell(
             onTap: () {
-              controller.expandCarouselItem.value =
-                  !controller.expandCarouselItem.value;
+              controller.expandCarouselItem.value = !controller.expandCarouselItem.value;
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,8 +75,7 @@ class BookForeignPage extends StatelessWidget {
                     const VerticalDivider(width: 10),
                     Text(
                       controller.book?.owner.username ?? '',
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary),
+                      style: TextStyle(color: Theme.of(context).colorScheme.primary),
                     ),
                   ],
                 ),
@@ -98,17 +97,14 @@ class BookForeignPage extends StatelessWidget {
     );
   }
 
-  Widget _reviewCard(BookForeignController controller, int index) {
-    final Loan loan = controller.completedLoans[index];
-
+  Widget _reviewCard(BookForeignController controller, Loan loan) {
     return Builder(
       builder: (context) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: InkWell(
             onTap: () {
-              controller.expandCarouselItem.value =
-                  !controller.expandCarouselItem.value;
+              controller.expandCarouselItem.value = !controller.expandCarouselItem.value;
             },
             child: Container(
               decoration: BoxDecoration(
@@ -134,11 +130,8 @@ class BookForeignPage extends StatelessWidget {
                     child: Obx(
                       () => Text(
                         loan.review ?? '',
-                        overflow: controller.expandCarouselItem.value
-                            ? TextOverflow.visible
-                            : TextOverflow.ellipsis,
-                        maxLines:
-                            controller.expandCarouselItem.value ? null : 4,
+                        overflow: controller.expandCarouselItem.value ? TextOverflow.visible : TextOverflow.ellipsis,
+                        maxLines: controller.expandCarouselItem.value ? null : 4,
                       ),
                     ),
                   ),
@@ -154,59 +147,91 @@ class BookForeignPage extends StatelessWidget {
   Widget _reviewsTab(BookForeignController controller) {
     return Builder(
       builder: (context) {
-        if (controller.book == null) return const SizedBox.shrink();
         return Center(
           child: Obx(
             () {
-              bool ownerHasReview = controller.book!.review != null &&
-                  controller.book!.review!.isNotEmpty;
+              if (controller.loadingCarousel.value) {
+                return const CommonLoadingBody();
+              }
 
-              if (controller.completedLoans.isEmpty && !ownerHasReview) {
+              bool ownerHasReview = controller.book?.review != null && controller.book!.review!.isNotEmpty;
+
+              final int reviewsCount = controller.completedLoans.length + (ownerHasReview ? 1 : 0);
+
+              if (reviewsCount == 0) {
                 return const Center(child: Text('No reviews.'));
               }
 
               return Column(
                 children: [
                   Expanded(
-                    child: PageView.builder(
-                      itemCount: controller.completedLoans.length +
-                          (ownerHasReview ? 1 : 0),
-                      scrollDirection: Axis.horizontal,
-                      onPageChanged: (index) {
-                        controller.carouselIndex.value = index;
-                      },
-                      itemBuilder: (context, index) {
-                        if (index == 0 && ownerHasReview) {
-                          return _ownerReviewCard(controller);
-                        }
+                    child: Row(
+                      children: [
+                        Obx(
+                          () {
+                            if (controller.carouselIndex.value == 0 || reviewsCount <= 1) {
+                              return const SizedBox();
+                            }
 
-                        if (controller.loadingCarousel.value) {
-                          return SizedBox(
-                            height: 100,
-                            width: double.maxFinite,
-                            child: LoadingAnimationWidget.threeArchedCircle(
-                              color: Theme.of(context).colorScheme.primary,
-                              size: 30,
-                            ),
-                          );
-                        }
+                            return IconButton(
+                              onPressed: () {
+                                controller.reviewsPageController.previousPage(
+                                  duration: const Duration(milliseconds: 100),
+                                  curve: Curves.easeIn,
+                                );
+                              },
+                              icon: const Icon(Icons.chevron_left),
+                            );
+                          },
+                        ),
+                        Expanded(
+                          child: PageView.builder(
+                            itemCount: controller.completedLoans.length + (ownerHasReview ? 1 : 0),
+                            scrollDirection: Axis.horizontal,
+                            controller: controller.reviewsPageController,
+                            onPageChanged: (index) {
+                              controller.carouselIndex.value = index;
+                            },
+                            itemBuilder: (context, index) {
+                              if (index == 0 && ownerHasReview) {
+                                return _ownerReviewCard(controller);
+                              }
 
-                        return _reviewCard(
-                            controller, index - (ownerHasReview ? 1 : 0));
-                      },
+                              return _reviewCard(
+                                controller,
+                                controller.completedLoans[index - (ownerHasReview ? 1 : 0)],
+                              );
+                            },
+                          ),
+                        ),
+                        Obx(
+                          () {
+                            if (controller.carouselIndex.value == reviewsCount - 1 || reviewsCount < 2) {
+                              return const SizedBox();
+                            }
+
+                            return IconButton(
+                              onPressed: () {
+                                controller.reviewsPageController.nextPage(
+                                  duration: const Duration(milliseconds: 100),
+                                  curve: Curves.easeIn,
+                                );
+                              },
+                              icon: const Icon(Icons.chevron_right),
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ),
                   Visibility(
-                    visible: controller.completedLoans.length +
-                            (ownerHasReview ? 1 : 0) >=
-                        2,
+                    visible: controller.completedLoans.length + (ownerHasReview ? 1 : 0) >= 2,
                     child: Container(
                       alignment: Alignment.center,
                       height: 10,
                       width: double.maxFinite,
                       child: ListView.builder(
-                        itemCount: controller.completedLoans.length +
-                            (ownerHasReview ? 1 : 0),
+                        itemCount: controller.completedLoans.length + (ownerHasReview ? 1 : 0),
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
@@ -218,10 +243,7 @@ class BookForeignPage extends StatelessWidget {
                                 shape: BoxShape.circle,
                                 color: index == controller.carouselIndex.value
                                     ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context)
-                                        .colorScheme
-                                        .primary
-                                        .withOpacity(0.25),
+                                    : Theme.of(context).colorScheme.primary.withOpacity(0.25),
                               ),
                             ),
                           );
@@ -258,15 +280,18 @@ class BookForeignPage extends StatelessWidget {
 
             final Book book = controller.book!;
 
-            bool requestByCurrentUser =
-                currentLoan?.loanee.isCurrentUser ?? false;
+            bool requestByCurrentUser = currentLoan?.loanee.isCurrentUser ?? false;
 
             return Stack(
               children: [
                 Visibility(
                   visible: book.loaned && requestByCurrentUser,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      if (controller.currentLoan.value != null) {
+                        context.push('${RouteNames.loansPage}/${controller.currentLoan.value!.id}');
+                      }
+                    },
                     child: const Text('View loan'),
                   ),
                 ),
@@ -321,15 +346,14 @@ class BookForeignPage extends StatelessWidget {
                     children: [
                       Column(
                         children: [
-                          const SizedBox(
-                            height: 350 / 2,
+                          const Expanded(
+                            child: SizedBox(),
                           ),
                           Expanded(
+                            flex: 3,
                             child: Container(
                               decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .surfaceContainer,
+                                color: Theme.of(context).colorScheme.surfaceContainer,
                                 borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(30),
                                   topRight: Radius.circular(30),
@@ -343,20 +367,21 @@ class BookForeignPage extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Column(
                           children: [
-                            Container(
-                              height: 325,
-                              decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    offset: const Offset(2, 1),
-                                    blurRadius: 20,
-                                    spreadRadius: 12,
-                                    color:
-                                        Theme.of(context).colorScheme.surface,
-                                  ),
-                                ],
+                            Expanded(
+                              flex: 3,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      offset: const Offset(2, 1),
+                                      blurRadius: 20,
+                                      spreadRadius: 12,
+                                      color: Theme.of(context).colorScheme.surface,
+                                    ),
+                                  ],
+                                ),
+                                child: CommonBookCover(controller.book!),
                               ),
-                              child: CommonBookCover(controller.book!),
                             ),
                             const Divider(height: 20),
                             _bookTitle(controller.book!),
@@ -366,8 +391,7 @@ class BookForeignPage extends StatelessWidget {
                                 color: Theme.of(context).colorScheme.surface,
                                 borderRadius: BorderRadius.circular(40),
                               ),
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
                               width: double.maxFinite,
                               height: 65,
                               child: Row(
@@ -375,24 +399,20 @@ class BookForeignPage extends StatelessWidget {
                                 children: [
                                   Expanded(
                                     child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           'Owner',
                                           style: TextStyle(
                                             fontSize: 12,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSurfaceVariant,
+                                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                                           ),
                                         ),
                                         FittedBox(
                                           fit: BoxFit.fitWidth,
                                           child: Text(
                                             controller.book!.owner.username,
-                                            style:
-                                                const TextStyle(fontSize: 16),
+                                            style: const TextStyle(fontSize: 16),
                                           ),
                                         ),
                                       ],
@@ -400,22 +420,17 @@ class BookForeignPage extends StatelessWidget {
                                   ),
                                   Expanded(
                                     child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           'Added',
                                           style: TextStyle(
                                             fontSize: 12,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSurfaceVariant,
+                                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                                           ),
                                         ),
                                         Text(
-                                          DateFormat('dd/MM/yy',
-                                                  Get.locale?.languageCode)
-                                              .format(
+                                          DateFormat('dd/MM/yy', Get.locale?.languageCode).format(
                                             controller.book!.created_at,
                                           ),
                                           style: const TextStyle(fontSize: 16),
@@ -425,16 +440,13 @@ class BookForeignPage extends StatelessWidget {
                                   ),
                                   Expanded(
                                     child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           'Status',
                                           style: TextStyle(
                                             fontSize: 12,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSurfaceVariant,
+                                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                                           ),
                                         ),
                                         Obx(() {
@@ -443,18 +455,12 @@ class BookForeignPage extends StatelessWidget {
                                           }
 
                                           final bool requestByCurrentUser =
-                                              controller.currentLoan.value
-                                                      ?.loanee.isCurrentUser ??
-                                                  false;
+                                              controller.currentLoan.value?.loanee.isCurrentUser ?? false;
 
                                           return Text(
                                             controller.book!.loaned
-                                                ? (requestByCurrentUser
-                                                    ? 'loaned'.tr
-                                                    : 'unavailable'.tr)
-                                                : (requestByCurrentUser
-                                                    ? 'requested'.tr
-                                                    : 'available'.tr),
+                                                ? (requestByCurrentUser ? 'loaned'.tr : 'unavailable'.tr)
+                                                : (requestByCurrentUser ? 'requested'.tr : 'available'.tr),
                                           );
                                         }),
                                       ],
@@ -465,6 +471,7 @@ class BookForeignPage extends StatelessWidget {
                             ),
                             const Divider(height: 20),
                             Expanded(
+                              flex: 2,
                               child: _reviewsTab(controller),
                             ),
                             const Divider(height: 20),

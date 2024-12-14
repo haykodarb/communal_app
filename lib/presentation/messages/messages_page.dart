@@ -1,8 +1,7 @@
 import 'package:communal/models/message.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
-import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
-import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/presentation/messages/messages_controller.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/responsive.dart';
@@ -13,12 +12,10 @@ import 'package:intl/intl.dart';
 class MessagesPage extends StatelessWidget {
   const MessagesPage({super.key});
 
-  Widget _chatCard(MessagesController controller, int index) {
-    final Message staticMessage = controller.distinctChats[index].value;
+  Widget _chatCard(MessagesController controller, Rx<Message> rx_message) {
+    final Message staticMessage = rx_message.value;
 
-    final Profile staticChatter = staticMessage.sender.isCurrentUser
-        ? staticMessage.receiver
-        : staticMessage.sender;
+    final Profile staticChatter = staticMessage.sender.isCurrentUser ? staticMessage.receiver : staticMessage.sender;
 
     return Builder(
       builder: (context) {
@@ -46,12 +43,9 @@ class MessagesPage extends StatelessWidget {
                     () {
                       bool hightlightMessage = false;
 
-                      final Message message =
-                          controller.distinctChats[index].value;
+                      final Message message = rx_message.value;
 
-                      final Profile chatter = message.sender.isCurrentUser
-                          ? message.receiver
-                          : message.sender;
+                      final Profile chatter = message.sender.isCurrentUser ? message.receiver : message.sender;
 
                       if (message.unread_messages != null) {
                         hightlightMessage = message.unread_messages! > 0;
@@ -86,9 +80,7 @@ class MessagesPage extends StatelessWidget {
                                     fontSize: 12,
                                     color: hightlightMessage
                                         ? Theme.of(context).colorScheme.primary
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .onSurfaceVariant,
+                                        : Theme.of(context).colorScheme.onSurfaceVariant,
                                     fontWeight: FontWeight.w400,
                                     fontStyle: FontStyle.italic,
                                     height: 1,
@@ -110,9 +102,7 @@ class MessagesPage extends StatelessWidget {
                                         style: TextStyle(
                                           fontSize: 12,
                                           overflow: TextOverflow.ellipsis,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurfaceVariant,
+                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                                           height: 1,
                                         ),
                                       ),
@@ -124,12 +114,9 @@ class MessagesPage extends StatelessWidget {
                                     child: Container(
                                       height: 25,
                                       width: 25,
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 5, horizontal: 5),
+                                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                                       decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
+                                        color: Theme.of(context).colorScheme.primary,
                                         shape: BoxShape.circle,
                                       ),
                                       child: Center(
@@ -138,9 +125,7 @@ class MessagesPage extends StatelessWidget {
                                           style: TextStyle(
                                             fontSize: 12,
                                             overflow: TextOverflow.ellipsis,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onPrimary,
+                                            color: Theme.of(context).colorScheme.onPrimary,
                                             fontWeight: FontWeight.w600,
                                             height: 1,
                                           ),
@@ -171,41 +156,16 @@ class MessagesPage extends StatelessWidget {
       init: MessagesController(),
       builder: (MessagesController controller) {
         return Scaffold(
-          drawer:
-              Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
+          drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
           appBar: AppBar(
             title: const Text(
               'Messages',
             ),
           ),
-          body: Obx(
-            () => CommonLoadingBody(
-              loading: controller.loading.value,
-              child: Obx(
-                () {
-                  if (controller.distinctChats.isEmpty) {
-                    return const Center(
-                      child: Text(
-                        'You haven\'t messaged anyone yet.\n',
-                      ),
-                    );
-                  }
-
-                  return ListView.separated(
-                    padding: const EdgeInsets.all(10),
-                    itemCount: controller.distinctChats.length,
-                    separatorBuilder: (context, index) {
-                      return const Divider(height: 5);
-                    },
-                    itemBuilder: (context, index) {
-                      return CommonKeepaliveWrapper(
-                        child: _chatCard(controller, index),
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
+          body: CommonListView<Rx<Message>>(
+            childBuilder: (rx_message) => _chatCard(controller, rx_message),
+            separator: const Divider(height: 5),
+            controller: controller.listViewController,
           ),
         );
       },

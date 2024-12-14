@@ -5,17 +5,14 @@ import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
-import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
-import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/presentation/common/common_vertical_book_card.dart';
 import 'package:communal/presentation/profiles/profile_own/profile_own_controller.dart';
 import 'package:communal/responsive.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:go_router/go_router.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
 
 class ProfileOwnPage extends StatelessWidget {
@@ -38,9 +35,9 @@ class ProfileOwnPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     FittedBox(
-                      fit: BoxFit.fitWidth,
+                      fit: BoxFit.scaleDown,
                       child: Text(
-                        profile.username,
+                        profile.username.isEmpty ? ' ' : profile.username,
                         style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 20,
@@ -55,8 +52,7 @@ class ProfileOwnPage extends StatelessWidget {
                           profile.email ?? '',
                           style: TextStyle(
                             fontWeight: FontWeight.w400,
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                             fontSize: 16,
                           ),
                         ),
@@ -137,9 +133,12 @@ class ProfileOwnPage extends StatelessWidget {
     );
   }
 
-  Widget _tabBar(ProfileOwnController controller, bool shadow) {
+  Widget _tabBar(ProfileOwnController controller) {
     return Builder(
       builder: (BuildContext context) {
+        final Color selectedBg = Theme.of(context).colorScheme.primary;
+        final Color selectedFg = Theme.of(context).colorScheme.onPrimary;
+        final Color unselectedBg = Theme.of(context).colorScheme.surfaceContainer;
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           color: Colors.transparent,
@@ -150,72 +149,60 @@ class ProfileOwnPage extends StatelessWidget {
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surfaceContainer,
               borderRadius: BorderRadius.circular(50),
-              boxShadow: [
-                BoxShadow(
-                  offset: const Offset(0, 0),
-                  blurRadius: shadow ? 2 : 0,
-                  spreadRadius: shadow ? 2 : 0,
-                  color: Theme.of(context).colorScheme.shadow,
-                ),
-              ],
             ),
-            child: TabBar(
-              labelStyle:
-                  const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
-              indicator: BoxDecoration(
-                borderRadius: BorderRadius.circular(40),
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              indicatorSize: TabBarIndicatorSize.tab,
-              labelColor: Theme.of(context).colorScheme.onPrimary,
-              unselectedLabelColor: Theme.of(context).colorScheme.primary,
-              dividerColor: Colors.transparent,
-              onTap: (value) => controller.onTabTapped(value),
-              isScrollable: false,
-              tabs: const [
-                Tab(
-                  height: 50,
-                  text: 'Books',
+            child: Row(
+              children: [
+                Expanded(
+                  child: InkWell(
+                    onTap: () => controller.onTabTapped(0),
+                    child: Obx(
+                      () {
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: controller.currentTabIndex.value == 0 ? selectedBg : unselectedBg,
+                            borderRadius: BorderRadius.circular(40),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Books',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: controller.currentTabIndex.value == 0 ? selectedFg : selectedBg,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ),
-                Tab(
-                  height: 50,
-                  text: 'Reviews',
+                Expanded(
+                  child: InkWell(
+                    onTap: () => controller.onTabTapped(1),
+                    child: Obx(
+                      () {
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: controller.currentTabIndex.value == 1 ? selectedBg : unselectedBg,
+                            borderRadius: BorderRadius.circular(40),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Reviews',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: controller.currentTabIndex.value == 1 ? selectedFg : selectedBg,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ),
               ],
             ),
           ),
         );
       },
-    );
-  }
-
-  Widget _bookTab(ProfileOwnController controller) {
-    return PagedMasonryGridView.count(
-      pagingController: controller.booksPagingController,
-      mainAxisSpacing: 5,
-      crossAxisSpacing: 5,
-      padding: const EdgeInsets.only(top: 10, bottom: 20, right: 10, left: 10),
-      crossAxisCount: 2,
-      builderDelegate: PagedChildBuilderDelegate(
-        noItemsFoundIndicatorBuilder: (context) {
-          return const SizedBox(
-            height: 100,
-            child: Center(child: Text('No books.')),
-          );
-        },
-        itemBuilder: (context, Book item, index) {
-          return CommonKeepaliveWrapper(
-            child: InkWell(
-              onTap: () {
-                context.push('${RouteNames.myBooks}/${item.id}');
-              },
-              child: CommonVerticalBookCard(
-                book: item,
-              ),
-            ),
-          );
-        },
-      ),
     );
   }
 
@@ -227,8 +214,7 @@ class ProfileOwnPage extends StatelessWidget {
             context.push('${RouteNames.loansPage}/${loan.id}');
           },
           child: Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
@@ -258,9 +244,7 @@ class ProfileOwnPage extends StatelessWidget {
                                 fontSize: 12,
                                 fontWeight: FontWeight.w400,
                                 height: 1.2,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                             ),
                             const Divider(height: 5),
@@ -271,9 +255,7 @@ class ProfileOwnPage extends StatelessWidget {
                                 fontWeight: FontWeight.w400,
                                 fontStyle: FontStyle.italic,
                                 height: 1.2,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                             ),
                           ],
@@ -285,6 +267,7 @@ class ProfileOwnPage extends StatelessWidget {
                       ),
                     ],
                   ),
+                  const Divider(height: 20),
                   Text(
                     loan.review!,
                     style: const TextStyle(
@@ -301,48 +284,44 @@ class ProfileOwnPage extends StatelessWidget {
     );
   }
 
-  Widget _reviewsTab(ProfileOwnController controller) {
-    if (controller.userReviews.isEmpty) {
-      return const Center(
-        child: Text('No reviews.'),
-      );
-    }
-
-    return Padding(
-      padding: const EdgeInsets.only(right: 10, left: 10),
-      child: ListView.separated(
-        itemCount: controller.userReviews.length,
-        padding: const EdgeInsets.only(top: 10, bottom: 10),
-        separatorBuilder: (context, index) => const Divider(height: 5),
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          final Loan loan = controller.userReviews[index];
-          return CommonKeepaliveWrapper(child: _reviewCard(loan));
-        },
-      ),
-    );
-  }
-
-  Widget _tabBarView(ProfileOwnController controller) {
-    return Builder(
-      builder: (BuildContext context) {
-        return TabBarView(
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            Obx(
-              () => CommonLoadingBody(
-                loading: controller.loadingBooks.value,
-                child: _bookTab(controller),
+  Widget _tabBarView(ProfileOwnController controller, BuildContext context) {
+    return Obx(
+      () {
+        if (controller.currentTabIndex.value == 0) {
+          return CommonGridView<Book>(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            controller: controller.bookListController,
+            scrollController: controller.scrollController,
+            noItemsText: 'No books.',
+            isSliver: true,
+            childBuilder: (Book book) => InkWell(
+              onTap: () {
+                context.push('${RouteNames.myBooks}/${book.id}');
+              },
+              child: CommonVerticalBookCard(
+                book: book,
               ),
             ),
-            Obx(
-              () => CommonLoadingBody(
-                loading: controller.loadingReviews.value,
-                child: _reviewsTab(controller),
-              ),
-            ),
-          ],
+          );
+        }
+
+        if (controller.currentTabIndex.value == 1) {
+          return CommonListView<Loan>(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            controller: controller.reviewListController,
+            scrollController: controller.scrollController,
+            noItemsText: 'No loans.',
+            isSliver: true,
+            childBuilder: (Loan loan) => _reviewCard(loan),
+          );
+        }
+
+        return const SliverFillRemaining(
+          hasScrollBody: false,
+          fillOverscroll: false,
+          child: Center(
+            child: Text('Error.'),
+          ),
         );
       },
     );
@@ -371,66 +350,46 @@ class ProfileOwnPage extends StatelessWidget {
               ),
             ],
           ),
-          drawer:
-              Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
-          body: DefaultTabController(
-            length: 2,
-            animationDuration: Duration.zero,
-            child: ScrollConfiguration(
-              behavior: const ScrollBehavior().copyWith(
-                physics: const ClampingScrollPhysics(),
-                overscroll: false,
-              ),
-              child: ExtendedNestedScrollView(
-                controller: controller.scrollController,
-                key: controller.nestedScrollViewKey,
-                onlyOneScrollInBody: true,
-                headerSliverBuilder: (context, innerBoxIsScrolled) {
-                  return [
-                    SliverToBoxAdapter(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Obx(
-                            () => _avatarRow(
-                              controller.commonDrawerController
-                                  .currentUserProfile.value,
-                            ),
-                          ),
-                          const Divider(height: 10),
-                          Obx(
-                            () => Visibility(
-                              visible: controller.commonDrawerController
-                                      .currentUserProfile.value.bio !=
-                                  null,
-                              child: _bio(
-                                controller.commonDrawerController
-                                    .currentUserProfile.value,
-                              ),
-                            ),
-                          ),
-                          const Divider(height: 10),
-                          // _loanCount(controller),
-                          const Divider(height: 10),
-                        ],
+          drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
+          body: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Obx(
+                      () => _avatarRow(
+                        controller.commonDrawerController.currentUserProfile.value,
                       ),
                     ),
-                    SliverAppBar(
-                      backgroundColor: Colors.transparent,
-                      forceMaterialTransparency: true,
-                      scrolledUnderElevation: 0,
-                      title: _tabBar(controller, innerBoxIsScrolled),
-                      titleSpacing: 0,
-                      toolbarHeight: 80,
-                      centerTitle: true,
-                      automaticallyImplyLeading: false,
-                      pinned: true,
+                    const Divider(height: 10),
+                    Obx(
+                      () => Visibility(
+                        visible: controller.commonDrawerController.currentUserProfile.value.bio != null,
+                        child: _bio(
+                          controller.commonDrawerController.currentUserProfile.value,
+                        ),
+                      ),
                     ),
-                  ];
-                },
-                body: _tabBarView(controller),
+                    const Divider(height: 10),
+                    // _loanCount(controller),
+                    const Divider(height: 10),
+                  ],
+                ),
               ),
-            ),
+              SliverAppBar(
+                backgroundColor: Colors.transparent,
+                forceMaterialTransparency: true,
+                scrolledUnderElevation: 0,
+                title: _tabBar(controller),
+                titleSpacing: 0,
+                toolbarHeight: 80,
+                centerTitle: true,
+                automaticallyImplyLeading: false,
+                pinned: true,
+              ),
+              _tabBarView(controller, context),
+            ],
           ),
         );
       },

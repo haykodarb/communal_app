@@ -4,6 +4,7 @@ import 'package:communal/backend/realtime_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/discussion.dart';
 import 'package:communal/models/realtime_message.dart';
+import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -11,12 +12,13 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CommunityDiscussionsController extends GetxController {
+  static const int pageSize = 20;
+
   CommunityDiscussionsController({required this.communityId});
 
   final TextEditingController textEditingController = TextEditingController();
 
   final String communityId;
-  final RxList<DiscussionTopic> topics = <DiscussionTopic>[].obs;
 
   final RxBool firstLoad = false.obs;
   final RxBool loadingMore = false.obs;
@@ -25,16 +27,16 @@ class CommunityDiscussionsController extends GetxController {
 
   final FocusNode focusScope = FocusNode();
 
+  final CommonListViewController<DiscussionTopic> listViewController = CommonListViewController(pageSize: pageSize);
+
   Timer? searchDebounceTimer;
-  Timer? loadMoreDebounceTimer;
 
   StreamSubscription<RealtimeMessage>? _subscription;
 
   @override
   void onInit() {
     super.onInit();
-    _subscription ??=
-        RealtimeBackend.streamController.stream.listen(streamListener);
+    _subscription ??= RealtimeBackend.streamController.stream.listen(streamListener);
 
     getDiscussionTopics();
   }
@@ -47,47 +49,43 @@ class CommunityDiscussionsController extends GetxController {
   }
 
   Future<void> streamListener(RealtimeMessage realtimeMessage) async {
-    print(realtimeMessage.new_row);
-
     if (realtimeMessage.table != 'discussion_topics') return;
 
     Map<String, dynamic> messageMap = realtimeMessage.new_row;
 
     switch (realtimeMessage.eventType) {
       case PostgresChangeEvent.update:
-        int indexOfTopic = topics.indexWhere(
+        int indexOfTopic = listViewController.itemList.indexWhere(
           (element) => element.id == messageMap['id'],
         );
 
         if (indexOfTopic < 0) return;
 
-        BackendResponse response =
-            await DiscussionsBackend.getDiscussionMessageById(
+        BackendResponse response = await DiscussionsBackend.getDiscussionMessageById(
           messageMap['last_message'],
         );
 
         if (response.success) {
           DiscussionMessage newMessage = response.payload;
 
-          topics[indexOfTopic].last_message = newMessage;
-          topics.refresh();
+          listViewController.itemList[indexOfTopic].last_message = newMessage;
+          listViewController.refresh();
         }
 
         break;
       case PostgresChangeEvent.insert:
-        int indexOfTopic = topics.indexWhere(
+        int indexOfTopic = listViewController.itemList.indexWhere(
           (element) => element.id == messageMap['id'],
         );
 
         if (indexOfTopic >= 0) return;
-        final BackendResponse response =
-            await DiscussionsBackend.getDiscussionTopicById(
+        final BackendResponse response = await DiscussionsBackend.getDiscussionTopicById(
           messageMap['id'],
         );
 
         if (response.success) {
           final DiscussionTopic newTopic = response.payload;
-          topics.add(newTopic);
+          listViewController.addItem(newTopic);
         }
 
         break;
@@ -96,31 +94,26 @@ class CommunityDiscussionsController extends GetxController {
     }
   }
 
-  Future<void> getDiscussionTopics() async {
-    firstLoad.value = true;
-
-    final BackendResponse response =
-        await DiscussionsBackend.getDiscussionTopicsForCommunity(communityId);
+  Future<List<DiscussionTopic>> getDiscussionTopics() async {
+    final BackendResponse response = await DiscussionsBackend.getDiscussionTopicsForCommunity(communityId);
 
     if (response.success) {
-      topics.value = response.payload;
+      return response.payload;
     }
 
-    firstLoad.value = false;
+    return [];
   }
 
   void updateTopicMessage(DiscussionMessage message) {
-    final int indexOfTopic =
-        topics.indexWhere((element) => element.id == message.topicId);
+    final int indexOfTopic = listViewController.itemList.indexWhere((element) => element.id == message.topicId);
     if (indexOfTopic >= 0) {
-      topics[indexOfTopic].last_message = message;
+      listViewController.itemList[indexOfTopic].last_message = message;
     }
 
-    topics.refresh();
+    listViewController.refresh();
   }
 
-  Future<void> goToTopicMessages(
-      DiscussionTopic topic, BuildContext context) async {
+  Future<void> goToTopicMessages(DiscussionTopic topic, BuildContext context) async {
     context.push(
       '${RouteNames.communityListPage}/$communityId/discussions/${topic.id}',
     );

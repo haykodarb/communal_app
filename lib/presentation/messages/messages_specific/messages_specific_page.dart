@@ -13,24 +13,19 @@ class MessagesSpecificPage extends StatelessWidget {
   const MessagesSpecificPage({
     super.key,
     required this.userId,
-    this.userProfile,
   });
 
   final String userId;
-  final Profile? userProfile;
 
   Widget _messageBubble(MessagesSpecificController controller, int index) {
     final Message message = controller.messages[index];
 
-    final Message? nextMessage =
-        index == 0 ? null : controller.messages[index - 1];
+    final Message? nextMessage = index == 0 ? null : controller.messages[index - 1];
 
-    bool showTime =
-        nextMessage == null || nextMessage.sender.id != message.sender.id;
+    bool showTime = nextMessage == null || nextMessage.sender.id != message.sender.id;
 
     if (nextMessage != null) {
-      final int differenceMinutes =
-          nextMessage.created_at.difference(message.created_at).inMinutes;
+      final int differenceMinutes = nextMessage.created_at.difference(message.created_at).inMinutes;
 
       if (differenceMinutes > 10) {
         showTime = true;
@@ -52,14 +47,10 @@ class MessagesSpecificPage extends StatelessWidget {
             Expanded(
               flex: 2,
               child: Column(
-                crossAxisAlignment: isReceived
-                    ? CrossAxisAlignment.start
-                    : CrossAxisAlignment.end,
+                crossAxisAlignment: isReceived ? CrossAxisAlignment.start : CrossAxisAlignment.end,
                 children: [
                   Container(
-                    alignment: isReceived
-                        ? Alignment.centerLeft
-                        : Alignment.centerRight,
+                    alignment: isReceived ? Alignment.centerLeft : Alignment.centerRight,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -71,14 +62,8 @@ class MessagesSpecificPage extends StatelessWidget {
                               shape: BoxShape.rectangle,
                               borderRadius: BorderRadius.circular(15),
                               color: isReceived
-                                  ? Theme.of(context)
-                                      .colorScheme
-                                      .secondary
-                                      .withOpacity(0.25)
-                                  : Theme.of(context)
-                                      .colorScheme
-                                      .primary
-                                      .withOpacity(0.25),
+                                  ? Theme.of(context).colorScheme.secondary.withOpacity(0.25)
+                                  : Theme.of(context).colorScheme.primary.withOpacity(0.25),
                             ),
                             child: Text(
                               message.content,
@@ -98,9 +83,7 @@ class MessagesSpecificPage extends StatelessWidget {
                   Visibility(
                     visible: showTime,
                     child: Text(
-                      DateFormat.MMMd()
-                          .add_Hm()
-                          .format(message.created_at.toLocal()),
+                      DateFormat.MMMd().add_Hm().format(message.created_at.toLocal()),
                       textAlign: isReceived ? TextAlign.left : TextAlign.right,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -109,9 +92,7 @@ class MessagesSpecificPage extends StatelessWidget {
                     ),
                   ),
                   Visibility(
-                    visible: isFirstMessage &&
-                        message.is_read &&
-                        message.sender.id == UsersBackend.currentUserId,
+                    visible: isFirstMessage && message.is_read && message.sender.id == UsersBackend.currentUserId,
                     child: Text(
                       'Seen',
                       textAlign: isReceived ? TextAlign.left : TextAlign.right,
@@ -148,8 +129,7 @@ class MessagesSpecificPage extends StatelessWidget {
                     onChanged: controller.onTypedMessageChanged,
                     focusNode: FocusNode(
                       onKeyEvent: (node, event) {
-                        if (!HardwareKeyboard.instance.isShiftPressed &&
-                            event.logicalKey.keyLabel == 'Enter') {
+                        if (!HardwareKeyboard.instance.isShiftPressed && event.logicalKey.keyLabel == 'Enter') {
                           if (event is KeyDownEvent) {
                             controller.onMessageSubmit(context);
                           }
@@ -159,8 +139,7 @@ class MessagesSpecificPage extends StatelessWidget {
                         return KeyEventResult.ignored;
                       },
                     ),
-                    onFieldSubmitted: (_) =>
-                        controller.onMessageSubmit(context),
+                    onFieldSubmitted: (_) => controller.onMessageSubmit(context),
                     controller: controller.textEditingController,
                     onTapOutside: (_) {},
                     style: const TextStyle(fontSize: 14),
@@ -174,30 +153,21 @@ class MessagesSpecificPage extends StatelessWidget {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                         borderSide: BorderSide(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .primary
-                              .withOpacity(0.15),
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
                           width: 2,
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                         borderSide: BorderSide(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .primary
-                              .withOpacity(0.15),
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
                           width: 2,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                         borderSide: BorderSide(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .primary
-                              .withOpacity(0.15),
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
                           width: 2,
                         ),
                       ),
@@ -224,9 +194,7 @@ class MessagesSpecificPage extends StatelessWidget {
                     child: Obx(
                       () {
                         return InkWell(
-                          onTap: controller.sending.value
-                              ? null
-                              : () => controller.onMessageSubmit(context),
+                          onTap: controller.sending.value ? null : () => controller.onMessageSubmit(context),
                           enableFeedback: false,
                           splashColor: Colors.transparent,
                           highlightColor: Colors.transparent,
@@ -239,17 +207,14 @@ class MessagesSpecificPage extends StatelessWidget {
                                     width: 25,
                                     height: 25,
                                     child: CircularProgressIndicator(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onPrimary,
+                                      color: Theme.of(context).colorScheme.onPrimary,
                                     ),
                                   );
                                 }
 
                                 return Icon(
                                   Icons.send_rounded,
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
+                                  color: Theme.of(context).colorScheme.onPrimary,
                                   size: 30,
                                 );
                               },
@@ -273,7 +238,6 @@ class MessagesSpecificPage extends StatelessWidget {
     return GetBuilder(
       init: MessagesSpecificController(
         userId: userId,
-        receivedProfile: userProfile,
       ),
       builder: (MessagesSpecificController controller) {
         return Scaffold(
@@ -311,8 +275,7 @@ class MessagesSpecificPage extends StatelessWidget {
                               itemCount: controller.messages.length,
                               controller: controller.scrollController,
                               physics: const AlwaysScrollableScrollPhysics(),
-                              padding: const EdgeInsets.only(
-                                  right: 20, left: 20, top: 20, bottom: 90),
+                              padding: const EdgeInsets.only(right: 20, left: 20, top: 20, bottom: 90),
                               separatorBuilder: (context, index) {
                                 return const Divider(
                                   height: 7.5,

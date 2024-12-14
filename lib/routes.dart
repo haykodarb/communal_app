@@ -16,6 +16,7 @@ import 'package:communal/presentation/loans/loans_page.dart';
 import 'package:communal/presentation/login/login_page.dart';
 import 'package:communal/presentation/book/book_owned/book_owned_page.dart';
 import 'package:communal/presentation/book/book_list_page.dart';
+import 'package:communal/presentation/login/login_password_recovery/login_password_recovery_page.dart';
 import 'package:communal/presentation/messages/messages_page.dart';
 import 'package:communal/presentation/messages/messages_specific/messages_specific_page.dart';
 import 'package:communal/presentation/notifications/notifications_page.dart';
@@ -23,6 +24,8 @@ import 'package:communal/presentation/profiles/profile_other/profile_other_page.
 import 'package:communal/presentation/profiles/profile_own/profile_own_edit/profile_own_edit_page.dart';
 import 'package:communal/presentation/profiles/profile_own/profile_own_page.dart';
 import 'package:communal/presentation/register/register_page.dart';
+import 'package:communal/presentation/register/register_resend/register_resend_page.dart';
+import 'package:communal/presentation/start/password_reset/password_reset_page.dart';
 import 'package:communal/presentation/start/start_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -30,13 +33,17 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RouteNames {
+  static const String appRoot = 'https://app.communal.ar/#';
+
   static const String startPage = '/auth';
 
+  static const String passwordResetPage = '/reset';
+
   static const String loginPage = '/login';
-  static const String loginRecoveryPage = '/login/recovery';
+  static const String loginRecoveryPage = '/recovery';
 
   static const String registerPage = '/register';
-  static const String registerResendPage = '/register/resend';
+  static const String registerResendPage = '/resend';
 
   static const String profileOwnPage = '/my-profile';
   static const String profileOwnEditPage = '/edit';
@@ -69,8 +76,7 @@ class RouteNames {
   static const String notificationsPage = '/notifications';
 }
 
-final GlobalKey<NavigatorState> _shellNavigatorKey =
-    GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 final GoRoute _myBooksRoutes = GoRoute(
   path: RouteNames.myBooks,
@@ -196,7 +202,6 @@ final GoRoute _messagesRoutes = GoRoute(
         return NoTransitionPage(
           child: MessagesSpecificPage(
             userId: state.pathParameters['userId']!,
-            userProfile: state.extra as Profile?,
           ),
         );
       },
@@ -276,21 +281,50 @@ final GoRoute _myProfileRoutes = GoRoute(
 
 final GoRoute _startRoutes = GoRoute(
   path: RouteNames.startPage,
+  redirect: (context, state) {
+    if (Supabase.instance.client.auth.currentUser != null) {
+      return RouteNames.communityListPage;
+    }
+
+    return null;
+  },
   pageBuilder: (context, state) => const NoTransitionPage(
     child: StartPage(),
   ),
   routes: [
     GoRoute(
+      path: RouteNames.passwordResetPage,
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: PasswordResetPage(),
+      ),
+    ),
+    GoRoute(
       path: RouteNames.loginPage,
       pageBuilder: (context, state) => const NoTransitionPage(
         child: LoginPage(),
       ),
+      routes: [
+        GoRoute(
+          path: RouteNames.loginRecoveryPage,
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: LoginPasswordRecoveryPage(),
+          ),
+        ),
+      ],
     ),
     GoRoute(
       path: RouteNames.registerPage,
       pageBuilder: (context, state) => const NoTransitionPage(
         child: RegisterPage(),
       ),
+      routes: [
+        GoRoute(
+          path: RouteNames.registerResendPage,
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: RegisterResendPage(),
+          ),
+        ),
+      ],
     ),
   ],
 );
@@ -307,7 +341,6 @@ final List<RouteBase> routes = <RouteBase>[
       return null;
     },
     pageBuilder: (context, state, child) {
-      print(state.matchedLocation);
       if (!Get.isRegistered<CommonDrawerController>()) {
         Get.put(
           CommonDrawerController(initialRoute: state.matchedLocation),

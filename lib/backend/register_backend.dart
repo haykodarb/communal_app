@@ -20,6 +20,7 @@ class RegisterBackend {
       final AuthResponse signUpResponse = await client.auth.signUp(
         password: form.password,
         email: form.email,
+        emailRedirectTo: 'https://app.communal.ar/#/auth',
         data: {
           'username': form.username,
         },
@@ -41,14 +42,16 @@ class RegisterBackend {
     try {
       final SupabaseClient client = Supabase.instance.client;
 
-      final ResendResponse response = await client.auth.resend(
-        type: OtpType.email,
+      await client.auth.resend(
+        type: OtpType.signup,
+        emailRedirectTo: 'https://app.communal.ar/#/auth',
         email: email,
       );
 
-      return BackendResponse(success: true, payload: response.messageId);
+      return BackendResponse(success: true, payload: 'Confirmation email resent. Please check your inbox.');
     } catch (error) {
-      return BackendResponse(success: false, payload: error);
+      print(error);
+      return BackendResponse(success: false, payload: 'Server error. Could not resend confirmation email.');
     }
   }
 }

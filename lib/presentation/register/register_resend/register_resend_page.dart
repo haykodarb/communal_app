@@ -3,11 +3,13 @@ import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/register/register_resend/register_resend_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class RegisterResendPage extends StatelessWidget {
   const RegisterResendPage({super.key});
 
-  Widget _resendForm(RegisterResendController controller) {
+  Widget _recoveryForm(RegisterResendController controller, BuildContext context) {
     return Form(
       key: controller.formKey,
       child: Column(
@@ -15,18 +17,18 @@ class RegisterResendPage extends StatelessWidget {
         children: [
           CommonTextField(
             validator: controller.emailValidator,
-            submitCallback: (value) => controller.onSubmit(),
+            submitCallback: (_) => controller.onSubmit(context),
             callback: controller.onEmailChange,
             label: 'Email',
           ),
-          const Divider(),
+          const Divider(height: 30),
           Obx(
             () => CommonLoadingBody(
               loading: controller.loading.value,
               size: 40,
               child: ElevatedButton(
-                onPressed: controller.onSubmit,
-                child: const Text('Resend'),
+                onPressed: () => controller.onSubmit(context),
+                child: Text('send'.tr),
               ),
             ),
           ),
@@ -43,14 +45,52 @@ class RegisterResendPage extends StatelessWidget {
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.surface,
           resizeToAvoidBottomInset: false,
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                top: 75,
-                right: 50,
-                left: 50,
+          body: Align(
+            alignment: Alignment.topCenter,
+            child: SizedBox(
+              width: 600,
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    top: 100,
+                    right: 40,
+                    left: 40,
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              context.pop();
+                            },
+                            icon: const Icon(Icons.chevron_left_rounded),
+                            iconSize: 36,
+                          ),
+                          const VerticalDivider(width: 20),
+                          Expanded(
+                            child: FittedBox(
+                              alignment: Alignment.topLeft,
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                'resend-confirmation'.tr,
+                                textAlign: TextAlign.left,
+                                style: GoogleFonts.lora(
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Divider(height: 40),
+                      _recoveryForm(controller, context),
+                    ],
+                  ),
+                ),
               ),
-              child: _resendForm(controller),
             ),
           ),
         );

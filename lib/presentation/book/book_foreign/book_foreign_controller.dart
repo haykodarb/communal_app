@@ -33,6 +33,8 @@ class BookForeignController extends GetxController {
 
   final RxBool expandCarouselItem = false.obs;
 
+  final PageController reviewsPageController = PageController();
+
   LoansController? loansController;
 
   @override
@@ -51,11 +53,11 @@ class BookForeignController extends GetxController {
       profileOtherController = Get.find<ProfileOtherController>();
     }
 
-    book = communityBookController?.pagingController.itemList?.firstWhereOrNull(
+    book = communityBookController?.listViewController.itemList.firstWhereOrNull(
       (element) => element.id == bookId,
     );
 
-    book ??= profileOtherController?.userBooks.firstWhereOrNull(
+    book ??= profileOtherController?.bookListController.itemList.firstWhereOrNull(
       (element) => element.id == bookId,
     );
 
@@ -74,8 +76,7 @@ class BookForeignController extends GetxController {
 
     completedLoans.clear();
 
-    final BackendResponse response =
-        await LoansBackend.getCompletedLoansForItem(bookId: bookId);
+    final BackendResponse response = await LoansBackend.getCompletedLoansForItem(bookId: bookId);
 
     if (response.success) {
       completedLoans.addAll(response.payload);
@@ -89,8 +90,7 @@ class BookForeignController extends GetxController {
   Future<void> checkLoanStatus() async {
     loading.value = true;
 
-    final BackendResponse currentLoanResponse =
-        await LoansBackend.getCurrentLoanForBook(bookId);
+    final BackendResponse currentLoanResponse = await LoansBackend.getCurrentLoanForBook(bookId);
 
     if (currentLoanResponse.success) {
       currentLoan.value = currentLoanResponse.payload;
@@ -110,8 +110,7 @@ class BookForeignController extends GetxController {
     if (confirm) {
       loading.value = true;
 
-      final BackendResponse response =
-          await LoansBackend.deleteLoan(currentLoan.value!);
+      final BackendResponse response = await LoansBackend.deleteLoan(currentLoan.value!);
 
       if (response.success) {
         final String loanId = currentLoan.value!.id;

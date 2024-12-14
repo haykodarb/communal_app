@@ -5,11 +5,15 @@ class LocalizationText extends Translations {
   Map<String, Map<String, String>> get keys => {
         'en_US': {
           'login': 'Login',
+          'send': 'Send',
           'register': 'Register',
           'sign-in': 'Sign in',
           'create-account': 'Create account',
           'forgot-password': 'Forgot password?',
           'resend-confirmation': 'Resend confirmation?',
+          'resend-confirmation-title': 'Resend confirmation',
+          'reset-password': 'Reset password',
+          'recover-password': 'Recover password',
           'username': 'Username',
           'email': 'Email',
           'password': 'Password',
@@ -36,6 +40,7 @@ class LocalizationText extends Translations {
           'light': 'Light',
           'notifications': 'Notifications',
           'logout': 'Logout',
+          'enter-something': 'Please enter something',
         },
         'es_ES': {
           'login': 'Ingresar',
@@ -44,7 +49,11 @@ class LocalizationText extends Translations {
           'create-account': 'Crear cuenta',
           'forgot-password': '¿Olvidaste tu contraseña?',
           'resend-confirmation': '¿Reenviar confirmación?',
+          'resend-confirmation-title': 'Reenviar confirmación',
+          'reset-password': 'Reestablecer contraseña',
+          'recover-password': 'Recuperar contraseña',
           'username': 'Usuario',
+          'send': 'Enviar',
           'email': 'Email',
           'password': 'Contraseña',
           'search': 'Buscar',
@@ -70,6 +79,7 @@ class LocalizationText extends Translations {
           'notifications': 'Notificaciones',
           'light': 'Claro',
           'logout': 'Salir',
+          'enter-something': 'Por favor ingresar algo',
         },
       };
 }

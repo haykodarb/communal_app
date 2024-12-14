@@ -2,38 +2,39 @@ import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
+import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 class CommunityMembersController extends GetxController {
+  static const int pageSize = 20;
+
   CommunityMembersController({required this.communityId});
 
-  final RxList<Profile> listOfMembers = <Profile>[].obs;
-  final RxBool loading = true.obs;
   final String communityId;
+
+  final CommonListViewController<Profile> listViewController = CommonListViewController(pageSize: pageSize);
 
   @override
   Future<void> onInit() async {
     super.onInit();
-
-    loadUsers();
+    listViewController.registerNewPageCallback(loadUsers);
   }
 
   void addUser(BuildContext context) {
-    context.push(
-        '${RouteNames.communityListPage}/$communityId${RouteNames.communityInvitePage}');
+    context.push('${RouteNames.communityListPage}/$communityId${RouteNames.communityInvitePage}');
   }
 
   Future<void> removeUser(Profile user, BuildContext context) async {
     user.loading.value = true;
 
-    final BackendResponse response =
-        await UsersBackend.removeUserFromCommunity(communityId, user.id);
+    final BackendResponse response = await UsersBackend.removeUserFromCommunity(communityId, user.id);
 
     if (response.success) {
-      listOfMembers.remove(user);
+      listViewController.itemList.removeWhere((element) => element.id == user.id);
+      listViewController.refresh();
     } else {
       if (context.mounted) {
         CommonAlertDialog(title: response.payload).open(context);
@@ -67,16 +68,17 @@ class CommunityMembersController extends GetxController {
     user.loading.value = false;
   }
 
-  Future<void> loadUsers() async {
-    loading.value = true;
-
-    final BackendResponse<List<Profile>> response =
-        await UsersBackend.getUsersInCommunity(communityId);
+  Future<List<Profile>> loadUsers(int pageKey) async {
+    final BackendResponse<List<Profile>> response = await UsersBackend.getUsersInCommunity(
+      communityId: communityId,
+      pageKey: pageKey,
+      pageSize: pageSize,
+    );
 
     if (response.success) {
-      listOfMembers.value = response.payload;
+      return response.payload;
     }
 
-    loading.value = false;
+    return [];
   }
 }

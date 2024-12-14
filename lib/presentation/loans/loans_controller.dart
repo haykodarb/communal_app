@@ -1,34 +1,52 @@
+import 'dart:async';
+
 import 'package:communal/backend/loans_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/loan.dart';
+import 'package:communal/presentation/common/common_list_view.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class LoansController extends GetxController {
-  RxList<Loan> loanList = <Loan>[].obs;
+  static const int pageSize = 12;
+
   Rx<LoansFilterParams> filterParams = LoansFilterParams().obs;
+
+  Timer? debounceTimer;
+
+  final ScrollController scrollController = ScrollController();
+
+  final CommonListViewController<Loan> listViewController = CommonListViewController(pageSize: pageSize);
 
   RxBool firstLoad = true.obs;
 
   @override
   void onInit() {
-    loadLoans();
+    listViewController.registerNewPageCallback(loadLoans);
 
-    filterParams.listen((LoansFilterParams params) => loadLoans());
+    filterParams.listen(
+      (LoansFilterParams params) {
+        debounceTimer?.cancel();
+
+        debounceTimer = Timer(
+          const Duration(milliseconds: 500),
+          () async => await listViewController.reloadList(),
+        );
+      },
+    );
 
     super.onInit();
   }
 
   void removeItemById(String id) {
-    loanList.removeWhere((element) => element.id == id);
-    loanList.refresh();
+    listViewController.itemList.removeWhere((element) => element.id == id);
+    listViewController.itemList.refresh();
+    listViewController.pageKey--;
   }
 
   void onSearchTextChanged(String value) {
-    filterParams.value.currentIndex = 0;
     filterParams.value.searchQuery = value;
     filterParams.refresh();
-
-    loadLoans();
   }
 
   void onOrderByValueChanged(int index) {
@@ -85,12 +103,12 @@ class LoansController extends GetxController {
         filterParams.value.returned = true;
         filterParams.value.rejected = false;
         break;
-    case 4: 
-	filterParams.value.allStatus = false;
+      case 4:
+        filterParams.value.allStatus = false;
         filterParams.value.accepted = false;
         filterParams.value.returned = false;
         filterParams.value.rejected = true;
-	break;
+        break;
       default:
         break;
     }
@@ -98,15 +116,13 @@ class LoansController extends GetxController {
     filterParams.refresh();
   }
 
-  Future<void> loadLoans() async {
-    firstLoad.value = true;
-
-    final BackendResponse response = await LoansBackend.getLoansForUser(filterParams.value);
+  Future<List<Loan>> loadLoans(int pageKey) async {
+    final BackendResponse response = await LoansBackend.getLoansForUser(filterParams.value, pageKey, pageSize);
 
     if (response.success) {
-      loanList.value = response.payload;
+      return response.payload;
     }
 
-    firstLoad.value = false;
+    return [];
   }
 }

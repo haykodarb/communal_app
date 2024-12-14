@@ -47,16 +47,13 @@ class CommonDrawerController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
 
-    print('Init runs');
-
     currentRoute.value = '/${initialRoute.split('/')[1]}';
 
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
     RealtimeBackend.subscribeToDatabaseChanges();
 
-    versionNumber.value =
-        'Version: ${packageInfo.version}+${packageInfo.buildNumber}';
+    versionNumber.value = 'Version: ${packageInfo.version}+${packageInfo.buildNumber}';
 
     final BackendResponse userResponse = await UsersBackend.getUserProfile(
       UsersBackend.currentUserId,
@@ -66,8 +63,7 @@ class CommonDrawerController extends GetxController {
       currentUserProfile.value = userResponse.payload;
     }
 
-    final BackendResponse notificationResponse =
-        await NotificationsBackend.getUnreadNotificationsCount();
+    final BackendResponse notificationResponse = await NotificationsBackend.getUnreadNotificationsCount();
 
     if (notificationResponse.success) {
       globalNotifications.value = notificationResponse.payload;
@@ -75,15 +71,14 @@ class CommonDrawerController extends GetxController {
 
     getUnreadChats();
 
-    realtimeSubscription ??=
-        RealtimeBackend.streamController.stream.listen(realtimeChangeHandler);
+    realtimeSubscription ??= RealtimeBackend.streamController.stream.listen(realtimeChangeHandler);
   }
 
   @override
   Future<void> onClose() async {
     await realtimeSubscription?.cancel();
 
-    print('Close runs');
+    debounceTimer?.cancel();
 
     super.onClose();
   }
@@ -91,8 +86,7 @@ class CommonDrawerController extends GetxController {
   Future<void> realtimeChangeHandler(RealtimeMessage realtime) async {
     switch (realtime.table) {
       case 'messages':
-        if (realtime.eventType == PostgresChangeEvent.insert ||
-            realtime.eventType == PostgresChangeEvent.update) {
+        if (realtime.eventType == PostgresChangeEvent.insert || realtime.eventType == PostgresChangeEvent.update) {
           if (realtime.new_row['receiver'] == UsersBackend.currentUserId) {
             debounceTimer?.cancel();
 
@@ -107,16 +101,14 @@ class CommonDrawerController extends GetxController {
         break;
 
       case 'notifications':
-        if (realtime.new_row['receiver'] != UsersBackend.currentUserId) return;
-
-        if (realtime.eventType == PostgresChangeEvent.insert) {
-          globalNotifications.value++;
+        if (realtime.eventType != PostgresChangeEvent.delete) {
+          if (realtime.new_row['receiver'] != UsersBackend.currentUserId) return;
         }
 
-        if (realtime.eventType == PostgresChangeEvent.update) {
-          if (realtime.new_row['seen']) {
-            globalNotifications.value = 0;
-          }
+        final BackendResponse notificationResponse = await NotificationsBackend.getUnreadNotificationsCount();
+
+        if (notificationResponse.success) {
+          globalNotifications.value = notificationResponse.payload;
         }
 
         break;
@@ -135,8 +127,7 @@ class CommonDrawerController extends GetxController {
       int unreadCount = 0;
 
       for (int i = 0; i < messages.length; i++) {
-        if (!messages[i].is_read &&
-            messages[i].receiver.id == UsersBackend.currentUserId) {
+        if (!messages[i].is_read && messages[i].receiver.id == UsersBackend.currentUserId) {
           unreadCount += messages[i].unread_messages ?? 1;
         }
       }
@@ -146,8 +137,7 @@ class CommonDrawerController extends GetxController {
   }
 
   Future<void> changeThemeMode(BuildContext context) async {
-    final ThemeMode newThemeMode =
-        UserPreferences.isDarkMode(context) ? ThemeMode.light : ThemeMode.dark;
+    final ThemeMode newThemeMode = UserPreferences.isDarkMode(context) ? ThemeMode.light : ThemeMode.dark;
 
     Get.changeThemeMode(newThemeMode);
 

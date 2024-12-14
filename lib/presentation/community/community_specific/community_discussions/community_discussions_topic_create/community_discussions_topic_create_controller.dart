@@ -37,8 +37,7 @@ class CommunityDiscussionsTopicCreateController extends GetxController {
       loading.value = true;
       errorMessage.value = '';
 
-      final BackendResponse response =
-          await DiscussionsBackend.createDiscussionTopic(
+      final BackendResponse response = await DiscussionsBackend.createDiscussionTopic(
         name: name.value,
         communityId: communityId,
       );
@@ -46,10 +45,9 @@ class CommunityDiscussionsTopicCreateController extends GetxController {
       loading.value = false;
 
       if (response.success) {
-        final CommunityDiscussionsController communityDiscussionsController =
-            Get.find();
+        final CommunityDiscussionsController communityDiscussionsController = Get.find();
 
-        communityDiscussionsController.topics.add(response.payload);
+        communityDiscussionsController.listViewController.addItem(response.payload);
         if (context.mounted) {
           context.pop();
         }

@@ -16,46 +16,30 @@ class LoansFilterParams {
   bool userIsLoanee = true;
 
   String searchQuery = '';
-
-  int currentIndex = 0;
 }
 
 class LoansBackend {
   static Future<BackendResponse> deleteLoan(Loan loan) async {
     final SupabaseClient client = Supabase.instance.client;
 
-    final Map<String, dynamic>? response = await client
-        .from('loans')
-        .delete()
-        .eq('id', loan.id)
-        .select()
-        .maybeSingle();
+    final Map<String, dynamic>? response = await client.from('loans').delete().eq('id', loan.id).select().maybeSingle();
 
     if (response == null || response.isEmpty) {
-      return BackendResponse(
-          success: false,
-          payload: 'No requests have been made for your books yet.');
+      return BackendResponse(success: false, payload: 'No requests have been made for your books yet.');
     }
 
-    return BackendResponse(
-        success: true, payload: 'Loan deleted successfully.');
+    return BackendResponse(success: true, payload: 'Loan deleted successfully.');
   }
 
-  static Future<BackendResponse> updateLoanReview(
-      Loan loan, String? review) async {
+  static Future<BackendResponse> updateLoanReview(Loan loan, String? review) async {
     try {
       final SupabaseClient client = Supabase.instance.client;
 
-      final Map<String, dynamic>? response = await client
-          .from('loans')
-          .update({'review': review})
-          .eq('id', loan.id)
-          .select()
-          .maybeSingle();
+      final Map<String, dynamic>? response =
+          await client.from('loans').update({'review': review}).eq('id', loan.id).select().maybeSingle();
 
       if (response == null || response.isEmpty) {
-        return BackendResponse(
-            success: false, payload: 'Could not update review.');
+        return BackendResponse(success: false, payload: 'Could not update review.');
       }
 
       return BackendResponse(success: true, payload: review);
@@ -64,8 +48,7 @@ class LoansBackend {
     }
   }
 
-  static Future<BackendResponse> setLoanParameterTrue(
-      Loan loan, String parameter) async {
+  static Future<BackendResponse> setLoanParameterTrue(Loan loan, String parameter) async {
     try {
       final SupabaseClient client = Supabase.instance.client;
 
@@ -104,11 +87,8 @@ class LoansBackend {
       'rejected': false,
     };
 
-    final PostgrestResponse<PostgrestList> response = await client
-        .from('loans')
-        .select('*')
-        .match(query)
-        .count(CountOption.exact);
+    final PostgrestResponse<PostgrestList> response =
+        await client.from('loans').select('*').match(query).count(CountOption.exact);
 
     return BackendResponse(success: true, payload: response.count);
   }
@@ -150,8 +130,7 @@ class LoansBackend {
       },
     ).or('loanee.eq.$userId, accepted.eq.true');
 
-    final List<Loan> loans =
-        response.map((element) => Loan.fromMap(element)).toList();
+    final List<Loan> loans = response.map((element) => Loan.fromMap(element)).toList();
 
     final Loan? loanMadeByAnotherUser = loans.firstWhereOrNull(
       (element) => element.loanee.id != userId && element.accepted,
@@ -193,8 +172,7 @@ class LoansBackend {
       },
     ).or('loanee.eq.$userId, accepted.eq.true');
 
-    final List<Loan> loans =
-        response.map((element) => Loan.fromMap(element)).toList();
+    final List<Loan> loans = response.map((element) => Loan.fromMap(element)).toList();
 
     final Loan? loanMadeByAnotherUser = loans.firstWhereOrNull(
       (element) => element.loanee.id != userId && element.accepted,
@@ -218,7 +196,10 @@ class LoansBackend {
   }
 
   static Future<BackendResponse> getLoansForUser(
-      LoansFilterParams params) async {
+    LoansFilterParams params,
+    int pageKey,
+    int pageSize,
+  ) async {
     try {
       final SupabaseClient client = Supabase.instance.client;
       final String userId = UsersBackend.currentUserId;
@@ -230,10 +211,7 @@ class LoansBackend {
       filter = filter.not('books', 'is', null);
 
       if (!params.allStatus) {
-        filter = filter
-            .eq('returned', params.returned)
-            .eq('accepted', params.accepted)
-            .eq('rejected', params.rejected);
+        filter = filter.eq('returned', params.returned).eq('accepted', params.accepted).eq('rejected', params.rejected);
       }
 
       if (params.userIsLoanee && params.userIsOwner) {
@@ -260,12 +238,11 @@ class LoansBackend {
       }
 
       final List<dynamic> response = await transform.range(
-        params.currentIndex,
-        params.currentIndex + 10,
+        pageKey,
+        pageKey + pageSize - 1,
       );
 
-      final List<Loan> loanList =
-          response.map((element) => Loan.fromMap(element)).toList();
+      final List<Loan> loanList = response.map((element) => Loan.fromMap(element)).toList();
 
       return BackendResponse(success: true, payload: loanList);
     } on PostgrestException catch (error) {
@@ -288,8 +265,7 @@ class LoansBackend {
           .eq('accepted', true)
           .not('review', 'is', null);
 
-      final List<Loan> loanList =
-          response.map((element) => Loan.fromMap(element)).toList();
+      final List<Loan> loanList = response.map((element) => Loan.fromMap(element)).toList();
 
       return BackendResponse(success: true, payload: loanList);
     } on PostgrestException catch (error) {
@@ -297,8 +273,14 @@ class LoansBackend {
     }
   }
 
-  static Future<BackendResponse> getBooksReviewedByUser(Profile user) async {
+  static Future<BackendResponse> getBooksReviewedByUser({
+    required int pageKey,
+    required int pageSize,
+    String? userId,
+  }) async {
     try {
+      String userToQuery = userId ?? UsersBackend.currentUserId;
+
       final SupabaseClient client = Supabase.instance.client;
 
       final List<Map<String, dynamic>> response = await client
@@ -307,12 +289,12 @@ class LoansBackend {
             '*, books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
           )
           .eq('accepted', true)
-          .eq('loanee', user.id)
+          .eq('loanee', userToQuery)
           .not('book', 'is', null)
-          .not('review', 'is', null);
+          .not('review', 'is', null)
+          .range(pageKey, pageKey + pageSize - 1);
 
-      final List<Loan> loanList =
-          response.map((element) => Loan.fromMap(element)).toList();
+      final List<Loan> loanList = response.map((element) => Loan.fromMap(element)).toList();
 
       return BackendResponse(success: true, payload: loanList);
     } on PostgrestException catch (error) {
@@ -336,8 +318,7 @@ class LoansBackend {
               'book': bookId,
             },
           )
-          .select(
-              '*, books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)')
+          .select('*, books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)')
           .single();
 
       return BackendResponse(
@@ -345,8 +326,6 @@ class LoansBackend {
         payload: Loan.fromMap(response),
       );
     } on PostgrestException catch (error) {
-      print(error);
-
       return BackendResponse(
         success: false,
         payload: error.message,

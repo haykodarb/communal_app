@@ -1,6 +1,5 @@
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
-import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/community/community_specific/community_books/community_books_page.dart';
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_page.dart';
 import 'package:communal/presentation/community/community_specific/community_members/community_members_page.dart';
@@ -14,11 +13,7 @@ class CommunitySpecificPage extends StatelessWidget {
   const CommunitySpecificPage({super.key, required this.communityId});
   final String communityId;
 
-  static const List<IconData> _icons = <IconData>[
-    Atlas.book,
-    Atlas.chats,
-    Atlas.users
-  ];
+  static const List<IconData> _icons = <IconData>[Atlas.book, Atlas.chats, Atlas.users];
 
   static const List<String> _labels = <String>['Books', 'Discuss', 'Members'];
 
@@ -119,8 +114,7 @@ class CommunitySpecificPage extends StatelessWidget {
                         child: ScaleTransition(
                           scale: controller.floatingActionButtonAnimation,
                           child: FloatingActionButton(
-                            onPressed: () => controller.discussionsController
-                                .goToDiscussionsTopicCreate(context),
+                            onPressed: () => controller.discussionsController.goToDiscussionsTopicCreate(context),
                             child: const Icon(Atlas.add_messages),
                           ),
                         ),
@@ -132,8 +126,7 @@ class CommunitySpecificPage extends StatelessWidget {
                               child: ScaleTransition(
                                 scale: controller.floatingActionButtonAnimation,
                                 child: FloatingActionButton(
-                                  onPressed: () => controller.membersController
-                                      .addUser(context),
+                                  onPressed: () => controller.membersController.addUser(context),
                                   child: const Icon(Atlas.user_plus),
                                 ),
                               ),
@@ -157,15 +150,13 @@ class CommunitySpecificPage extends StatelessWidget {
                       position: controller.bottomBarAnimation,
                       child: Container(
                         color: Colors.transparent,
-                        margin: const EdgeInsets.only(
-                            bottom: 10, right: 10, left: 10),
+                        margin: const EdgeInsets.only(bottom: 10, right: 10, left: 10),
                         height: 70,
                         constraints: const BoxConstraints.tightFor(width: 200),
                         child: Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color:
-                                Theme.of(context).colorScheme.surfaceContainer,
+                            color: Theme.of(context).colorScheme.surfaceContainer,
                             borderRadius: BorderRadius.circular(50),
                             boxShadow: [
                               BoxShadow(

@@ -2,11 +2,13 @@ import 'dart:async';
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
+import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class CommunityBooksController extends GetxController {
+  static const int pageSize = 20;
+
   CommunityBooksController({required this.communityId});
   final String communityId;
 
@@ -15,9 +17,7 @@ class CommunityBooksController extends GetxController {
   int loadingIndex = 0;
   String currentQuery = '';
 
-  PagingController<int, Book> pagingController = PagingController(
-    firstPageKey: 0,
-  );
+  final CommonListViewController<Book> listViewController = CommonListViewController(pageSize: pageSize);
 
   Timer? searchDebounceTimer;
   Timer? loadMoreDebounceTimer;
@@ -26,25 +26,24 @@ class CommunityBooksController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
 
-    pagingController.addPageRequestListener(loadBooks);
+    listViewController.registerNewPageCallback(loadBooks);
   }
 
-  Future<void> loadBooks(int pageKey) async {
+  Future<List<Book>> loadBooks(int pageKey) async {
     final BackendResponse response = await BooksBackend.getBooksInCommunity(
-      communityId,
-      pageKey,
-      currentQuery,
+      communityId: communityId,
+      pageKey: pageKey,
+      query: currentQuery,
+      pageSize: pageSize,
     );
 
     if (response.success) {
       List<Book> books = response.payload;
-      if (books.length < 10) {
-        pagingController.appendLastPage(books);
-        return;
-      }
 
-      pagingController.appendPage(books, pageKey + books.length);
+      return books;
     }
+
+    return [];
   }
 
   Future<void> searchBooks(String string_query) async {
@@ -55,7 +54,7 @@ class CommunityBooksController extends GetxController {
       () async {
         currentQuery = string_query;
 
-        pagingController.refresh();
+        await listViewController.reloadList();
       },
     );
   }

@@ -73,17 +73,13 @@ class BookCreatePage extends StatelessWidget {
                                 } else {
                                   return Card(
                                     margin: EdgeInsets.zero,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .surfaceContainer,
+                                    color: Theme.of(context).colorScheme.surfaceContainer,
                                     child: Center(
                                       child: Text(
                                         'Add image',
                                         style: TextStyle(
                                           fontSize: 14,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurfaceVariant,
+                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                                         ),
                                         textAlign: TextAlign.center,
                                       ),
@@ -98,13 +94,10 @@ class BookCreatePage extends StatelessWidget {
                               alignment: Alignment.bottomCenter,
                               child: Obx(
                                 () {
-                                  final bool fileSelected =
-                                      controller.selectedBytes.value != null;
+                                  final bool fileSelected = controller.selectedBytes.value != null;
 
                                   final Color buttonBackground = fileSelected
-                                      ? Theme.of(context)
-                                          .colorScheme
-                                          .surfaceContainer
+                                      ? Theme.of(context).colorScheme.surfaceContainer
                                       : Theme.of(context).colorScheme.primary;
 
                                   final Color iconColor = fileSelected
@@ -112,11 +105,7 @@ class BookCreatePage extends StatelessWidget {
                                       : Theme.of(context).colorScheme.onPrimary;
 
                                   final Border? buttonBorder = fileSelected
-                                      ? Border.all(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                          width: 2)
+                                      ? Border.all(color: Theme.of(context).colorScheme.primary, width: 2)
                                       : null;
 
                                   if (kIsWeb) {
@@ -128,8 +117,7 @@ class BookCreatePage extends StatelessWidget {
                                       child: Container(
                                         decoration: BoxDecoration(
                                           border: buttonBorder,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
+                                          borderRadius: BorderRadius.circular(10),
                                           color: buttonBackground,
                                         ),
                                         padding: const EdgeInsets.all(13),
@@ -143,10 +131,8 @@ class BookCreatePage extends StatelessWidget {
                                   }
 
                                   return Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       InkWell(
                                         onTap: () => controller.takePicture(
@@ -156,8 +142,7 @@ class BookCreatePage extends StatelessWidget {
                                         child: Container(
                                           decoration: BoxDecoration(
                                             border: buttonBorder,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
+                                            borderRadius: BorderRadius.circular(10),
                                             color: buttonBackground,
                                           ),
                                           padding: const EdgeInsets.all(13),
@@ -177,8 +162,7 @@ class BookCreatePage extends StatelessWidget {
                                         child: Container(
                                           decoration: BoxDecoration(
                                             border: buttonBorder,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
+                                            borderRadius: BorderRadius.circular(10),
                                             color: buttonBackground,
                                           ),
                                           padding: const EdgeInsets.all(13),
@@ -199,38 +183,50 @@ class BookCreatePage extends StatelessWidget {
                       ),
                     ),
                     const Divider(height: 20),
-                    Form(
-                      child: Column(
-                        children: [
-                          CommonTextField(
-                            callback: controller.onTitleChange,
-                            label: 'Title',
-                            submitCallback: (_) =>
-                                controller.onSubmitButton(context),
-                            validator: (String? value) =>
-                                controller.stringValidator(value, 3, false),
-                            maxLength: 100,
-                          ),
-                          const Divider(height: 5),
-                          CommonTextField(
-                            callback: controller.onAuthorChange,
-                            submitCallback: (_) =>
-                                controller.onSubmitButton(context),
-                            label: 'Author',
-                            validator: (String? value) =>
-                                controller.stringValidator(value, 3, false),
-                          ),
-                          const Divider(height: 5),
-                          CommonTextField(
-                            callback: controller.onReviewTextChange,
-                            label: 'Review (Optional)',
-                            minLines: 3,
-                            maxLines: 10,
-                            validator: (String? value) =>
-                                controller.stringValidator(value, 10, true),
-                          ),
-                        ],
-                      ),
+                    Column(
+                      children: [
+                        CommonTextField(
+                          callback: controller.onTitleChange,
+                          label: 'Title',
+                          submitCallback: (_) => controller.onSubmitButton(context),
+                          validator: (String? value) {
+                            return controller.stringValidator(
+                              value: value,
+                              length: 3,
+                              optional: false,
+                            );
+                          },
+                          maxLength: 50,
+                        ),
+                        const Divider(height: 5),
+                        CommonTextField(
+                          callback: controller.onAuthorChange,
+                          submitCallback: (_) => controller.onSubmitButton(context),
+                          label: 'Author',
+                          validator: (String? value) {
+                            return controller.stringValidator(
+                              value: value,
+                              length: 3,
+                              optional: false,
+                            );
+                          },
+                          maxLength: 50,
+                        ),
+                        const Divider(height: 5),
+                        CommonTextField(
+                          callback: controller.onReviewTextChange,
+                          label: 'Review (Optional)',
+                          minLines: 3,
+                          maxLines: 10,
+                          validator: (String? value) {
+                            return controller.stringValidator(
+                              value: value,
+                              length: 3,
+                              optional: true,
+                            );
+                          },
+                        ),
+                      ],
                     ),
                     const Divider(height: 20),
                     _availableForLoansPrompt(controller),

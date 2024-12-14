@@ -1,13 +1,15 @@
 import 'package:communal/backend/login_backend.dart';
 import 'package:communal/models/backend_response.dart';
+import 'package:communal/presentation/common/common_alert_dialog.dart';
+import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginPasswordRecoveryController extends GetxController {
   final RxBool loading = false.obs;
 
   final RxString email = ''.obs;
-  final RxnString message = RxnString();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -15,14 +17,21 @@ class LoginPasswordRecoveryController extends GetxController {
     email.value = value;
   }
 
-  Future<void> onSubmit() async {
+  Future<void> onSubmit(BuildContext context) async {
     final bool? validForm = formKey.currentState?.validate();
 
     if (validForm != null && validForm) {
       loading.value = true;
       final BackendResponse response = await LoginBackend.sendRecoveryEmail(email.value);
 
-      message.value = response.payload;
+      if (context.mounted) {
+        await CommonAlertDialog(title: response.payload).open(context);
+
+        if (context.mounted) {
+          context.go(RouteNames.startPage);
+        }
+      }
+
       loading.value = false;
     }
   }

@@ -2,7 +2,6 @@ import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:communal/presentation/start/start_controller.dart';
@@ -225,7 +224,7 @@ class StartPage extends StatelessWidget {
                 child: Text(
                   'Communal',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.lora(
+                  style: GoogleFonts.russoOne(
                     fontSize: 50,
                     fontWeight: FontWeight.w900,
                     color: Theme.of(context).colorScheme.primary,

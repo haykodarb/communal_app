@@ -12,8 +12,8 @@ class CommonAlertDialog extends StatelessWidget {
   final String title;
   final String confirmationText;
 
-  void open(BuildContext context) {
-    showDialog(context: context, builder: build);
+  Future<void> open(BuildContext context) async {
+    await showDialog(context: context, builder: build);
   }
 
   @override
@@ -22,7 +22,6 @@ class CommonAlertDialog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       child: Container(
         width: 400,
-        height: 200,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: Theme.of(context).colorScheme.surface,
@@ -34,6 +33,7 @@ class CommonAlertDialog extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
               child: Text(
@@ -42,6 +42,7 @@ class CommonAlertDialog extends StatelessWidget {
                 style: const TextStyle(fontSize: 16),
               ),
             ),
+            const Divider(height: 40),
             SizedBox(
               child: ElevatedButton(
                 onPressed: confirmCallback ?? () => Navigator.of(context).pop(),

@@ -33,19 +33,16 @@ class CommunityDiscussionsTopicMessagesController extends GetxController {
     super.onInit();
 
     loading.value = true;
-    final CommunityDiscussionsController communityDiscussionsController =
-        Get.find();
+    final CommunityDiscussionsController communityDiscussionsController = Get.find();
 
-    DiscussionTopic? tmp =
-        communityDiscussionsController.topics.firstWhereOrNull(
+    DiscussionTopic? tmp = communityDiscussionsController.listViewController.itemList.firstWhereOrNull(
       (element) => element.id == topicId,
     );
 
     if (tmp != null) {
       topic = tmp;
     } else {
-      final BackendResponse response =
-          await DiscussionsBackend.getDiscussionTopicById(topicId);
+      final BackendResponse response = await DiscussionsBackend.getDiscussionTopicById(topicId);
 
       if (response.success) {
         topic = response.payload;
@@ -54,8 +51,7 @@ class CommunityDiscussionsTopicMessagesController extends GetxController {
 
     loadMessages();
 
-    subscription ??=
-        RealtimeBackend.streamController.stream.listen(_realtimeListener);
+    subscription ??= RealtimeBackend.streamController.stream.listen(_realtimeListener);
 
     loading.value = false;
   }
@@ -76,8 +72,7 @@ class CommunityDiscussionsTopicMessagesController extends GetxController {
 
     if (realtimeMessage.new_row['topic'] != topicId) return;
 
-    final DiscussionMessage? existingMessageForProfile =
-        messages.firstWhereOrNull(
+    final DiscussionMessage? existingMessageForProfile = messages.firstWhereOrNull(
       (element) => element.sender.id == realtimeMessage.new_row['sender'],
     );
 
@@ -94,8 +89,7 @@ class CommunityDiscussionsTopicMessagesController extends GetxController {
         topicId: realtimeMessage.new_row['topic'],
       );
     } else {
-      final BackendResponse response =
-          await DiscussionsBackend.getDiscussionMessageById(
+      final BackendResponse response = await DiscussionsBackend.getDiscussionMessageById(
         realtimeMessage.new_row['id'],
       );
 
@@ -109,8 +103,7 @@ class CommunityDiscussionsTopicMessagesController extends GetxController {
   }
 
   Future<void> loadMessages() async {
-    final BackendResponse response =
-        await DiscussionsBackend.getDiscussionMessagesForTopic(topicId);
+    final BackendResponse response = await DiscussionsBackend.getDiscussionMessagesForTopic(topicId);
 
     if (response.success) {
       messages.value = response.payload;
@@ -146,8 +139,7 @@ class CommunityDiscussionsTopicMessagesController extends GetxController {
 
     messages.insert(0, newMessage);
 
-    final BackendResponse response =
-        await DiscussionsBackend.insertDiscussionMessageInTopic(
+    final BackendResponse response = await DiscussionsBackend.insertDiscussionMessageInTopic(
       topicId,
       typedMessage,
     );

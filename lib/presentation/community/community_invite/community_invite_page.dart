@@ -23,8 +23,7 @@ class CommunityInvitePage extends StatelessWidget {
     final Profile profile = controller.foundProfiles[index];
 
     final Color selectedFg = Theme.of(context).colorScheme.onPrimary;
-    final Color selectedBg =
-        Theme.of(context).colorScheme.primary.withOpacity(0.15);
+    final Color selectedBg = Theme.of(context).colorScheme.primary.withOpacity(0.15);
 
     final Color selectedBorder = Theme.of(context).colorScheme.primary;
     return InkWell(
@@ -44,8 +43,7 @@ class CommunityInvitePage extends StatelessWidget {
                     )
                   : null,
               borderRadius: BorderRadius.circular(5),
-              color:
-                  controller.selectedIndex.value == index ? selectedBg : null,
+              color: controller.selectedIndex.value == index ? selectedBg : null,
             ),
             padding: const EdgeInsets.all(10),
             child: Row(
@@ -67,8 +65,7 @@ class CommunityInvitePage extends StatelessWidget {
                         return const CommonLoadingBody();
                       }
 
-                      final bool alreadyInvited =
-                          controller.invitationsSent.any(
+                      final bool alreadyInvited = controller.invitationsSent.any(
                         (e) => e.id == profile.id,
                       );
 
@@ -86,9 +83,7 @@ class CommunityInvitePage extends StatelessWidget {
                             height: double.maxFinite,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .surfaceContainer,
+                              color: Theme.of(context).colorScheme.surfaceContainer,
                               borderRadius: BorderRadius.circular(
                                 10,
                               ),
@@ -151,7 +146,7 @@ class CommunityInvitePage extends StatelessWidget {
             title: const Text('Invite user'),
           ),
           body: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+            padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

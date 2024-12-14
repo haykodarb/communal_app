@@ -47,7 +47,7 @@ class RegisterPage extends StatelessWidget {
               width: double.maxFinite,
               child: TextButton(
                 child: Text(
-                  'Resend confirmation?',
+                  'resend-confirmation'.tr,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
@@ -56,7 +56,9 @@ class RegisterPage extends StatelessWidget {
                   textAlign: TextAlign.right,
                 ),
                 onPressed: () {
-                  context.push(RouteNames.registerResendPage);
+                  context.push(
+                    RouteNames.startPage + RouteNames.registerPage + RouteNames.registerResendPage,
+                  );
                 },
               ),
             ),
@@ -138,7 +140,9 @@ class RegisterPage extends StatelessWidget {
                                 ),
                               ),
                               onPressed: () {
-                                context.push(RouteNames.registerResendPage);
+                                context.push(
+                                  RouteNames.startPage + RouteNames.registerPage + RouteNames.registerResendPage,
+                                );
                               },
                             ),
                           ],
@@ -157,20 +161,22 @@ class RegisterPage extends StatelessWidget {
                       left: 40,
                     ),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
                             IconButton(
+                              padding: EdgeInsets.zero,
                               onPressed: () {
                                 context.pop();
                               },
                               icon: const Icon(Icons.chevron_left_rounded),
                               iconSize: 36,
                             ),
+                            const VerticalDivider(width: 20),
                             Expanded(
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerLeft,
                                 child: Text(
                                   'create-account'.tr,
                                   textAlign: TextAlign.left,

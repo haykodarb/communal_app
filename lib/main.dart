@@ -1,4 +1,3 @@
-import 'package:communal/backend/realtime_backend.dart';
 import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/dark_theme.dart';
 import 'package:communal/localization.dart';
@@ -37,7 +36,6 @@ void main() async {
   svg.cache.putIfAbsent(loader.cacheKey(null), () => loader.loadBytes(null));
 
   GoogleFonts.config.allowRuntimeFetching = false;
-
   GoRouter.optionURLReflectsImperativeAPIs = true;
 
   runApp(
@@ -69,9 +67,8 @@ class MyApp extends StatelessWidget {
         router.go(RouteNames.startPage);
       }
     },
-    initialLocation: Supabase.instance.client.auth.currentUser == null
-        ? RouteNames.startPage
-        : RouteNames.communityListPage,
+    initialLocation:
+        Supabase.instance.client.auth.currentUser == null ? RouteNames.startPage : RouteNames.communityListPage,
   );
 
   @override

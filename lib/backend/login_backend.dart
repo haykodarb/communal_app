@@ -26,12 +26,34 @@ class LoginBackend {
     try {
       await Supabase.instance.client.auth.resetPasswordForEmail(
         email,
-        redirectTo: 'https://communal.ar/auth/recovery',
+        redirectTo: 'https://app.communal.ar/#/auth/reset',
       );
 
-      return BackendResponse(success: true, payload: 'Recovery email sent to $email');
+      return BackendResponse(success: true, payload: 'Recovery email succesfully sent to $email.');
     } catch (error) {
       return BackendResponse(success: false, payload: error);
+    }
+  }
+
+  static Future<BackendResponse> updateUserPassword(String password) async {
+    try {
+      final UserResponse response = await Supabase.instance.client.auth.updateUser(
+        UserAttributes(password: password),
+      );
+
+      final bool success = response.user != null;
+
+      return BackendResponse(
+        success: success,
+        payload: success
+            ? 'Password updated succesfully, you can now login with your new password.'
+            : 'Error in updating password, please try again.',
+      );
+    } catch (e) {
+      return BackendResponse(
+        success: false,
+        payload: 'Please request a new password reset and follow the link in your email.',
+      );
     }
   }
 

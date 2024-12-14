@@ -23,7 +23,7 @@ class RegisterController extends GetxController {
 
   String? emailValidator(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter something.';
+      return 'enter-something'.tr;
     }
 
     if (!GetUtils.isEmail(value)) {
@@ -49,7 +49,7 @@ class RegisterController extends GetxController {
 
   String? usernameValidator(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter something.';
+      return 'enter-something'.tr;
     }
 
     if (value.length < 6) {
@@ -65,7 +65,7 @@ class RegisterController extends GetxController {
 
   String? passwordValidator(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter something.';
+      return 'enter-something'.tr;
     }
 
     if (value.length < 6) {

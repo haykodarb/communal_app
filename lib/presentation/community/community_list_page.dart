@@ -35,19 +35,14 @@ class CommunityListPage extends StatelessWidget {
                     child: FutureBuilder(
                       future: CommunitiesBackend.getCommunityAvatar(community),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                                ConnectionState.active ||
-                            snapshot.connectionState ==
-                                ConnectionState.waiting) {
+                        if (snapshot.connectionState == ConnectionState.active ||
+                            snapshot.connectionState == ConnectionState.waiting) {
                           return const CommonLoadingImage();
                         }
 
                         if (snapshot.data == null) {
                           return Container(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .tertiary
-                                .withOpacity(0.75),
+                            color: Theme.of(context).colorScheme.tertiary.withOpacity(0.75),
                             child: Icon(
                               Atlas.users,
                               color: Theme.of(context).colorScheme.surface,
@@ -94,9 +89,7 @@ class CommunityListPage extends StatelessWidget {
                               child: Text(
                                 "${community.user_count} members",
                                 style: TextStyle(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurfaceVariant,
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                                   fontSize: 12,
                                 ),
                               ),
@@ -113,9 +106,7 @@ class CommunityListPage extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurfaceVariant,
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                                   fontSize: 12,
                                 ),
                               ),
@@ -178,8 +169,7 @@ class CommunityListPage extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Communities'),
           ),
-          drawer:
-              Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
+          drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
           body: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -200,8 +190,7 @@ class CommunityListPage extends StatelessWidget {
                               bottom: 90,
                             ),
                             itemCount: controller.communities.length,
-                            separatorBuilder: (context, index) =>
-                                const Divider(height: 10),
+                            separatorBuilder: (context, index) => const Divider(height: 10),
                             itemBuilder: (context, index) {
                               return CommonKeepaliveWrapper(
                                 child: _communityCard(
