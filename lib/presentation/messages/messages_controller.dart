@@ -112,10 +112,13 @@ class MessagesController extends GetxController {
   }
 
   Future<List<Rx<Message>>> loadChats(int pageKey) async {
-    final BackendResponse<List<Message>> response = await MessagesBackend.getDistinctChats();
+    final BackendResponse<List<Message>> response = await MessagesBackend.getDistinctChats(
+      pageSize: pageSize,
+      pageKey: pageKey,
+    );
 
     if (response.success) {
-      return response.payload.map((e) => e.obs).toList();
+      return response.payload!.map((e) => e.obs).toList();
     }
 
     return [];

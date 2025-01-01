@@ -1,4 +1,3 @@
-import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/book/book_create/book_create_page.dart';
 import 'package:communal/presentation/book/book_edit/book_edit_page.dart';
 import 'package:communal/presentation/book/book_foreign/book_foreign_page.dart';
@@ -25,6 +24,7 @@ import 'package:communal/presentation/profiles/profile_own/profile_own_edit/prof
 import 'package:communal/presentation/profiles/profile_own/profile_own_page.dart';
 import 'package:communal/presentation/register/register_page.dart';
 import 'package:communal/presentation/register/register_resend/register_resend_page.dart';
+import 'package:communal/presentation/search/search_page.dart';
 import 'package:communal/presentation/start/password_reset/password_reset_page.dart';
 import 'package:communal/presentation/start/start_page.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +49,8 @@ class RouteNames {
   static const String profileOwnEditPage = '/edit';
 
   static const String profileOtherPage = '/profile/:userId';
+
+  static const String searchPage = '/search';
 
   static const String myBooks = '/my-books';
   static const String bookCreatePage = '/create';
@@ -241,6 +243,16 @@ final GoRoute _foreignBookPage = GoRoute(
   },
 );
 
+final GoRoute _searchPage = GoRoute(
+  path: RouteNames.searchPage,
+  parentNavigatorKey: _shellNavigatorKey,
+  pageBuilder: (context, state) {
+    return const NoTransitionPage(
+      child: SearchPage(),
+    );
+  },
+);
+
 final GoRoute _loansRoutes = GoRoute(
   path: RouteNames.loansPage,
   parentNavigatorKey: _shellNavigatorKey,
@@ -353,6 +365,7 @@ final List<RouteBase> routes = <RouteBase>[
     },
     routes: [
       _loansRoutes,
+      _searchPage,
       _communityRoutes,
       _myProfileRoutes,
       _profilesRoutes,

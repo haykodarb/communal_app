@@ -1,3 +1,4 @@
+import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/message.dart';
 import 'package:communal/models/profile.dart';
@@ -21,8 +22,7 @@ class MessagesBackend {
               'content': content,
             },
           )
-          .select(
-              '*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
+          .select('*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
           .single();
 
       return BackendResponse(
@@ -36,42 +36,64 @@ class MessagesBackend {
     }
   }
 
-  static Future<BackendResponse<List<Message>>> getDistinctChats() async {
-    final SupabaseClient client = Supabase.instance.client;
+  static Future<BackendResponse<int>> getUnreadChatCount() async {
+    try {
+      final SupabaseClient client = Supabase.instance.client;
 
-    final List<Map<String, dynamic>> distinctChats = await client
-        .from('distinct_chats')
-        .select(
-            '*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
-        .order('created_at');
+      final PostgrestResponse response = await client.from('distinct_chats').select('id').match({
+        'receiver': UsersBackend.currentUserId,
+        'is_read': false,
+      }).count();
 
-    final List<Message> messages = <Message>[];
-
-    for (Map<String, dynamic> chat in distinctChats) {
-      final Message message = Message.fromMap(chat);
-
-      final bool shouldAdd = !distinctChats.any(
-        (Map<String, dynamic> element) {
-          final bool chatExists = element['sender'] == message.receiver.id &&
-              element['receiver'] == message.sender.id;
-
-          final bool chatIsMoreRecent = message.created_at
-                  .compareTo(DateTime.parse(element['created_at'])) <
-              0;
-
-          return chatExists && chatIsMoreRecent;
-        },
-      );
-
-      if (shouldAdd) {
-        messages.add(message);
-      }
+      return BackendResponse(success: true, payload: response.count);
+    } catch (e) {
+      return BackendResponse(success: false);
     }
+  }
 
-    return BackendResponse(
-      success: messages.isNotEmpty,
-      payload: messages,
-    );
+  static Future<BackendResponse<List<Message>>> getDistinctChats({
+    required int pageKey,
+    required int pageSize,
+  }) async {
+    try {
+      final SupabaseClient client = Supabase.instance.client;
+
+      final List<Map<String, dynamic>> distinctChats = await client
+          .from('distinct_chats')
+          .select(
+            '*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)',
+          )
+          .order('created_at')
+          .range(pageKey, pageKey + pageSize - 1);
+
+      final List<Message> messages = <Message>[];
+
+      for (Map<String, dynamic> chat in distinctChats) {
+        final Message message = Message.fromMap(chat);
+
+        final bool shouldAdd = !distinctChats.any(
+          (Map<String, dynamic> element) {
+            final bool chatExists =
+                element['sender'] == message.receiver.id && element['receiver'] == message.sender.id;
+
+            final bool chatIsMoreRecent = message.created_at.compareTo(DateTime.parse(element['created_at'])) < 0;
+
+            return chatExists && chatIsMoreRecent;
+          },
+        );
+
+        if (shouldAdd) {
+          messages.add(message);
+        }
+      }
+
+      return BackendResponse(
+        success: messages.isNotEmpty,
+        payload: messages,
+      );
+    } catch (err) {
+      return BackendResponse(success: false);
+    }
   }
 
   static Future<BackendResponse> getChatWithId(String uuid) async {
@@ -79,8 +101,7 @@ class MessagesBackend {
 
     final Map<String, dynamic>? response = await client
         .from('distinct_chats')
-        .select(
-            '*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
+        .select('*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
         .eq('id', uuid)
         .maybeSingle();
 
@@ -124,8 +145,7 @@ class MessagesBackend {
 
       final List<dynamic> response = await client
           .from('messages')
-          .select(
-              '*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
+          .select('*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
           .or(filter)
           .range(currentIndex * 100, currentIndex * 100 + 100 - 1)
           .order(
@@ -169,8 +189,7 @@ class MessagesBackend {
 
     final Map<String, dynamic>? response = await client
         .from('messages')
-        .select(
-            '*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
+        .select('*, receiver_profile:profiles!receiver(*),sender_profile:profiles!sender(*)')
         .eq('id', uuid)
         .maybeSingle();
 

@@ -49,6 +49,7 @@ class CommunityBooksPage extends StatelessWidget {
                 noItemsText: 'No books found in this community.',
                 verticalSeparator: const VerticalDivider(width: 5),
                 horizontalSeparator: const Divider(height: 5),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 controller: controller.listViewController,
                 childBuilder: (Book book) => InkWell(
                   child: CommonVerticalBookCard(book: book),

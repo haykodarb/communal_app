@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class BookForeignPage extends StatelessWidget {
   const BookForeignPage({super.key, required this.bookId});
@@ -266,13 +265,8 @@ class BookForeignPage extends StatelessWidget {
         return Obx(
           () {
             if (controller.loading.value) {
-              return SizedBox(
-                height: 100,
-                width: double.maxFinite,
-                child: LoadingAnimationWidget.threeArchedCircle(
-                  color: Theme.of(context).colorScheme.primary,
-                  size: 30,
-                ),
+              return const SizedBox(
+                height: 60,
               );
             }
 

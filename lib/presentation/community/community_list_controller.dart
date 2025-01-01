@@ -2,64 +2,56 @@ import 'package:communal/backend/communities_backend.dart';
 import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/community.dart';
+import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
 class CommunityListController extends GetxController {
-  final RxList<Community> communities = <Community>[].obs;
+  static const int pageSize = 20;
+  final CommonListViewController<Community> listViewController = CommonListViewController(pageSize: pageSize);
   final RxBool loading = true.obs;
 
   @override
   void onReady() {
-    fetchAllCommunities();
-
+    listViewController.registerNewPageCallback(loadCommunities);
     super.onReady();
   }
 
-  Future<void> fetchAllCommunities() async {
-    loading.value = true;
-    final BackendResponse response =
-        await CommunitiesBackend.getCommunitiesForUser();
+  Future<List<Community>> loadCommunities(int pageKey) async {
+    final BackendResponse response = await CommunitiesBackend.getCommunitiesForCurrentUser(
+      pageKey: pageKey,
+      pageSize: pageSize,
+    );
 
     if (response.success) {
-      List<String> pinned_communities =
-          await UserPreferences.getPinnedCommunitiesIds();
+      List<String> pinned_communities = await UserPreferences.getPinnedCommunitiesIds();
 
       List<Community> resultCommunities = response.payload;
       List<Community> sortedCommunities = <Community>[];
 
       for (int i = 0; i < resultCommunities.length; i++) {
-        if (pinned_communities
-            .any((element) => element == resultCommunities[i].id)) {
+        if (pinned_communities.any((element) => element == resultCommunities[i].id)) {
           resultCommunities[i].pinned.value = true;
           sortedCommunities.insert(0, resultCommunities[i]);
         } else {
           sortedCommunities.add(resultCommunities[i]);
         }
       }
-      communities.value = sortedCommunities;
-      communities.refresh();
-    } else {
-      communities.clear();
+      return sortedCommunities;
     }
 
-    loading.value = false;
+    return [];
   }
 
   Future<void> goToCommunityCreate(BuildContext context) async {
-    final bool? createdCommunity = await context.push(
+    await context.push(
       RouteNames.communityListPage + RouteNames.communityCreatePage,
     );
-
-    if (createdCommunity != null && createdCommunity) {
-      fetchAllCommunities();
-    }
   }
 
-  Future<void> goToCommunitySpecific(
-      Community community, BuildContext context) async {
+  Future<void> goToCommunitySpecific(Community community, BuildContext context) async {
     context.push('${RouteNames.communityListPage}/${community.id}');
   }
 
@@ -70,5 +62,15 @@ class CommunityListController extends GetxController {
       community.id,
       community.pinned.value,
     );
+
+    if (community.pinned.value) {
+      int index = listViewController.itemList.indexWhere((el) => el.id == community.id);
+
+      if (index > 0) {
+        listViewController.itemList.removeAt(index);
+        listViewController.itemList.insert(0, community);
+        listViewController.itemList.refresh();
+      }
+    }
   }
 }

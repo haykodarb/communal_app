@@ -42,8 +42,7 @@
               jdk11
             ];
             shellHook = ''
-            export CHROME_EXECUTABLE=$(which chromium); 
-            zsh -c "./dev.sh"
+		export CHROME_EXECUTABLE=$(which chromium); 
             '';
           };
       });

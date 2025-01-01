@@ -1,10 +1,8 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/models/membership.dart';
 import 'package:communal/models/profile.dart';
-import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -114,6 +112,22 @@ class UsersBackend {
       );
     } on PostgrestException catch (error) {
       return BackendResponse(success: false, payload: error.message);
+    }
+  }
+
+  static Future<BackendResponse> searchAllUsers({
+    required int pageKey,
+    required int pageSize,
+    required String query,
+  }) async {
+    try {
+      final List<Map<String, dynamic>> response = await _client.from('profiles').select().ilike('username', '%$query%');
+
+      final List<Profile> profiles = response.map((Map<String, dynamic> element) => Profile.fromMap(element)).toList();
+
+      return BackendResponse(payload: profiles, success: true);
+    } catch (e) {
+      return BackendResponse(success: false);
     }
   }
 
@@ -336,25 +350,29 @@ class UsersBackend {
     required int pageKey,
     required int pageSize,
   }) async {
-    final List<dynamic> membershipResponse = await _client.from('memberships').select('*, profiles(*)').match(
-      {
-        'community': communityId,
-        'accepted': true,
-      },
-    ).range(pageKey, pageKey + pageSize - 1);
+    try {
+      final List<dynamic> membershipResponse = await _client.from('memberships').select('*, profiles(*)').match(
+        {
+          'community': communityId,
+          'accepted': true,
+        },
+      ).range(pageKey, pageKey + pageSize - 1);
 
-    final List<Profile> listOfProfiles = membershipResponse.map(
-      (e) {
-        Profile profile = Profile.fromMap(e['profiles']);
-        profile.is_admin = e['is_admin'];
+      final List<Profile> listOfProfiles = membershipResponse.map(
+        (e) {
+          Profile profile = Profile.fromMap(e['profiles']);
+          profile.is_admin = e['is_admin'];
 
-        return profile;
-      },
-    ).toList();
+          return profile;
+        },
+      ).toList();
 
-    return BackendResponse(
-      success: listOfProfiles.isNotEmpty,
-      payload: listOfProfiles,
-    );
+      return BackendResponse(
+        success: listOfProfiles.isNotEmpty,
+        payload: listOfProfiles.isNotEmpty ? listOfProfiles : null,
+      );
+    } catch (e) {
+      return BackendResponse(success: false);
+    }
   }
 }

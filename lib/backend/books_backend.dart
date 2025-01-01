@@ -229,6 +229,40 @@ class BooksBackend {
     }
   }
 
+  static Future<BackendResponse> getBooksInAllCommunities({
+    required int pageKey,
+    required String query,
+    required int pageSize,
+  }) async {
+    try {
+      final List<dynamic> booksResponse = await _client
+          .rpc(
+            'get_books_all_communities',
+            params: {
+              'offset_num': pageKey,
+              'limit_num': pageSize,
+              'search_query': query,
+            },
+          )
+          .select('*, profiles(*)')
+          .limit(pageSize)
+          .order('created_at');
+
+      final List<Book> listOfBooks = booksResponse
+          .map(
+            (element) => Book.fromMap(element),
+          )
+          .toList();
+
+      return BackendResponse(
+        success: true,
+        payload: listOfBooks,
+      );
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
+    }
+  }
+
   static Future<BackendResponse> getBooksInCommunity({
     required String communityId,
     required int pageKey,

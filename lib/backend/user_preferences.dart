@@ -54,15 +54,13 @@ class UserPreferences {
 
   static Future<List<String>> getPinnedCommunitiesIds() async {
     final Box box = await Hive.openBox<dynamic>('preferences');
-    final List<dynamic>? pinned_communities =
-        box.get('pinned_communities') as List<dynamic>?;
+    final List<dynamic>? pinned_communities = box.get('pinned_communities') as List<dynamic>?;
 
     await box.close();
 
     if (pinned_communities == null) return <String>[];
 
-    final List<String> formatted_list =
-        pinned_communities.map((e) => e as String).toList();
+    final List<String> formatted_list = pinned_communities.map((e) => e as String).toList();
 
     return formatted_list;
   }
@@ -70,7 +68,7 @@ class UserPreferences {
   static Future<void> setPinnedCommunityValue(String id, bool shouldPin) async {
     final Box box = await Hive.openBox<dynamic>('preferences');
 
-    List<String>? pinned_communities = box.get('pinned_communities');
+    List<dynamic>? pinned_communities = box.get('pinned_communities');
 
     if (pinned_communities == null) {
       pinned_communities = [];
@@ -80,7 +78,7 @@ class UserPreferences {
     final bool exists = pinned_communities.any((element) => element == id);
 
     if (exists && shouldPin) {
-      box.close();
+      await box.close();
       return;
     }
 

@@ -17,6 +17,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 const List<String> rootRoutes = [
   RouteNames.myBooks,
+  RouteNames.searchPage,
   RouteNames.profileOwnPage,
   RouteNames.notificationsPage,
   RouteNames.communityListPage,
@@ -119,20 +120,10 @@ class CommonDrawerController extends GetxController {
   }
 
   Future<void> getUnreadChats() async {
-    final BackendResponse response = await MessagesBackend.getDistinctChats();
+    final BackendResponse<int> response = await MessagesBackend.getUnreadChatCount();
 
     if (response.success) {
-      final List<Message> messages = response.payload;
-
-      int unreadCount = 0;
-
-      for (int i = 0; i < messages.length; i++) {
-        if (!messages[i].is_read && messages[i].receiver.id == UsersBackend.currentUserId) {
-          unreadCount += messages[i].unread_messages ?? 1;
-        }
-      }
-
-      messageNotifications.value = unreadCount;
+      messageNotifications.value = response.payload ?? 0;
     }
   }
 

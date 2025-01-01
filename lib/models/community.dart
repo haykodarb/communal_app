@@ -25,6 +25,15 @@ class Community {
     return UsersBackend.currentUserId == owner;
   }
 
+  Community.fromMembershipMap(Map<String, dynamic> map)
+      : name = map['communities']['name'],
+        id = map['communities']['id'],
+        description = map['communities']['description'],
+        image_path = map['communities']['image_path'],
+        owner = map['communities']['owner'],
+        user_count = map['communities']['user_count'],
+        isCurrentUserAdmin = map['is_admin'];
+
   Community.fromMap(Map<String, dynamic> map)
       : id = map['id'],
         name = map['name'],
@@ -33,15 +42,15 @@ class Community {
         description = map['description'],
         image_path = map['image_path'];
 
-  Community.copy(Community source) : id = source.id,
-    user_count = source.user_count,
-    name = source.name,
-    owner = source.owner,
-    image_path = source.image_path,
-    description = source.description,
-    pinned = source.pinned,
-    isCurrentUserAdmin = source.isCurrentUserAdmin;
- 
+  Community.copy(Community source)
+      : id = source.id,
+        user_count = source.user_count,
+        name = source.name,
+        owner = source.owner,
+        image_path = source.image_path,
+        description = source.description,
+        pinned = source.pinned,
+        isCurrentUserAdmin = source.isCurrentUserAdmin;
 
   Community.empty()
       : id = '',

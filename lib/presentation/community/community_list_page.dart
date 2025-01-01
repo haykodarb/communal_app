@@ -1,9 +1,7 @@
 import 'package:atlas_icons/atlas_icons.dart';
-import 'package:communal/backend/communities_backend.dart';
 import 'package:communal/models/community.dart';
-import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
-import 'package:communal/presentation/common/common_loading_body.dart';
-import 'package:communal/presentation/common/common_loading_image.dart';
+import 'package:communal/presentation/common/common_community_card.dart';
+import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/community/community_list_controller.dart';
 import 'package:communal/responsive.dart';
@@ -17,107 +15,13 @@ class CommunityListPage extends StatelessWidget {
     CommunityListController controller,
     Community community,
   ) {
-    return Builder(builder: (context) {
-      return Card(
-        clipBehavior: Clip.hardEdge,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Stack(
+    return Builder(
+      builder: (context) {
+        return Stack(
           children: [
-            InkWell(
-              onTap: () => controller.goToCommunitySpecific(community, context),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  AspectRatio(
-                    aspectRatio: 2,
-                    child: FutureBuilder(
-                      future: CommunitiesBackend.getCommunityAvatar(community),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.active ||
-                            snapshot.connectionState == ConnectionState.waiting) {
-                          return const CommonLoadingImage();
-                        }
-
-                        if (snapshot.data == null) {
-                          return Container(
-                            color: Theme.of(context).colorScheme.tertiary.withOpacity(0.75),
-                            child: Icon(
-                              Atlas.users,
-                              color: Theme.of(context).colorScheme.surface,
-                              size: 150,
-                            ),
-                          );
-                        }
-
-                        return Image.memory(
-                          snapshot.data!,
-                          fit: BoxFit.cover,
-                        );
-                      },
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    height: 70,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                community.name,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.surface,
-                                borderRadius: BorderRadius.circular(40),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 2,
-                              ),
-                              child: Text(
-                                "${community.user_count} members",
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                community.description ?? 'No description.',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+            CommonCommunityCard(
+              community: community,
+              callback: () => controller.goToCommunitySpecific(community, context),
             ),
             Align(
               alignment: Alignment.topRight,
@@ -130,7 +34,7 @@ class CommunityListPage extends StatelessWidget {
                     margin: const EdgeInsets.only(top: 10, right: 10),
                     decoration: BoxDecoration(
                       color: community.pinned.value
-                          ? Theme.of(context).colorScheme.primary
+                          ? Theme.of(context).colorScheme.tertiary
                           : Theme.of(context).colorScheme.surfaceContainer,
                       shape: BoxShape.circle,
                     ),
@@ -139,7 +43,7 @@ class CommunityListPage extends StatelessWidget {
                         Atlas.pin,
                         size: 20,
                         color: community.pinned.value
-                            ? Theme.of(context).colorScheme.onPrimary
+                            ? Theme.of(context).colorScheme.surfaceContainer
                             : Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
@@ -148,9 +52,9 @@ class CommunityListPage extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 
   @override
@@ -170,50 +74,9 @@ class CommunityListPage extends StatelessWidget {
             title: const Text('Communities'),
           ),
           drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Obx(
-                  () => CommonLoadingBody(
-                    loading: controller.loading.value,
-                    child: Obx(
-                      () {
-                        if (controller.communities.isNotEmpty) {
-                          return ListView.separated(
-                            addAutomaticKeepAlives: true,
-                            padding: const EdgeInsets.only(
-                              top: 10,
-                              right: 20,
-                              left: 20,
-                              bottom: 90,
-                            ),
-                            itemCount: controller.communities.length,
-                            separatorBuilder: (context, index) => const Divider(height: 10),
-                            itemBuilder: (context, index) {
-                              return CommonKeepaliveWrapper(
-                                child: _communityCard(
-                                  controller,
-                                  controller.communities[index],
-                                ),
-                              );
-                            },
-                          );
-                        } else {
-                          return const Center(
-                            child: Text(
-                              'You have not joined any communities yet.\nGet started by creating your own or asking someone for an invitation.',
-                              textAlign: TextAlign.center,
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            ],
+          body: CommonListView(
+            childBuilder: (Community community) => _communityCard(controller, community),
+            controller: controller.listViewController,
           ),
         );
       },

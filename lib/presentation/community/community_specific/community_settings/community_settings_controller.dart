@@ -19,8 +19,7 @@ class CommunitySettingsController extends GetxController {
 
   final CommunitySpecificController communitySpecificController = Get.find();
 
-  TextEditingController? textEditingController =
-      TextEditingController.fromValue(
+  TextEditingController? textEditingController = TextEditingController.fromValue(
     TextEditingValue(
       text: Get.find<CommunitySpecificController>().community.name,
     ),
@@ -86,12 +85,11 @@ class CommunitySettingsController extends GetxController {
     ).open(context);
 
     if (confirm) {
-      final BackendResponse response =
-          await UsersBackend.removeCurrentUserFromCommunity(community);
+      final BackendResponse response = await UsersBackend.removeCurrentUserFromCommunity(community);
 
       if (context.mounted) {
         if (response.success) {
-          communityListController?.communities.removeWhere(
+          communityListController?.listViewController.removeItem(
             (element) => element.id == community.id,
           );
 
@@ -111,12 +109,11 @@ class CommunitySettingsController extends GetxController {
     ).open(context);
 
     if (confirm) {
-      final BackendResponse response =
-          await CommunitiesBackend.deleteCommunity(community);
+      final BackendResponse response = await CommunitiesBackend.deleteCommunity(community);
 
       if (context.mounted) {
         if (response.success) {
-          communityListController?.communities.removeWhere(
+          communityListController?.listViewController.removeItem(
             (element) => element.id == community.id,
           );
 
@@ -172,15 +169,16 @@ class CommunitySettingsController extends GetxController {
         community = Community.copy(communityForm.value);
         communitySpecificController.community = community;
         _checkIfEdited();
-        int? index = communityListController?.communities.indexWhere(
+        int? index = communityListController?.listViewController.itemList.indexWhere(
           (element) => element.id == communityForm.value.id,
         );
 
         if (index != null && index >= 0) {
-          communityListController?.communities[index] = community;
+          communityListController?.listViewController.itemList[index] = community;
         }
 
-        communityListController?.communities.refresh();
+        communityListController?.listViewController.itemList.refresh();
+
         loading.value = false;
       } else {
         if (context.mounted) {

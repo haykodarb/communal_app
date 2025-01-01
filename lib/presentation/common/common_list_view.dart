@@ -46,6 +46,12 @@ class CommonListViewController<ItemType> extends GetxController {
     pageKey++;
   }
 
+  void removeItem(bool Function(ItemType) callback) {
+    itemList.removeWhere(callback);
+    itemList.refresh();
+    pageKey--;
+  }
+
   Future<void> reloadList() async {
     itemList.clear();
     fullyLoaded = false;

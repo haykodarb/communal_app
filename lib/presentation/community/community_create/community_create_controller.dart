@@ -3,6 +3,7 @@ import 'package:communal/backend/communities_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/presentation/common/common_image_cropper.dart';
+import 'package:communal/presentation/community/community_list_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -18,6 +19,8 @@ class CommunityCreateController extends GetxController {
 
   final ImagePicker imagePicker = ImagePicker();
   final Rxn<Uint8List> selectedBytes = Rxn<Uint8List>();
+
+  final CommunityListController communityListController = Get.find();
 
   void onNameChange(String value) {
     communityForm.update(
@@ -80,7 +83,7 @@ class CommunityCreateController extends GetxController {
       loading.value = true;
       errorMessage.value = '';
 
-      final BackendResponse response = await CommunitiesBackend.createCommunity(
+      final BackendResponse<Community> response = await CommunitiesBackend.createCommunity(
         communityForm.value,
         selectedBytes.value,
       );
@@ -88,6 +91,7 @@ class CommunityCreateController extends GetxController {
       loading.value = false;
 
       if (response.success && context.mounted) {
+        communityListController.listViewController.addItem(response.payload!);
         context.pop(true);
       } else {
         errorMessage.value = 'Creating Community failed.';

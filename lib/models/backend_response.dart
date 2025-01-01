@@ -1,9 +1,9 @@
 class BackendResponse<ResponseType> {
   bool success = false;
-  ResponseType payload;
+  ResponseType? payload;
 
   BackendResponse({
     required this.success,
-    required this.payload,
+    this.payload,
   });
 }

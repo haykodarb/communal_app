@@ -76,7 +76,7 @@ class CommunityMembersController extends GetxController {
     );
 
     if (response.success) {
-      return response.payload;
+      return response.payload!;
     }
 
     return [];
