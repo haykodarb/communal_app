@@ -15,24 +15,31 @@ class UsersBackend {
   }
 
   static Future<bool> validateUsername(String username) async {
-    final Map<String, dynamic>? foundUsername =
-        await _client.from('profiles').select().eq('username', username).maybeSingle();
+    final Map<String, dynamic>? foundUsername = await _client
+        .from('profiles')
+        .select()
+        .eq('username', username)
+        .maybeSingle();
 
     return foundUsername == null || foundUsername.isEmpty;
   }
 
   static Future<Uint8List?> getProfileAvatar(Profile profile) async {
     if (profile.avatar_path != null) {
-      FileInfo? file = await DefaultCacheManager().getFileFromCache(profile.avatar_path!);
+      FileInfo? file =
+          await DefaultCacheManager().getFileFromCache(profile.avatar_path!);
 
       Uint8List bytes;
 
       if (file != null) {
         bytes = await file.file.openRead().toBytes();
       } else {
-        bytes = await _client.storage.from('profile_avatars').download(profile.avatar_path!);
+        bytes = await _client.storage
+            .from('profile_avatars')
+            .download(profile.avatar_path!);
 
-        await DefaultCacheManager().putFile(profile.avatar_path!, bytes, key: profile.avatar_path!);
+        await DefaultCacheManager()
+            .putFile(profile.avatar_path!, bytes, key: profile.avatar_path!);
       }
 
       return bytes;
@@ -47,7 +54,8 @@ class UsersBackend {
   ) async {
     try {
       final String userId = _client.auth.currentUser!.id;
-      final String currentTime = DateTime.now().millisecondsSinceEpoch.toString();
+      final String currentTime =
+          DateTime.now().millisecondsSinceEpoch.toString();
 
       String? fileName;
 
@@ -81,7 +89,9 @@ class UsersBackend {
 
       return BackendResponse(
         success: response.isNotEmpty,
-        payload: response.isNotEmpty ? Profile.fromMap(response) : 'Could not update profile. Please try again.',
+        payload: response.isNotEmpty
+            ? Profile.fromMap(response)
+            : 'Could not update profile. Please try again.',
       );
     } on StorageException catch (error) {
       return BackendResponse(success: false, payload: error.message);
@@ -104,7 +114,8 @@ class UsersBackend {
 
   static Future<BackendResponse> getUserProfile(String id) async {
     try {
-      final Map<String, dynamic> response = await _client.from('profiles').select().eq('id', id).single();
+      final Map<String, dynamic> response =
+          await _client.from('profiles').select().eq('id', id).single();
 
       return BackendResponse(
         success: response.isNotEmpty,
@@ -121,9 +132,15 @@ class UsersBackend {
     required String query,
   }) async {
     try {
-      final List<Map<String, dynamic>> response = await _client.from('profiles').select().ilike('username', '%$query%');
+      final List<Map<String, dynamic>> response = await _client
+          .from('profiles')
+          .select()
+          .ilike('username', '%$query%')
+          .range(pageKey, pageKey + pageSize - 1);
 
-      final List<Profile> profiles = response.map((Map<String, dynamic> element) => Profile.fromMap(element)).toList();
+      final List<Profile> profiles = response
+          .map((Map<String, dynamic> element) => Profile.fromMap(element))
+          .toList();
 
       return BackendResponse(payload: profiles, success: true);
     } catch (e) {
@@ -194,7 +211,8 @@ class UsersBackend {
           payload: Membership.fromMap(response),
         );
       } else {
-        return BackendResponse(success: false, payload: 'Could not find membership with this ID.');
+        return BackendResponse(
+            success: false, payload: 'Could not find membership with this ID.');
       }
     } on PostgrestException catch (error) {
       return BackendResponse(success: false, payload: error.message);
@@ -238,9 +256,11 @@ class UsersBackend {
     );
   }
 
-  static Future<BackendResponse> changeUserAdminStatus(String communityId, Profile user, bool shouldBeAdmin) async {
+  static Future<BackendResponse> changeUserAdminStatus(
+      String communityId, Profile user, bool shouldBeAdmin) async {
     try {
-      final List<dynamic> updateMembershipResponse = await _client.from('memberships').update(
+      final List<dynamic> updateMembershipResponse =
+          await _client.from('memberships').update(
         {
           'is_admin': shouldBeAdmin,
         },
@@ -281,7 +301,8 @@ class UsersBackend {
           .single();
 
       if (createMembershipResponse.isEmpty) {
-        return BackendResponse(success: false, payload: 'Error in sending out invitation.');
+        return BackendResponse(
+            success: false, payload: 'Error in sending out invitation.');
       }
 
       return BackendResponse(
@@ -298,7 +319,8 @@ class UsersBackend {
     String userId,
   ) async {
     try {
-      final List<dynamic> response = await _client.from('memberships').delete().match(
+      final List<dynamic> response =
+          await _client.from('memberships').delete().match(
         {
           'member': userId,
           'community': communityId,
@@ -351,7 +373,8 @@ class UsersBackend {
     required int pageSize,
   }) async {
     try {
-      final List<dynamic> membershipResponse = await _client.from('memberships').select('*, profiles(*)').match(
+      final List<dynamic> membershipResponse =
+          await _client.from('memberships').select('*, profiles(*)').match(
         {
           'community': communityId,
           'accepted': true,

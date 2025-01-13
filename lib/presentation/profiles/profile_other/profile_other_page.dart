@@ -55,7 +55,8 @@ class ProfileOtherPage extends StatelessWidget {
                           profile.email ?? '',
                           style: TextStyle(
                             fontWeight: FontWeight.w400,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                             fontSize: 16,
                           ),
                         ),
@@ -141,7 +142,8 @@ class ProfileOtherPage extends StatelessWidget {
       builder: (BuildContext context) {
         final Color selectedBg = Theme.of(context).colorScheme.primary;
         final Color selectedFg = Theme.of(context).colorScheme.onPrimary;
-        final Color unselectedBg = Theme.of(context).colorScheme.surfaceContainer;
+        final Color unselectedBg =
+            Theme.of(context).colorScheme.surfaceContainer;
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           color: Colors.transparent,
@@ -162,7 +164,9 @@ class ProfileOtherPage extends StatelessWidget {
                       () {
                         return Container(
                           decoration: BoxDecoration(
-                            color: controller.currentTabIndex.value == 0 ? selectedBg : unselectedBg,
+                            color: controller.currentTabIndex.value == 0
+                                ? selectedBg
+                                : unselectedBg,
                             borderRadius: BorderRadius.circular(40),
                           ),
                           alignment: Alignment.center,
@@ -170,7 +174,9 @@ class ProfileOtherPage extends StatelessWidget {
                             'Books',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              color: controller.currentTabIndex.value == 0 ? selectedFg : selectedBg,
+                              color: controller.currentTabIndex.value == 0
+                                  ? selectedFg
+                                  : selectedBg,
                             ),
                           ),
                         );
@@ -185,7 +191,9 @@ class ProfileOtherPage extends StatelessWidget {
                       () {
                         return Container(
                           decoration: BoxDecoration(
-                            color: controller.currentTabIndex.value == 1 ? selectedBg : unselectedBg,
+                            color: controller.currentTabIndex.value == 1
+                                ? selectedBg
+                                : unselectedBg,
                             borderRadius: BorderRadius.circular(40),
                           ),
                           alignment: Alignment.center,
@@ -193,7 +201,9 @@ class ProfileOtherPage extends StatelessWidget {
                             'Reviews',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              color: controller.currentTabIndex.value == 1 ? selectedFg : selectedBg,
+                              color: controller.currentTabIndex.value == 1
+                                  ? selectedFg
+                                  : selectedBg,
                             ),
                           ),
                         );
@@ -213,7 +223,8 @@ class ProfileOtherPage extends StatelessWidget {
     return Builder(
       builder: (context) {
         return Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -243,7 +254,9 @@ class ProfileOtherPage extends StatelessWidget {
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
                               height: 1.2,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                           ),
                           const Divider(height: 5),
@@ -254,7 +267,9 @@ class ProfileOtherPage extends StatelessWidget {
                               fontWeight: FontWeight.w400,
                               fontStyle: FontStyle.italic,
                               height: 1.2,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -307,7 +322,7 @@ class ProfileOtherPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             controller: controller.reviewListController,
             scrollController: controller.scrollController,
-            noItemsText: 'No loans.',
+            noItemsText: 'No reviews.',
             isSliver: true,
             childBuilder: (Loan loan) => _reviewCard(loan),
           );

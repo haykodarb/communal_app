@@ -1,13 +1,10 @@
-import 'dart:io';
-
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/communities_backend.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
-import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/community/community_specific/community_settings/community_settings_controller.dart';
-import 'package:flutter/foundation.dart';
+import 'package:communal/presentation/community/community_specific/community_specific_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,13 +18,13 @@ class CommunitySettingsPage extends StatelessWidget {
   Widget _imageSelector(CommunitySettingsController controller) {
     return Builder(builder: (context) {
       return Container(
-        width: double.maxFinite,
+        width: 300,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5),
         ),
         clipBehavior: Clip.hardEdge,
         child: AspectRatio(
-          aspectRatio: 16 / 9,
+          aspectRatio: 1,
           child: Stack(
             children: [
               SizedBox(
@@ -35,9 +32,9 @@ class CommunitySettingsPage extends StatelessWidget {
                 height: double.maxFinite,
                 child: Obx(
                   () {
-                    if (controller.selectedFile.value != null) {
-                      return Image.file(
-                        File(controller.selectedFile.value!.path),
+                    if (controller.selectedBytes.value != null) {
+                      return Image.memory(
+                        controller.selectedBytes.value!,
                         fit: BoxFit.cover,
                       );
                     } else {
@@ -89,12 +86,12 @@ class CommunitySettingsPage extends StatelessWidget {
                 visible: controller.community.isCurrentUserOwner,
                 child: Container(
                   width: double.maxFinite,
-                  padding: const EdgeInsets.only(right: 20),
-                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.only(bottom: 20),
+                  alignment: Alignment.bottomCenter,
                   child: Obx(
                     () {
                       final bool imageExists =
-                          controller.selectedFile.value != null ||
+                          controller.selectedBytes.value != null ||
                               controller.community.image_path != null;
 
                       final Color buttonBackground = imageExists
@@ -113,8 +110,10 @@ class CommunitySettingsPage extends StatelessWidget {
 
                       if (kIsWeb) {
                         return InkWell(
-                          onTap: () =>
-                              controller.takePicture(ImageSource.gallery),
+                          onTap: () => controller.takePicture(
+                            ImageSource.gallery,
+                            context,
+                          ),
                           child: Container(
                             decoration: BoxDecoration(
                               border: buttonBorder,
@@ -136,8 +135,10 @@ class CommunitySettingsPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           InkWell(
-                            onTap: () =>
-                                controller.takePicture(ImageSource.camera),
+                            onTap: () => controller.takePicture(
+                              ImageSource.camera,
+                              context,
+                            ),
                             child: Container(
                               decoration: BoxDecoration(
                                 border: buttonBorder,
@@ -154,8 +155,10 @@ class CommunitySettingsPage extends StatelessWidget {
                             ),
                           ),
                           InkWell(
-                            onTap: () =>
-                                controller.takePicture(ImageSource.gallery),
+                            onTap: () => controller.takePicture(
+                              ImageSource.gallery,
+                              context,
+                            ),
                             child: Container(
                               decoration: BoxDecoration(
                                 border: buttonBorder,
@@ -242,56 +245,68 @@ class CommunitySettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder(
-      init: CommunitySettingsController(),
-      builder: (controller) {
-        return Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            title: const Text('Settings'),
-          ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-            child: Form(
-              key: controller.formKey,
-              child: Column(
-                children: [
-                  _imageSelector(controller),
-                  const Divider(height: 20),
-                  CommonTextField(
-                    enabled: controller.community.isCurrentUserOwner,
-                    callback: controller.onNameChange,
-                    submitCallback: (_) => controller.onSubmit(context),
-                    label: 'Name',
-                    initialValue: controller.community.name,
-                    validator: (value) => controller.stringValidator(
-                      value,
-                      4,
-                    ),
-                  ),
-                  Visibility(
-                    visible: controller.community.isCurrentUserOwner ||
-                        controller.community.description != null,
-                    child: CommonTextField(
-                      enabled: controller.community.isCurrentUserOwner,
-                      callback: controller.onDescriptorChange,
-                      submitCallback: (_) => controller.onSubmit(context),
-                      label: 'Description (Optional)',
-                      initialValue: controller.community.description,
-                      minLines: 5,
-                      maxLines: 10,
-                      validator: (value) => controller.stringValidator(
-                        value,
-                        4,
-                      ),
-                    ),
-                  ),
-                  const Divider(height: 20),
-                  _bottomRowButtons(controller),
-                ],
+    return Obx(
+      () {
+        final CommunitySpecificController specificController = Get.find();
+        if (specificController.loading.value) {
+          return const CommonLoadingBody();
+        }
+
+        return GetBuilder(
+          init: CommunitySettingsController(),
+          builder: (controller) {
+            return Scaffold(
+              resizeToAvoidBottomInset: false,
+              appBar: AppBar(
+                title: const Text('Settings'),
               ),
-            ),
-          ),
+              body: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+                child: Form(
+                  key: controller.formKey,
+                  child: Column(
+                    children: [
+                      _imageSelector(controller),
+                      const Divider(height: 20),
+                      CommonTextField(
+                        enabled: controller.community.isCurrentUserOwner,
+                        callback: controller.onNameChange,
+                        submitCallback: (_) => controller.onSubmit(context),
+                        label: 'Name',
+                        initialValue: controller.community.name,
+                        validator: (value) => controller.stringValidator(
+                          value: value,
+                          length: 4,
+                          optional: false,
+                        ),
+                      ),
+                      Visibility(
+                        visible: controller.community.isCurrentUserOwner ||
+                            controller.community.description != null,
+                        child: CommonTextField(
+                          enabled: controller.community.isCurrentUserOwner,
+                          callback: controller.onDescriptorChange,
+                          submitCallback: (_) => controller.onSubmit(context),
+                          label: 'Description (Optional)',
+                          initialValue: controller.community.description,
+                          minLines: 5,
+                          maxLines: 10,
+                          validator: (value) => controller.stringValidator(
+                            value: value,
+                            length: 4,
+                            optional: true,
+                          ),
+                        ),
+                      ),
+                      const Divider(height: 20),
+                      _bottomRowButtons(controller),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
         );
       },
     );

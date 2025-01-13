@@ -8,7 +8,8 @@ import 'package:communal/presentation/community/community_specific/community_mem
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CommunitySpecificController extends GetxController with GetTickerProviderStateMixin {
+class CommunitySpecificController extends GetxController
+    with GetTickerProviderStateMixin {
   CommunitySpecificController({required this.communityId});
   final String communityId;
 
@@ -25,11 +26,13 @@ class CommunitySpecificController extends GetxController with GetTickerProviderS
   final RxInt selectedIndex = 0.obs;
   final RxBool showBottomNavBar = true.obs;
 
-  late CommunityMembersController membersController = CommunityMembersController(
+  late CommunityMembersController membersController =
+      CommunityMembersController(
     communityId: communityId,
   );
 
-  late CommunityDiscussionsController discussionsController = CommunityDiscussionsController(
+  late CommunityDiscussionsController discussionsController =
+      CommunityDiscussionsController(
     communityId: communityId,
   );
 
@@ -51,14 +54,16 @@ class CommunitySpecificController extends GetxController with GetTickerProviderS
     Get.lazyPut(() => CommunityMembersController(communityId: communityId));
     Get.lazyPut(() => CommunityDiscussionsController(communityId: communityId));
 
-    Community? tmp = communityListController?.listViewController.itemList.firstWhereOrNull(
+    Community? tmp =
+        communityListController?.listViewController.itemList.firstWhereOrNull(
       (element) => element.id == communityId,
     );
 
     if (tmp != null) {
       community = tmp;
     } else {
-      final BackendResponse response = await CommunitiesBackend.getCommunityById(
+      final BackendResponse response =
+          await CommunitiesBackend.getCommunityById(
         communityId,
       );
 
@@ -73,7 +78,8 @@ class CommunitySpecificController extends GetxController with GetTickerProviderS
     );
 
     floatingActionButtonAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: bottomBarAnimationController, curve: Curves.linear),
+      CurvedAnimation(
+          parent: bottomBarAnimationController, curve: Curves.linear),
     );
 
     bottomBarAnimation = Tween<Offset>(

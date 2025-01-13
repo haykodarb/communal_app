@@ -20,8 +20,10 @@ class ProfileOtherController extends GetxController {
 
   final Rx<Profile> profile = Profile.empty().obs;
 
-  final CommonListViewController<Loan> reviewListController = CommonListViewController(pageSize: pageSize);
-  final CommonListViewController<Book> bookListController = CommonListViewController(pageSize: pageSize);
+  final CommonListViewController<Loan> reviewListController =
+      CommonListViewController(pageSize: pageSize);
+  final CommonListViewController<Book> bookListController =
+      CommonListViewController(pageSize: pageSize);
 
   final RxBool loadingProfile = true.obs;
 
@@ -29,7 +31,7 @@ class ProfileOtherController extends GetxController {
   final RxInt currentTabIndex = 0.obs;
 
   void onTabTapped(int value) {
-    if (value != currentTabIndex.value) {
+    if (value != currentTabIndex.value && scrollController.hasClients) {
       scrollController.jumpTo(0);
     }
 

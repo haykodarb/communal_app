@@ -42,7 +42,7 @@ class CommunityCreateController extends GetxController {
     XFile? pickedImage = await imagePicker.pickImage(
       source: source,
       imageQuality: 100,
-      maxHeight: 720,
+      maxHeight: 1280,
       maxWidth: 1280,
     );
 
@@ -55,7 +55,7 @@ class CommunityCreateController extends GetxController {
       context: context,
       builder: (context) => CommonImageCropper(
         image: Image.memory(bytes),
-        aspectRatio: 2,
+        aspectRatio: 1,
       ),
     );
 
@@ -83,7 +83,8 @@ class CommunityCreateController extends GetxController {
       loading.value = true;
       errorMessage.value = '';
 
-      final BackendResponse<Community> response = await CommunitiesBackend.createCommunity(
+      final BackendResponse<Community> response =
+          await CommunitiesBackend.createCommunity(
         communityForm.value,
         selectedBytes.value,
       );

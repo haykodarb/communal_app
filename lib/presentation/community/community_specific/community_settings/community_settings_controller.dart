@@ -1,25 +1,26 @@
-import 'dart:io';
-
+import 'dart:typed_data';
 import 'package:communal/backend/communities_backend.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/presentation/common/common_confirmation_dialog.dart';
+import 'package:communal/presentation/common/common_image_cropper.dart';
 import 'package:communal/presentation/community/community_list_controller.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_controller.dart';
 import 'package:communal/routes.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CommunitySettingsController extends GetxController {
-  Community community = Get.find<CommunitySpecificController>().community;
+  late Community community = Get.find<CommunitySpecificController>().community;
 
   final CommunitySpecificController communitySpecificController = Get.find();
 
-  TextEditingController? textEditingController = TextEditingController.fromValue(
+  TextEditingController? textEditingController =
+      TextEditingController.fromValue(
     TextEditingValue(
       text: Get.find<CommunitySpecificController>().community.name,
     ),
@@ -35,13 +36,14 @@ class CommunitySettingsController extends GetxController {
   final RxString errorMessage = ''.obs;
 
   final ImagePicker imagePicker = ImagePicker();
-  final Rxn<File> selectedFile = Rxn<File>();
+  final Rxn<Uint8List> selectedBytes = Rxn<Uint8List>();
 
   CommunityListController? communityListController;
 
   @override
-  void onInit() {
-    super.onInit();
+  void onReady() {
+    super.onReady();
+
     communityForm.value = Community.copy(community);
 
     if (Get.isRegistered<CommunityListController>()) {
@@ -51,25 +53,47 @@ class CommunitySettingsController extends GetxController {
     communityForm.refresh();
   }
 
-  Future<void> takePicture(ImageSource source) async {
+  Future<void> takePicture(ImageSource source, BuildContext context) async {
     XFile? pickedImage = await imagePicker.pickImage(
       source: source,
-      imageQuality: 80,
-      maxHeight: 720,
+      imageQuality: 100,
+      maxHeight: 1280,
       maxWidth: 1280,
     );
 
     if (pickedImage == null) return;
+    final Uint8List bytes = await pickedImage.readAsBytes();
+
+    if (!context.mounted) return;
+
+    final Uint8List? croppedBytes = await showDialog<Uint8List?>(
+      context: context,
+      builder: (context) => CommonImageCropper(
+        image: Image.memory(bytes),
+        aspectRatio: 1,
+      ),
+    );
+
+    if (croppedBytes == null || croppedBytes.isEmpty) return;
+
+    selectedBytes.value = croppedBytes;
 
     edited.value = true;
-    selectedFile.value = File(pickedImage.path);
 
     _checkIfEdited();
   }
 
-  String? stringValidator(String? value, int length) {
-    if (value == null || value.isEmpty) {
-      return 'Please enter something.';
+  String? stringValidator({
+    required String? value,
+    required int length,
+    required bool optional,
+  }) {
+    if (optional) {
+      if (value == null || value.isEmpty) return null;
+    } else {
+      if (value == null || value.isEmpty) {
+        return 'Please enter something.';
+      }
     }
 
     if (value.length < length) {
@@ -85,7 +109,8 @@ class CommunitySettingsController extends GetxController {
     ).open(context);
 
     if (confirm) {
-      final BackendResponse response = await UsersBackend.removeCurrentUserFromCommunity(community);
+      final BackendResponse response =
+          await UsersBackend.removeCurrentUserFromCommunity(community);
 
       if (context.mounted) {
         if (response.success) {
@@ -109,7 +134,8 @@ class CommunitySettingsController extends GetxController {
     ).open(context);
 
     if (confirm) {
-      final BackendResponse response = await CommunitiesBackend.deleteCommunity(community);
+      final BackendResponse response =
+          await CommunitiesBackend.deleteCommunity(community);
 
       if (context.mounted) {
         if (response.success) {
@@ -128,7 +154,7 @@ class CommunitySettingsController extends GetxController {
   void _checkIfEdited() {
     bool matchesOriginal = communityForm.value.name == community.name &&
         communityForm.value.description == community.description &&
-        selectedFile.value == null;
+        selectedBytes.value == null;
 
     edited.value = !matchesOriginal;
   }
@@ -159,22 +185,29 @@ class CommunitySettingsController extends GetxController {
     if (formKey.currentState!.validate()) {
       loading.value = true;
       errorMessage.value = '';
+      final bool wasPinned = community.pinned.value;
 
       final BackendResponse response = await CommunitiesBackend.updateCommunity(
         communityForm.value,
-        selectedFile.value,
+        selectedBytes.value,
       );
 
       if (response.success) {
-        community = Community.copy(communityForm.value);
+        community = response.payload;
+        community.pinned.value = wasPinned;
         communitySpecificController.community = community;
+
+        selectedBytes.value = null;
         _checkIfEdited();
-        int? index = communityListController?.listViewController.itemList.indexWhere(
+
+        int? index =
+            communityListController?.listViewController.itemList.indexWhere(
           (element) => element.id == communityForm.value.id,
         );
 
         if (index != null && index >= 0) {
-          communityListController?.listViewController.itemList[index] = community;
+          communityListController?.listViewController.itemList[index] =
+              community;
         }
 
         communityListController?.listViewController.itemList.refresh();

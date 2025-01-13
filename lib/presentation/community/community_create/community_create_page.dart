@@ -28,13 +28,13 @@ class CommunityCreatePage extends StatelessWidget {
               child: Column(
                 children: [
                   Container(
-                    width: double.maxFinite,
+                    width: 300,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
                     ),
                     clipBehavior: Clip.hardEdge,
                     child: AspectRatio(
-                      aspectRatio: 2,
+                      aspectRatio: 1,
                       child: Stack(
                         children: [
                           SizedBox(
@@ -67,8 +67,8 @@ class CommunityCreatePage extends StatelessWidget {
                           ),
                           Container(
                             width: double.maxFinite,
-                            padding: const EdgeInsets.only(right: 20),
-                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.only(bottom: 20),
+                            alignment: Alignment.bottomCenter,
                             child: Obx(
                               () {
                                 final bool fileSelected =
@@ -95,7 +95,9 @@ class CommunityCreatePage extends StatelessWidget {
                                 if (kIsWeb) {
                                   return InkWell(
                                     onTap: () => controller.takePicture(
-                                        ImageSource.gallery, context),
+                                      ImageSource.gallery,
+                                      context,
+                                    ),
                                     child: Container(
                                       decoration: BoxDecoration(
                                         border: buttonBorder,

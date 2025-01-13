@@ -1,5 +1,5 @@
 {
-  description = "A basic flake with a shell";
+  description = "Flutter shell";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/24.05";
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
@@ -33,7 +33,7 @@
             ANDROID_SDK_ROOT = "${androidSdk}/libexec/android-sdk";
 
             buildInputs = [
-              bashInteractive
+	      bashInteractive
               flutter
               androidSdk
               google-chrome
@@ -41,8 +41,10 @@
               gtk3
               jdk11
             ];
+
             shellHook = ''
 		export CHROME_EXECUTABLE=$(which chromium); 
+		export SHELL='/run/current-system/sw/bin/bash';
             '';
           };
       });

@@ -16,16 +16,19 @@ class ProfileOwnController extends GetxController {
 
   final RxInt currentTabIndex = 0.obs;
 
-  final CommonListViewController<Loan> reviewListController = CommonListViewController(pageSize: pageSize);
-  final CommonListViewController<Book> bookListController = CommonListViewController(pageSize: pageSize);
+  final CommonListViewController<Loan> reviewListController =
+      CommonListViewController(pageSize: pageSize);
+  final CommonListViewController<Book> bookListController =
+      CommonListViewController(pageSize: pageSize);
 
   final CommonDrawerController commonDrawerController = Get.find();
 
   void onTabTapped(int value) {
-    currentTabIndex.value = value;
-    if (value != currentTabIndex.value) {
+    if (value != currentTabIndex.value && scrollController.hasClients) {
       scrollController.jumpTo(0);
     }
+
+    currentTabIndex.value = value;
   }
 
   @override
