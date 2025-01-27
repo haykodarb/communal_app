@@ -3,6 +3,7 @@ import 'package:communal/presentation/common/common_boolean_selector.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/book/book_create/book_create_controller.dart';
+import 'package:communal/responsive.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -41,9 +42,7 @@ class BookCreatePage extends StatelessWidget {
       builder: (controller) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text(
-              'Add Book',
-            ),
+            title: Responsive.isMobile(context) ? const Text('Add Book') : null,
           ),
           body: SingleChildScrollView(
             child: Padding(

@@ -3,6 +3,7 @@ import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_search_bar.dart';
 import 'package:communal/presentation/community/community_invite/community_invite_controller.dart';
+import 'package:communal/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -143,7 +144,7 @@ class CommunityInvitePage extends StatelessWidget {
         return Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
-            title: const Text('Invite user'),
+            title: Responsive.isMobile(context) ? const Text('Invite user') : null,
           ),
           body: Padding(
             padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),

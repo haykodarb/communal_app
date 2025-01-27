@@ -5,6 +5,7 @@ import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/community/community_specific/community_settings/community_settings_controller.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_controller.dart';
+import 'package:communal/responsive.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -91,22 +92,17 @@ class CommunitySettingsPage extends StatelessWidget {
                   child: Obx(
                     () {
                       final bool imageExists =
-                          controller.selectedBytes.value != null ||
-                              controller.community.image_path != null;
+                          controller.selectedBytes.value != null || controller.community.image_path != null;
 
                       final Color buttonBackground = imageExists
                           ? Theme.of(context).colorScheme.surfaceContainer
                           : Theme.of(context).colorScheme.primary;
 
-                      final Color iconColor = imageExists
-                          ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context).colorScheme.onPrimary;
+                      final Color iconColor =
+                          imageExists ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onPrimary;
 
-                      final Border? buttonBorder = imageExists
-                          ? Border.all(
-                              color: Theme.of(context).colorScheme.primary,
-                              width: 2)
-                          : null;
+                      final Border? buttonBorder =
+                          imageExists ? Border.all(color: Theme.of(context).colorScheme.primary, width: 2) : null;
 
                       if (kIsWeb) {
                         return InkWell(
@@ -211,9 +207,7 @@ class CommunitySettingsPage extends StatelessWidget {
                           child: Obx(
                             () {
                               return ElevatedButton(
-                                onPressed: controller.edited.value
-                                    ? () => controller.onSubmit(context)
-                                    : null,
+                                onPressed: controller.edited.value ? () => controller.onSubmit(context) : null,
                                 child: const Text(
                                   'Save',
                                 ),
@@ -224,8 +218,7 @@ class CommunitySettingsPage extends StatelessWidget {
                         const VerticalDivider(width: 10),
                         Expanded(
                           child: OutlinedButton(
-                            onPressed: () =>
-                                controller.deleteCommunity(context),
+                            onPressed: () => controller.deleteCommunity(context),
                             child: const Text(
                               'Delete',
                             ),
@@ -258,11 +251,10 @@ class CommunitySettingsPage extends StatelessWidget {
             return Scaffold(
               resizeToAvoidBottomInset: false,
               appBar: AppBar(
-                title: const Text('Settings'),
+                title: Responsive.isMobile(context) ? const Text('Settings') : null,
               ),
               body: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
                 child: Form(
                   key: controller.formKey,
                   child: Column(
@@ -282,8 +274,7 @@ class CommunitySettingsPage extends StatelessWidget {
                         ),
                       ),
                       Visibility(
-                        visible: controller.community.isCurrentUserOwner ||
-                            controller.community.description != null,
+                        visible: controller.community.isCurrentUserOwner || controller.community.description != null,
                         child: CommonTextField(
                           enabled: controller.community.isCurrentUserOwner,
                           callback: controller.onDescriptorChange,

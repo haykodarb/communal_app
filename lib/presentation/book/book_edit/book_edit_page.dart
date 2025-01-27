@@ -6,6 +6,7 @@ import 'package:communal/presentation/common/common_boolean_selector.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
+import 'package:communal/responsive.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -53,17 +54,14 @@ class BookEditPage extends StatelessWidget {
       builder: (controller) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text(
-              'Edit book',
-            ),
+            title: Responsive.isMobile(context) ? const Text('Edit book') : null,
           ),
           body: Obx(() {
             return CommonLoadingBody(
               loading: controller.firstLoad.value,
               child: SingleChildScrollView(
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
                   child: Form(
                     key: controller.formKey,
                     child: Column(
@@ -82,8 +80,7 @@ class BookEditPage extends StatelessWidget {
                                 aspectRatio: 3 / 4,
                                 child: Obx(
                                   () {
-                                    if (controller.selectedBytes.value !=
-                                        null) {
+                                    if (controller.selectedBytes.value != null) {
                                       return Image.memory(
                                         controller.selectedBytes.value!,
                                         fit: BoxFit.cover,
@@ -100,14 +97,10 @@ class BookEditPage extends StatelessWidget {
 
                                           if (snapshot.data!.isEmpty) {
                                             return Container(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary,
+                                              color: Theme.of(context).colorScheme.primary,
                                               child: Icon(
                                                 Atlas.users,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .surface,
+                                                color: Theme.of(context).colorScheme.surface,
                                                 size: 150,
                                               ),
                                             );
@@ -129,27 +122,18 @@ class BookEditPage extends StatelessWidget {
                                 alignment: Alignment.bottomCenter,
                                 child: Obx(
                                   () {
-                                    final bool fileSelected =
-                                        controller.selectedBytes.value != null;
+                                    final bool fileSelected = controller.selectedBytes.value != null;
 
                                     final Color buttonBackground = fileSelected
-                                        ? Theme.of(context)
-                                            .colorScheme
-                                            .surfaceContainer
+                                        ? Theme.of(context).colorScheme.surfaceContainer
                                         : Theme.of(context).colorScheme.primary;
 
                                     final Color iconColor = fileSelected
                                         ? Theme.of(context).colorScheme.primary
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary;
+                                        : Theme.of(context).colorScheme.onPrimary;
 
                                     final Border? buttonBorder = fileSelected
-                                        ? Border.all(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                            width: 2)
+                                        ? Border.all(color: Theme.of(context).colorScheme.primary, width: 2)
                                         : null;
 
                                     if (kIsWeb) {
@@ -161,8 +145,7 @@ class BookEditPage extends StatelessWidget {
                                         child: Container(
                                           decoration: BoxDecoration(
                                             border: buttonBorder,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
+                                            borderRadius: BorderRadius.circular(10),
                                             color: buttonBackground,
                                           ),
                                           padding: const EdgeInsets.all(13),
@@ -176,10 +159,8 @@ class BookEditPage extends StatelessWidget {
                                     }
 
                                     return Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         InkWell(
                                           onTap: () => controller.takePicture(
@@ -189,8 +170,7 @@ class BookEditPage extends StatelessWidget {
                                           child: Container(
                                             decoration: BoxDecoration(
                                               border: buttonBorder,
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
+                                              borderRadius: BorderRadius.circular(10),
                                               color: buttonBackground,
                                             ),
                                             padding: const EdgeInsets.all(13),
@@ -210,8 +190,7 @@ class BookEditPage extends StatelessWidget {
                                           child: Container(
                                             decoration: BoxDecoration(
                                               border: buttonBorder,
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
+                                              borderRadius: BorderRadius.circular(10),
                                               color: buttonBackground,
                                             ),
                                             padding: const EdgeInsets.all(13),
@@ -238,10 +217,8 @@ class BookEditPage extends StatelessWidget {
                                 callback: controller.onTitleChange,
                                 initialValue: controller.initialForm.title,
                                 label: 'Title',
-                                submitCallback: (_) =>
-                                    controller.onSubmitButton(context),
-                                validator: (String? value) =>
-                                    controller.stringValidator(value, 3, false),
+                                submitCallback: (_) => controller.onSubmitButton(context),
+                                validator: (String? value) => controller.stringValidator(value, 3, false),
                                 maxLength: 100,
                                 maxLines: 2,
                               ),
@@ -249,11 +226,9 @@ class BookEditPage extends StatelessWidget {
                               CommonTextField(
                                 callback: controller.onAuthorChange,
                                 initialValue: controller.initialForm.author,
-                                submitCallback: (_) =>
-                                    controller.onSubmitButton(context),
+                                submitCallback: (_) => controller.onSubmitButton(context),
                                 label: 'Author',
-                                validator: (String? value) =>
-                                    controller.stringValidator(value, 3, false),
+                                validator: (String? value) => controller.stringValidator(value, 3, false),
                               ),
                               const Divider(height: 5),
                               CommonTextField(
@@ -262,8 +237,7 @@ class BookEditPage extends StatelessWidget {
                                 label: 'Review (Optional)',
                                 minLines: 3,
                                 maxLines: 10,
-                                validator: (String? value) =>
-                                    controller.stringValidator(value, 10, true),
+                                validator: (String? value) => controller.stringValidator(value, 10, true),
                               ),
                             ],
                           ),
@@ -275,8 +249,7 @@ class BookEditPage extends StatelessWidget {
                           () => CommonLoadingBody(
                             loading: controller.loading.value,
                             child: ElevatedButton(
-                              onPressed: () =>
-                                  controller.onSubmitButton(context),
+                              onPressed: () => controller.onSubmitButton(context),
                               child: const Text('Save'),
                             ),
                           ),

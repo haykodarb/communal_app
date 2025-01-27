@@ -3,6 +3,7 @@ import 'package:communal/models/message.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/messages/messages_specific/messages_specific_controller.dart';
+import 'package:communal/responsive.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -242,11 +243,13 @@ class MessagesSpecificPage extends StatelessWidget {
       builder: (MessagesSpecificController controller) {
         return Scaffold(
           appBar: AppBar(
-            title: Obx(
-              () {
-                return Text(controller.userProfile.value?.username ?? '');
-              },
-            ),
+            title: Responsive.isMobile(context)
+                ? Obx(
+                    () {
+                      return Text(controller.userProfile.value?.username ?? '');
+                    },
+                  )
+                : null,
           ),
           body: Stack(
             children: [

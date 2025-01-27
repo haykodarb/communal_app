@@ -2,8 +2,8 @@ import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
-import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/loans/loan_info/loan_info_controller.dart';
+import 'package:communal/responsive.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -67,12 +67,10 @@ class LoanInfoPage extends StatelessWidget {
           onTap: () {
             context.push(loan.isOwned
                 ? '${RouteNames.myBooks}/${loan.book.id}'
-                : RouteNames.foreignBooksPage
-                    .replaceFirst(':bookId', loan.book.id));
+                : RouteNames.foreignBooksPage.replaceFirst(':bookId', loan.book.id));
           },
           child: Container(
-            padding:
-                const EdgeInsets.only(left: 20, top: 20, bottom: 20, right: 10),
+            padding: const EdgeInsets.only(left: 20, top: 20, bottom: 20, right: 10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
               color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
@@ -177,9 +175,7 @@ class LoanInfoPage extends StatelessWidget {
               child: Expanded(
                 child: _dateContainer(
                   'Rejected',
-                  loan.rejected_at == null
-                      ? '-'
-                      : DateFormat('d/MM/yy').format(loan.rejected_at!),
+                  loan.rejected_at == null ? '-' : DateFormat('d/MM/yy').format(loan.rejected_at!),
                 ),
               ),
             ),
@@ -192,18 +188,14 @@ class LoanInfoPage extends StatelessWidget {
                     Expanded(
                       child: _dateContainer(
                         'Approved',
-                        loan.accepted_at == null
-                            ? '-'
-                            : DateFormat('d/MM/yy').format(loan.accepted_at!),
+                        loan.accepted_at == null ? '-' : DateFormat('d/MM/yy').format(loan.accepted_at!),
                       ),
                     ),
                     const VerticalDivider(width: 5),
                     Expanded(
                       child: _dateContainer(
                         'Returned',
-                        loan.returned_at == null
-                            ? '-'
-                            : DateFormat('d/MM/yy').format(loan.returned_at!),
+                        loan.returned_at == null ? '-' : DateFormat('d/MM/yy').format(loan.returned_at!),
                       ),
                     ),
                   ],
@@ -254,14 +246,19 @@ class LoanInfoPage extends StatelessWidget {
                   ),
                   Visibility(
                     visible: !loan.returned,
-                    child: Obx(
-                      () => CommonLoadingBody(
-                        loading: controller.loading.value,
-                        child: ElevatedButton(
-                          onPressed: () => controller.markLoanReturned(context),
-                          child: const Text('Mark as returned'),
+                    child: Column(
+                      children: [
+                        const Divider(height: 20),
+                        Obx(
+                          () => CommonLoadingBody(
+                            loading: controller.loading.value,
+                            child: ElevatedButton(
+                              onPressed: () => controller.markLoanReturned(context),
+                              child: const Text('Mark as returned'),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
                 ],
@@ -321,8 +318,7 @@ class LoanInfoPage extends StatelessWidget {
                       ),
                       decoration: InputDecoration(
                         hintText: 'Write a review...',
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 10),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                         hintStyle: TextStyle(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
@@ -431,7 +427,7 @@ class LoanInfoPage extends StatelessWidget {
       builder: (LoanInfoController controller) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Loan'),
+            title: Responsive.isMobile(context) ? const Text('Loan') : null,
           ),
           body: Obx(
             () => CommonLoadingBody(

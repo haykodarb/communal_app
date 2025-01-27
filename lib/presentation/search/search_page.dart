@@ -71,8 +71,7 @@ class SearchPage extends StatelessWidget {
       builder: (BuildContext context) {
         final Color selectedBg = Theme.of(context).colorScheme.primary;
         final Color selectedFg = Theme.of(context).colorScheme.onPrimary;
-        final Color unselectedBg =
-            Theme.of(context).colorScheme.surfaceContainer;
+        final Color unselectedBg = Theme.of(context).colorScheme.surfaceContainer;
         return Container(
           padding: const EdgeInsets.all(10),
           height: 70,
@@ -90,20 +89,20 @@ class SearchPage extends StatelessWidget {
                     () {
                       return Container(
                         decoration: BoxDecoration(
-                          color: controller.currentTabIndex.value == 0
-                              ? selectedBg
-                              : unselectedBg,
+                          color: controller.currentTabIndex.value == 0 ? selectedBg : unselectedBg,
                           borderRadius: BorderRadius.circular(40),
                         ),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
                         alignment: Alignment.center,
-                        child: Text(
-                          'Books',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: controller.currentTabIndex.value == 0
-                                ? selectedFg
-                                : selectedBg,
-                            fontSize: 16,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'Books',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: controller.currentTabIndex.value == 0 ? selectedFg : selectedBg,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       );
@@ -118,20 +117,20 @@ class SearchPage extends StatelessWidget {
                     () {
                       return Container(
                         decoration: BoxDecoration(
-                          color: controller.currentTabIndex.value == 1
-                              ? selectedBg
-                              : unselectedBg,
+                          color: controller.currentTabIndex.value == 1 ? selectedBg : unselectedBg,
                           borderRadius: BorderRadius.circular(40),
                         ),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
                         alignment: Alignment.center,
-                        child: Text(
-                          'Communities',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: controller.currentTabIndex.value == 1
-                                ? selectedFg
-                                : selectedBg,
-                            fontSize: 16,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'Communities',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: controller.currentTabIndex.value == 1 ? selectedFg : selectedBg,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       );
@@ -146,20 +145,20 @@ class SearchPage extends StatelessWidget {
                     () {
                       return Container(
                         decoration: BoxDecoration(
-                          color: controller.currentTabIndex.value == 2
-                              ? selectedBg
-                              : unselectedBg,
+                          color: controller.currentTabIndex.value == 2 ? selectedBg : unselectedBg,
                           borderRadius: BorderRadius.circular(40),
                         ),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
                         alignment: Alignment.center,
-                        child: Text(
-                          'Users',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: controller.currentTabIndex.value == 2
-                                ? selectedFg
-                                : selectedBg,
-                            fontSize: 16,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'Users',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: controller.currentTabIndex.value == 2 ? selectedFg : selectedBg,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       );
@@ -180,13 +179,14 @@ class SearchPage extends StatelessWidget {
       init: SearchPageController(),
       builder: (SearchPageController controller) {
         return Scaffold(
-          appBar: AppBar(
-            title: const Text('Search'),
-          ),
-          drawer:
-              Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
+          appBar: Responsive.isMobile(context) ? AppBar(title: const Text('Search')) : null,
+          drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
           body: Column(
             children: [
+              Visibility(
+                visible: !Responsive.isMobile(context),
+                child: const Divider(height: 20),
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: _tabBar(controller),
@@ -214,6 +214,7 @@ class SearchPage extends StatelessWidget {
                           childBuilder: (Book book) {
                             return CommonVerticalBookCard(book: book);
                           },
+                          noItemsText: 'No books found in any of the communities you are a part of.',
                           controller: controller.bookListController,
                         );
                       case 1:
@@ -223,8 +224,7 @@ class SearchPage extends StatelessWidget {
                             left: 20,
                             bottom: 20,
                           ),
-                          childBuilder: (Community community) =>
-                              CommonCommunityCard(
+                          childBuilder: (Community community) => CommonCommunityCard(
                             community: community,
                             callback: () {},
                           ),

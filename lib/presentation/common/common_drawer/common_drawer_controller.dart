@@ -77,6 +77,8 @@ class CommonDrawerController extends GetxController {
 
   @override
   Future<void> onClose() async {
+    RealtimeBackend.unsubscribeFromDatabase();
+
     await realtimeSubscription?.cancel();
 
     debounceTimer?.cancel();

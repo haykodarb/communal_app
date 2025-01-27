@@ -38,8 +38,12 @@ class DiscussionsBackend {
     }
   }
 
-  static Future<BackendResponse> getDiscussionTopicsForCommunity(
-      String communityId) async {
+  static Future<BackendResponse> getDiscussionTopicsForCommunity({
+    required String communityId,
+    required int pageKey,
+    required int pageSize,
+    required String query,
+  }) async {
     try {
       final List<dynamic> response = await _client
           .from('discussion_topics')
@@ -49,14 +53,14 @@ class DiscussionsBackend {
           .eq(
             'community',
             communityId,
-          );
+          )
+          .ilike('name', '%$query%')
+          .range(pageKey, pageKey + pageSize - 1);
 
-      final List<DiscussionTopic> topics =
-          response.map((element) => DiscussionTopic.fromMap(element)).toList();
+      final List<DiscussionTopic> topics = response.map((element) => DiscussionTopic.fromMap(element)).toList();
 
       if (response.isEmpty) {
-        return BackendResponse(
-            success: false, payload: 'This community has no discussions yet');
+        return BackendResponse(success: false, payload: 'This community has no discussions yet');
       }
 
       return BackendResponse(
@@ -68,8 +72,7 @@ class DiscussionsBackend {
     }
   }
 
-  static Future<BackendResponse> getDiscussionMessagesForTopic(
-      String topicId) async {
+  static Future<BackendResponse> getDiscussionMessagesForTopic(String topicId) async {
     try {
       final List<dynamic> response = await _client
           .from('discussion_messages')
@@ -86,9 +89,7 @@ class DiscussionsBackend {
         return BackendResponse(success: false, payload: 'No messages in topic');
       }
 
-      final List<DiscussionMessage> messages = response
-          .map((element) => DiscussionMessage.fromMap(element))
-          .toList();
+      final List<DiscussionMessage> messages = response.map((element) => DiscussionMessage.fromMap(element)).toList();
 
       return BackendResponse(
         success: messages.isNotEmpty,
@@ -99,8 +100,7 @@ class DiscussionsBackend {
     }
   }
 
-  static Future<BackendResponse> insertDiscussionMessageInTopic(
-      String topicId, String content) async {
+  static Future<BackendResponse> insertDiscussionMessageInTopic(String topicId, String content) async {
     try {
       final String userId = _client.auth.currentUser!.id;
 
@@ -117,13 +117,10 @@ class DiscussionsBackend {
           .maybeSingle();
 
       if (response == null || response.isEmpty) {
-        return BackendResponse(
-            success: false,
-            payload: 'Could not send message, please try again');
+        return BackendResponse(success: false, payload: 'Could not send message, please try again');
       }
 
-      return BackendResponse(
-          success: true, payload: DiscussionMessage.fromMap(response));
+      return BackendResponse(success: true, payload: DiscussionMessage.fromMap(response));
     } on PostgrestException catch (error) {
       return BackendResponse(success: false, payload: error.message);
     }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/profile.dart';
@@ -16,6 +18,10 @@ class CommunityMembersController extends GetxController {
   final String communityId;
 
   final CommonListViewController<Profile> listViewController = CommonListViewController(pageSize: pageSize);
+
+  String query = '';
+
+  Timer? debounceTimer;
 
   @override
   Future<void> onInit() async {
@@ -68,8 +74,18 @@ class CommunityMembersController extends GetxController {
     user.loading.value = false;
   }
 
+  void reloadList() {
+    debounceTimer?.cancel();
+
+    debounceTimer = Timer(
+      const Duration(milliseconds: 500),
+      listViewController.reloadList,
+    );
+  }
+
   Future<List<Profile>> loadUsers(int pageKey) async {
     final BackendResponse<List<Profile>> response = await UsersBackend.getUsersInCommunity(
+      query: query,
       communityId: communityId,
       pageKey: pageKey,
       pageSize: pageSize,

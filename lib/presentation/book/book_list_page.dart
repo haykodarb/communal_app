@@ -173,10 +173,7 @@ class BookListPage extends StatelessWidget {
       builder: (BookListController controller) {
         return Scaffold(
           drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
-          appBar: AppBar(
-            elevation: 10,
-            title: const Text('My Books'),
-          ),
+          appBar: Responsive.isMobile(context) ? AppBar(elevation: 10, title: const Text('My Books')) : null,
           floatingActionButton: FloatingActionButton(
             onPressed: () => controller.goToAddBookPage(context),
             child: const Icon(
@@ -187,6 +184,11 @@ class BookListPage extends StatelessWidget {
           body: CustomScrollView(
             controller: controller.scrollController,
             slivers: [
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: Responsive.isMobile(context) ? 0 : 20,
+                ),
+              ),
               SliverAppBar(
                 title: _searchRow(controller),
                 titleSpacing: 0,
@@ -201,6 +203,7 @@ class BookListPage extends StatelessWidget {
                 controller: controller.listViewController,
                 scrollController: controller.scrollController,
                 isSliver: true,
+                noItemsText: 'No books found.\n\nYou can upload some with the floating button on the bottom right.',
               ),
             ],
           ),

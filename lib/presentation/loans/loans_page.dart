@@ -217,13 +217,16 @@ class LoansPage extends StatelessWidget {
         return DefaultTabController(
           length: 3,
           child: Scaffold(
-            appBar: AppBar(
-              title: const Text('Loans'),
-            ),
+            appBar: Responsive.isMobile(context) ? AppBar(title: const Text('Loans')) : null,
             drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
             body: CustomScrollView(
               controller: controller.scrollController,
               slivers: [
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: Responsive.isMobile(context) ? 0 : 20,
+                  ),
+                ),
                 SliverAppBar(
                   title: _searchRow(controller),
                   titleSpacing: 0,
@@ -233,7 +236,10 @@ class LoansPage extends StatelessWidget {
                   floating: true,
                 ),
                 CommonListView<Loan>(
-                  childBuilder: (Loan loan) => CommonKeepaliveWrapper(child: _loanCard(loan, controller)),
+                  noItemsText: 'No loans found.',
+                  childBuilder: (Loan loan) => CommonKeepaliveWrapper(
+                    child: _loanCard(loan, controller),
+                  ),
                   controller: controller.listViewController,
                   scrollController: controller.scrollController,
                   isSliver: true,

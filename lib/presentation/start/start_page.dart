@@ -245,40 +245,42 @@ class StartPage extends StatelessWidget {
       builder: (StartController controller) {
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.surface,
-          body: Align(
-            alignment: Alignment.topCenter,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 30,
-                vertical: 30,
-              ),
-              child: SizedBox(
-                width: 600,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _dropdownLanguageButton(controller),
-                        _changeThemeButton(controller),
-                      ],
-                    ),
-                    Flexible(
-                      flex: 2,
-                      child: _logo(),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Column(
+          body: SafeArea(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 30,
+                  vertical: 30,
+                ),
+                child: SizedBox(
+                  width: 600,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          _loginButton(controller),
-                          const Divider(height: 10),
-                          _registerButton(controller),
+                          _dropdownLanguageButton(controller),
+                          _changeThemeButton(controller),
                         ],
                       ),
-                    ),
-                  ],
+                      Flexible(
+                        flex: 2,
+                        child: _logo(),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          children: [
+                            _loginButton(controller),
+                            const Divider(height: 10),
+                            _registerButton(controller),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -44,18 +44,62 @@ class CommunityDiscussionsPage extends StatelessWidget {
                 const Divider(height: 15),
                 Visibility(
                   visible: topic.last_message == null,
-                  child: Container(
-                    alignment: Alignment.bottomLeft,
-                    height: 50,
-                    child: Text(
-                      'Empty',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        fontStyle: FontStyle.italic,
+                  child: Row(
+                    children: [
+                      CommonCircularAvatar(
+                        profile: topic.creator,
+                        radius: 25,
                       ),
-                    ),
+                      const VerticalDivider(width: 10),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    topic.creator.username,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  DateFormat.MMMEd().format(
+                                    topic.created_at,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Divider(height: 0),
+                            Text(
+                              'Created this topic',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Visibility(
@@ -142,6 +186,7 @@ class CommunityDiscussionsPage extends StatelessWidget {
               floating: true,
             ),
             CommonListView<DiscussionTopic>(
+              noItemsText: 'No topics found in this community.',
               childBuilder: (DiscussionTopic topic) => _topicCard(topic, controller),
               separator: const Divider(height: 5),
               controller: controller.listViewController,

@@ -6,10 +6,16 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class RealtimeBackend {
   static final StreamController<RealtimeMessage> streamController = StreamController<RealtimeMessage>.broadcast();
 
+  static RealtimeChannel? channel;
+
+  static Future<void> unsubscribeFromDatabase() async {
+    await channel?.unsubscribe();
+  }
+
   static void subscribeToDatabaseChanges() {
     final SupabaseClient client = Supabase.instance.client;
 
-    client
+    channel = client
         .channel(
           'all',
           opts: const RealtimeChannelConfig(

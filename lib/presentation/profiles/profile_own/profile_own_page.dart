@@ -52,8 +52,7 @@ class ProfileOwnPage extends StatelessWidget {
                           profile.email ?? '',
                           style: TextStyle(
                             fontWeight: FontWeight.w400,
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                             fontSize: 16,
                           ),
                         ),
@@ -61,6 +60,15 @@ class ProfileOwnPage extends StatelessWidget {
                     ),
                   ],
                 ),
+              ),
+              IconButton(
+                onPressed: () {
+                  context.push(
+                    RouteNames.profileOwnPage + RouteNames.profileOwnEditPage,
+                  );
+                },
+                iconSize: 24,
+                icon: const Icon(Atlas.pencil),
               ),
             ],
           ),
@@ -139,8 +147,7 @@ class ProfileOwnPage extends StatelessWidget {
       builder: (BuildContext context) {
         final Color selectedBg = Theme.of(context).colorScheme.primary;
         final Color selectedFg = Theme.of(context).colorScheme.onPrimary;
-        final Color unselectedBg =
-            Theme.of(context).colorScheme.surfaceContainer;
+        final Color unselectedBg = Theme.of(context).colorScheme.surfaceContainer;
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           color: Colors.transparent,
@@ -161,9 +168,7 @@ class ProfileOwnPage extends StatelessWidget {
                       () {
                         return Container(
                           decoration: BoxDecoration(
-                            color: controller.currentTabIndex.value == 0
-                                ? selectedBg
-                                : unselectedBg,
+                            color: controller.currentTabIndex.value == 0 ? selectedBg : unselectedBg,
                             borderRadius: BorderRadius.circular(40),
                           ),
                           alignment: Alignment.center,
@@ -171,9 +176,7 @@ class ProfileOwnPage extends StatelessWidget {
                             'Books',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              color: controller.currentTabIndex.value == 0
-                                  ? selectedFg
-                                  : selectedBg,
+                              color: controller.currentTabIndex.value == 0 ? selectedFg : selectedBg,
                             ),
                           ),
                         );
@@ -188,9 +191,7 @@ class ProfileOwnPage extends StatelessWidget {
                       () {
                         return Container(
                           decoration: BoxDecoration(
-                            color: controller.currentTabIndex.value == 1
-                                ? selectedBg
-                                : unselectedBg,
+                            color: controller.currentTabIndex.value == 1 ? selectedBg : unselectedBg,
                             borderRadius: BorderRadius.circular(40),
                           ),
                           alignment: Alignment.center,
@@ -198,9 +199,7 @@ class ProfileOwnPage extends StatelessWidget {
                             'Reviews',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              color: controller.currentTabIndex.value == 1
-                                  ? selectedFg
-                                  : selectedBg,
+                              color: controller.currentTabIndex.value == 1 ? selectedFg : selectedBg,
                             ),
                           ),
                         );
@@ -224,8 +223,7 @@ class ProfileOwnPage extends StatelessWidget {
             context.push('${RouteNames.loansPage}/${loan.id}');
           },
           child: Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
@@ -243,7 +241,7 @@ class ProfileOwnPage extends StatelessWidget {
                             Text(
                               loan.book.title,
                               style: const TextStyle(
-                                fontSize: 14,
+                                fontSize: 16,
                                 fontWeight: FontWeight.w600,
                                 height: 1.2,
                               ),
@@ -252,25 +250,21 @@ class ProfileOwnPage extends StatelessWidget {
                             Text(
                               loan.book.author,
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w400,
                                 height: 1.2,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                             ),
                             const Divider(height: 5),
                             Text(
                               '${DateFormat('MMM d, y', Get.locale?.languageCode).format(loan.latest_date!).capitalizeFirst}',
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w400,
                                 fontStyle: FontStyle.italic,
                                 height: 1.2,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                             ),
                           ],
@@ -286,7 +280,7 @@ class ProfileOwnPage extends StatelessWidget {
                   Text(
                     loan.review!,
                     style: const TextStyle(
-                      fontSize: 12,
+                      fontSize: 14,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -307,7 +301,7 @@ class ProfileOwnPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             controller: controller.bookListController,
             scrollController: controller.scrollController,
-            noItemsText: 'No books.',
+            noItemsText: 'You have not uploaded any books.\n\nYou can start doing so from the "My Books" page.',
             isSliver: true,
             childBuilder: (Book book) => InkWell(
               onTap: () {
@@ -325,7 +319,8 @@ class ProfileOwnPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             controller: controller.reviewListController,
             scrollController: controller.scrollController,
-            noItemsText: 'No reviews.',
+            noItemsText:
+                'You have not reviews any books yet.\n\nYou can leave reviews on books you loan from other people.',
             isSliver: true,
             childBuilder: (Loan loan) => _reviewCard(loan),
           );
@@ -349,45 +344,33 @@ class ProfileOwnPage extends StatelessWidget {
       builder: (ProfileOwnController controller) {
         return Scaffold(
           extendBody: true,
-          appBar: AppBar(
-            title: const Text(
-              'My Profile',
-            ),
-            actions: [
-              IconButton(
-                onPressed: () {
-                  context.push(
-                    RouteNames.profileOwnPage + RouteNames.profileOwnEditPage,
-                  );
-                },
-                iconSize: 24,
-                icon: const Icon(Atlas.pencil),
-              ),
-            ],
-          ),
-          drawer:
-              Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
+          appBar: Responsive.isMobile(context) ? AppBar(title: const Text('My Profile')) : null,
+          drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
           body: CustomScrollView(
             slivers: [
               SliverToBoxAdapter(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Obx(
-                      () => _avatarRow(
-                        controller
-                            .commonDrawerController.currentUserProfile.value,
-                      ),
+                    Divider(height: Responsive.isMobile(context) ? 0 : 20),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Obx(
+                            () => _avatarRow(
+                              controller.commonDrawerController.currentUserProfile.value,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const Divider(height: 10),
                     Obx(
                       () => Visibility(
-                        visible: controller.commonDrawerController
-                                .currentUserProfile.value.bio !=
-                            null,
+                        visible: controller.commonDrawerController.currentUserProfile.value.bio != null,
                         child: _bio(
-                          controller
-                              .commonDrawerController.currentUserProfile.value,
+                          controller.commonDrawerController.currentUserProfile.value,
                         ),
                       ),
                     ),

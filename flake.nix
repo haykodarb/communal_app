@@ -39,7 +39,7 @@
               google-chrome
               pkg-config
               gtk3
-              jdk11
+	      jdk17
             ];
 
             shellHook = ''

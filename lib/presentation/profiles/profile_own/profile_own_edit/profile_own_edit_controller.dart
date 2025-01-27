@@ -11,10 +11,10 @@ import 'package:get/get.dart' hide debounce;
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:string_validator/string_validator.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfileOwnEditController extends GetxController {
-  final Profile inheritedProfile =
-      Get.find<CommonDrawerController>().currentUserProfile.value;
+  final Profile inheritedProfile = Get.find<CommonDrawerController>().currentUserProfile.value;
   Rx<Profile> profileForm = Profile.empty().obs;
 
   final ImagePicker imagePicker = ImagePicker();
@@ -154,8 +154,7 @@ class ProfileOwnEditController extends GetxController {
       loading.value = false;
 
       if (response.success) {
-        Get.find<CommonDrawerController>().currentUserProfile.value =
-            response.payload;
+        Get.find<CommonDrawerController>().currentUserProfile.value = response.payload;
       }
 
       if (context.mounted) {

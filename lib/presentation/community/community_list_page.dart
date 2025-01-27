@@ -70,11 +70,11 @@ class CommunityListPage extends StatelessWidget {
               size: 35,
             ),
           ),
-          appBar: AppBar(
-            title: const Text('Communities'),
-          ),
+          appBar: Responsive.isMobile(context) ? AppBar(title: const Text('Communities')) : null,
           drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
           body: CommonListView(
+            noItemsText:
+                'You are not a member of any communities.\n\nYou can create your own or request an invite from the admins of other communities.',
             childBuilder: (Community community) => _communityCard(controller, community),
             controller: controller.listViewController,
           ),

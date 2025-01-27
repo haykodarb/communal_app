@@ -5,14 +5,14 @@ import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/invitations/invitations_controller.dart';
+import 'package:communal/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class InvitationsPage extends StatelessWidget {
   const InvitationsPage({super.key});
 
-  Widget _invitationElement(
-      InvitationsController controller, Membership invitation) {
+  Widget _invitationElement(InvitationsController controller, Membership invitation) {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Card(
@@ -29,8 +29,7 @@ class InvitationsPage extends StatelessWidget {
                 () => CommonLoadingBody(
                   loading: invitation.loading.value,
                   child: FutureBuilder(
-                    future: CommunitiesBackend.getCommunityAvatar(
-                        invitation.community),
+                    future: CommunitiesBackend.getCommunityAvatar(invitation.community),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return const CommonLoadingImage();
@@ -73,8 +72,7 @@ class InvitationsPage extends StatelessWidget {
                   width: 80,
                   height: 40,
                   child: ElevatedButton(
-                    onPressed: () =>
-                        controller.respondToInvitation(invitation, true),
+                    onPressed: () => controller.respondToInvitation(invitation, true),
                     child: const Icon(Icons.done),
                   ),
                 ),
@@ -83,8 +81,7 @@ class InvitationsPage extends StatelessWidget {
                   width: 80,
                   height: 40,
                   child: OutlinedButton(
-                    onPressed: () =>
-                        controller.respondToInvitation(invitation, false),
+                    onPressed: () => controller.respondToInvitation(invitation, false),
                     child: const Icon(Icons.close),
                   ),
                 ),
@@ -107,7 +104,7 @@ class InvitationsPage extends StatelessWidget {
       builder: (controller) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Invitations'),
+            title: Responsive.isMobile(context) ? const Text('Invitations') : null,
           ),
           drawer: const CommonDrawerWidget(),
           body: Obx(
@@ -135,8 +132,7 @@ class InvitationsPage extends StatelessWidget {
                     itemCount: controller.invitationsList.length,
                     padding: const EdgeInsets.symmetric(vertical: 30),
                     itemBuilder: (context, index) {
-                      return _invitationElement(
-                          controller, controller.invitationsList[index]);
+                      return _invitationElement(controller, controller.invitationsList[index]);
                     },
                     separatorBuilder: (context, index) {
                       return const Divider();

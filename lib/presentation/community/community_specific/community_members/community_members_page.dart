@@ -23,7 +23,10 @@ class CommunityMembersPage extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: CommonSearchBar(
-            searchCallback: (String _) {},
+            searchCallback: (String value) {
+              controller.query = value;
+              controller.reloadList();
+            },
             focusNode: FocusNode(),
           ),
         );
@@ -206,6 +209,7 @@ class CommunityMembersPage extends StatelessWidget {
               floating: true,
             ),
             CommonListView<Profile>(
+              noItemsText: 'No users found in this community.',
               childBuilder: (Profile member) => _userCardRow(member, controller),
               separator: const Divider(height: 5),
               controller: controller.listViewController,

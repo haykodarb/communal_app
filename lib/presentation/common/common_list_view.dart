@@ -161,12 +161,28 @@ class CommonGridView<ItemType> extends StatelessWidget {
                 return SliverFillRemaining(
                   hasScrollBody: false,
                   fillOverscroll: false,
-                  child: Center(child: Text(noItemsText)),
+                  child: Center(
+                    child: SizedBox(
+                      width: 300,
+                      child: Text(
+                        noItemsText,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ),
                 );
               }
 
               return Center(
-                child: Text(noItemsText),
+                child: SizedBox(
+                  width: 300,
+                  child: Text(
+                    noItemsText,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
               );
             }
 
@@ -282,12 +298,28 @@ class CommonListView<ItemType> extends StatelessWidget {
                   return SliverFillRemaining(
                     hasScrollBody: false,
                     fillOverscroll: false,
-                    child: Center(child: Text(noItemsText)),
+                    child: Center(
+                      child: SizedBox(
+                        width: 300,
+                        child: Text(
+                          noItemsText,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ),
+                    ),
                   );
                 }
 
                 return Center(
-                  child: Text(noItemsText),
+                  child: SizedBox(
+                    width: 300,
+                    child: Text(
+                      noItemsText,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
                 );
               }
 

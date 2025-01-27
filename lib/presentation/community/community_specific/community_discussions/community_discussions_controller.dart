@@ -20,14 +20,11 @@ class CommunityDiscussionsController extends GetxController {
 
   final String communityId;
 
-  final RxBool firstLoad = false.obs;
-  final RxBool loadingMore = false.obs;
-
-  final RxString errorMessage = ''.obs;
-
   final FocusNode focusScope = FocusNode();
 
   final CommonListViewController<DiscussionTopic> listViewController = CommonListViewController(pageSize: pageSize);
+
+  String query = '';
 
   Timer? searchDebounceTimer;
 
@@ -37,8 +34,7 @@ class CommunityDiscussionsController extends GetxController {
   void onInit() {
     super.onInit();
     _subscription ??= RealtimeBackend.streamController.stream.listen(streamListener);
-
-    getDiscussionTopics();
+    listViewController.registerNewPageCallback(getDiscussionTopics);
   }
 
   @override
@@ -85,6 +81,7 @@ class CommunityDiscussionsController extends GetxController {
 
         if (response.success) {
           final DiscussionTopic newTopic = response.payload;
+          if (newTopic.creator.isCurrentUser) return;
           listViewController.addItem(newTopic);
         }
 
@@ -94,8 +91,13 @@ class CommunityDiscussionsController extends GetxController {
     }
   }
 
-  Future<List<DiscussionTopic>> getDiscussionTopics() async {
-    final BackendResponse response = await DiscussionsBackend.getDiscussionTopicsForCommunity(communityId);
+  Future<List<DiscussionTopic>> getDiscussionTopics(int pageKey) async {
+    final BackendResponse response = await DiscussionsBackend.getDiscussionTopicsForCommunity(
+      communityId: communityId,
+      query: query,
+      pageSize: pageSize,
+      pageKey: pageKey,
+    );
 
     if (response.success) {
       return response.payload;
@@ -126,11 +128,13 @@ class CommunityDiscussionsController extends GetxController {
   }
 
   Future<void> searchTopics(String string_query) async {
+    query = string_query;
+
     searchDebounceTimer?.cancel();
 
     searchDebounceTimer = Timer(
       const Duration(milliseconds: 500),
-      () async {},
+      listViewController.reloadList,
     );
   }
 }
