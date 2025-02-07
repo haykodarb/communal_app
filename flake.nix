@@ -1,6 +1,6 @@
 {
   description = "Flutter shell";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/24.05";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/master";
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
   outputs = { self, nixpkgs, flake-utils }:
@@ -39,12 +39,32 @@
               google-chrome
               pkg-config
               gtk3
+	      
+	      # emulator hwdecode
+	      vulkan-loader 
+	      libGL        
+	      # fixes nagging
+              pcre2.dev
+	      util-linux.dev
+	      libselinux
+	      libsepol
+	      libthai
+	      libdatrie
+	      xorg.libXdmcp
+	      xorg.libXtst
+	      lerc.dev
+	      libxkbcommon
+	      libsysprof-capture
+	      libepoxy
+
 	      jdk17
             ];
 
             shellHook = ''
 		export CHROME_EXECUTABLE=$(which chromium); 
 		export SHELL='/run/current-system/sw/bin/bash';
+		export LIBGL_ALWAYS_SOFTWARE=0
+		export LIBGL_ALWAYS_INDIRECT=0
             '';
           };
       });

@@ -1,4 +1,5 @@
 import 'package:communal/backend/users_backend.dart';
+import 'package:communal/models/profile.dart';
 import 'package:get/get.dart';
 
 class Community {
@@ -6,7 +7,7 @@ class Community {
   String name;
   String? description;
   String? image_path;
-  String owner;
+  Profile owner;
   bool? isCurrentUserAdmin;
   int user_count;
   RxBool pinned = false.obs;
@@ -22,7 +23,7 @@ class Community {
   });
 
   bool get isCurrentUserOwner {
-    return UsersBackend.currentUserId == owner;
+    return UsersBackend.currentUserId == owner.id;
   }
 
   Community.fromMembershipMap(Map<String, dynamic> map)
@@ -30,7 +31,7 @@ class Community {
         id = map['communities']['id'],
         description = map['communities']['description'],
         image_path = map['communities']['image_path'],
-        owner = map['communities']['owner'],
+        owner = Profile.fromMap(map['communities']['profiles']),
         user_count = map['communities']['user_count'],
         isCurrentUserAdmin = map['is_admin'];
 
@@ -38,7 +39,7 @@ class Community {
       : id = map['id'],
         name = map['name'],
         user_count = map['user_count'],
-        owner = map['owner'],
+        owner = Profile.fromMap(map['profiles']),
         description = map['description'],
         image_path = map['image_path'];
 
@@ -57,5 +58,5 @@ class Community {
         name = '',
         user_count = 0,
         image_path = '',
-        owner = '';
+        owner = Profile.empty();
 }

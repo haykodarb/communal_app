@@ -8,7 +8,8 @@ class Membership {
   final DateTime? joined_at;
   final Profile member;
   final Community community;
-  final bool? accepted;
+  final bool? member_accepted;
+  final bool? admin_accepted;
   final bool is_admin;
 
   final RxBool loading = false.obs;
@@ -19,7 +20,8 @@ class Membership {
     required this.joined_at,
     required this.member,
     required this.community,
-    required this.accepted,
+    required this.member_accepted,
+    required this.admin_accepted,
     required this.is_admin,
   });
 
@@ -29,6 +31,7 @@ class Membership {
         joined_at = DateTime.tryParse(map['joined_at'] ?? '')?.toLocal(),
         community = Community.fromMap(map['communities']),
         member = Profile.fromMap(map['profiles']),
-        accepted = map['accepted'],
+        member_accepted = map['member_accepted'],
+        admin_accepted = map['admin_accepted'],
         is_admin = map['is_admin'];
 }

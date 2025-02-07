@@ -19,20 +19,16 @@ class CommunitiesBackend {
         return null;
       }
 
-      FileInfo? file =
-          await DefaultCacheManager().getFileFromCache(community.image_path!);
+      FileInfo? file = await DefaultCacheManager().getFileFromCache(community.image_path!);
 
       Uint8List bytes;
 
       if (file != null) {
         bytes = await file.file.openRead().toBytes();
       } else {
-        bytes = await _client.storage
-            .from('community_avatars')
-            .download(community.image_path!);
+        bytes = await _client.storage.from('community_avatars').download(community.image_path!);
 
-        await DefaultCacheManager()
-            .putFile(community.image_path!, bytes, key: community.image_path!);
+        await DefaultCacheManager().putFile(community.image_path!, bytes, key: community.image_path!);
       }
 
       return bytes;
@@ -49,7 +45,8 @@ class CommunitiesBackend {
           .from('memberships')
           .select('id')
           .eq('community', communityId)
-          .eq('accepted', true)
+          .eq('member_accepted', true)
+          .eq('admin_accepted', true)
           .count(CountOption.exact);
 
       if (response.count <= 0) {
@@ -70,11 +67,8 @@ class CommunitiesBackend {
 
   static Future<BackendResponse> getCommunityById(String id) async {
     try {
-      final Map<String, dynamic>? response = await _client
-          .from('communities')
-          .select('*')
-          .eq('id', id)
-          .maybeSingle();
+      final Map<String, dynamic>? response =
+          await _client.from('communities').select('*, profiles(*)').eq('id', id).maybeSingle();
 
       if (response == null || response.isEmpty) {
         return BackendResponse(
@@ -84,17 +78,16 @@ class CommunitiesBackend {
       }
       Community community = Community.fromMap(response);
 
-      final Map<String, dynamic>? membershipResponse =
-          await _client.from('memberships').select('*').match(
+      final Map<String, dynamic>? membershipResponse = await _client.from('memberships').select('*').match(
         {
           'member': UsersBackend.currentUserId,
           'community': id,
-          'accepted': true,
+          'member_accepted': true,
+          'admin_accepted': true,
         },
       ).maybeSingle();
 
-      community.isCurrentUserAdmin =
-          membershipResponse != null && membershipResponse['is_admin'];
+      community.isCurrentUserAdmin = membershipResponse != null && membershipResponse['is_admin'];
 
       return BackendResponse(
         success: true,
@@ -113,13 +106,12 @@ class CommunitiesBackend {
     try {
       final List<Map<String, dynamic>> response = await _client
           .from('communities')
-          .select('*')
+          .select('*, profiles(*)')
           .ilike('name', '%$query%')
           .range(pageKey, pageKey + pageSize - 1);
 
-      final List<Community> communities = response
-          .map((Map<String, dynamic> element) => Community.fromMap(element))
-          .toList();
+      final List<Community> communities =
+          response.map((Map<String, dynamic> element) => Community.fromMap(element)).toList();
 
       return BackendResponse(success: true, payload: communities);
     } catch (e) {
@@ -136,11 +128,12 @@ class CommunitiesBackend {
 
       final List<dynamic> response = await _client
           .from('memberships')
-          .select('*, communities(*)')
+          .select('*, communities(*, profiles(*))')
           .match(
             {
               'member': userId,
-              'accepted': true,
+              'member_accepted': true,
+              'admin_accepted': true,
             },
           )
           .order(
@@ -159,15 +152,7 @@ class CommunitiesBackend {
 
       final List<Community> listOfCommunities = response
           .map(
-            (dynamic element) => Community(
-              name: element['communities']['name'],
-              id: element['communities']['id'],
-              description: element['communities']['description'],
-              image_path: element['communities']['image_path'],
-              owner: element['communities']['owner'],
-              user_count: element['communities']['user_count'],
-              isCurrentUserAdmin: element['is_admin'],
-            ),
+            (dynamic element) => Community.fromMembershipMap(element),
           )
           .toList();
 
@@ -195,19 +180,15 @@ class CommunitiesBackend {
       if (imageBytes != null) {
         const String imageExtension = 'png';
 
-        final String currentTime =
-            DateTime.now().millisecondsSinceEpoch.toString();
+        final String currentTime = DateTime.now().millisecondsSinceEpoch.toString();
 
         pathToUpload = '/$userId/$currentTime.$imageExtension';
 
-        String pathResponse =
-            await _client.storage.from('community_avatars').uploadBinary(
-                  pathToUpload,
-                  imageBytes,
-                  retryAttempts: 5,
-                );
-
-        print("new path: $pathToUpload");
+        String pathResponse = await _client.storage.from('community_avatars').uploadBinary(
+              pathToUpload,
+              imageBytes,
+              retryAttempts: 5,
+            );
 
         if (!pathResponse.isImageFileName) {
           return BackendResponse(
@@ -230,7 +211,6 @@ class CommunitiesBackend {
           .select()
           .maybeSingle();
 
-      print(updateResponse);
       if (updateResponse == null || updateResponse.isEmpty) {
         return BackendResponse(
           success: false,
@@ -249,18 +229,15 @@ class CommunitiesBackend {
     }
   }
 
-  static Future<BackendResponse<Community>> createCommunity(
-      Community community, Uint8List? image) async {
+  static Future<BackendResponse<Community>> createCommunity(Community community, Uint8List? image) async {
     try {
       final String userId = _client.auth.currentUser!.id;
 
       const String imageExtension = '.png';
 
-      final String currentTime =
-          DateTime.now().millisecondsSinceEpoch.toString();
+      final String currentTime = DateTime.now().millisecondsSinceEpoch.toString();
 
-      final String? pathToUpload =
-          image == null ? null : '/$userId/$currentTime.$imageExtension';
+      final String? pathToUpload = image == null ? null : '/$userId/$currentTime.$imageExtension';
 
       if (pathToUpload != null && image != null) {
         await _client.storage.from('community_avatars').uploadBinary(
@@ -301,12 +278,8 @@ class CommunitiesBackend {
 
   static Future<BackendResponse> deleteCommunity(Community community) async {
     try {
-      final Map<String, dynamic> response = await _client
-          .from('communities')
-          .delete()
-          .eq('id', community.id)
-          .select()
-          .single();
+      final Map<String, dynamic> response =
+          await _client.from('communities').delete().eq('id', community.id).select().single();
 
       return BackendResponse(
         success: response.isNotEmpty,

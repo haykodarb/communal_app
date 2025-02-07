@@ -14,9 +14,9 @@ class CommunityListController extends GetxController {
   final RxBool loading = true.obs;
 
   @override
-  void onReady() {
+  void onInit() {
+    super.onInit();
     listViewController.registerNewPageCallback(loadCommunities);
-    super.onReady();
   }
 
   Future<List<Community>> loadCommunities(int pageKey) async {

@@ -20,7 +20,6 @@ class CommunityBooksController extends GetxController {
   final CommonListViewController<Book> listViewController = CommonListViewController(pageSize: pageSize);
 
   Timer? searchDebounceTimer;
-  Timer? loadMoreDebounceTimer;
 
   @override
   Future<void> onInit() async {

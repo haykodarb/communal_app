@@ -24,6 +24,7 @@ import 'package:communal/presentation/profiles/profile_own/profile_own_edit/prof
 import 'package:communal/presentation/profiles/profile_own/profile_own_page.dart';
 import 'package:communal/presentation/register/register_page.dart';
 import 'package:communal/presentation/register/register_resend/register_resend_page.dart';
+import 'package:communal/presentation/search/search_community_details_page.dart';
 import 'package:communal/presentation/search/search_page.dart';
 import 'package:communal/presentation/start/password_reset/password_reset_page.dart';
 import 'package:communal/presentation/start/start_page.dart';
@@ -51,6 +52,7 @@ class RouteNames {
   static const String profileOtherPage = '/profile/:userId';
 
   static const String searchPage = '/search';
+  static const String searchCommunityDetailsPage = '/community/:communityId';
 
   static const String myBooks = '/my-books';
   static const String bookCreatePage = '/create';
@@ -251,6 +253,17 @@ final GoRoute _searchPage = GoRoute(
       child: SearchPage(),
     );
   },
+  routes: [
+    GoRoute(
+      path: RouteNames.searchCommunityDetailsPage,
+      parentNavigatorKey: _shellNavigatorKey,
+      pageBuilder: (context, state) => NoTransitionPage(
+        child: SearchCommunityDetailsPage(
+          communityId: state.pathParameters['communityId']!,
+        ),
+      ),
+    ),
+  ],
 );
 
 final GoRoute _loansRoutes = GoRoute(

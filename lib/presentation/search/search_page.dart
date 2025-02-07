@@ -199,7 +199,7 @@ class SearchPage extends StatelessWidget {
                   focusNode: FocusNode(),
                 ),
               ),
-              const Divider(height: 10),
+              const Divider(height: 5),
               Expanded(
                 child: Obx(
                   () {
@@ -210,6 +210,7 @@ class SearchPage extends StatelessWidget {
                             right: 20,
                             left: 20,
                             bottom: 20,
+                            top: 5,
                           ),
                           childBuilder: (Book book) {
                             return CommonVerticalBookCard(book: book);
@@ -223,10 +224,19 @@ class SearchPage extends StatelessWidget {
                             right: 20,
                             left: 20,
                             bottom: 20,
+                            top: 5,
                           ),
                           childBuilder: (Community community) => CommonCommunityCard(
                             community: community,
-                            callback: () {},
+                            callback: () {
+                              context.push(
+                                RouteNames.searchPage +
+                                    RouteNames.searchCommunityDetailsPage.replaceFirst(
+                                      ':communityId',
+                                      community.id,
+                                    ),
+                              );
+                            },
                           ),
                           controller: controller.communityListController,
                         );
@@ -236,9 +246,11 @@ class SearchPage extends StatelessWidget {
                             right: 20,
                             left: 20,
                             bottom: 20,
+                            top: 5,
                           ),
                           childBuilder: (Profile profile) => _userCard(profile),
                           controller: controller.profileListController,
+                          noItemsText: 'No users found, likely a network issue.',
                         );
                       default:
                         return const SizedBox.shrink();

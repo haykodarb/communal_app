@@ -29,7 +29,7 @@ class CommonCommunityCard extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  flex: 2,
+                  flex: 3,
                   child: Padding(
                     padding: const EdgeInsets.all(15),
                     child: Column(
@@ -72,7 +72,7 @@ class CommonCommunityCard extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  flex: 1,
+                  flex: 2,
                   child: AspectRatio(
                     aspectRatio: 1,
                     child: FutureBuilder(

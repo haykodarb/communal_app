@@ -9,10 +9,12 @@ class CommonVerticalBookCard extends StatelessWidget {
     super.key,
     required this.book,
     this.clickable = true,
+    this.axis = Axis.vertical,
   });
 
   final Book book;
   final bool clickable;
+  final Axis axis;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +28,7 @@ class CommonVerticalBookCard extends StatelessWidget {
               );
             }
           : null,
+      hoverColor: Colors.transparent,
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
@@ -34,10 +37,12 @@ class CommonVerticalBookCard extends StatelessWidget {
         margin: EdgeInsets.zero,
         child: Container(
           padding: const EdgeInsets.all(5),
-          width: double.maxFinite,
           child: Column(
             children: [
-              CommonBookCover(book),
+              Expanded(
+                flex: axis == Axis.vertical ? 0 : 1,
+                child: CommonBookCover(book),
+              ),
               const Divider(height: 10),
               Padding(
                 padding: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
@@ -51,13 +56,14 @@ class CommonVerticalBookCard extends StatelessWidget {
                         fontSize: 14,
                         height: 1.2,
                       ),
-                      maxLines: 2,
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const Divider(height: 5),
                     Text(
                       book.author,
                       textAlign: TextAlign.center,
+                      maxLines: 1,
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         color: Theme.of(context).colorScheme.onSurfaceVariant,

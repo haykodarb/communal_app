@@ -46,3 +46,4 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 ~/tmp/ccls-cache
+scp.bash

@@ -127,20 +127,22 @@ class NotificationsBackend {
       final List<Map<String, dynamic>> result = await client
           .from('notifications')
           .select(
-            '*, type(*), receiver:profiles!receiver(*), sender:profiles!sender(*), loans!left(*, books!left(*, profiles(*)),  loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)), memberships!left(*, communities(*), profiles(*))',
+            '*, type(*), receiver:profiles!receiver(*), sender:profiles!sender(*), loans!left(*, books!left(*, profiles(*)),  loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)), memberships!left(*, communities(*, profiles(*)), profiles(*))',
           )
           .eq('receiver', userId)
           .order('created_at', ascending: false)
           .range(pageKey, pageKey + (count - 1));
 
-      final List<CustomNotification> notifications = result
-          .map(
-            (e) => CustomNotification.fromMap(e),
-          )
-          .toList();
+      final List<CustomNotification> notifications = result.map(
+        (e) {
+          print(e);
+          return CustomNotification.fromMap(e);
+        },
+      ).toList();
 
       return BackendResponse(success: true, payload: notifications);
-    } catch (e) {
+    } catch (e, stack) {
+      print(stack);
       return BackendResponse(
         success: false,
         payload: e,

@@ -12,12 +12,9 @@ import 'package:get/get.dart';
 
 class SearchPageController extends GetxController {
   static const int pageSize = 20;
-  final CommonListViewController<Book> bookListController =
-      CommonListViewController(pageSize: pageSize);
-  final CommonListViewController<Community> communityListController =
-      CommonListViewController(pageSize: pageSize);
-  final CommonListViewController<Profile> profileListController =
-      CommonListViewController(pageSize: pageSize);
+  final CommonListViewController<Book> bookListController = CommonListViewController(pageSize: pageSize);
+  final CommonListViewController<Community> communityListController = CommonListViewController(pageSize: pageSize);
+  final CommonListViewController<Profile> profileListController = CommonListViewController(pageSize: pageSize);
   String query = '';
   Timer? debounceTimer;
 
@@ -25,7 +22,6 @@ class SearchPageController extends GetxController {
 
   void onTabTapped(int value) {
     currentTabIndex.value = value;
-
     reloadCurrentPage();
   }
 
@@ -65,8 +61,7 @@ class SearchPageController extends GetxController {
   }
 
   Future<List<Community>> searchCommunities(int pageKey) async {
-    final BackendResponse response =
-        await CommunitiesBackend.searchAllCommunities(
+    final BackendResponse response = await CommunitiesBackend.searchAllCommunities(
       pageKey: pageKey,
       pageSize: pageSize,
       query: query,
@@ -94,8 +89,7 @@ class SearchPageController extends GetxController {
   }
 
   Future<List<Book>> searchBooks(int pageKey) async {
-    final BackendResponse response =
-        await BooksBackend.getBooksInAllCommunities(
+    final BackendResponse response = await BooksBackend.getBooksInAllCommunities(
       pageKey: pageKey,
       query: query,
       pageSize: pageSize,

@@ -10,7 +10,7 @@ class CommonListViewController<ItemType> extends GetxController {
   });
 
   final RxList<ItemType> itemList = <ItemType>[].obs;
-  final RxBool firstLoad = false.obs;
+  final RxBool firstLoad = true.obs;
   final RxBool showLoadingMore = false.obs;
   bool loadingMore = false;
 
@@ -23,6 +23,8 @@ class CommonListViewController<ItemType> extends GetxController {
   Future<List<ItemType>> Function(int pageKey)? newPageCallback;
 
   ScrollController? scrollController;
+
+  final RxInt scrollPosition = 0.obs;
 
   Future<void> registerNewPageCallback(
     Future<List<ItemType>> Function(int pageKey) callback,
@@ -53,6 +55,9 @@ class CommonListViewController<ItemType> extends GetxController {
   }
 
   Future<void> reloadList() async {
+    // Already loading first page (probably from "registerNewPageCallback";
+    if (firstLoad.value) return;
+
     itemList.clear();
     fullyLoaded = false;
     pageKey = 0;
@@ -80,6 +85,7 @@ class CommonListViewController<ItemType> extends GetxController {
   }
 
   Future<void> scrollListener() async {
+    scrollPosition.value = scrollController?.position.pixels.toInt() ?? 0;
     if (scrollController!.position.maxScrollExtent - scrollController!.position.pixels < 200) {
       if (loadingMore) return;
       if (fullyLoaded) return;
@@ -241,7 +247,7 @@ class CommonGridView<ItemType> extends StatelessWidget {
               );
             }
 
-            return masonry;
+            return SingleChildScrollView(child: masonry);
           },
         );
       },
@@ -253,6 +259,7 @@ class CommonListView<ItemType> extends StatelessWidget {
   const CommonListView({
     required this.childBuilder,
     required this.controller,
+    this.axis = Axis.vertical,
     this.scrollPhysics = const AlwaysScrollableScrollPhysics(),
     this.padding = const EdgeInsets.all(10),
     this.separator = const Divider(height: 5),
@@ -269,6 +276,8 @@ class CommonListView<ItemType> extends StatelessWidget {
   final ScrollPhysics scrollPhysics;
   final bool isSliver;
   final ScrollController? scrollController;
+
+  final Axis axis;
   final String noItemsText;
 
   @override
@@ -352,11 +361,77 @@ class CommonListView<ItemType> extends StatelessWidget {
                 );
               }
 
-              return ListView(
-                padding: padding,
-                controller: controller.scrollController,
-                physics: scrollPhysics,
-                children: widgets,
+              return Stack(
+                children: [
+                  ListView(
+                    padding: padding,
+                    controller: controller.scrollController,
+                    physics: scrollPhysics,
+                    scrollDirection: axis,
+                    children: widgets,
+                  ),
+                  Obx(
+                    () {
+                      final int position = controller.scrollPosition.value;
+                      return Visibility(
+                        visible: axis == Axis.horizontal && position != 0,
+                        child: Container(
+                          padding: const EdgeInsets.only(left: 20),
+                          alignment: Alignment.centerLeft,
+                          child: IconButton(
+                            onPressed: () {
+                              controller.scrollController!.animateTo(
+                                controller.scrollController!.position.pixels - 400,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.linear,
+                              );
+                            },
+                            style: IconButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary),
+                            icon: Icon(
+                              Icons.chevron_left,
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              size: 40,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  Obx(
+                    () {
+                      final int position = controller.scrollPosition.value;
+
+                      final int maxScrollExtent = (controller.scrollController?.hasClients ?? false)
+                          ? (controller.scrollController!.position.hasContentDimensions
+                              ? controller.scrollController!.position.maxScrollExtent.toInt()
+                              : 0)
+                          : 0;
+
+                      return Visibility(
+                        visible: axis == Axis.horizontal && position != maxScrollExtent,
+                        child: Container(
+                          padding: const EdgeInsets.only(right: 20),
+                          alignment: Alignment.centerRight,
+                          child: IconButton(
+                            onPressed: () {
+                              controller.scrollController!.animateTo(
+                                controller.scrollController!.position.pixels + 400,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.linear,
+                              );
+                            },
+                            style: IconButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary),
+                            icon: Icon(
+                              Icons.chevron_right,
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              size: 40,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               );
             },
           );

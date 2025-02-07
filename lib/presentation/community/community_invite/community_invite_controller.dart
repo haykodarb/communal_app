@@ -4,7 +4,6 @@ import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/models/profile.dart';
-import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/presentation/common/common_confirmation_dialog.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_controller.dart';
 import 'package:flutter/material.dart';
@@ -43,8 +42,7 @@ class CommunityInviteController extends GetxController {
     community ??= communitySpecificController?.community;
 
     if (community == null) {
-      final BackendResponse response =
-          await CommunitiesBackend.getCommunityById(communityId);
+      final BackendResponse response = await CommunitiesBackend.getCommunityById(communityId);
 
       if (response.success) {
         community = response.payload;
@@ -119,8 +117,7 @@ class CommunityInviteController extends GetxController {
       processingInvite.value = true;
       inviteError.value = '';
 
-      final BackendResponse response =
-          await UsersBackend.removeUserFromCommunity(
+      final BackendResponse response = await UsersBackend.removeUserFromCommunity(
         communityId,
         profile.id,
       );
@@ -139,11 +136,11 @@ class CommunityInviteController extends GetxController {
   Future<void> onSearch() async {
     selectedIndex.value = null;
     loading.value = true;
-    final BackendResponse response =
-        await UsersBackend.searchUsersNotInCommunity(
-      communityId,
-      query.value,
-      0,
+    final BackendResponse response = await UsersBackend.searchUsersNotInCommunity(
+      communityId: communityId,
+      query: query.value,
+      pageKey: 0,
+      pageSize: 20,
     );
     loading.value = false;
 

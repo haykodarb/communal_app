@@ -340,7 +340,7 @@ class ProfileOtherPage extends StatelessWidget {
       builder: (ProfileOtherController controller) {
         return Scaffold(
           extendBody: true,
-          appBar: Responsive.isMobile(context) ? AppBar(title: const Text('Profile')) : null,
+          appBar: Responsive.isMobile(context) ? AppBar(title: const Text('Profile')) : AppBar(),
           drawer:
               Responsive.isMobile(context) ? (GoRouter.of(context).canPop() ? null : const CommonDrawerWidget()) : null,
           body: CustomScrollView(
@@ -349,9 +349,6 @@ class ProfileOtherPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
-                      height: Responsive.isMobile(context) ? 0 : 20,
-                    ),
                     Obx(
                       () {
                         if (controller.loadingProfile.value) {
