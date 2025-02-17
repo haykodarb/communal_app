@@ -236,7 +236,8 @@ class LoansPage extends StatelessWidget {
                   floating: true,
                 ),
                 CommonListView<Loan>(
-                  noItemsText: 'No loans found.',
+                  noItemsText:
+                      'You have not loaned or borrowed any books yet. You can get started by joining communities and searching their libraries for books you might enjoy.',
                   childBuilder: (Loan loan) => CommonKeepaliveWrapper(
                     child: _loanCard(loan, controller),
                   ),

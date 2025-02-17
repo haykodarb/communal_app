@@ -74,8 +74,6 @@ class NotificationsController extends GetxController {
   Future<List<CustomNotification>> loadNotifications(int pageKey) async {
     final BackendResponse response = await NotificationsBackend.getNotifications(pageKey, pageSize);
 
-    print(response.success);
-    print(response.payload);
     if (response.success) {
       List<CustomNotification> new_notifs = response.payload;
 

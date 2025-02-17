@@ -39,6 +39,10 @@ class CommonListViewController<ItemType> extends GetxController {
     itemList.addAll(newItems);
     itemList.refresh();
 
+    if (newItems.length < pageSize) {
+      fullyLoaded = true;
+    }
+
     firstLoad.value = false;
   }
 

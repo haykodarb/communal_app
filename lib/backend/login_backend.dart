@@ -1,6 +1,8 @@
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/login_form.dart';
+import 'package:communal/routes.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginBackend {
   static Future<BackendResponse> login({required LoginForm form}) async {
@@ -19,6 +21,20 @@ class LoginBackend {
         success: false,
         payload: exception.message,
       );
+    }
+  }
+
+  static Future<BackendResponse> signInWithGoogle() async {
+    try {
+      await Supabase.instance.client.auth.signInWithOAuth(
+        OAuthProvider.google,
+        redirectTo: RouteNames.appRoot + RouteNames.startPage,
+        authScreenLaunchMode: LaunchMode.platformDefault,
+      );
+
+      return BackendResponse(success: false);
+    } catch (e) {
+      return BackendResponse(success: false);
     }
   }
 

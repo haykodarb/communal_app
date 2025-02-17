@@ -16,8 +16,7 @@ const ColorScheme _lightScheme = ColorScheme.light(
   error: Color(0xFFeb6f92),
 );
 
-final BottomNavigationBarThemeData _bottomNavigationBarTheme =
-    BottomNavigationBarThemeData(
+final BottomNavigationBarThemeData _bottomNavigationBarTheme = BottomNavigationBarThemeData(
   type: BottomNavigationBarType.fixed,
   selectedItemColor: _lightScheme.primary,
   unselectedItemColor: _lightScheme.onSurface,
@@ -53,8 +52,7 @@ final AppBarTheme _appBarTheme = AppBarTheme(
   ),
 );
 
-final ElevatedButtonThemeData _elevatedButtonThemeData =
-    ElevatedButtonThemeData(
+final ElevatedButtonThemeData _elevatedButtonThemeData = ElevatedButtonThemeData(
   style: ElevatedButton.styleFrom(
     shadowColor: _lightScheme.primary,
     backgroundColor: _lightScheme.primary,
@@ -63,7 +61,8 @@ final ElevatedButtonThemeData _elevatedButtonThemeData =
     disabledForegroundColor: _lightScheme.surface,
     textStyle: const TextStyle(
       fontSize: 20,
-      fontWeight: FontWeight.w700,
+      fontWeight: FontWeight.w600,
+      fontFamily: 'Poppins',
     ),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(50),
@@ -73,11 +72,9 @@ final ElevatedButtonThemeData _elevatedButtonThemeData =
   ),
 );
 
-const DividerThemeData _dividerThemeData =
-    DividerThemeData(color: Colors.transparent);
+const DividerThemeData _dividerThemeData = DividerThemeData(color: Colors.transparent);
 
-final OutlinedButtonThemeData _outlinedButtonThemeData =
-    OutlinedButtonThemeData(
+final OutlinedButtonThemeData _outlinedButtonThemeData = OutlinedButtonThemeData(
   style: OutlinedButton.styleFrom(
     foregroundColor: _lightScheme.primary,
     side: BorderSide(
@@ -87,6 +84,7 @@ final OutlinedButtonThemeData _outlinedButtonThemeData =
     textStyle: const TextStyle(
       fontSize: 20,
       fontWeight: FontWeight.w700,
+      fontFamily: 'Poppins',
     ),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(50),
@@ -127,8 +125,7 @@ final IconThemeData _iconThemeData = IconThemeData(
   color: _lightScheme.onSurface,
 );
 
-final FloatingActionButtonThemeData _floatingActionButtonThemeData =
-    FloatingActionButtonThemeData(
+final FloatingActionButtonThemeData _floatingActionButtonThemeData = FloatingActionButtonThemeData(
   backgroundColor: _lightScheme.primary,
   foregroundColor: _lightScheme.onPrimary,
   shape: RoundedRectangleBorder(

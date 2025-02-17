@@ -1,6 +1,5 @@
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/message.dart';
-import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/messages/messages_specific/messages_specific_controller.dart';
 import 'package:communal/responsive.dart';
@@ -273,6 +272,19 @@ class MessagesSpecificPage extends StatelessWidget {
                         loading: controller.loading.value,
                         child: Obx(
                           () {
+                            if (controller.messages.isEmpty) {
+                              return const Center(
+                                child: SizedBox(
+                                  width: 350,
+                                  child: Text(
+                                    'Chat messages in Communal are still unencrypted, please refrain from sharing sensitive information here.',
+                                    style: TextStyle(fontSize: 16),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              );
+                            }
+
                             return ListView.separated(
                               reverse: true,
                               itemCount: controller.messages.length,

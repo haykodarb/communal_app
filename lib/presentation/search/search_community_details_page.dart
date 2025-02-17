@@ -2,9 +2,12 @@ import 'dart:typed_data';
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/backend/communities_backend.dart';
+import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/community.dart';
+import 'package:communal/models/membership.dart';
+import 'package:communal/presentation/common/common_confirmation_dialog.dart';
 import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
@@ -19,9 +22,27 @@ class SearchCommunityDetailsController extends GetxController {
   final String communityId;
   final CommonListViewController listViewController = CommonListViewController<Book>(pageSize: 20);
 
+  final RxBool loading = false.obs;
+
+  final Rxn<Membership> existingMembership = Rxn<Membership>();
+
   @override
   Future<void> onInit() async {
     super.onInit();
+
+    loading.value = true;
+
+    final BackendResponse<Membership> response = await UsersBackend.getMembershipByMemberAndCommunity(
+      communityId: communityId,
+      userId: UsersBackend.currentUserId,
+    );
+
+    if (response.success) {
+      existingMembership.value = response.payload;
+      existingMembership.refresh();
+    }
+
+    loading.value = false;
 
     listViewController.registerNewPageCallback(loadBooks);
   }
@@ -93,7 +114,7 @@ class SearchCommunityDetailsPage extends StatelessWidget {
               child: Container(
                 height: double.maxFinite,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(10),
                   color: Theme.of(context).colorScheme.surface,
                 ),
                 alignment: Alignment.center,
@@ -117,7 +138,7 @@ class SearchCommunityDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _communityInformation(Community community) {
+  Widget _communityInformation(Community community, SearchCommunityDetailsController controller) {
     return Builder(
       builder: (context) {
         return Column(
@@ -156,7 +177,9 @@ class SearchCommunityDetailsPage extends StatelessWidget {
                   style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.onSurfaceVariant),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    community.owner.goToProfilePage(context);
+                  },
                   child: Text(
                     community.owner.username,
                     style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.secondary),
@@ -183,9 +206,69 @@ class SearchCommunityDetailsPage extends StatelessWidget {
                 ],
               ),
             ),
-            ElevatedButton(
-              onPressed: () {},
-              child: const Text('Request invite'),
+            Obx(
+              () {
+                if (controller.existingMembership.value != null) {
+                  final Membership membership = controller.existingMembership.value!;
+                  final bool? member_accepted = membership.member_accepted;
+                  final bool? admin_accepted = membership.admin_accepted;
+
+                  if (member_accepted == null && admin_accepted == null) {
+                    return const Text('Database error, something went wrong.');
+                  }
+
+                  if (member_accepted == null && admin_accepted != null) {
+                    if (admin_accepted) {
+                      return const Text(
+                        'You have already been invited to this community. Check your notifications to accept the invite.',
+                      );
+                    }
+                  }
+
+                  if (admin_accepted == null) {
+                    if (member_accepted != null && member_accepted) {
+                      return const Text(
+                        'Invite requested, wait for a response.',
+                      );
+                    }
+                  }
+
+                  if (!(admin_accepted!)) {
+                    return const Text('Your request has been rejected by an administrator.');
+                  }
+
+                  if (!(member_accepted!)) {
+                    return const Text('You have already rejected an invite to this community.');
+                  }
+
+                  if (admin_accepted && member_accepted) {
+                    return const Text('You are a member of this community.');
+                  }
+                }
+
+                return CommonLoadingBody(
+                  loading: controller.loading.value,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      final bool confirm = await const CommonConfirmationDialog(title: 'Request invite?').open(context);
+
+                      if (confirm) {
+                        controller.loading.value = true;
+                        final BackendResponse<Membership> response =
+                            await UsersBackend.requestInviteToCommunity(communityId);
+
+                        if (response.success) {
+                          controller.existingMembership.value = response.payload;
+                          controller.existingMembership.refresh();
+                        }
+                      }
+
+                      controller.loading.value = false;
+                    },
+                    child: const Text('Request invite'),
+                  ),
+                );
+              },
             ),
           ],
         );
@@ -274,7 +357,7 @@ class SearchCommunityDetailsPage extends StatelessWidget {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _communityInformation(community),
+                          _communityInformation(community, controller),
                           const Divider(height: 20),
                           Expanded(child: _communityLibrary(community, controller)),
                         ],

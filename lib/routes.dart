@@ -6,6 +6,7 @@ import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/community/community_create/community_create_page.dart';
 import 'package:communal/presentation/community/community_invite/community_invite_page.dart';
 import 'package:communal/presentation/community/community_list_page.dart';
+import 'package:communal/presentation/community/community_requests/community_requests_page.dart';
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_topic_create/community_discussions_topic_create_page.dart';
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_topic_messages/community_discussions_topic_messages_page.dart';
 import 'package:communal/presentation/community/community_specific/community_settings/community_settings_page.dart';
@@ -37,6 +38,7 @@ class RouteNames {
   static const String appRoot = 'https://app.communal.ar/#';
 
   static const String startPage = '/auth';
+  static const String authRedirect = '/:params';
 
   static const String passwordResetPage = '/reset';
 
@@ -66,6 +68,7 @@ class RouteNames {
   static const String communitySpecificPage = '/:communityId';
   static const String communitySettingsPage = '/settings';
   static const String communityInvitePage = '/members/invite';
+  static const String communityRequestsPage = '/members/requests';
   static const String communityDiscussionsTopicCreate = '/discussions/create';
   static const String communityDiscussionsTopic = '/discussions/:topicId';
 
@@ -183,6 +186,15 @@ final GoRoute _communityRoutes = GoRoute(
           parentNavigatorKey: _shellNavigatorKey,
           pageBuilder: (context, state) => NoTransitionPage(
             child: CommunityInvitePage(
+              communityId: state.pathParameters['communityId']!,
+            ),
+          ),
+        ),
+        GoRoute(
+          path: RouteNames.communityRequestsPage,
+          parentNavigatorKey: _shellNavigatorKey,
+          pageBuilder: (context, state) => NoTransitionPage(
+            child: CommunityRequestsPage(
               communityId: state.pathParameters['communityId']!,
             ),
           ),
@@ -313,9 +325,12 @@ final GoRoute _startRoutes = GoRoute(
 
     return null;
   },
-  pageBuilder: (context, state) => const NoTransitionPage(
-    child: StartPage(),
-  ),
+  pageBuilder: (context, state) {
+
+    return const NoTransitionPage(
+      child: StartPage(),
+    );
+  },
   routes: [
     GoRoute(
       path: RouteNames.passwordResetPage,

@@ -1,6 +1,8 @@
 import 'package:atlas_icons/atlas_icons.dart';
+import 'package:communal/backend/login_backend.dart';
 import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/routes.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -9,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:collection/collection.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class StartPage extends StatelessWidget {
   const StartPage({super.key});
@@ -242,6 +245,22 @@ class StartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder(
       init: StartController(),
+      initState: (state) async {
+        try {
+          Uri? uri = GoRouter.of(context).state?.uri;
+          if (uri != null) {
+            final AuthSessionUrlResponse response = await Supabase.instance.client.auth.getSessionFromUrl(uri);
+
+            if (response.session.accessToken.isNotEmpty) {
+              if (context.mounted) {
+                GoRouter.of(context).go(RouteNames.communityListPage);
+              }
+            }
+          }
+        } catch (e) {
+          rethrow;
+        }
+      },
       builder: (StartController controller) {
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.surface,
@@ -276,6 +295,16 @@ class StartPage extends StatelessWidget {
                             _loginButton(controller),
                             const Divider(height: 10),
                             _registerButton(controller),
+                            const Divider(height: 10),
+                            Visibility(
+                              visible: kIsWeb,
+                              child: OutlinedButton(
+                                onPressed: () async {
+                                  await LoginBackend.signInWithGoogle();
+                                },
+                                child: const Text('Sign in with Google'),
+                              ),
+                            ),
                           ],
                         ),
                       ),

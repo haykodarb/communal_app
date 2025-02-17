@@ -133,6 +133,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 16,
+                        overflow: TextOverflow.fade,
                       ),
                     ),
                   ),

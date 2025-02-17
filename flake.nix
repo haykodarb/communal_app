@@ -15,7 +15,7 @@
         };
         androidComposition = pkgs.androidenv.composeAndroidPackages
         {
-          platformVersions = [ "31" "32" "34" ];
+          platformVersions = [  "31" "33" "34" ];
           abiVersions = [ "armeabi-v7a" "arm64-v8a" "x86_64" ];
           buildToolsVersions = [ "30.0.3" ];
           cmakeVersions = [ "3.18.1" "3.22.1" ]; 
@@ -34,8 +34,10 @@
 
             buildInputs = [
 	      bashInteractive
-              flutter
-              androidSdk
+	      android-tools
+	      flutter
+
+	      androidSdk
               google-chrome
               pkg-config
               gtk3

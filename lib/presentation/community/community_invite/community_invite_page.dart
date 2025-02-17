@@ -5,7 +5,6 @@ import 'package:communal/presentation/common/common_search_bar.dart';
 import 'package:communal/presentation/community/community_invite/community_invite_controller.dart';
 import 'package:communal/responsive.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class CommunityInvitePage extends StatelessWidget {
@@ -24,7 +23,7 @@ class CommunityInvitePage extends StatelessWidget {
     final Profile profile = controller.foundProfiles[index];
 
     final Color selectedFg = Theme.of(context).colorScheme.onPrimary;
-    final Color selectedBg = Theme.of(context).colorScheme.primary.withOpacity(0.15);
+    final Color selectedBg = Theme.of(context).colorScheme.primary.withAlpha((0.15 * 255).floor());
 
     final Color selectedBorder = Theme.of(context).colorScheme.primary;
     return InkWell(

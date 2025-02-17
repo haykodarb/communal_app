@@ -1,5 +1,8 @@
 import 'package:communal/backend/users_backend.dart';
+import 'package:communal/routes.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class Profile {
   String username;
@@ -22,6 +25,18 @@ class Profile {
 
   bool get isCurrentUser {
     return UsersBackend.currentUserId == id;
+  }
+
+  void goToProfilePage(BuildContext context) {
+    if (id == UsersBackend.currentUserId) {
+      context.push(
+        RouteNames.profileOwnPage,
+      );
+    } else {
+      context.push(
+        RouteNames.profileOtherPage.replaceFirst(':userId', id),
+      );
+    }
   }
 
   Profile.empty()

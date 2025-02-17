@@ -23,9 +23,18 @@ class CommunityMembersController extends GetxController {
 
   Timer? debounceTimer;
 
+  final RxInt requestCount = 0.obs;
+
   @override
   Future<void> onInit() async {
     super.onInit();
+
+    final BackendResponse<int> response = await UsersBackend.getRequestCountForCommunity(communityId: communityId);
+
+    if (response.success) {
+      requestCount.value = response.payload!;
+    }
+
     listViewController.registerNewPageCallback(loadUsers);
   }
 

@@ -208,6 +208,34 @@ class CommunityMembersPage extends StatelessWidget {
               automaticallyImplyLeading: false,
               floating: true,
             ),
+            SliverToBoxAdapter(
+              child: Obx(
+                () {
+                  return Visibility(
+                    visible: (communityController.community.isCurrentUserAdmin ?? false) &&
+                        controller.requestCount.value > 0,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          context.push(
+                            '${RouteNames.communityListPage}/${controller.communityId}${RouteNames.communityRequestsPage}',
+                          );
+                        },
+                        child: Text(
+                          '${controller.requestCount.value} request${controller.requestCount.value == 1 ? '' : 's'} pending',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
             CommonListView<Profile>(
               noItemsText: 'No users found in this community.',
               childBuilder: (Profile member) => _userCardRow(member, controller),

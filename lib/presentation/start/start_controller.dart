@@ -5,8 +5,7 @@ import 'package:communal/routes.dart';
 
 class StartController extends GetxController {
   Future<void> changeThemeMode(BuildContext context) async {
-    final ThemeMode newThemeMode =
-        UserPreferences.isDarkMode(context) ? ThemeMode.light : ThemeMode.dark;
+    final ThemeMode newThemeMode = UserPreferences.isDarkMode(context) ? ThemeMode.light : ThemeMode.dark;
 
     Get.changeThemeMode(newThemeMode);
 

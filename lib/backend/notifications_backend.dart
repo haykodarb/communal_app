@@ -135,14 +135,12 @@ class NotificationsBackend {
 
       final List<CustomNotification> notifications = result.map(
         (e) {
-          print(e);
           return CustomNotification.fromMap(e);
         },
       ).toList();
 
       return BackendResponse(success: true, payload: notifications);
     } catch (e, stack) {
-      print(stack);
       return BackendResponse(
         success: false,
         payload: e,

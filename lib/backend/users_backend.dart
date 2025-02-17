@@ -184,7 +184,7 @@ class UsersBackend {
         .from('memberships')
         .update({
           'member_accepted': accept,
-          'joined_at': 'now()',
+          'joined_at': accept ? 'now()' : null,
         })
         .eq('id', membershipId)
         .select()
@@ -194,6 +194,117 @@ class UsersBackend {
       success: response?.isNotEmpty ?? false,
       payload: response,
     );
+  }
+
+  static Future<BackendResponse<Membership>> respondToMembershipRequest({
+    required Membership membership,
+    required bool accept,
+  }) async {
+    try {
+      final Map<String, dynamic> response = await _client
+          .from('memberships')
+          .update({
+            'admin_accepted': accept,
+            'joined_at': accept ? 'now()' : null,
+          })
+          .eq('id', membership.id)
+          .select(
+            '*, communities(*, profiles(*)), profiles(*)',
+          )
+          .single();
+
+      if (response.isNotEmpty) {
+        return BackendResponse(success: true, payload: Membership.fromMap(response));
+      }
+
+      return BackendResponse(success: false);
+    } catch (e) {
+      print(e);
+      return BackendResponse(success: false);
+    }
+  }
+
+  static Future<BackendResponse<List<Membership>>> getRequestsForCommunity({
+    required String communityId,
+    required int pageKey,
+    required int pageSize,
+  }) async {
+    try {
+      final List<Map<String, dynamic>> response = await _client
+          .from('memberships')
+          .select(
+            '*, communities(*, profiles(*)), profiles(*)',
+          )
+          .isFilter('admin_accepted', null)
+          .match(
+        {
+          'community': communityId,
+          'member_accepted': true,
+        },
+      ).range(pageKey, pageKey + pageSize - 1);
+
+      final List<Membership> memberships = response.map((el) => Membership.fromMap(el)).toList();
+
+      return BackendResponse(success: true, payload: memberships);
+    } catch (e) {
+      return BackendResponse(success: false);
+    }
+  }
+
+  static Future<BackendResponse<int>> getRequestCountForCommunity({
+    required String communityId,
+  }) async {
+    try {
+      final PostgrestResponse response = await _client
+          .from('memberships')
+          .select(
+            '*, communities(*, profiles(*)), profiles(*)',
+          )
+          .isFilter('admin_accepted', null)
+          .match(
+        {
+          'community': communityId,
+          'member_accepted': true,
+        },
+      ).count();
+
+      return BackendResponse(success: true, payload: response.count);
+    } catch (e) {
+      return BackendResponse(success: false);
+    }
+  }
+
+  static Future<BackendResponse<Membership>> getMembershipByMemberAndCommunity({
+    required String communityId,
+    required String userId,
+  }) async {
+    try {
+      final Map<String, dynamic> response = await _client
+          .from('memberships')
+          .select(
+            '*, communities(*, profiles(*)), profiles(*)',
+          )
+          .eq('community', communityId)
+          .eq('member', userId)
+          .single();
+
+      if (response.isNotEmpty) {
+        return BackendResponse(
+          success: true,
+          payload: Membership.fromMap(response),
+        );
+      } else {
+        return BackendResponse(
+          success: false,
+          error: 'Could not find membership with this ID.',
+        );
+      }
+    } on PostgrestException catch (error) {
+      return BackendResponse(
+        success: false,
+        error: error.message,
+      );
+    }
   }
 
   static Future<BackendResponse> getMembershipByID(String id) async {
@@ -281,7 +392,7 @@ class UsersBackend {
     }
   }
 
-  static Future<BackendResponse> requestInviteToCommunity(
+  static Future<BackendResponse<Membership>> requestInviteToCommunity(
     String communityId,
   ) async {
     try {
@@ -295,11 +406,13 @@ class UsersBackend {
               'member_accepted': true,
             },
           )
-          .select('*, profiles(*), communities(*)')
+          .select('*, profiles(*), communities(*, profiles(*))')
           .single();
 
+      print(createMembershipResponse);
+
       if (createMembershipResponse.isEmpty) {
-        return BackendResponse(success: false, payload: 'Error in sending out invitation.');
+        return BackendResponse(success: false, error: 'Error in sending out invitation.');
       }
 
       return BackendResponse(
@@ -307,7 +420,8 @@ class UsersBackend {
         payload: Membership.fromMap(createMembershipResponse),
       );
     } on PostgrestException catch (error) {
-      return BackendResponse(success: false, payload: error.message);
+      print(error);
+      return BackendResponse(success: false, error: error.message);
     }
   }
 
@@ -326,7 +440,7 @@ class UsersBackend {
               'admin_accepted': true,
             },
           )
-          .select('*, profiles(*), communities(*)')
+          .select('*, profiles(*), communities(*, profiles(*))')
           .single();
 
       if (createMembershipResponse.isEmpty) {
