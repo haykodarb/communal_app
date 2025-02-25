@@ -51,22 +51,22 @@ class LoansPage extends StatelessWidget {
     return CommonFilterBottomsheet(
       children: [
         CommonFilterRow(
-          title: 'Ordenar por',
-          options: const ['Fecha', 'Titulo'],
+          title: 'Order by',
+          options: const ['Date', 'Title'],
           initialIndex: orderByIndex,
           onIndexChange: controller.onOrderByValueChanged,
         ),
         const Divider(height: 20),
         CommonFilterRow(
-          title: 'Filtrar por estado',
-          options: const ['Todos', 'Pendiente', 'Aceptado', 'Finalizado', 'Rechazado'],
+          title: 'Filter by status',
+          options: const ['All', 'Pending', 'Accepted', 'Completed', 'Rejected'],
           initialIndex: filterByStateIndex,
           onIndexChange: controller.onFilterByStatusChanged,
         ),
         const Divider(height: 20),
         CommonFilterRow(
-          title: 'Filtrar por propiedad del libro',
-          options: const ['Todos', 'Propio', 'Ajeno'],
+          title: 'Filter by book ownership',
+          options: const ['All', 'Own', 'Foreign'],
           initialIndex: filterByOwnerIndex,
           onIndexChange: controller.onFilterByOwnerChanged,
         ),
@@ -237,7 +237,7 @@ class LoansPage extends StatelessWidget {
                 ),
                 CommonListView<Loan>(
                   noItemsText:
-                      'You have not loaned or borrowed any books yet. You can get started by joining communities and searching their libraries for books you might enjoy.',
+                      'You have not loaned or borrowed any books yet.\n\nYou can get started by joining communities and searching their libraries for books you might enjoy.',
                   childBuilder: (Loan loan) => CommonKeepaliveWrapper(
                     child: _loanCard(loan, controller),
                   ),

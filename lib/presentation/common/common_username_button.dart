@@ -11,11 +11,13 @@ class CommonUsernameButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () {
-        context.push(
-          RouteNames.profileOtherPage.replaceFirst(':userId', user.id),
-        );
-      },
+      onPressed: user.isCurrentUser
+          ? null
+          : () {
+              context.push(
+                RouteNames.profileOtherPage.replaceFirst(':userId', user.id),
+              );
+            },
       child: Text(
         user.username,
         style: TextStyle(

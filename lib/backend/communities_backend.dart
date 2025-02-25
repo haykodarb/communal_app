@@ -1,6 +1,4 @@
 // ignore_for_file: unnecessary_null_comparison
-
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
@@ -208,7 +206,7 @@ class CommunitiesBackend {
             },
           )
           .eq('id', community.id)
-          .select()
+          .select('*, profiles(*)')
           .maybeSingle();
 
       if (updateResponse == null || updateResponse.isEmpty) {
@@ -223,9 +221,9 @@ class CommunitiesBackend {
         payload: Community.fromMap(updateResponse),
       );
     } on PostgrestException catch (error) {
-      return BackendResponse(success: false, payload: error.message);
+      return BackendResponse(success: false, error: error.message);
     } on StorageException catch (error) {
-      return BackendResponse(success: false, payload: error.message);
+      return BackendResponse(success: false, error: error.message);
     }
   }
 
@@ -257,7 +255,7 @@ class CommunitiesBackend {
               'image_path': pathToUpload,
             },
           )
-          .select()
+          .select('*, profiles(*)')
           .single();
 
       if (createCommunityResponse.isNotEmpty) {
@@ -270,16 +268,16 @@ class CommunitiesBackend {
         );
       }
 
-      return BackendResponse(success: false);
+      return BackendResponse(success: false, error: 'Server error');
     } catch (err) {
-      return BackendResponse(success: false);
+      return BackendResponse(success: false, error: err.toString());
     }
   }
 
   static Future<BackendResponse> deleteCommunity(Community community) async {
     try {
       final Map<String, dynamic> response =
-          await _client.from('communities').delete().eq('id', community.id).select().single();
+          await _client.from('communities').delete().eq('id', community.id).select('*, profiles(*)').single();
 
       return BackendResponse(
         success: response.isNotEmpty,

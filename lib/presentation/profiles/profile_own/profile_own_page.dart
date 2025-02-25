@@ -86,7 +86,7 @@ class ProfileOwnPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'About me',
+                'About me'.tr,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.secondary,
                   fontSize: 16,
@@ -173,7 +173,7 @@ class ProfileOwnPage extends StatelessWidget {
                           ),
                           alignment: Alignment.center,
                           child: Text(
-                            'Books',
+                            'Books'.tr,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: controller.currentTabIndex.value == 0 ? selectedFg : selectedBg,
@@ -196,7 +196,7 @@ class ProfileOwnPage extends StatelessWidget {
                           ),
                           alignment: Alignment.center,
                           child: Text(
-                            'Reviews',
+                            'Reviews'.tr,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: controller.currentTabIndex.value == 1 ? selectedFg : selectedBg,

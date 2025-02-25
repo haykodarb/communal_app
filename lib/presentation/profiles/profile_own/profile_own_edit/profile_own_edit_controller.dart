@@ -11,11 +11,9 @@ import 'package:get/get.dart' hide debounce;
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:string_validator/string_validator.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfileOwnEditController extends GetxController {
-  final Profile inheritedProfile = Get.find<CommonDrawerController>().currentUserProfile.value;
-  Rx<Profile> profileForm = Profile.empty().obs;
+  final Rx<Profile> inheritedProfile = Get.find<CommonDrawerController>().currentUserProfile;
 
   final ImagePicker imagePicker = ImagePicker();
   final Rxn<Uint8List> selectedBytes = Rxn<Uint8List>();
@@ -26,16 +24,29 @@ class ProfileOwnEditController extends GetxController {
   final RxBool addBio = false.obs;
   final RxBool usernameAvailable = true.obs;
 
+  RxString newUsername = ''.obs;
+  RxnString newBio = RxnString();
+  final RxBool newShowEmail = false.obs;
+
   Timer? debounce;
 
   @override
   void onInit() {
     super.onInit();
 
-    profileForm.value = Profile.copy(inheritedProfile);
-    profileForm.refresh();
+    newUsername.value = inheritedProfile.value.username;
+    newBio.value = inheritedProfile.value.bio;
+    addBio.value = inheritedProfile.value.bio != null;
+    newShowEmail.value = inheritedProfile.value.show_email;
 
-    addBio.value = inheritedProfile.bio != null;
+    inheritedProfile.listen(
+      (Profile profile) {
+        newUsername.value = inheritedProfile.value.username;
+        newBio.value = inheritedProfile.value.bio;
+        addBio.value = inheritedProfile.value.bio != null;
+        newShowEmail.value = inheritedProfile.value.show_email;
+      },
+    );
   }
 
   Future<void> takePicture(ImageSource source, BuildContext context) async {
@@ -63,25 +74,19 @@ class ProfileOwnEditController extends GetxController {
   }
 
   void onUsernameChanged(String value) {
-    profileForm.update((val) {
-      val!.username = value;
-    });
+    newUsername.value = value;
   }
 
   void onBioChanged(String value) {
-    profileForm.update((val) {
-      if (value.isEmpty) {
-        val!.bio = null;
-      } else {
-        val!.bio = value;
-      }
-    });
+    if (value.isEmpty) {
+      newBio.value = null;
+    } else {
+      newBio.value = value;
+    }
   }
 
   void onShowEmailChanged() {
-    profileForm.update((val) {
-      val!.show_email = !val.show_email;
-    });
+    newShowEmail.value = !newShowEmail.value;
   }
 
   void onAddBioChanged(int? value) {
@@ -95,7 +100,7 @@ class ProfileOwnEditController extends GetxController {
       return 'Input can\'t be empty';
     }
 
-    if (value == inheritedProfile.username) return null;
+    if (value == inheritedProfile.value.username) return null;
 
     final bool available = await UsersBackend.validateUsername(value);
 
@@ -146,8 +151,14 @@ class ProfileOwnEditController extends GetxController {
     if (formKey.currentState!.validate()) {
       loading.value = true;
 
+      Profile newProfile = Profile.copy(inheritedProfile.value);
+
+      newProfile.show_email = newShowEmail.value;
+      newProfile.bio = newBio.value;
+      newProfile.username = newUsername.value;
+
       final BackendResponse response = await UsersBackend.updateProfile(
-        profileForm.value,
+        newProfile,
         selectedBytes.value,
       );
 

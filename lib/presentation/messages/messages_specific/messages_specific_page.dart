@@ -83,7 +83,7 @@ class MessagesSpecificPage extends StatelessWidget {
                   Visibility(
                     visible: showTime,
                     child: Text(
-                      DateFormat.MMMd().add_Hm().format(message.created_at.toLocal()),
+                      DateFormat('dd MMM H:m', Get.locale!.languageCode).format(message.created_at.toLocal()),
                       textAlign: isReceived ? TextAlign.left : TextAlign.right,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,

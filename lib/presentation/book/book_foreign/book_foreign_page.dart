@@ -118,7 +118,7 @@ class BookForeignPage extends StatelessWidget {
                       CommonCircularAvatar(
                         profile: loan.loanee,
                         radius: 20,
-                        clickable: true,
+                        clickable: !loan.loanee.isCurrentUser,
                       ),
                       const VerticalDivider(width: 10),
                       CommonUsernameButton(user: loan.loanee),
@@ -158,7 +158,7 @@ class BookForeignPage extends StatelessWidget {
               final int reviewsCount = controller.completedLoans.length + (ownerHasReview ? 1 : 0);
 
               if (reviewsCount == 0) {
-                return const Center(child: Text('No reviews.'));
+                return Center(child: Text('No reviews'.tr));
               }
 
               return Column(
@@ -286,7 +286,7 @@ class BookForeignPage extends StatelessWidget {
                         context.push('${RouteNames.loansPage}/${controller.currentLoan.value!.id}');
                       }
                     },
-                    child: const Text('View loan'),
+                    child: Text('View loan'.tr),
                   ),
                 ),
                 Visibility(
@@ -294,7 +294,7 @@ class BookForeignPage extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () => controller.requestLoan(context),
                     child: Text(
-                      'request'.tr,
+                      'Request'.tr,
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
                       ),
@@ -305,7 +305,7 @@ class BookForeignPage extends StatelessWidget {
                   visible: !book.loaned && requestByCurrentUser,
                   child: OutlinedButton(
                     onPressed: () => controller.withdrawLoanRequest(context),
-                    child: const Text('Withdraw Request'),
+                    child: Text('Withdraw request'.tr),
                   ),
                 ),
               ],
@@ -319,6 +319,7 @@ class BookForeignPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
+      tag: bookId,
       init: BookForeignController(bookId: bookId),
       builder: (BookForeignController controller) {
         return Obx(
@@ -396,19 +397,13 @@ class BookForeignPage extends StatelessWidget {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          'Owner',
+                                          'Owner'.tr,
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: Theme.of(context).colorScheme.onSurfaceVariant,
                                           ),
                                         ),
-                                        FittedBox(
-                                          fit: BoxFit.fitWidth,
-                                          child: Text(
-                                            controller.book!.owner.username,
-                                            style: const TextStyle(fontSize: 16),
-                                          ),
-                                        ),
+                                        CommonUsernameButton(user: controller.book!.owner),
                                       ],
                                     ),
                                   ),
@@ -417,7 +412,7 @@ class BookForeignPage extends StatelessWidget {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          'Added',
+                                          'Added'.tr,
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -437,7 +432,7 @@ class BookForeignPage extends StatelessWidget {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          'Status',
+                                          'Status'.tr,
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -453,8 +448,8 @@ class BookForeignPage extends StatelessWidget {
 
                                           return Text(
                                             controller.book!.loaned
-                                                ? (requestByCurrentUser ? 'loaned'.tr : 'unavailable'.tr)
-                                                : (requestByCurrentUser ? 'requested'.tr : 'available'.tr),
+                                                ? (requestByCurrentUser ? 'Loaned'.tr : 'Unavailable'.tr)
+                                                : (requestByCurrentUser ? 'Requested'.tr : 'Available'.tr),
                                           );
                                         }),
                                       ],

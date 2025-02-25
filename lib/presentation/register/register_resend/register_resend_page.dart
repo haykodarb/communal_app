@@ -4,7 +4,6 @@ import 'package:communal/presentation/register/register_resend/register_resend_c
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class RegisterResendPage extends StatelessWidget {
   const RegisterResendPage({super.key});
@@ -28,7 +27,7 @@ class RegisterResendPage extends StatelessWidget {
               size: 40,
               child: ElevatedButton(
                 onPressed: () => controller.onSubmit(context),
-                child: Text('send'.tr),
+                child: Text('Send'.tr),
               ),
             ),
           ),
@@ -74,11 +73,11 @@ class RegisterResendPage extends StatelessWidget {
                               alignment: Alignment.topLeft,
                               fit: BoxFit.scaleDown,
                               child: Text(
-                                'resend-confirmation'.tr,
+                                'Resend confirmation'.tr,
                                 textAlign: TextAlign.left,
-                                style: GoogleFonts.lora(
+                                style: const TextStyle(
                                   fontSize: 36,
-                                  fontWeight: FontWeight.w700,
+                                  fontWeight: FontWeight.w800,
                                 ),
                               ),
                             ),

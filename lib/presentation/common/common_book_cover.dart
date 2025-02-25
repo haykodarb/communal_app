@@ -33,7 +33,6 @@ class CommonBookCover extends StatelessWidget {
                   } else {
                     return Image.memory(
                       snapshot.data!,
-                      gaplessPlayback: true,
                       fit: BoxFit.cover,
                     );
                   }

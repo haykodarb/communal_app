@@ -255,7 +255,7 @@ class NotificationsPage extends StatelessWidget {
         builder: (NotificationsController controller) {
           return Scaffold(
             drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
-            appBar: Responsive.isMobile(context) ? AppBar(title: Text('notifications'.tr)) : null,
+            appBar: Responsive.isMobile(context) ? AppBar(title: Text('Notifications'.tr)) : null,
             body: CommonListView<CustomNotification>(
               noItemsText: 'No notifications.',
               childBuilder: (notification) {

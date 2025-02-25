@@ -19,7 +19,7 @@ class LoginPasswordRecoveryPage extends StatelessWidget {
             validator: controller.emailValidator,
             submitCallback: (_) => controller.onSubmit(context),
             callback: controller.onEmailChange,
-            label: 'email'.tr,
+            label: 'Email'.tr,
           ),
           const Divider(height: 30),
           Obx(
@@ -28,7 +28,7 @@ class LoginPasswordRecoveryPage extends StatelessWidget {
               size: 40,
               child: ElevatedButton(
                 onPressed: () => controller.onSubmit(context),
-                child: Text('send'.tr),
+                child: Text('Send'.tr),
               ),
             ),
           ),
@@ -74,7 +74,7 @@ class LoginPasswordRecoveryPage extends StatelessWidget {
                               alignment: Alignment.topLeft,
                               fit: BoxFit.scaleDown,
                               child: Text(
-                                'recover-password'.tr,
+                                'Recover password'.tr,
                                 textAlign: TextAlign.left,
                                 style: GoogleFonts.lora(
                                   fontSize: 36,

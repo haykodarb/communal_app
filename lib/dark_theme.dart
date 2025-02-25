@@ -17,8 +17,7 @@ const ColorScheme _darkScheme = ColorScheme.dark(
   onError: Color(0xFFe0def4),
 );
 
-final BottomNavigationBarThemeData _bottomNavigationBarTheme =
-    BottomNavigationBarThemeData(
+final BottomNavigationBarThemeData _bottomNavigationBarTheme = BottomNavigationBarThemeData(
   type: BottomNavigationBarType.fixed,
   selectedItemColor: _darkScheme.primary,
   unselectedItemColor: _darkScheme.onSurface,
@@ -45,8 +44,7 @@ final AppBarTheme _appBarTheme = AppBarTheme(
   ),
 );
 
-final ElevatedButtonThemeData _elevatedButtonThemeData =
-    ElevatedButtonThemeData(
+final ElevatedButtonThemeData _elevatedButtonThemeData = ElevatedButtonThemeData(
   style: ElevatedButton.styleFrom(
     shadowColor: _darkScheme.primary,
     backgroundColor: _darkScheme.primary,
@@ -56,6 +54,7 @@ final ElevatedButtonThemeData _elevatedButtonThemeData =
     textStyle: const TextStyle(
       fontSize: 20,
       fontWeight: FontWeight.w700,
+      fontFamily: 'Poppins',
     ),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(50),
@@ -65,11 +64,9 @@ final ElevatedButtonThemeData _elevatedButtonThemeData =
   ),
 );
 
-const DividerThemeData _dividerThemeData =
-    DividerThemeData(color: Colors.transparent);
+const DividerThemeData _dividerThemeData = DividerThemeData(color: Colors.transparent);
 
-final OutlinedButtonThemeData _outlinedButtonThemeData =
-    OutlinedButtonThemeData(
+final OutlinedButtonThemeData _outlinedButtonThemeData = OutlinedButtonThemeData(
   style: OutlinedButton.styleFrom(
     foregroundColor: _darkScheme.primary,
     side: BorderSide(
@@ -79,6 +76,7 @@ final OutlinedButtonThemeData _outlinedButtonThemeData =
     textStyle: const TextStyle(
       fontSize: 20,
       fontWeight: FontWeight.w700,
+      fontFamily: 'Poppins',
     ),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(50),
@@ -93,6 +91,7 @@ final InputDecorationTheme _inputDecorationTheme = InputDecorationTheme(
   filled: true,
   labelStyle: TextStyle(color: _darkScheme.onSurfaceVariant),
   floatingLabelStyle: TextStyle(color: _darkScheme.onSurface),
+  floatingLabelBehavior: FloatingLabelBehavior.never,
   focusedBorder: const OutlineInputBorder(borderSide: BorderSide.none),
   border: const OutlineInputBorder(borderSide: BorderSide.none),
   enabledBorder: const OutlineInputBorder(borderSide: BorderSide.none),
@@ -116,8 +115,7 @@ final IconThemeData _iconThemeData = IconThemeData(
   color: _darkScheme.onSurface,
 );
 
-final FloatingActionButtonThemeData _floatingActionButtonThemeData =
-    FloatingActionButtonThemeData(
+final FloatingActionButtonThemeData _floatingActionButtonThemeData = FloatingActionButtonThemeData(
   backgroundColor: _darkScheme.primary,
   foregroundColor: _darkScheme.onPrimary,
   shape: RoundedRectangleBorder(

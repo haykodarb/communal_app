@@ -1,6 +1,7 @@
+import 'dart:io';
 import 'package:atlas_icons/atlas_icons.dart';
-import 'package:communal/backend/login_backend.dart';
 import 'package:communal/backend/user_preferences.dart';
+import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:communal/presentation/start/start_controller.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:collection/collection.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -174,7 +174,7 @@ class StartPage extends StatelessWidget {
             RouteNames.startPage + RouteNames.loginPage,
           ),
           child: Text(
-            'login'.tr,
+            'Login'.tr,
           ),
         );
       },
@@ -189,7 +189,7 @@ class StartPage extends StatelessWidget {
             RouteNames.startPage + RouteNames.registerPage,
           ),
           child: Text(
-            'register'.tr,
+            'Register'.tr,
           ),
         );
       },
@@ -227,9 +227,9 @@ class StartPage extends StatelessWidget {
                 child: Text(
                   'Communal',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.russoOne(
-                    fontSize: 50,
-                    fontWeight: FontWeight.w900,
+                  style: TextStyle(
+                    fontSize: 60,
+                    fontWeight: FontWeight.w800,
                     color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
@@ -244,7 +244,7 @@ class StartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: StartController(),
+      init: StartController(context: context),
       initState: (state) async {
         try {
           Uri? uri = GoRouter.of(context).state?.uri;
@@ -257,8 +257,12 @@ class StartPage extends StatelessWidget {
               }
             }
           }
+        } on AuthException catch (_) {
+          return;
         } catch (e) {
-          rethrow;
+          if (kDebugMode) {
+            print(e);
+          }
         }
       },
       builder: (StartController controller) {
@@ -288,24 +292,30 @@ class StartPage extends StatelessWidget {
                         flex: 2,
                         child: _logo(),
                       ),
+                      const Divider(height: 10),
                       Expanded(
                         flex: 1,
-                        child: Column(
-                          children: [
-                            _loginButton(controller),
-                            const Divider(height: 10),
-                            _registerButton(controller),
-                            const Divider(height: 10),
-                            Visibility(
-                              visible: kIsWeb,
-                              child: OutlinedButton(
-                                onPressed: () async {
-                                  await LoginBackend.signInWithGoogle();
-                                },
-                                child: const Text('Sign in with Google'),
+                        child: Obx(
+                          () {
+                            return CommonLoadingBody(
+                              loading: controller.loading.value,
+                              child: Column(
+                                children: [
+                                  _loginButton(controller),
+                                  const Divider(height: 10),
+                                  _registerButton(controller),
+                                  const Divider(height: 10),
+                                  Visibility(
+                                    visible: kIsWeb || Platform.isAndroid,
+                                    child: OutlinedButton(
+                                      onPressed: () => controller.signInWithGoogle(context),
+                                      child: Text('Sign in with Google'.tr),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
+                            );
+                          },
                         ),
                       ),
                     ],

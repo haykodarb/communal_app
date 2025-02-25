@@ -1,7 +1,6 @@
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_topic_create/community_discussions_topic_create_controller.dart';
-import 'package:communal/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -20,7 +19,7 @@ class CommunityDiscussionsTopicCreatePage extends StatelessWidget {
       builder: (controller) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Create topic'),
+            title: Text('Create topic'.tr),
           ),
           resizeToAvoidBottomInset: false,
           body: Padding(
@@ -32,7 +31,7 @@ class CommunityDiscussionsTopicCreatePage extends StatelessWidget {
                   CommonTextField(
                     callback: controller.onNameChange,
                     submitCallback: (_) => controller.onSubmit(context),
-                    label: 'Name',
+                    label: 'Name'.tr,
                     validator: (value) => controller.stringValidator(value, 4),
                   ),
                   const Divider(height: 10),
@@ -42,8 +41,8 @@ class CommunityDiscussionsTopicCreatePage extends StatelessWidget {
                         loading: controller.loading.value,
                         child: ElevatedButton(
                           onPressed: () => controller.onSubmit(context),
-                          child: const Text(
-                            'Create',
+                          child: Text(
+                            'Create'.tr,
                           ),
                         ),
                       );

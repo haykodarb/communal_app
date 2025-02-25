@@ -97,7 +97,7 @@ class SearchPage extends StatelessWidget {
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
-                            'Books',
+                            'Books'.tr,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: controller.currentTabIndex.value == 0 ? selectedFg : selectedBg,
@@ -125,7 +125,7 @@ class SearchPage extends StatelessWidget {
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
-                            'Communities',
+                            'Communities'.tr,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: controller.currentTabIndex.value == 1 ? selectedFg : selectedBg,
@@ -153,7 +153,7 @@ class SearchPage extends StatelessWidget {
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
-                            'Users',
+                            'Users'.tr,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: controller.currentTabIndex.value == 2 ? selectedFg : selectedBg,

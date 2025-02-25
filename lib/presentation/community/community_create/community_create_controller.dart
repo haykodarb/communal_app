@@ -83,15 +83,20 @@ class CommunityCreateController extends GetxController {
       loading.value = true;
       errorMessage.value = '';
 
-      final BackendResponse<Community> response =
-          await CommunitiesBackend.createCommunity(
+      final BackendResponse<Community> response = await CommunitiesBackend.createCommunity(
         communityForm.value,
         selectedBytes.value,
       );
 
       loading.value = false;
 
+      print('Success: ${response.success}');
+
+      print(response.error);
+
       if (response.success && context.mounted) {
+        print(response.payload?.id ?? 'No response');
+
         communityListController.listViewController.addItem(response.payload!);
         context.pop(true);
       } else {

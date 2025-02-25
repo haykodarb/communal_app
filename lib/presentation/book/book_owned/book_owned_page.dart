@@ -1,4 +1,3 @@
-import 'package:communal/main.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/book/book_owned/book_owned_controller.dart';
@@ -282,14 +281,14 @@ class BookOwnedPage extends StatelessWidget {
                         Expanded(
                           child: ElevatedButton(
                             onPressed: () => controller.editBook(context),
-                            child: const Text('Edit'),
+                            child: Text('Edit'.tr),
                           ),
                         ),
                         const VerticalDivider(),
                         Expanded(
                           child: OutlinedButton(
                             onPressed: () => controller.deleteBook(context),
-                            child: const Text('Delete'),
+                            child: Text('Delete'.tr),
                           ),
                         ),
                       ],
@@ -306,7 +305,7 @@ class BookOwnedPage extends StatelessWidget {
                     context.push('${RouteNames.loansPage}/${controller.currentLoan.value!.id}');
                   }
                 },
-                child: const Text('View loan'),
+                child: Text('View loan'.tr),
               ),
             ),
           ],
@@ -386,7 +385,7 @@ class BookOwnedPage extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        'Owner',
+                                        'Owner'.tr,
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -405,7 +404,7 @@ class BookOwnedPage extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        'Added',
+                                        'Added'.tr,
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -422,14 +421,14 @@ class BookOwnedPage extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        'Status',
+                                        'Status'.tr,
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                                         ),
                                       ),
                                       Text(
-                                        controller.book.value.loaned ? 'Loaned' : 'Available',
+                                        controller.book.value.loaned ? 'Loaned'.tr : 'Available'.tr,
                                         style: const TextStyle(fontSize: 16),
                                       ),
                                     ],

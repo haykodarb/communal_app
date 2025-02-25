@@ -89,7 +89,7 @@ class ProfileOtherPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'About me',
+                'About me'.tr,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.secondary,
                   fontSize: 16,
@@ -275,6 +275,7 @@ class ProfileOtherPage extends StatelessWidget {
                     ),
                   ],
                 ),
+                const Divider(height: 20),
                 Text(
                   loan.review!,
                   style: const TextStyle(
@@ -300,13 +301,8 @@ class ProfileOtherPage extends StatelessWidget {
             scrollController: controller.scrollController,
             noItemsText: 'No books.',
             isSliver: true,
-            childBuilder: (Book book) => InkWell(
-              onTap: () {
-                context.push('${RouteNames.myBooks}/${book.id}');
-              },
-              child: CommonVerticalBookCard(
-                book: book,
-              ),
+            childBuilder: (Book book) => CommonVerticalBookCard(
+              book: book,
             ),
           );
         }
@@ -336,6 +332,7 @@ class ProfileOtherPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
+      tag: userId,
       init: ProfileOtherController(userId: userId),
       builder: (ProfileOtherController controller) {
         return Scaffold(

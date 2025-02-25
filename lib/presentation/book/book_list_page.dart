@@ -91,7 +91,7 @@ class BookListPage extends StatelessWidget {
                                         ),
                                         const VerticalDivider(width: 10),
                                         Text(
-                                          book.loaned ? 'loaned'.tr : 'available'.tr,
+                                          book.loaned ? 'Loaned'.tr : 'Available'.tr,
                                         ),
                                       ],
                                     ),
@@ -131,16 +131,16 @@ class BookListPage extends StatelessWidget {
     return CommonFilterBottomsheet(
       children: [
         CommonFilterRow(
-          title: 'Ordenar por',
+          title: 'Order by',
           initialIndex: orderByIndex,
-          options: const ['Fecha', 'Titulo', 'Autor'],
+          options: const ['Date', 'Title', 'Author'],
           onIndexChange: controller.onOrderByIndexChanged,
         ),
         const Divider(height: 10),
         CommonFilterRow(
-          title: 'Filtrar por',
+          title: 'Filter by',
           initialIndex: filterByIndex,
-          options: const ['Todos', 'Disponible', 'Prestado'],
+          options: const ['All', 'Available', 'Loaned'],
           onIndexChange: controller.onFilterByChanged,
         ),
       ],

@@ -1,3 +1,4 @@
+import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/models/message.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
@@ -73,7 +74,7 @@ class MessagesPage extends StatelessWidget {
                                 ),
                                 const VerticalDivider(width: 10),
                                 Text(
-                                  DateFormat.MMMEd().format(
+                                  DateFormat.MMMEd(Get.locale!.toString()).format(
                                     message.created_at.toLocal(),
                                   ),
                                   style: TextStyle(

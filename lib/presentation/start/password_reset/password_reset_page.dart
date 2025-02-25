@@ -7,7 +7,6 @@ import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:string_validator/string_validator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -136,16 +135,16 @@ class PasswordResetPage extends StatelessWidget {
                             iconSize: 36,
                           ),
                           const VerticalDivider(width: 20),
-                          Expanded(
+                          const Expanded(
                             child: FittedBox(
                               alignment: Alignment.topLeft,
                               fit: BoxFit.scaleDown,
                               child: Text(
                                 'Reset password',
                                 textAlign: TextAlign.left,
-                                style: GoogleFonts.lora(
+                                style: TextStyle(
                                   fontSize: 36,
-                                  fontWeight: FontWeight.w700,
+                                  fontWeight: FontWeight.w800,
                                 ),
                               ),
                             ),

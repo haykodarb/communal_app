@@ -1,4 +1,3 @@
-import 'package:communal/main.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/presentation/common/common_search_bar.dart';
@@ -58,8 +57,7 @@ class CommunityBooksPage extends StatelessWidget {
                   child: CommonVerticalBookCard(book: book),
                   onTap: () {
                     context.push(
-                      RouteNames.foreignBooksPage
-                          .replaceFirst(':bookId', book.id),
+                      RouteNames.foreignBooksPage.replaceFirst(':bookId', book.id),
                     );
                   },
                 ),

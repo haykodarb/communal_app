@@ -4,7 +4,9 @@ import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/models/profile.dart';
+import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/presentation/common/common_confirmation_dialog.dart';
+import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,20 +16,18 @@ class CommunityInviteController extends GetxController {
     required this.communityId,
   });
 
+  static const int pageSize = 20;
+
   final String communityId;
+  final CommonListViewController<Profile> listViewController = CommonListViewController(pageSize: pageSize);
 
-  Community? community;
-
-  final RxList<Profile> foundProfiles = <Profile>[].obs;
   final List<Profile> invitationsSent = <Profile>[];
-  final RxnInt selectedIndex = RxnInt();
-  final RxBool loading = false.obs;
+  final RxnString selectedId = RxnString();
   final RxBool processingInvite = false.obs;
-  final RxString inviteError = ''.obs;
 
   Timer? debounceTimer;
 
-  final RxString query = ''.obs;
+  String query = '';
 
   CommunitySpecificController? communitySpecificController;
 
@@ -39,34 +39,43 @@ class CommunityInviteController extends GetxController {
       communitySpecificController = Get.find<CommunitySpecificController>();
     }
 
-    community ??= communitySpecificController?.community;
-
-    if (community == null) {
-      final BackendResponse response = await CommunitiesBackend.getCommunityById(communityId);
-
-      if (response.success) {
-        community = response.payload;
-      }
-    }
-
-    onQueryChanged('');
+    listViewController.registerNewPageCallback(loadProfiles);
   }
 
-  void onQueryChanged(String value) {
-    query.value = value;
+  Future<List<Profile>> loadProfiles(int pageKey) async {
+    final BackendResponse response = await UsersBackend.searchUsersNotInCommunity(
+      communityId: communityId,
+      pageKey: pageKey,
+      query: query,
+      pageSize: pageSize,
+    );
+
+    if (response.success) {
+      List<Profile> profiles = response.payload;
+
+      return profiles;
+    }
+
+    return [];
+  }
+
+  Future<void> searchProfiles(String string_query) async {
+    query = string_query;
 
     debounceTimer?.cancel();
 
     debounceTimer = Timer(
-      const Duration(milliseconds: 500),
-      () {
-        onSearch();
+      const Duration(milliseconds: 250),
+      () async {
+        query = string_query;
+
+        await listViewController.reloadList();
       },
     );
   }
 
-  void onSelectedIndexChanged(int newIndex) {
-    selectedIndex.value = newIndex;
+  void onSelectedIdChanged(String newId) {
+    selectedId.value = newId;
   }
 
   Future<void> removeInvitation(BuildContext context, Profile profile) async {
@@ -89,21 +98,31 @@ class CommunityInviteController extends GetxController {
   Future<void> onSubmit(BuildContext context, Profile profile) async {
     FocusScope.of(context).unfocus();
 
-    processingInvite.value = true;
-    inviteError.value = '';
+    try {
+      processingInvite.value = true;
 
-    final BackendResponse response = await UsersBackend.inviteUserToCommunity(
-      communityId,
-      profile,
-    );
+      final BackendResponse response = await UsersBackend.inviteUserToCommunity(
+        communityId,
+        profile,
+      );
 
-    if (response.success) {
-      inviteError.value = 'User invite sent.';
-      invitationsSent.add(profile);
+      if (response.success) {
+        invitationsSent.add(profile);
 
-      processingInvite.value = false;
-    } else {
-      inviteError.value = response.payload;
+        processingInvite.value = false;
+      } else {
+        if (context.mounted) {
+          CommonAlertDialog(
+            title: response.error!,
+          ).open(context);
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        const CommonAlertDialog(
+          title: 'Error in inviting user.',
+        ).open(context);
+      }
     }
   }
 
@@ -115,7 +134,6 @@ class CommunityInviteController extends GetxController {
 
     if (confirm) {
       processingInvite.value = true;
-      inviteError.value = '';
 
       final BackendResponse response = await UsersBackend.removeUserFromCommunity(
         communityId,
@@ -125,28 +143,14 @@ class CommunityInviteController extends GetxController {
       processingInvite.value = false;
 
       if (response.success) {
-        inviteError.value = 'Invitation rescinded.';
         invitationsSent.removeWhere((element) => element.id == profile.id);
       } else {
-        inviteError.value = 'Could not rescind invitation.';
+        if (context.mounted) {
+          const CommonAlertDialog(
+            title: 'Error in rescinding invitation.',
+          ).open(context);
+        }
       }
-    }
-  }
-
-  Future<void> onSearch() async {
-    selectedIndex.value = null;
-    loading.value = true;
-    final BackendResponse response = await UsersBackend.searchUsersNotInCommunity(
-      communityId: communityId,
-      query: query.value,
-      pageKey: 0,
-      pageSize: 20,
-    );
-    loading.value = false;
-
-    if (response.success) {
-      foundProfiles.value = response.payload;
-      foundProfiles.refresh();
     }
   }
 }

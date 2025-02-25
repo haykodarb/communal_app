@@ -109,7 +109,7 @@ class CommunityMembersPage extends StatelessWidget {
                                   color: Theme.of(context).colorScheme.primary,
                                 ),
                               ),
-                              child: const Text('you'),
+                              child: Text('you'.tr),
                             );
                           }
 
@@ -124,7 +124,7 @@ class CommunityMembersPage extends StatelessWidget {
                                       context,
                                     ),
                                     child: Text(
-                                      user.is_admin ? 'Remove as admin' : 'Make admin',
+                                      user.is_admin ? 'Remove admin'.tr : 'Make admin'.tr,
                                     ),
                                   ),
                                   PopupMenuItem(
@@ -132,7 +132,7 @@ class CommunityMembersPage extends StatelessWidget {
                                       user,
                                       context,
                                     ),
-                                    child: const Text('Remove'),
+                                    child: Text('Kick'.tr),
                                   ),
                                 ];
                               },
@@ -237,7 +237,7 @@ class CommunityMembersPage extends StatelessWidget {
               ),
             ),
             CommonListView<Profile>(
-              noItemsText: 'No users found in this community.',
+              noItemsText: 'community-members-no-items'.tr,
               childBuilder: (Profile member) => _userCardRow(member, controller),
               separator: const Divider(height: 5),
               controller: controller.listViewController,

@@ -89,6 +89,7 @@ class CommonListViewController<ItemType> extends GetxController {
   }
 
   Future<void> scrollListener() async {
+    print(scrollController?.position.pixels);
     scrollPosition.value = scrollController?.position.pixels.toInt() ?? 0;
     if (scrollController!.position.maxScrollExtent - scrollController!.position.pixels < 200) {
       if (loadingMore) return;

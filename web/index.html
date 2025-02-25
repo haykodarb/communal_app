@@ -100,9 +100,11 @@
 							caches.delete('flutter-app-manifest');
 							caches.delete('flutter-temp-cache');
 							caches.delete('flutter-app-cache');
+							window.localStorage.setItem('version', version);
+							console.log(`Setting new version: ${version}`);
+
+							location.reload(true);
 						}
-						window.localStorage.setItem('version', version);
-						console.log(`Setting new version: ${version}`);
 					}
 				};
 				xmlhttp.send();

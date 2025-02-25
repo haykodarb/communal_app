@@ -73,8 +73,7 @@ class CommunityListPage extends StatelessWidget {
           appBar: Responsive.isMobile(context) ? AppBar(title: const Text('Communities')) : null,
           drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
           body: CommonListView(
-            noItemsText:
-                'You are not a member of any communities.\n\nYou can create your own or request an invite from the admins of other communities.',
+            noItemsText: 'community-list-no-items'.tr,
             childBuilder: (Community community) => _communityCard(controller, community),
             controller: controller.listViewController,
           ),

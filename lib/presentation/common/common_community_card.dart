@@ -3,6 +3,7 @@ import 'package:communal/backend/communities_backend.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CommonCommunityCard extends StatelessWidget {
   const CommonCommunityCard({
@@ -48,7 +49,7 @@ class CommonCommunityCard extends StatelessWidget {
                         ),
                         const Divider(height: 5),
                         Text(
-                          "${community.user_count} member${community.user_count != 1 ? 's' : ''}",
+                          "${community.user_count} ${'member'.tr}${community.user_count != 1 ? 's' : ''}",
                           textAlign: TextAlign.left,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.tertiary,

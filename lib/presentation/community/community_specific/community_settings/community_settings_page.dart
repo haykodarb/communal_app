@@ -5,7 +5,6 @@ import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/community/community_specific/community_settings/community_settings_controller.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_controller.dart';
-import 'package:communal/responsive.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -71,10 +70,10 @@ class CommunitySettingsPage extends StatelessWidget {
                       return Card(
                         margin: EdgeInsets.zero,
                         color: Theme.of(context).colorScheme.surfaceContainer,
-                        child: const Center(
+                        child: Center(
                           child: Text(
-                            'No\nimage',
-                            style: TextStyle(fontSize: 18),
+                            'Add\nimage'.tr,
+                            style: const TextStyle(fontSize: 18),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -126,7 +125,7 @@ class CommunitySettingsPage extends StatelessWidget {
                         );
                       }
 
-                      return Column(
+                      return Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -196,7 +195,7 @@ class CommunitySettingsPage extends StatelessWidget {
                     visible: !userIsOwner,
                     child: OutlinedButton(
                       onPressed: () => controller.leaveCommunity(context),
-                      child: const Text('Leave'),
+                      child: Text('Leave'.tr),
                     ),
                   ),
                   Visibility(
@@ -208,8 +207,8 @@ class CommunitySettingsPage extends StatelessWidget {
                             () {
                               return ElevatedButton(
                                 onPressed: controller.edited.value ? () => controller.onSubmit(context) : null,
-                                child: const Text(
-                                  'Save',
+                                child: Text(
+                                  'Save'.tr,
                                 ),
                               );
                             },
@@ -219,8 +218,8 @@ class CommunitySettingsPage extends StatelessWidget {
                         Expanded(
                           child: OutlinedButton(
                             onPressed: () => controller.deleteCommunity(context),
-                            child: const Text(
-                              'Delete',
+                            child: Text(
+                              'Delete'.tr,
                             ),
                           ),
                         ),
@@ -251,48 +250,51 @@ class CommunitySettingsPage extends StatelessWidget {
             return Scaffold(
               resizeToAvoidBottomInset: false,
               appBar: AppBar(
-                title: Responsive.isMobile(context) ? const Text('Settings') : null,
+                title: Text('Settings'.tr),
               ),
-              body: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-                child: Form(
-                  key: controller.formKey,
-                  child: Column(
-                    children: [
-                      _imageSelector(controller),
-                      const Divider(height: 20),
-                      CommonTextField(
-                        enabled: controller.community.isCurrentUserOwner,
-                        callback: controller.onNameChange,
-                        submitCallback: (_) => controller.onSubmit(context),
-                        label: 'Name',
-                        initialValue: controller.community.name,
-                        validator: (value) => controller.stringValidator(
-                          value: value,
-                          length: 4,
-                          optional: false,
-                        ),
-                      ),
-                      Visibility(
-                        visible: controller.community.isCurrentUserOwner || controller.community.description != null,
-                        child: CommonTextField(
+              body: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+                  child: Form(
+                    key: controller.formKey,
+                    child: Column(
+                      children: [
+                        _imageSelector(controller),
+                        const Divider(height: 20),
+                        CommonTextField(
                           enabled: controller.community.isCurrentUserOwner,
-                          callback: controller.onDescriptorChange,
+                          callback: controller.onNameChange,
                           submitCallback: (_) => controller.onSubmit(context),
-                          label: 'Description (Optional)',
-                          initialValue: controller.community.description,
-                          minLines: 5,
-                          maxLines: 10,
+                          label: 'Name'.tr,
+                          initialValue: controller.community.name,
                           validator: (value) => controller.stringValidator(
                             value: value,
                             length: 4,
-                            optional: true,
+                            optional: false,
                           ),
                         ),
-                      ),
-                      const Divider(height: 20),
-                      _bottomRowButtons(controller),
-                    ],
+                        const Divider(height: 10),
+                        Visibility(
+                          visible: controller.community.isCurrentUserOwner || controller.community.description != null,
+                          child: CommonTextField(
+                            enabled: controller.community.isCurrentUserOwner,
+                            callback: controller.onDescriptorChange,
+                            submitCallback: (_) => controller.onSubmit(context),
+                            label: 'Description (Optional)'.tr,
+                            initialValue: controller.community.description,
+                            minLines: 5,
+                            maxLines: 10,
+                            validator: (value) => controller.stringValidator(
+                              value: value,
+                              length: 4,
+                              optional: true,
+                            ),
+                          ),
+                        ),
+                        const Divider(height: 20),
+                        _bottomRowButtons(controller),
+                      ],
+                    ),
                   ),
                 ),
               ),

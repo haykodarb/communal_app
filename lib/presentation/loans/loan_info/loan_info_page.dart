@@ -188,14 +188,18 @@ class LoanInfoPage extends StatelessWidget {
                     Expanded(
                       child: _dateContainer(
                         'Approved',
-                        loan.accepted_at == null ? '-' : DateFormat('d/MM/yy').format(loan.accepted_at!),
+                        loan.accepted_at == null
+                            ? '-'
+                            : DateFormat('d/MM/yy', Get.locale!.languageCode).format(loan.accepted_at!),
                       ),
                     ),
                     const VerticalDivider(width: 5),
                     Expanded(
                       child: _dateContainer(
                         'Returned',
-                        loan.returned_at == null ? '-' : DateFormat('d/MM/yy').format(loan.returned_at!),
+                        loan.returned_at == null
+                            ? '-'
+                            : DateFormat('d/MM/yy', Get.locale!.languageCode).format(loan.returned_at!),
                       ),
                     ),
                   ],
@@ -316,9 +320,10 @@ class LoanInfoPage extends StatelessWidget {
                           text: controller.loan.value.review ?? '',
                         ),
                       ),
+                      style: const TextStyle(fontSize: 14),
                       decoration: InputDecoration(
                         hintText: 'Write a review...',
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                         hintStyle: TextStyle(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),

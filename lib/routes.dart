@@ -27,6 +27,7 @@ import 'package:communal/presentation/register/register_page.dart';
 import 'package:communal/presentation/register/register_resend/register_resend_page.dart';
 import 'package:communal/presentation/search/search_community_details_page.dart';
 import 'package:communal/presentation/search/search_page.dart';
+import 'package:communal/presentation/start/landing/landing_page.dart';
 import 'package:communal/presentation/start/password_reset/password_reset_page.dart';
 import 'package:communal/presentation/start/start_page.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class RouteNames {
   static const String appRoot = 'https://app.communal.ar/#';
+
+  static const String landingPage = '/welcome';
 
   static const String startPage = '/auth';
   static const String authRedirect = '/:params';
@@ -252,6 +255,7 @@ final GoRoute _foreignBookPage = GoRoute(
     return NoTransitionPage(
       child: BookForeignPage(
         bookId: state.pathParameters['bookId']!,
+        key: ValueKey('book-${state.pathParameters['bookId']!}'),
       ),
     );
   },
@@ -326,7 +330,6 @@ final GoRoute _startRoutes = GoRoute(
     return null;
   },
   pageBuilder: (context, state) {
-
     return const NoTransitionPage(
       child: StartPage(),
     );
@@ -371,6 +374,12 @@ final GoRoute _startRoutes = GoRoute(
 
 final List<RouteBase> routes = <RouteBase>[
   _startRoutes,
+  GoRoute(
+    path: RouteNames.landingPage,
+    pageBuilder: (context, state) => const NoTransitionPage(
+      child: LandingPage(),
+    ),
+  ),
   ShellRoute(
     navigatorKey: _shellNavigatorKey,
     redirect: (context, state) {

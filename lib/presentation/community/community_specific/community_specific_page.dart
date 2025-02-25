@@ -15,11 +15,10 @@ class CommunitySpecificPage extends StatelessWidget {
 
   static const List<IconData> _icons = <IconData>[Atlas.book, Atlas.chats, Atlas.users];
 
-  static const List<String> _labels = <String>['Books', 'Discuss', 'Members'];
-
   Widget _tabBarItem(CommunitySpecificController controller, int index) {
     return Builder(
       builder: (context) {
+        final List<String> labels = <String>['Books'.tr, 'Discuss'.tr, 'Members'.tr];
         return Obx(
           () {
             final bool isSelected = controller.selectedIndex.value == index;
@@ -58,9 +57,9 @@ class CommunitySpecificPage extends StatelessWidget {
                       color: Theme.of(context).colorScheme.surfaceContainer,
                       size: 24,
                     ),
-                    const VerticalDivider(width: 5),
+                    const VerticalDivider(width: 10),
                     Text(
-                      _labels[index],
+                      labels[index],
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.surfaceContainer,
                         fontSize: 14,
@@ -170,7 +169,7 @@ class CommunitySpecificPage extends StatelessWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: List.generate(
-                              _labels.length,
+                              _icons.length,
                               (index) {
                                 return _tabBarItem(controller, index);
                               },

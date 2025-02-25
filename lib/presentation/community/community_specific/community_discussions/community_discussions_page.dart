@@ -186,7 +186,7 @@ class CommunityDiscussionsPage extends StatelessWidget {
               floating: true,
             ),
             CommonListView<DiscussionTopic>(
-              noItemsText: 'No topics found in this community.',
+              noItemsText: 'community-topics-no-items'.tr,
               childBuilder: (DiscussionTopic topic) => _topicCard(topic, controller),
               separator: const Divider(height: 5),
               controller: controller.listViewController,

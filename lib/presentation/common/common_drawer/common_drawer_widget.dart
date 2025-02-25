@@ -178,7 +178,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       Obx(() {
                         return _drawerButton(
-                          text: 'profile'.tr,
+                          text: 'Profile'.tr,
                           icon: Atlas.account,
                           selected: controller.currentRoute.value == RouteNames.profileOwnPage,
                           callback: () => controller.goToRoute(RouteNames.profileOwnPage, context),
@@ -191,7 +191,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       Obx(() {
                         return _drawerButton(
-                          text: 'notifications'.tr,
+                          text: 'Notifications'.tr,
                           icon: Atlas.bell,
                           selected: controller.currentRoute.value == RouteNames.notificationsPage,
                           callback: () => controller.goToRoute(
@@ -208,7 +208,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       Obx(() {
                         return _drawerButton(
-                          text: 'search'.tr,
+                          text: 'Search'.tr,
                           icon: Atlas.magnifying_glass,
                           selected: controller.currentRoute.value == RouteNames.searchPage,
                           callback: () => controller.goToRoute(
@@ -225,7 +225,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       Obx(
                         () {
                           return _drawerButton(
-                            text: 'messages'.tr,
+                            text: 'Messages'.tr,
                             icon: Atlas.chats,
                             selected: controller.currentRoute.value == RouteNames.messagesPage,
                             callback: () => controller.goToRoute(RouteNames.messagesPage, context),
@@ -241,7 +241,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       Obx(
                         () {
                           return _drawerButton(
-                            text: 'my-books'.tr,
+                            text: 'My Books'.tr,
                             icon: Atlas.library,
                             selected: controller.currentRoute.value == RouteNames.myBooks,
                             callback: () => controller.goToRoute(RouteNames.myBooks, context),
@@ -256,7 +256,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       Obx(
                         () {
                           return _drawerButton(
-                            text: 'communities'.tr,
+                            text: 'Communities'.tr,
                             selected: controller.currentRoute.value == RouteNames.communityListPage,
                             icon: Atlas.users,
                             callback: () => controller.goToRoute(
@@ -274,7 +274,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       Obx(
                         () {
                           return _drawerButton(
-                            text: 'loans'.tr,
+                            text: 'Loans'.tr,
                             selected: controller.currentRoute.value == RouteNames.loansPage,
                             icon: Atlas.account_arrows,
                             callback: () => controller.goToRoute(
@@ -292,7 +292,7 @@ class CommonDrawerWidget extends StatelessWidget {
                       _drawerButton(
                         selected: false,
                         icon: UserPreferences.isDarkMode(context) ? Atlas.sunny : Atlas.moon,
-                        text: UserPreferences.isDarkMode(context) ? 'light'.tr : 'dark'.tr,
+                        text: UserPreferences.isDarkMode(context) ? 'Light'.tr : 'Dark'.tr,
                         callback: () => controller.changeThemeMode(context),
                       ),
                       Divider(
@@ -341,7 +341,7 @@ class CommonDrawerWidget extends StatelessWidget {
                         height: dividerHeight,
                       ),
                       _drawerButton(
-                        text: 'logout'.tr,
+                        text: 'Logout'.tr,
                         selected: false,
                         icon: Atlas.double_arrow_right_circle,
                         callback: () async {

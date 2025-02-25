@@ -1,5 +1,6 @@
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CommonSearchBar extends StatelessWidget {
   const CommonSearchBar({
@@ -24,8 +25,8 @@ class CommonSearchBar extends StatelessWidget {
               expands: true,
               onChanged: searchCallback,
               focusNode: focusNode,
-	      minLines:  null,
-	      maxLines: null,
+              minLines: null,
+              maxLines: null,
               onTapOutside: (event) {
                 focusNode.unfocus();
               },
@@ -64,8 +65,8 @@ class CommonSearchBar extends StatelessWidget {
                   color: Theme.of(context).colorScheme.onSurface,
                   fontSize: 14,
                 ),
-                label: const Text(
-                  'Search...',
+                label: Text(
+                  '${'Search'.tr}...',
                   textAlign: TextAlign.center,
                 ),
                 floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -83,10 +84,8 @@ class CommonSearchBar extends StatelessWidget {
                 iconSize: 20,
                 highlightColor: Colors.transparent,
                 style: IconButton.styleFrom(
-                  backgroundColor:
-                      Theme.of(context).colorScheme.surfaceContainer,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
+                  backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   fixedSize: const Size(50, 50),
                 ),
                 icon: Icon(

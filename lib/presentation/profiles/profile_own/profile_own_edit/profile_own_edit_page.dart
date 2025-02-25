@@ -25,15 +25,15 @@ class ProfileOwnEditPage extends StatelessWidget {
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'Make email public?',
-              style: TextStyle(fontSize: 14),
+            Text(
+              'Make email public?'.tr,
+              style: const TextStyle(fontSize: 14),
             ),
             const Divider(),
             Obx(
               () => CommonBooleanSelector(
                 callback: controller.onShowEmailChanged,
-                value: controller.profileForm.value.show_email,
+                value: controller.newShowEmail.value,
               ),
             ),
           ],
@@ -49,7 +49,7 @@ class ProfileOwnEditPage extends StatelessWidget {
         builder: (ProfileOwnEditController controller) {
           return Scaffold(
             appBar: AppBar(
-              title: Responsive.isMobile(context) ? const Text('Edit profile') : null,
+              title: Responsive.isMobile(context) ? Text('Edit profile'.tr) : null,
             ),
             body: SingleChildScrollView(
               child: Padding(
@@ -70,7 +70,7 @@ class ProfileOwnEditPage extends StatelessWidget {
                               child: Obx(
                                 () {
                                   return CommonCircularAvatar(
-                                    profile: controller.profileForm.value,
+                                    profile: controller.inheritedProfile.value,
                                     radius: 100,
                                     image: controller.selectedBytes.value != null
                                         ? Image.memory(
@@ -173,23 +173,31 @@ class ProfileOwnEditPage extends StatelessWidget {
                       Form(
                         child: Column(
                           children: [
-                            CommonAsyncTextField(
-                              callback: controller.onUsernameChanged,
-                              label: 'Username',
-                              duration: const Duration(milliseconds: 500),
-                              asyncValidator: controller.asyncUsernameValidator,
-                              syncValidator: controller.usernameValidator,
-                              initialValue: controller.inheritedProfile.username,
+                            Obx(
+                              () {
+                                return CommonAsyncTextField(
+                                  callback: controller.onUsernameChanged,
+                                  label: 'Username'.tr,
+                                  duration: const Duration(milliseconds: 500),
+                                  asyncValidator: controller.asyncUsernameValidator,
+                                  syncValidator: controller.usernameValidator,
+                                  initialValue: controller.inheritedProfile.value.username,
+                                );
+                              },
                             ),
                             const Divider(height: 5),
-                            CommonTextField(
-                              callback: controller.onBioChanged,
-                              label: 'Bio (Optional)',
-                              validator: controller.bioValidator,
-                              initialValue: controller.inheritedProfile.bio,
-                              maxLength: 1000,
-                              maxLines: 10,
-                              minLines: 3,
+                            Obx(
+                              () {
+                                return CommonTextField(
+                                  callback: controller.onBioChanged,
+                                  label: 'Bio (Optional)'.tr,
+                                  validator: controller.bioValidator,
+                                  initialValue: controller.inheritedProfile.value.bio,
+                                  maxLength: 1000,
+                                  maxLines: 10,
+                                  minLines: 3,
+                                );
+                              },
                             ),
                           ],
                         ),
@@ -202,7 +210,7 @@ class ProfileOwnEditPage extends StatelessWidget {
                           loading: controller.loading.value,
                           child: ElevatedButton(
                             onPressed: () => controller.onSubmit(context),
-                            child: const Text('Save'),
+                            child: Text('Save'.tr),
                           ),
                         ),
                       ),
@@ -219,7 +227,7 @@ class ProfileOwnEditPage extends StatelessWidget {
                             final bool result = await UsersBackend.deleteUser();
 
                             if (result) {
-                              LoginBackend.logout();
+                              await LoginBackend.logout();
                               if (context.mounted) {
                                 context.go(RouteNames.startPage);
                               }
@@ -227,7 +235,10 @@ class ProfileOwnEditPage extends StatelessWidget {
                             controller.loading.value = false;
                           }
                         },
-                        child: const Text('Delete account'),
+                        child: Text(
+                          'Delete account'.tr,
+                          style: const TextStyle(fontSize: 20),
+                        ),
                       ),
                     ],
                   ),

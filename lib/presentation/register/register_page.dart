@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/register/register_controller.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
@@ -22,12 +21,12 @@ class RegisterPage extends StatelessWidget {
               validator: controller.emailValidator,
               callback: controller.onEmailChange,
               submitCallback: (value) => controller.onSubmitButton(),
-              label: 'email'.tr,
+              label: 'Email'.tr,
             ),
             const Divider(height: 5),
             CommonAsyncTextField(
               callback: controller.onUsernameChange,
-              label: 'username'.tr,
+              label: 'Username'.tr,
               duration: const Duration(milliseconds: 500),
               asyncValidator: controller.asyncUsernameValidator,
               syncValidator: controller.usernameValidator,
@@ -38,7 +37,7 @@ class RegisterPage extends StatelessWidget {
               validator: controller.passwordValidator,
               callback: controller.onPasswordChange,
               submitCallback: (value) => controller.onSubmitButton(),
-              label: 'password'.tr,
+              label: 'Password'.tr,
             ),
             const Divider(height: 5),
             Container(
@@ -47,7 +46,7 @@ class RegisterPage extends StatelessWidget {
               width: double.maxFinite,
               child: TextButton(
                 child: Text(
-                  'resend-confirmation'.tr,
+                  'Resend confirmation'.tr,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
@@ -69,7 +68,7 @@ class RegisterPage extends StatelessWidget {
                 size: 40,
                 child: ElevatedButton(
                   onPressed: controller.onSubmitButton,
-                  child: Text('register'.tr),
+                  child: Text('Register'.tr),
                 ),
               ),
             ),
@@ -134,7 +133,7 @@ class RegisterPage extends StatelessWidget {
                             const Divider(height: 20),
                             TextButton(
                               child: Text(
-                                'resend-confirmation'.tr,
+                                'Resend confirmation'.tr,
                                 style: const TextStyle(
                                   fontSize: 18,
                                 ),
@@ -178,11 +177,11 @@ class RegisterPage extends StatelessWidget {
                                 fit: BoxFit.scaleDown,
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  'create-account'.tr,
+                                  'Create account'.tr,
                                   textAlign: TextAlign.left,
-                                  style: GoogleFonts.lora(
+                                  style: const TextStyle(
                                     fontSize: 40,
-                                    fontWeight: FontWeight.w700,
+                                    fontWeight: FontWeight.w800,
                                   ),
                                 ),
                               ),

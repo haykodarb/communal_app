@@ -438,6 +438,7 @@ class UsersBackend {
               'community': communityId,
               'is_admin': false,
               'admin_accepted': true,
+              'member_accepted': null,
             },
           )
           .select('*, profiles(*), communities(*, profiles(*))')
@@ -453,6 +454,8 @@ class UsersBackend {
       );
     } on PostgrestException catch (error) {
       return BackendResponse(success: false, payload: error.message);
+    } catch (error) {
+      return BackendResponse(success: false, payload: error);
     }
   }
 

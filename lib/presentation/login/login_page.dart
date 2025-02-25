@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/login/login_controller.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -21,14 +20,14 @@ class LoginPage extends StatelessWidget {
               validator: controller.emailValidator,
               submitCallback: (_) => controller.loginButtonCallback(context),
               callback: controller.onEmailChange,
-              label: 'email'.tr,
+              label: 'Email'.tr,
             ),
             const Divider(height: 5),
             CommonPasswordField(
               validator: controller.passwordValidator,
               callback: controller.onPasswordChange,
               submitCallback: (_) => controller.loginButtonCallback(context),
-              label: 'password'.tr,
+              label: 'Password'.tr,
             ),
             const Divider(height: 5),
             Container(
@@ -37,7 +36,7 @@ class LoginPage extends StatelessWidget {
               width: double.maxFinite,
               child: TextButton(
                 child: Text(
-                  'forgot-password'.tr,
+                  'Forgot password?'.tr,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
@@ -69,7 +68,7 @@ class LoginPage extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () => controller.loginButtonCallback(context),
                   child: Text(
-                    'login'.tr,
+                    'Login'.tr,
                   ),
                 ),
               ),
@@ -116,11 +115,11 @@ class LoginPage extends StatelessWidget {
                             alignment: Alignment.topLeft,
                             fit: BoxFit.scaleDown,
                             child: Text(
-                              'sign-in'.tr,
+                              'Sign in'.tr,
                               textAlign: TextAlign.left,
-                              style: GoogleFonts.lora(
+                              style: const TextStyle(
                                 fontSize: 40,
-                                fontWeight: FontWeight.w700,
+                                fontWeight: FontWeight.w800,
                               ),
                             ),
                           ),

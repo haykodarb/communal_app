@@ -1,9 +1,10 @@
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
+import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
+import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_search_bar.dart';
 import 'package:communal/presentation/community/community_invite/community_invite_controller.dart';
-import 'package:communal/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,19 +19,17 @@ class CommunityInvitePage extends StatelessWidget {
   Widget _userCard(
     BuildContext context,
     CommunityInviteController controller,
-    int index,
+    Profile profile,
   ) {
-    final Profile profile = controller.foundProfiles[index];
-
     final Color selectedFg = Theme.of(context).colorScheme.onPrimary;
     final Color selectedBg = Theme.of(context).colorScheme.primary.withAlpha((0.15 * 255).floor());
 
     final Color selectedBorder = Theme.of(context).colorScheme.primary;
     return InkWell(
-      onTap: () => controller.onSelectedIndexChanged(index),
+      onTap: () => controller.onSelectedIdChanged(profile.id),
       child: Obx(
         () {
-          final bool selected = controller.selectedIndex.value == index;
+          final bool selected = controller.selectedId.value == profile.id;
 
           return Container(
             height: 60,
@@ -43,14 +42,16 @@ class CommunityInvitePage extends StatelessWidget {
                     )
                   : null,
               borderRadius: BorderRadius.circular(5),
-              color: controller.selectedIndex.value == index ? selectedBg : null,
+              color: selected ? selectedBg : null,
             ),
             padding: const EdgeInsets.all(10),
             child: Row(
               children: [
-                CommonCircularAvatar(
-                  profile: profile,
-                  radius: 20,
+                CommonKeepaliveWrapper(
+                  child: CommonCircularAvatar(
+                    profile: profile,
+                    radius: 20,
+                  ),
                 ),
                 const VerticalDivider(width: 5),
                 Text(
@@ -85,12 +86,12 @@ class CommunityInvitePage extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.surfaceContainer,
                               borderRadius: BorderRadius.circular(
-                                10,
+                                5,
                               ),
                               border: Border.all(color: selectedBorder),
                             ),
                             child: Text(
-                              'Undo',
+                              'Undo'.tr,
                               style: TextStyle(
                                 color: Theme.of(context).colorScheme.primary,
                               ),
@@ -110,11 +111,11 @@ class CommunityInvitePage extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: selectedBorder,
                               borderRadius: BorderRadius.circular(
-                                10,
+                                5,
                               ),
                             ),
                             child: Text(
-                              'Invitar',
+                              'Invite'.tr,
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
@@ -143,7 +144,7 @@ class CommunityInvitePage extends StatelessWidget {
         return Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
-            title: Responsive.isMobile(context) ? const Text('Invite user') : null,
+            title: Text('Invite user'.tr),
           ),
           body: Padding(
             padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
@@ -151,31 +152,16 @@ class CommunityInvitePage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CommonSearchBar(
-                  searchCallback: controller.onQueryChanged,
+                  searchCallback: controller.searchProfiles,
                   focusNode: FocusNode(),
                 ),
                 const Divider(height: 10),
                 Expanded(
                   child: Card(
-                    child: Obx(
-                      () {
-                        return CommonLoadingBody(
-                          loading: controller.loading.value,
-                          child: ListView.separated(
-                            itemCount: controller.foundProfiles.length,
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 10,
-                              horizontal: 10,
-                            ),
-                            separatorBuilder: (context, index) => const Divider(
-                              height: 0,
-                            ),
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return _userCard(context, controller, index);
-                            },
-                          ),
-                        );
+                    child: CommonListView<Profile>(
+                      controller: controller.listViewController,
+                      childBuilder: (Profile profile) {
+                        return CommonKeepaliveWrapper(child: _userCard(context, controller, profile));
                       },
                     ),
                   ),
