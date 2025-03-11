@@ -20,6 +20,8 @@ class CommonUsernameButton extends StatelessWidget {
             },
       child: Text(
         user.username,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         style: TextStyle(
           color: Theme.of(context).colorScheme.primary,
         ),

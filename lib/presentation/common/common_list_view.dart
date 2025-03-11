@@ -89,8 +89,8 @@ class CommonListViewController<ItemType> extends GetxController {
   }
 
   Future<void> scrollListener() async {
-    print(scrollController?.position.pixels);
     scrollPosition.value = scrollController?.position.pixels.toInt() ?? 0;
+
     if (scrollController!.position.maxScrollExtent - scrollController!.position.pixels < 200) {
       if (loadingMore) return;
       if (fullyLoaded) return;
@@ -215,10 +215,12 @@ class CommonGridView<ItemType> extends StatelessWidget {
             final List<Widget> mainColumnChildren = [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: firstColumnChildren,
                     ),
                   ),
@@ -226,6 +228,7 @@ class CommonGridView<ItemType> extends StatelessWidget {
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: secondColumnChildren,
                     ),
                   ),
@@ -242,6 +245,7 @@ class CommonGridView<ItemType> extends StatelessWidget {
             final Widget masonry = Padding(
               padding: padding,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: mainColumnChildren,
               ),
             );

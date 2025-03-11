@@ -19,21 +19,21 @@ class NotificationsPage extends StatelessWidget {
       case 'loans':
         switch (notification.type.event) {
           case 'accepted':
-            return 'Your request for ';
+            return 'Your request for '.tr;
           case 'rejected':
-            return 'Your request for ';
+            return 'Your request for '.tr;
           case 'created':
-            return 'A request has been submitted for ';
+            return 'A request has been submitted for '.tr;
           case 'returned':
-            return 'Your loan for ';
+            return 'Your loan for '.tr;
         }
         break;
       case 'memberships':
         switch (notification.type.event) {
           case 'created':
-            return 'You have been invited to join the community ';
+            return 'You have been invited to join the community '.tr;
           case 'accepted':
-            return 'You have joined the community ';
+            return 'You have joined the community '.tr;
         }
         break;
       default:
@@ -48,13 +48,13 @@ class NotificationsPage extends StatelessWidget {
       case 'loans':
         switch (notification.type.event) {
           case 'accepted':
-            return ' has been accepted by ';
+            return ' has been accepted by '.tr;
           case 'rejected':
-            return ' has been rejected by ';
+            return ' has been rejected by '.tr;
           case 'created':
-            return ' by ';
+            return ' by '.tr;
           case 'returned':
-            return ' has been marked as returned by ';
+            return ' has been marked as returned by '.tr;
         }
         break;
       case 'memberships':

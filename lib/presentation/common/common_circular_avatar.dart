@@ -1,10 +1,8 @@
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
-import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 
 class CommonCircularAvatar extends StatelessWidget {
   const CommonCircularAvatar({
@@ -22,7 +20,7 @@ class CommonCircularAvatar extends StatelessWidget {
 
   Widget _imageAvatar() {
     return FutureBuilder(
-      future: UsersBackend.getProfileAvatar(profile),
+      future: UsersBackend.getProfileAvatar(profile, height: 120),
       builder: (context, snapshot) {
         if (image != null) {
           return Container(
@@ -113,9 +111,7 @@ class CommonCircularAvatar extends StatelessWidget {
     return InkWell(
       onTap: clickable
           ? () {
-              context.push(
-                RouteNames.profileOtherPage.replaceFirst(':userId', profile.id),
-              );
+              profile.goToProfilePage(context);
             }
           : null,
       child: Container(

@@ -3,6 +3,7 @@ import 'package:communal/models/message.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/messages/messages_specific/messages_specific_controller.dart';
 import 'package:communal/responsive.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -83,7 +84,7 @@ class MessagesSpecificPage extends StatelessWidget {
                   Visibility(
                     visible: showTime,
                     child: Text(
-                      DateFormat('dd MMM H:m', Get.locale!.languageCode).format(message.created_at.toLocal()),
+                      DateFormat('dd MMM HH:mm', Get.locale!.languageCode).format(message.created_at.toLocal()),
                       textAlign: isReceived ? TextAlign.left : TextAlign.right,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -94,7 +95,7 @@ class MessagesSpecificPage extends StatelessWidget {
                   Visibility(
                     visible: isFirstMessage && message.is_read && message.sender.id == UsersBackend.currentUserId,
                     child: Text(
-                      'Seen',
+                      'Seen'.tr,
                       textAlign: isReceived ? TextAlign.left : TextAlign.right,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -129,7 +130,9 @@ class MessagesSpecificPage extends StatelessWidget {
                     onChanged: controller.onTypedMessageChanged,
                     focusNode: FocusNode(
                       onKeyEvent: (node, event) {
-                        if (!HardwareKeyboard.instance.isShiftPressed && event.logicalKey.keyLabel == 'Enter') {
+                        if (kIsWeb &&
+                            !HardwareKeyboard.instance.isShiftPressed &&
+                            event.logicalKey.keyLabel == 'Enter') {
                           if (event is KeyDownEvent) {
                             controller.onMessageSubmit(context);
                           }
@@ -143,11 +146,12 @@ class MessagesSpecificPage extends StatelessWidget {
                     controller: controller.textEditingController,
                     onTapOutside: (_) {},
                     style: const TextStyle(fontSize: 14),
-                    minLines: 1,
-                    maxLines: 4,
+                    minLines: kIsWeb ? 1 : null,
+                    maxLines: kIsWeb ? 6 : null,
+                    expands: !kIsWeb,
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.symmetric(
-                        vertical: 25,
+                        vertical: kIsWeb ? 25 : 15,
                         horizontal: 20,
                       ),
                       border: OutlineInputBorder(
@@ -171,7 +175,7 @@ class MessagesSpecificPage extends StatelessWidget {
                           width: 2,
                         ),
                       ),
-                      hintText: 'Type something...',
+                      hintText: 'Type something...'.tr,
                       hintStyle: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
@@ -273,12 +277,13 @@ class MessagesSpecificPage extends StatelessWidget {
                         child: Obx(
                           () {
                             if (controller.messages.isEmpty) {
-                              return const Center(
+                              return Center(
                                 child: SizedBox(
                                   width: 350,
                                   child: Text(
-                                    'Chat messages in Communal are still unencrypted, please refrain from sharing sensitive information here.',
-                                    style: TextStyle(fontSize: 16),
+                                    'Chat messages in Communal are still unencrypted, please refrain from sharing sensitive information here'
+                                        .tr,
+                                    style: const TextStyle(fontSize: 16),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),

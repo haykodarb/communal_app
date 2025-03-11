@@ -176,6 +176,7 @@ class CommunitiesBackend {
       String? pathToUpload = community.image_path;
 
       if (imageBytes != null) {
+        print('file size: ${imageBytes.length}');
         const String imageExtension = 'png';
 
         final String currentTime = DateTime.now().millisecondsSinceEpoch.toString();

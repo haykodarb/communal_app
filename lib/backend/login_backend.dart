@@ -1,12 +1,9 @@
 import 'dart:io';
-
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/login_form.dart';
 import 'package:communal/routes.dart';
-import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
 import 'package:flutter/foundation.dart';
 
 class LoginBackend {
@@ -109,7 +106,7 @@ class LoginBackend {
   }
 
   static Future<void> logout() async {
-    if (kIsWeb || Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       if (await GoogleSignIn().isSignedIn()) {
         await GoogleSignIn().signOut();
       }

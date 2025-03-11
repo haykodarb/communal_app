@@ -162,8 +162,21 @@ final ActionIconThemeData _actionIconThemeData = ActionIconThemeData(
   ),
 );
 
+final IconButtonThemeData _iconButtonThemeData = IconButtonThemeData(
+  style: IconButton.styleFrom(
+    hoverColor: Colors.transparent,
+    focusColor: Colors.transparent,
+    highlightColor: Colors.transparent,
+    overlayColor: Colors.transparent,
+  ),
+);
+
 final ThemeData lightTheme = ThemeData(
   colorScheme: _lightScheme,
+  splashColor: Colors.transparent,
+  highlightColor: Colors.transparent,
+  hoverColor: Colors.transparent,
+  iconButtonTheme: _iconButtonThemeData,
   fontFamily: 'Poppins',
   primaryColor: _lightScheme.primary,
   brightness: Brightness.light,

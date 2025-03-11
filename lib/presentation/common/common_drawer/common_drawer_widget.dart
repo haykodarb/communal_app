@@ -113,31 +113,38 @@ class CommonDrawerWidget extends StatelessWidget {
         padding: EdgeInsets.zero,
         child: Builder(
           builder: (context) {
-            return Container(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-              width: double.maxFinite,
-              color: Theme.of(context).colorScheme.surface,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Obx(
-                    () => CommonCircularAvatar(
-                      profile: controller.currentUserProfile.value,
-                      radius: 40,
-                    ),
-                  ),
-                  const VerticalDivider(),
-                  Obx(
-                    () => Text(
-                      controller.currentUserProfile.value.username,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        fontSize: 16,
-                        overflow: TextOverflow.fade,
+            return InkWell(
+              onTap: () => controller.goToRoute(RouteNames.profileOwnPage, context),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                width: double.maxFinite,
+                color: Theme.of(context).colorScheme.surface,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Obx(
+                      () => CommonCircularAvatar(
+                        profile: controller.currentUserProfile.value,
+                        radius: 40,
+                        clickable: true,
                       ),
                     ),
-                  ),
-                ],
+                    const VerticalDivider(width: 20),
+                    Expanded(
+                      child: Obx(
+                        () => Text(
+                          controller.currentUserProfile.value.username,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           },

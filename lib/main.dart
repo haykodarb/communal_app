@@ -19,9 +19,9 @@ void main() async {
 
   await Hive.initFlutter();
 
-  String supabaseURL = 'https://ievjxqrtftfnwzobklde.supabase.co';
-  String supabaseKey =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlldmp4cXJ0ZnRmbnd6b2JrbGRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODI4MDYwNTIsImV4cCI6MTk5ODM4MjA1Mn0.45wNq5bt6JUHxJzTEiiKjngSHfLonG8gSXxhzt7Xl5c';
+  const String supabaseURL = 'https://supabase.communal.ar';
+  const String supabaseKey =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ewogICJyb2xlIjogImFub24iLAogICJpc3MiOiAic3VwYWJhc2UiLAogICJpYXQiOiAxNzQxNDAyODAwLAogICJleHAiOiAxODk5MTY5MjAwCn0.8_DqM1X4Orb-1v8f5GPdCpdTOsyBmI6PL1N5AoAla4M';
 
   await Supabase.initialize(
     url: supabaseURL,
@@ -38,23 +38,7 @@ void main() async {
   GoogleFonts.config.allowRuntimeFetching = false;
   GoRouter.optionURLReflectsImperativeAPIs = true;
 
-  runApp(
-    MyApp(
-      themeMode: await UserPreferences.getSelectedThemeMode(),
-      locale: await UserPreferences.getSelectedLocale(),
-    ),
-  );
-}
-
-class MyApp extends StatelessWidget {
-  MyApp({
-    super.key,
-    required this.themeMode,
-    required this.locale,
-  });
-
-  final ThemeMode themeMode;
-  final Locale locale;
+  final bool welcomeShown = await UserPreferences.getWelcomeScreenShown();
 
   final GoRouter router = GoRouter(
     debugLogDiagnostics: true,
@@ -67,9 +51,31 @@ class MyApp extends StatelessWidget {
         router.go(RouteNames.startPage);
       }
     },
-    initialLocation:
-        Supabase.instance.client.auth.currentUser == null ? RouteNames.startPage : RouteNames.communityListPage,
+    initialLocation: Supabase.instance.client.auth.currentUser == null
+        ? (welcomeShown ? RouteNames.startPage : RouteNames.landingPage)
+        : RouteNames.communityListPage,
   );
+
+  runApp(
+    MyApp(
+      themeMode: await UserPreferences.getSelectedThemeMode(),
+      locale: await UserPreferences.getSelectedLocale(),
+      router: router,
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({
+    super.key,
+    required this.themeMode,
+    required this.locale,
+    required this.router,
+  });
+
+  final ThemeMode themeMode;
+  final Locale locale;
+  final GoRouter router;
 
   @override
   Widget build(BuildContext context) {

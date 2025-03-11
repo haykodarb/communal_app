@@ -44,7 +44,7 @@ class LoanInfoPage extends StatelessWidget {
               ),
               padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
               child: Text(
-                loan.isOwned ? 'Loanee' : 'Owner',
+                loan.isOwned ? 'Loanee'.tr : 'Owner'.tr,
                 style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
@@ -78,7 +78,7 @@ class LoanInfoPage extends StatelessWidget {
             height: 140,
             child: Row(
               children: [
-                CommonBookCover(loan.book),
+                CommonBookCover(loan.book, height: 120),
                 const VerticalDivider(width: 15),
                 Expanded(
                   child: Column(
@@ -165,8 +165,8 @@ class LoanInfoPage extends StatelessWidget {
           children: [
             Expanded(
               child: _dateContainer(
-                'Requested',
-                DateFormat('d/MM/yy').format(loan.created_at),
+                'Requested'.tr,
+                DateFormat('dd/MM/yy').format(loan.created_at),
               ),
             ),
             const VerticalDivider(width: 5),
@@ -174,8 +174,8 @@ class LoanInfoPage extends StatelessWidget {
               visible: loan.rejected,
               child: Expanded(
                 child: _dateContainer(
-                  'Rejected',
-                  loan.rejected_at == null ? '-' : DateFormat('d/MM/yy').format(loan.rejected_at!),
+                  'Rejected'.tr,
+                  loan.rejected_at == null ? '-' : DateFormat('dd/MM/yy').format(loan.rejected_at!),
                 ),
               ),
             ),
@@ -187,19 +187,19 @@ class LoanInfoPage extends StatelessWidget {
                   children: [
                     Expanded(
                       child: _dateContainer(
-                        'Approved',
+                        'Approved'.tr,
                         loan.accepted_at == null
                             ? '-'
-                            : DateFormat('d/MM/yy', Get.locale!.languageCode).format(loan.accepted_at!),
+                            : DateFormat('dd/MM/yy', Get.locale!.languageCode).format(loan.accepted_at!),
                       ),
                     ),
                     const VerticalDivider(width: 5),
                     Expanded(
                       child: _dateContainer(
-                        'Returned',
+                        'Returned'.tr,
                         loan.returned_at == null
                             ? '-'
-                            : DateFormat('d/MM/yy', Get.locale!.languageCode).format(loan.returned_at!),
+                            : DateFormat('dd/MM/yy', Get.locale!.languageCode).format(loan.returned_at!),
                       ),
                     ),
                   ],
@@ -232,7 +232,7 @@ class LoanInfoPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Review by ${controller.loan.value.loanee.username}',
+                            '${'Review by'.tr} ${controller.loan.value.loanee.username}',
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.secondary,
                               fontWeight: FontWeight.w500,
@@ -258,7 +258,7 @@ class LoanInfoPage extends StatelessWidget {
                             loading: controller.loading.value,
                             child: ElevatedButton(
                               onPressed: () => controller.markLoanReturned(context),
-                              child: const Text('Mark as returned'),
+                              child: Text('Mark as returned'.tr),
                             ),
                           ),
                         ),
@@ -277,14 +277,14 @@ class LoanInfoPage extends StatelessWidget {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () => controller.acceptLoanRequest(context),
-                        child: const Text('Approve'),
+                        child: Text('Approve'.tr),
                       ),
                     ),
                     const VerticalDivider(width: 10),
                     Expanded(
                       child: OutlinedButton(
                         onPressed: () => controller.rejectLoanRequest(context),
-                        child: const Text('Reject'),
+                        child: Text('Reject'.tr),
                       ),
                     ),
                   ],
@@ -322,7 +322,7 @@ class LoanInfoPage extends StatelessWidget {
                       ),
                       style: const TextStyle(fontSize: 14),
                       decoration: InputDecoration(
-                        hintText: 'Write a review...',
+                        hintText: 'Write a review...'.tr,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                         hintStyle: TextStyle(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -353,14 +353,14 @@ class LoanInfoPage extends StatelessWidget {
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: controller.onReviewSubmit,
-                                child: const Text('Submit'),
+                                child: Text('Submit'.tr),
                               ),
                             ),
                             const VerticalDivider(width: 10),
                             Expanded(
                               child: OutlinedButton(
                                 onPressed: controller.changeEditingState,
-                                child: const Text('Cancel'),
+                                child: Text('Cancel'.tr),
                               ),
                             ),
                           ],
@@ -374,7 +374,7 @@ class LoanInfoPage extends StatelessWidget {
               if (loan.review == null) {
                 return ElevatedButton(
                   onPressed: controller.changeEditingState,
-                  child: const Text('Add review'),
+                  child: Text('Add review'.tr),
                 );
               }
 
@@ -385,7 +385,7 @@ class LoanInfoPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Your review',
+                        'Your review'.tr,
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.secondary,
                           fontWeight: FontWeight.w500,
@@ -402,7 +402,7 @@ class LoanInfoPage extends StatelessWidget {
                   const Divider(height: 20),
                   ElevatedButton(
                     onPressed: controller.changeEditingState,
-                    child: const Text('Edit review'),
+                    child: Text('Edit review'.tr),
                   ),
                 ],
               );
@@ -413,7 +413,7 @@ class LoanInfoPage extends StatelessWidget {
                 loading: controller.loading.value,
                 child: ElevatedButton(
                   onPressed: () => controller.withdrawLoanRequest(context),
-                  child: const Text('Withdraw request'),
+                  child: Text('Withdraw request'.tr),
                 ),
               ),
             );
@@ -432,7 +432,7 @@ class LoanInfoPage extends StatelessWidget {
       builder: (LoanInfoController controller) {
         return Scaffold(
           appBar: AppBar(
-            title: Responsive.isMobile(context) ? const Text('Loan') : null,
+            title: Responsive.isMobile(context) ? Text('Loan'.tr) : null,
           ),
           body: Obx(
             () => CommonLoadingBody(

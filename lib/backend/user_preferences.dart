@@ -6,6 +6,32 @@ class UserPreferences {
     return Theme.of(context).brightness == Brightness.dark;
   }
 
+  static Future<bool> getWelcomeScreenShown() async {
+    try {
+      final Box box = await Hive.openBox<dynamic>('preferences');
+
+      final bool? welcomeShown = box.get('welcomeShown');
+
+      if (welcomeShown == null) {
+        return false;
+      }
+
+      await box.close();
+
+      return welcomeShown;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static Future<void> setWelcomeScreenShown(bool value) async {
+    final Box box = await Hive.openBox<dynamic>('preferences');
+
+    await box.put('welcomeShown', value);
+
+    await box.close();
+  }
+
   static Future<ThemeMode> getSelectedThemeMode() async {
     final Box box = await Hive.openBox<dynamic>('preferences');
 

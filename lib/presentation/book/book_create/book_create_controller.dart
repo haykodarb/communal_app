@@ -54,30 +54,35 @@ class BookCreateController extends GetxController {
   }
 
   Future<void> takePicture(ImageSource source, BuildContext context) async {
-    XFile? pickedImage = await imagePicker.pickImage(
-      source: source,
-      imageQuality: 100,
-      maxHeight: 1280,
-      maxWidth: 960,
-      preferredCameraDevice: CameraDevice.rear,
-    );
+    try {
+      XFile? pickedImage = await imagePicker.pickImage(
+        source: source,
+        imageQuality: 100,
+        maxHeight: 1280,
+        maxWidth: 960,
+        preferredCameraDevice: CameraDevice.rear,
+      );
 
-    if (pickedImage == null) return;
-    final Uint8List pickedBytes = await pickedImage.readAsBytes();
+      if (pickedImage == null) return;
+      final Uint8List pickedBytes = await pickedImage.readAsBytes();
 
-    if (!context.mounted) return;
+      if (!context.mounted) return;
 
-    final Uint8List? croppedBytes = await showDialog<Uint8List?>(
-      context: context,
-      builder: (context) => CommonImageCropper(
-        image: Image.memory(pickedBytes),
-        aspectRatio: 3 / 4,
-      ),
-    );
+      final Uint8List? croppedBytes = await showDialog<Uint8List?>(
+        context: context,
+        builder: (context) => CommonImageCropper(
+          image: Image.memory(pickedBytes),
+          aspectRatio: 3 / 4,
+        ),
+      );
 
-    if (croppedBytes == null || croppedBytes.isEmpty) return;
+      if (croppedBytes == null || croppedBytes.isEmpty) return;
 
-    selectedBytes.value = croppedBytes;
+      selectedBytes.value = croppedBytes;
+    } catch (e) {
+      if (!context.mounted) return;
+      CommonAlertDialog(title: e.toString()).open(context);
+    }
   }
 
   void onAddReviewChange(int? index) {

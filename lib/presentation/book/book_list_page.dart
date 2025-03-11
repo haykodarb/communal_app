@@ -41,7 +41,11 @@ class BookListPage extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          CommonBookCover(book, radius: 0),
+                          CommonBookCover(
+                            book,
+                            radius: 0,
+                            height: 240,
+                          ),
                           // const VerticalDivider(width: 10),
                           Expanded(
                             child: Padding(
@@ -131,16 +135,16 @@ class BookListPage extends StatelessWidget {
     return CommonFilterBottomsheet(
       children: [
         CommonFilterRow(
-          title: 'Order by',
+          title: 'Order by'.tr,
           initialIndex: orderByIndex,
-          options: const ['Date', 'Title', 'Author'],
+          options: ['Date'.tr, 'Title'.tr, 'Author'.tr],
           onIndexChange: controller.onOrderByIndexChanged,
         ),
         const Divider(height: 10),
         CommonFilterRow(
-          title: 'Filter by',
+          title: 'Filter by'.tr,
           initialIndex: filterByIndex,
-          options: const ['All', 'Available', 'Loaned'],
+          options: ['All'.tr, 'Available'.tr, 'Loaned'.tr],
           onIndexChange: controller.onFilterByChanged,
         ),
       ],
@@ -173,7 +177,7 @@ class BookListPage extends StatelessWidget {
       builder: (BookListController controller) {
         return Scaffold(
           drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
-          appBar: Responsive.isMobile(context) ? AppBar(elevation: 10, title: const Text('My Books')) : null,
+          appBar: Responsive.isMobile(context) ? AppBar(elevation: 10, title: Text('My Books'.tr)) : null,
           floatingActionButton: FloatingActionButton(
             onPressed: () => controller.goToAddBookPage(context),
             child: const Icon(
@@ -203,7 +207,7 @@ class BookListPage extends StatelessWidget {
                 controller: controller.listViewController,
                 scrollController: controller.scrollController,
                 isSliver: true,
-                noItemsText: 'No books found.\n\nYou can upload some with the floating button on the bottom right.',
+                noItemsText: 'No books found.\n\nYou can upload some with the floating button on the bottom right.'.tr,
               ),
             ],
           ),

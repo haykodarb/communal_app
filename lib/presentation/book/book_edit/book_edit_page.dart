@@ -28,9 +28,9 @@ class BookEditPage extends StatelessWidget {
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'Available for loans?',
-              style: TextStyle(fontSize: 14),
+            Text(
+              'Available for loans?'.tr,
+              style: const TextStyle(fontSize: 14),
             ),
             const Divider(),
             Obx(
@@ -54,7 +54,7 @@ class BookEditPage extends StatelessWidget {
       builder: (controller) {
         return Scaffold(
           appBar: AppBar(
-            title: Responsive.isMobile(context) ? const Text('Edit book') : null,
+            title: Responsive.isMobile(context) ? Text('Edit book'.tr) : null,
           ),
           body: Obx(() {
             return CommonLoadingBody(
@@ -136,7 +136,7 @@ class BookEditPage extends StatelessWidget {
                                         ? Border.all(color: Theme.of(context).colorScheme.primary, width: 2)
                                         : null;
 
-                                    if (kIsWeb) {
+                                    if (!Responsive.isMobile(context)) {
                                       return InkWell(
                                         onTap: () => controller.takePicture(
                                           ImageSource.gallery,
@@ -216,7 +216,7 @@ class BookEditPage extends StatelessWidget {
                               CommonTextField(
                                 callback: controller.onTitleChange,
                                 initialValue: controller.initialForm.title,
-                                label: 'Title',
+                                label: 'Title'.tr,
                                 submitCallback: (_) => controller.onSubmitButton(context),
                                 validator: (String? value) => controller.stringValidator(value, 3, false),
                                 maxLength: 100,
@@ -227,14 +227,14 @@ class BookEditPage extends StatelessWidget {
                                 callback: controller.onAuthorChange,
                                 initialValue: controller.initialForm.author,
                                 submitCallback: (_) => controller.onSubmitButton(context),
-                                label: 'Author',
+                                label: 'Author'.tr,
                                 validator: (String? value) => controller.stringValidator(value, 3, false),
                               ),
                               const Divider(height: 5),
                               CommonTextField(
                                 callback: controller.onReviewTextChange,
                                 initialValue: controller.initialForm.review,
-                                label: 'Review (Optional)',
+                                label: 'Review (Optional)'.tr,
                                 minLines: 3,
                                 maxLines: 10,
                                 validator: (String? value) => controller.stringValidator(value, 10, true),
@@ -250,7 +250,7 @@ class BookEditPage extends StatelessWidget {
                             loading: controller.loading.value,
                             child: ElevatedButton(
                               onPressed: () => controller.onSubmitButton(context),
-                              child: const Text('Save'),
+                              child: Text('Save'.tr),
                             ),
                           ),
                         ),

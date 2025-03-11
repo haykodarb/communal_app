@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:communal/models/book.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/models/profile.dart';
@@ -92,19 +94,18 @@ class SearchPage extends StatelessWidget {
                           color: controller.currentTabIndex.value == 0 ? selectedBg : unselectedBg,
                           borderRadius: BorderRadius.circular(40),
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
                         alignment: Alignment.center,
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
+                        child: LayoutBuilder(builder: (context, constraints) {
+                          return Text(
                             'Books'.tr,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: controller.currentTabIndex.value == 0 ? selectedFg : selectedBg,
-                              fontSize: 16,
+                              fontSize: min(30, max(constraints.maxWidth * 0.09, 14)),
+                              fontWeight: FontWeight.w600,
                             ),
-                          ),
-                        ),
+                          );
+                        }),
                       );
                     },
                   ),
@@ -120,19 +121,18 @@ class SearchPage extends StatelessWidget {
                           color: controller.currentTabIndex.value == 1 ? selectedBg : unselectedBg,
                           borderRadius: BorderRadius.circular(40),
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
                         alignment: Alignment.center,
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
+                        child: LayoutBuilder(builder: (context, constraints) {
+                          return Text(
                             'Communities'.tr,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: controller.currentTabIndex.value == 1 ? selectedFg : selectedBg,
-                              fontSize: 16,
+                              fontSize: min(30, max(constraints.maxWidth * 0.09, 14)),
+                              fontWeight: FontWeight.w600,
                             ),
-                          ),
-                        ),
+                          );
+                        }),
                       );
                     },
                   ),
@@ -148,18 +148,19 @@ class SearchPage extends StatelessWidget {
                           color: controller.currentTabIndex.value == 2 ? selectedBg : unselectedBg,
                           borderRadius: BorderRadius.circular(40),
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
                         alignment: Alignment.center,
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
-                            'Users'.tr,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: controller.currentTabIndex.value == 2 ? selectedFg : selectedBg,
-                              fontSize: 16,
-                            ),
-                          ),
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            return Text(
+                              'Users'.tr,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: controller.currentTabIndex.value == 2 ? selectedFg : selectedBg,
+                                fontSize: min(30, max(constraints.maxWidth * 0.09, 14)),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            );
+                          },
                         ),
                       );
                     },
@@ -181,6 +182,91 @@ class SearchPage extends StatelessWidget {
         return Scaffold(
           appBar: Responsive.isMobile(context) ? AppBar(title: const Text('Search')) : null,
           drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
+          body: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(child: SizedBox(height: Responsive.isMobile(context) ? 0 : 20)),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: _tabBar(controller),
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 5)),
+              SliverAppBar(
+                title: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: CommonSearchBar(
+                    searchCallback: controller.onQueryChanged,
+                    focusNode: FocusNode(),
+                  ),
+                ),
+                titleSpacing: 0,
+                toolbarHeight: 60,
+                centerTitle: true,
+                automaticallyImplyLeading: false,
+                pinned: true,
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 5)),
+              Obx(
+                () {
+                  switch (controller.currentTabIndex.value) {
+                    case 0:
+                      return CommonGridView<Book>(
+                        padding: const EdgeInsets.only(
+                          bottom: 20,
+                          left: 10,
+                          right: 10,
+                        ),
+                        isSliver: true,
+                        childBuilder: (Book book) => CommonVerticalBookCard(book: book),
+                        noItemsText: 'No books found in any of the communities you are a part of.',
+                        controller: controller.bookListController,
+                      );
+                    case 1:
+                      return CommonListView<Community>(
+                        padding: const EdgeInsets.only(
+                          bottom: 20,
+                          left: 10,
+                          right: 10,
+                        ),
+                        isSliver: true,
+                        childBuilder: (Community community) => CommonCommunityCard(
+                          community: community,
+                          callback: () {
+                            context.push(
+                              RouteNames.searchPage +
+                                  RouteNames.searchCommunityDetailsPage.replaceFirst(
+                                    ':communityId',
+                                    community.id,
+                                  ),
+                            );
+                          },
+                        ),
+                        controller: controller.communityListController,
+                      );
+                    case 2:
+                      return CommonListView<Profile>(
+                        padding: const EdgeInsets.only(
+                          bottom: 20,
+                          left: 10,
+                          right: 10,
+                        ),
+                        isSliver: true,
+                        childBuilder: (Profile profile) => _userCard(profile),
+                        controller: controller.profileListController,
+                        noItemsText: 'No users found, likely a network issue.',
+                      );
+                    default:
+                      return const SizedBox.shrink();
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+        return Scaffold(
+          appBar: Responsive.isMobile(context) ? AppBar(title: const Text('Search')) : null,
+          drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
           body: Column(
             children: [
               Visibility(
@@ -188,12 +274,12 @@ class SearchPage extends StatelessWidget {
                 child: const Divider(height: 20),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: _tabBar(controller),
               ),
               const Divider(height: 10),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: CommonSearchBar(
                   searchCallback: controller.onQueryChanged,
                   focusNode: FocusNode(),
@@ -207,24 +293,22 @@ class SearchPage extends StatelessWidget {
                       case 0:
                         return CommonGridView<Book>(
                           padding: const EdgeInsets.only(
-                            right: 20,
-                            left: 20,
                             bottom: 20,
                             top: 5,
+                            left: 10,
+                            right: 10,
                           ),
-                          childBuilder: (Book book) {
-                            return CommonVerticalBookCard(book: book);
-                          },
+                          childBuilder: (Book book) => CommonVerticalBookCard(book: book),
                           noItemsText: 'No books found in any of the communities you are a part of.',
                           controller: controller.bookListController,
                         );
                       case 1:
                         return CommonListView<Community>(
                           padding: const EdgeInsets.only(
-                            right: 20,
-                            left: 20,
                             bottom: 20,
                             top: 5,
+                            left: 10,
+                            right: 10,
                           ),
                           childBuilder: (Community community) => CommonCommunityCard(
                             community: community,
@@ -243,10 +327,10 @@ class SearchPage extends StatelessWidget {
                       case 2:
                         return CommonListView<Profile>(
                           padding: const EdgeInsets.only(
-                            right: 20,
-                            left: 20,
                             bottom: 20,
                             top: 5,
+                            left: 10,
+                            right: 10,
                           ),
                           childBuilder: (Profile profile) => _userCard(profile),
                           controller: controller.profileListController,

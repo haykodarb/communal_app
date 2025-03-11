@@ -63,9 +63,10 @@ class CommunityDiscussionsController extends GetxController {
 
         if (response.success) {
           DiscussionMessage newMessage = response.payload;
+          print(response.payload.toString());
 
           listViewController.itemList[indexOfTopic].last_message = newMessage;
-          listViewController.refresh();
+          listViewController.itemList.refresh();
         }
 
         break;

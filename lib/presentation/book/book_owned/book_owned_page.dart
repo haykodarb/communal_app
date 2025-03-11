@@ -164,7 +164,7 @@ class BookOwnedPage extends StatelessWidget {
               final int reviewsCount = controller.completedLoans.length + (ownerHasReview ? 1 : 0);
 
               if (reviewsCount == 0) {
-                return const Center(child: Text('No reviews.'));
+                return Center(child: Text('No reviews'.tr));
               }
 
               return Column(
@@ -364,7 +364,9 @@ class BookOwnedPage extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                child: CommonBookCover(controller.book.value),
+                                child: CommonBookCover(
+                                  controller.book.value,
+                                ),
                               ),
                             ),
                             const Divider(height: 20),
@@ -395,6 +397,7 @@ class BookOwnedPage extends StatelessWidget {
                                         fit: BoxFit.fitWidth,
                                         child: Text(
                                           controller.book.value.owner.username,
+                                          overflow: TextOverflow.fade,
                                           style: const TextStyle(fontSize: 16),
                                         ),
                                       ),

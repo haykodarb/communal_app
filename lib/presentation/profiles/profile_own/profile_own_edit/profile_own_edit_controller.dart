@@ -113,7 +113,7 @@ class ProfileOwnEditController extends GetxController {
 
   String? usernameValidator(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter something.';
+      return 'Please enter something'.tr;
     }
 
     if (value.length < 6) {

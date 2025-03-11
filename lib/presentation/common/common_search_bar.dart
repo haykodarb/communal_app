@@ -82,9 +82,11 @@ class CommonSearchBar extends StatelessWidget {
               IconButton(
                 onPressed: filterCallback ?? () {},
                 iconSize: 20,
-                highlightColor: Colors.transparent,
                 style: IconButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+                  focusColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   fixedSize: const Size(50, 50),
                 ),

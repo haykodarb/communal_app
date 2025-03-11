@@ -19,7 +19,7 @@ class DiscussionsBackend {
             'community': communityId,
             'name': name,
           })
-          .select('*, profiles(*), communities(*)')
+          .select('*, profiles(*), communities(*, profiles(*))')
           .maybeSingle();
 
       if (response == null || response.isEmpty) {
@@ -48,7 +48,7 @@ class DiscussionsBackend {
       final List<dynamic> response = await _client
           .from('discussion_topics')
           .select(
-            '*, profiles(*), communities(*), last_message(*, profiles(*))',
+            '*, profiles(*), communities(*, profiles(*)), last_message(*, profiles(*))',
           )
           .eq(
             'community',
@@ -154,7 +154,7 @@ class DiscussionsBackend {
       final Map<String, dynamic>? response = await _client
           .from('discussion_topics')
           .select(
-            '*, profiles(*), communities(*), last_message(*, profiles(*))',
+            '*, profiles(*), communities(*, profiles(*)), last_message(*, profiles(*))',
           )
           .eq('id', id)
           .maybeSingle();

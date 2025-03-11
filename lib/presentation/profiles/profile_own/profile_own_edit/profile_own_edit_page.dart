@@ -105,7 +105,7 @@ class ProfileOwnEditPage extends StatelessWidget {
                       ),
                       const Divider(height: 10),
                       Builder(builder: (context) {
-                        if (kIsWeb) {
+                        if (!Responsive.isMobile(context)) {
                           return InkWell(
                             onTap: () => controller.takePicture(
                               ImageSource.gallery,

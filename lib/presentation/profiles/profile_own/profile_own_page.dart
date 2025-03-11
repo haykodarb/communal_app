@@ -272,7 +272,7 @@ class ProfileOwnPage extends StatelessWidget {
                       ),
                       SizedBox(
                         height: 100,
-                        child: CommonBookCover(loan.book),
+                        child: CommonBookCover(loan.book, height: 120),
                       ),
                     ],
                   ),

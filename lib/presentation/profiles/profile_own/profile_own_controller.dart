@@ -16,10 +16,8 @@ class ProfileOwnController extends GetxController {
 
   final RxInt currentTabIndex = 0.obs;
 
-  final CommonListViewController<Loan> reviewListController =
-      CommonListViewController(pageSize: pageSize);
-  final CommonListViewController<Book> bookListController =
-      CommonListViewController(pageSize: pageSize);
+  final CommonListViewController<Loan> reviewListController = CommonListViewController(pageSize: pageSize);
+  final CommonListViewController<Book> bookListController = CommonListViewController(pageSize: pageSize);
 
   final CommonDrawerController commonDrawerController = Get.find();
 
@@ -58,7 +56,7 @@ class ProfileOwnController extends GetxController {
   }
 
   void deleteBook(String id) {
-    bookListController.itemList.removeWhere((element) => element.id != id);
+    bookListController.itemList.removeWhere((element) => element.id == id);
     bookListController.itemList.refresh();
     bookListController.pageKey--;
   }

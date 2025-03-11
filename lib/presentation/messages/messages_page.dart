@@ -158,7 +158,7 @@ class MessagesPage extends StatelessWidget {
       builder: (MessagesController controller) {
         return Scaffold(
           drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
-          appBar: Responsive.isMobile(context) ? AppBar(title: const Text('Messages')) : null,
+          appBar: Responsive.isMobile(context) ? AppBar(title: Text('Messages'.tr)) : null,
           body: CommonListView<Rx<Message>>(
             noItemsText: 'No messages yet.\nChat with other users to get started.',
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),

@@ -153,21 +153,19 @@ class CommunityCreatePage extends StatelessWidget {
                       ),
                     ),
                     const Divider(height: 20),
-                    Form(
-                      child: Column(
-                        children: [
-                          CommonTextField(
-                            callback: controller.onNameChange,
-                            label: 'Name'.tr,
-                            submitCallback: (_) => controller.onSubmit(context),
-                            validator: (value) => controller.stringValidator(
-                              value,
-                              4,
-                              false,
-                            ),
+                    Column(
+                      children: [
+                        CommonTextField(
+                          callback: controller.onNameChange,
+                          label: 'Name'.tr,
+                          submitCallback: (_) => controller.onSubmit(context),
+                          validator: (value) => controller.stringValidator(
+                            value,
+                            4,
+                            false,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                     const Divider(height: 10),
                     CommonTextField(

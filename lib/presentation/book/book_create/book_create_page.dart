@@ -4,7 +4,6 @@ import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/book/book_create/book_create_controller.dart';
 import 'package:communal/responsive.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -18,9 +17,9 @@ class BookCreatePage extends StatelessWidget {
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'Available for loans?',
-              style: TextStyle(fontSize: 14),
+            Text(
+              'Available for loans?'.tr,
+              style: const TextStyle(fontSize: 14),
             ),
             const Divider(),
             Obx(
@@ -42,7 +41,7 @@ class BookCreatePage extends StatelessWidget {
       builder: (controller) {
         return Scaffold(
           appBar: AppBar(
-            title: Responsive.isMobile(context) ? const Text('Add Book') : null,
+            title: Responsive.isMobile(context) ? Text('Add Book'.tr) : null,
           ),
           body: SingleChildScrollView(
             child: Padding(
@@ -75,7 +74,7 @@ class BookCreatePage extends StatelessWidget {
                                     color: Theme.of(context).colorScheme.surfaceContainer,
                                     child: Center(
                                       child: Text(
-                                        'Add image',
+                                        'Add\nimage'.tr,
                                         style: TextStyle(
                                           fontSize: 14,
                                           color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -107,7 +106,7 @@ class BookCreatePage extends StatelessWidget {
                                       ? Border.all(color: Theme.of(context).colorScheme.primary, width: 2)
                                       : null;
 
-                                  if (kIsWeb) {
+                                  if (!Responsive.isMobile(context)) {
                                     return InkWell(
                                       onTap: () => controller.takePicture(
                                         ImageSource.gallery,
@@ -201,7 +200,7 @@ class BookCreatePage extends StatelessWidget {
                         CommonTextField(
                           callback: controller.onAuthorChange,
                           submitCallback: (_) => controller.onSubmitButton(context),
-                          label: 'Author',
+                          label: 'Author'.tr,
                           validator: (String? value) {
                             return controller.stringValidator(
                               value: value,
@@ -214,7 +213,7 @@ class BookCreatePage extends StatelessWidget {
                         const Divider(height: 5),
                         CommonTextField(
                           callback: controller.onReviewTextChange,
-                          label: 'Review (Optional)',
+                          label: 'Review (Optional)'.tr,
                           minLines: 3,
                           maxLines: 10,
                           validator: (String? value) {
@@ -235,7 +234,7 @@ class BookCreatePage extends StatelessWidget {
                         loading: controller.loading.value,
                         child: ElevatedButton(
                           onPressed: () => controller.onSubmitButton(context),
-                          child: const Text('Add'),
+                          child: Text('Add'.tr),
                         ),
                       ),
                     ),

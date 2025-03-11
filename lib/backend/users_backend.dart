@@ -37,18 +37,25 @@ class UsersBackend {
     }
   }
 
-  static Future<Uint8List?> getProfileAvatar(Profile profile) async {
+  static Future<Uint8List?> getProfileAvatar(Profile profile, {int height = 240}) async {
     if (profile.avatar_path != null) {
-      FileInfo? file = await DefaultCacheManager().getFileFromCache(profile.avatar_path!);
+      FileInfo? file = await DefaultCacheManager().getFileFromCache('${profile.avatar_path!}-$height');
 
       Uint8List bytes;
 
       if (file != null) {
         bytes = await file.file.openRead().toBytes();
       } else {
-        bytes = await _client.storage.from('profile_avatars').download(profile.avatar_path!);
+        bytes = await _client.storage.from('profile_avatars').download(
+              profile.avatar_path!,
+              transform: TransformOptions(
+                height: height,
+                quality: 100,
+              ),
+            );
 
-        await DefaultCacheManager().putFile(profile.avatar_path!, bytes, key: profile.avatar_path!);
+        await DefaultCacheManager()
+            .putFile('${profile.avatar_path!}-$height', bytes, key: '${profile.avatar_path!}-$height');
       }
 
       return bytes;
@@ -137,8 +144,12 @@ class UsersBackend {
     required String query,
   }) async {
     try {
-      final List<Map<String, dynamic>> response =
-          await _client.from('profiles').select().ilike('username', '%$query%').range(pageKey, pageKey + pageSize - 1);
+      final List<Map<String, dynamic>> response = await _client
+          .from('profiles')
+          .select()
+          .neq('id', UsersBackend.currentUserId)
+          .ilike('username', '%$query%')
+          .range(pageKey, pageKey + pageSize - 1);
 
       final List<Profile> profiles = response.map((Map<String, dynamic> element) => Profile.fromMap(element)).toList();
 

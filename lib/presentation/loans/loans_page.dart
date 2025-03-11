@@ -51,22 +51,22 @@ class LoansPage extends StatelessWidget {
     return CommonFilterBottomsheet(
       children: [
         CommonFilterRow(
-          title: 'Order by',
-          options: const ['Date', 'Title'],
+          title: 'Order by'.tr,
+          options: ['Date'.tr, 'Title'.tr],
           initialIndex: orderByIndex,
           onIndexChange: controller.onOrderByValueChanged,
         ),
         const Divider(height: 20),
         CommonFilterRow(
-          title: 'Filter by status',
-          options: const ['All', 'Pending', 'Accepted', 'Completed', 'Rejected'],
+          title: 'Filter by status'.tr,
+          options: ['All'.tr, 'Pending'.tr, 'Accepted'.tr, 'Completed'.tr, 'Rejected'.tr],
           initialIndex: filterByStateIndex,
           onIndexChange: controller.onFilterByStatusChanged,
         ),
         const Divider(height: 20),
         CommonFilterRow(
-          title: 'Filter by book ownership',
-          options: const ['All', 'Own', 'Foreign'],
+          title: 'Filter by book ownership'.tr,
+          options: ['All'.tr, 'Own'.tr, 'Foreign'.tr],
           initialIndex: filterByOwnerIndex,
           onIndexChange: controller.onFilterByOwnerChanged,
         ),
@@ -136,7 +136,7 @@ class LoansPage extends StatelessWidget {
                               ),
                               padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
                               child: Text(
-                                loan.loanee.isCurrentUser ? 'Owner' : 'Loanee',
+                                loan.loanee.isCurrentUser ? 'Owner'.tr : 'Loanee'.tr,
                                 style: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w400,
@@ -149,12 +149,12 @@ class LoansPage extends StatelessWidget {
                         const Divider(height: 5),
                         Text(
                           loan.returned
-                              ? 'Loan finished'
+                              ? 'Loan completed'.tr
                               : loan.accepted
-                                  ? 'Loan accepted'
+                                  ? 'Loan accepted'.tr
                                   : loan.rejected
-                                      ? 'Loan rejected'
-                                      : 'Awaiting approval',
+                                      ? 'Loan rejected'.tr
+                                      : 'Awaiting approval'.tr,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
@@ -164,7 +164,7 @@ class LoansPage extends StatelessWidget {
                         ),
                         const Divider(height: 5),
                         Text(
-                          '${loan.returned ? 'Returned' : loan.accepted ? 'Approved' : loan.rejected ? 'Rejected' : 'Requested'}${DateFormat(' MMMM d, y', Get.locale?.languageCode).format(loan.latest_date ?? loan.created_at)}',
+                          '${loan.returned ? 'Returned'.tr : loan.accepted ? 'Approved'.tr : loan.rejected ? 'Rejected'.tr : 'Requested'.tr}${DateFormat(' MMMM d, y', Get.locale?.languageCode).format(loan.latest_date ?? loan.created_at)}',
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
@@ -177,7 +177,7 @@ class LoansPage extends StatelessWidget {
                   ),
                   SizedBox(
                     height: 120,
-                    child: CommonBookCover(loan.book),
+                    child: CommonBookCover(loan.book, height: 120),
                   ),
                 ],
               ),
@@ -217,7 +217,7 @@ class LoansPage extends StatelessWidget {
         return DefaultTabController(
           length: 3,
           child: Scaffold(
-            appBar: Responsive.isMobile(context) ? AppBar(title: const Text('Loans')) : null,
+            appBar: Responsive.isMobile(context) ? AppBar(title: Text('Loans'.tr)) : null,
             drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
             body: CustomScrollView(
               controller: controller.scrollController,

@@ -10,28 +10,22 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
-  const CommunityDiscussionsTopicMessagesPage(
-      {super.key, required this.topicId});
+  const CommunityDiscussionsTopicMessagesPage({super.key, required this.topicId});
   final String topicId;
 
-  Widget _messageBubble(
-      CommunityDiscussionsTopicMessagesController controller, int index) {
+  Widget _messageBubble(CommunityDiscussionsTopicMessagesController controller, int index) {
     final DiscussionMessage message = controller.messages[index];
 
     final bool isFirstMessage = index == 0;
     final bool isLastMessage = index == controller.messages.length - 1;
 
-    final DiscussionMessage? previousMessage =
-        isFirstMessage ? null : controller.messages[index - 1];
+    final DiscussionMessage? previousMessage = isFirstMessage ? null : controller.messages[index - 1];
 
-    final bool showTime = previousMessage == null ||
-        previousMessage.sender.id != message.sender.id;
+    final bool showTime = previousMessage == null || previousMessage.sender.id != message.sender.id;
 
-    final DiscussionMessage? nextMessage =
-        isLastMessage ? null : controller.messages[index + 1];
+    final DiscussionMessage? nextMessage = isLastMessage ? null : controller.messages[index + 1];
 
-    final bool showAvatar =
-        nextMessage == null || nextMessage.sender.id != message.sender.id;
+    final bool showAvatar = nextMessage == null || nextMessage.sender.id != message.sender.id;
 
     final bool isReceived = message.sender.id != UsersBackend.currentUserId;
 
@@ -60,9 +54,7 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
           child: Builder(
             builder: (context) {
               return Column(
-                crossAxisAlignment: isReceived
-                    ? CrossAxisAlignment.start
-                    : CrossAxisAlignment.end,
+                crossAxisAlignment: isReceived ? CrossAxisAlignment.start : CrossAxisAlignment.end,
                 children: [
                   Visibility(
                     visible: showAvatar && isReceived,
@@ -73,9 +65,7 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
                     child: const Divider(height: 5),
                   ),
                   Container(
-                    alignment: isReceived
-                        ? Alignment.centerLeft
-                        : Alignment.centerRight,
+                    alignment: isReceived ? Alignment.centerLeft : Alignment.centerRight,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -87,14 +77,8 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
                               shape: BoxShape.rectangle,
                               borderRadius: BorderRadius.circular(15),
                               color: isReceived
-                                  ? Theme.of(context)
-                                      .colorScheme
-                                      .secondary
-                                      .withOpacity(0.25)
-                                  : Theme.of(context)
-                                      .colorScheme
-                                      .primary
-                                      .withOpacity(0.25),
+                                  ? Theme.of(context).colorScheme.secondary.withOpacity(0.25)
+                                  : Theme.of(context).colorScheme.primary.withOpacity(0.25),
                             ),
                             child: Text(
                               message.content,
@@ -114,9 +98,7 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
                   Visibility(
                     visible: showTime,
                     child: Text(
-                      DateFormat.MMMd(Get.locale?.languageCode)
-                          .add_Hm()
-                          .format(message.created_at.toLocal()),
+                      DateFormat.MMMd(Get.locale?.languageCode).add_Hm().format(message.created_at.toLocal()),
                       textAlign: isReceived ? TextAlign.left : TextAlign.right,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -151,8 +133,7 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
                     onChanged: controller.onTypedMessageChanged,
                     focusNode: FocusNode(
                       onKeyEvent: (node, event) {
-                        if (!HardwareKeyboard.instance.isShiftPressed &&
-                            event.logicalKey.keyLabel == 'Enter') {
+                        if (!HardwareKeyboard.instance.isShiftPressed && event.logicalKey.keyLabel == 'Enter') {
                           if (event is KeyDownEvent) {
                             controller.onMessageSubmit(context);
                           }
@@ -162,8 +143,7 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
                         return KeyEventResult.ignored;
                       },
                     ),
-                    onFieldSubmitted: (_) =>
-                        controller.onMessageSubmit(context),
+                    onFieldSubmitted: (_) => controller.onMessageSubmit(context),
                     controller: controller.textEditingController,
                     onTapOutside: (_) {},
                     style: const TextStyle(fontSize: 14),
@@ -177,34 +157,25 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                         borderSide: BorderSide(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .primary
-                              .withOpacity(0.15),
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
                           width: 2,
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                         borderSide: BorderSide(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .primary
-                              .withOpacity(0.15),
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
                           width: 2,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                         borderSide: BorderSide(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .primary
-                              .withOpacity(0.15),
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
                           width: 2,
                         ),
                       ),
-                      hintText: 'Type something...',
+                      hintText: 'Type something...'.tr,
                       hintStyle: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
@@ -227,9 +198,7 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
                     child: Obx(
                       () {
                         return InkWell(
-                          onTap: controller.sending.value
-                              ? null
-                              : () => controller.onMessageSubmit(context),
+                          onTap: controller.sending.value ? null : () => controller.onMessageSubmit(context),
                           enableFeedback: false,
                           splashColor: Colors.transparent,
                           highlightColor: Colors.transparent,
@@ -242,17 +211,14 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
                                     width: 25,
                                     height: 25,
                                     child: CircularProgressIndicator(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onPrimary,
+                                      color: Theme.of(context).colorScheme.onPrimary,
                                     ),
                                   );
                                 }
 
                                 return Icon(
                                   Icons.send_rounded,
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
+                                  color: Theme.of(context).colorScheme.onPrimary,
                                   size: 30,
                                 );
                               },
@@ -293,8 +259,7 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
                     () {
                       return ListView.separated(
                         reverse: true,
-                        padding: const EdgeInsets.only(
-                            left: 20, right: 20, top: 20, bottom: 90),
+                        padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 90),
                         itemCount: controller.messages.length,
                         separatorBuilder: (context, index) {
                           return const Divider(

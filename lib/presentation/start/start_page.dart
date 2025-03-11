@@ -248,6 +248,9 @@ class StartPage extends StatelessWidget {
       initState: (state) async {
         try {
           Uri? uri = GoRouter.of(context).state?.uri;
+
+          await UserPreferences.setWelcomeScreenShown(true);
+
           if (uri != null) {
             final AuthSessionUrlResponse response = await Supabase.instance.client.auth.getSessionFromUrl(uri);
 

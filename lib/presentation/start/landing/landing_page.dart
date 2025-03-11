@@ -17,12 +17,12 @@ class LandingPage extends StatelessWidget {
     'assets/crow.svg',
   ];
 
-  static const List<String> _titles = ['Subí tus libros', 'Unite a comunidades', 'Compartí libros'];
+  static final List<String> _titles = ['Upload your books'.tr, 'Join communities'.tr, 'Share books'.tr];
 
-  static const List<String> _copies = [
-    'Showcase your book collection to your peers. Give each book a new purpose by lending it out, building shared stories along the way.',
-    'One of your friends has a book on their shelf that you\'ve been dying to read? Join a mutual community and ask if you can loan it out for a bit.',
-    'Review the books you\'ve read and discuss them with other community members. Share your insights and perspectives with like-minded people.',
+  static final List<String> _copies = [
+    'landing-upload-books'.tr,
+    'landing-join-communities'.tr,
+    'landing-share-books'.tr,
   ];
 
   Widget _pageIndicator(BuildContext context, LandingController controller) {
@@ -30,7 +30,7 @@ class LandingPage extends StatelessWidget {
     final Color unselectedColor = Theme.of(context).colorScheme.primary.withOpacity(0.4);
 
     return SizedBox(
-      width: 150,
+      width: 200,
       height: 20,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -38,7 +38,7 @@ class LandingPage extends StatelessWidget {
           Obx(
             () {
               return Container(
-                width: controller.pageIndex.value == 0 ? 45 : 20,
+                width: controller.pageIndex.value == 0 ? 60 : 20,
                 height: 20,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(50),
@@ -80,6 +80,13 @@ class LandingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final LinearGradient gradient = LinearGradient(
+      colors: [
+        Theme.of(context).colorScheme.primary,
+        Theme.of(context).colorScheme.tertiary,
+      ],
+    );
+
     return GetBuilder(
       init: LandingController(),
       builder: (controller) {
@@ -89,20 +96,26 @@ class LandingPage extends StatelessWidget {
               child: SizedBox(
                 width: 600,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 30),
+                  padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
                   child: Column(
                     children: [
-                      const Divider(height: 40),
+                      const Divider(height: 30),
                       Expanded(
                         child: Container(
                           alignment: Alignment.bottomCenter,
-                          child: SvgPicture.asset(
-                            'assets/crow.svg',
-                            fit: BoxFit.scaleDown,
+                          child: ShaderMask(
+                            blendMode: BlendMode.srcIn,
+                            shaderCallback: (bounds) => gradient.createShader(
+                              Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+                            ),
+                            child: SvgPicture.asset(
+                              'assets/crow.svg',
+                              fit: BoxFit.contain,
+                            ),
                           ),
                         ),
                       ),
-                      const Divider(height: 40),
+                      const Divider(height: 30),
                       Expanded(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -121,27 +134,24 @@ class LandingPage extends StatelessWidget {
                               },
                             ),
                             const Divider(height: 20),
-                            SizedBox(
-                              height: 75,
-                              child: Center(
-                                child: Obx(
-                                  () {
-                                    return Text(
-                                      _copies[controller.pageIndex.value],
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16,
-                                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    );
-                                  },
-                                ),
+                            Center(
+                              child: Obx(
+                                () {
+                                  return Text(
+                                    _copies[controller.pageIndex.value],
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  );
+                                },
                               ),
                             ),
-                            const Divider(height: 40),
+                            const Divider(height: 30),
                             _pageIndicator(context, controller),
-                            const Divider(height: 40),
+                            const Divider(height: 30),
                             ElevatedButton(
                                 onPressed: () {
                                   controller.pageIndex.value++;

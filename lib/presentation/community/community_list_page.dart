@@ -70,7 +70,7 @@ class CommunityListPage extends StatelessWidget {
               size: 35,
             ),
           ),
-          appBar: Responsive.isMobile(context) ? AppBar(title: const Text('Communities')) : null,
+          appBar: Responsive.isMobile(context) ? AppBar(title: Text('Communities'.tr)) : null,
           drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
           body: CommonListView(
             noItemsText: 'community-list-no-items'.tr,

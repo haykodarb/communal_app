@@ -119,7 +119,8 @@ class CommunitySpecificPage extends StatelessWidget {
                         ),
                       );
                     case 2:
-                      return controller.community.isCurrentUserAdmin!
+                      return (controller.community.isCurrentUserAdmin != null &&
+                              controller.community.isCurrentUserAdmin!)
                           ? SlideTransition(
                               position: controller.bottomBarAnimation,
                               child: ScaleTransition(

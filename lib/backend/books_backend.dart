@@ -1,9 +1,7 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
-import 'package:communal/models/community.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -20,17 +18,23 @@ class BooksQuery {
 class BooksBackend {
   static final SupabaseClient _client = Supabase.instance.client;
 
-  static Future<Uint8List> getBookCover(Book book) async {
-    FileInfo? file = await DefaultCacheManager().getFileFromCache(book.image_path);
+  static Future<Uint8List> getBookCover(Book book, {int height = 960}) async {
+    FileInfo? file = await DefaultCacheManager().getFileFromCache('${book.image_path}-$height');
 
     Uint8List bytes;
 
     if (file != null) {
       bytes = await file.file.openRead().toBytes();
     } else {
-      bytes = await _client.storage.from('book_covers').download(book.image_path);
+      bytes = await _client.storage.from('book_covers').download(
+            book.image_path,
+            transform: TransformOptions(
+              height: height,
+              quality: 100,
+            ),
+          );
 
-      await DefaultCacheManager().putFile(book.image_path, bytes, key: book.image_path);
+      await DefaultCacheManager().putFile('${book.image_path}-$height', bytes, key: '${book.image_path}-$height');
     }
 
     return bytes;
