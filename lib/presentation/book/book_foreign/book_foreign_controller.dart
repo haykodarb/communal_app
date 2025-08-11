@@ -13,10 +13,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class BookForeignController extends GetxController {
-  BookForeignController({required this.bookId});
+  BookForeignController({required this.bookId, this.ownerId});
 
   final String bookId;
+  final String? ownerId;
+
   Book? book;
+
   final RxString message = ''.obs;
 
   CommunityBooksController? communityBookController;
@@ -39,8 +42,6 @@ class BookForeignController extends GetxController {
 
   @override
   Future<void> onInit() async {
-    firstLoad.value = true;
-
     if (Get.isRegistered<LoansController>()) {
       loansController = Get.find<LoansController>();
     }
@@ -49,8 +50,8 @@ class BookForeignController extends GetxController {
       communityBookController = Get.find<CommunityBooksController>();
     }
 
-    if (Get.isRegistered<ProfileOtherController>()) {
-      profileOtherController = Get.find<ProfileOtherController>();
+    if (Get.isRegistered<ProfileOtherController>(tag: ownerId)) {
+      profileOtherController = Get.find<ProfileOtherController>(tag: ownerId);
     }
 
     book = communityBookController?.listViewController.itemList.firstWhereOrNull(
@@ -62,13 +63,15 @@ class BookForeignController extends GetxController {
     );
 
     if (book == null) {
+      firstLoad.value = true;
+
       final BackendResponse response = await BooksBackend.getBookById(bookId);
       if (response.success) {
         book = response.payload;
       }
-    }
 
-    firstLoad.value = false;
+      firstLoad.value = false;
+    }
 
     checkLoanStatus();
 

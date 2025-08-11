@@ -6,10 +6,12 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:communal/backend/user_preferences.dart';
+import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:communal/main.dart';
+import 'package:go_router/go_router.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
@@ -17,6 +19,7 @@ void main() {
     await tester.pumpWidget(MyApp(
       locale: const Locale('es'),
       themeMode: await UserPreferences.getSelectedThemeMode(),
+      router: GoRouter(routes: routes),
     ));
 
     // Verify that our counter starts at 0.

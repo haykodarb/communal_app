@@ -4,6 +4,7 @@ import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/community.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -176,8 +177,15 @@ class CommunitiesBackend {
       String? pathToUpload = community.image_path;
 
       if (imageBytes != null) {
-        print('file size: ${imageBytes.length}');
-        const String imageExtension = 'png';
+        const String imageExtension = 'jpeg';
+
+        final Uint8List bytesToUpload = await FlutterImageCompress.compressWithList(
+          imageBytes,
+          quality: 50,
+          minHeight: 320,
+          minWidth: 320,
+          format: CompressFormat.jpeg,
+        );
 
         final String currentTime = DateTime.now().millisecondsSinceEpoch.toString();
 
@@ -185,7 +193,7 @@ class CommunitiesBackend {
 
         String pathResponse = await _client.storage.from('community_avatars').uploadBinary(
               pathToUpload,
-              imageBytes,
+              bytesToUpload,
               retryAttempts: 5,
             );
 
@@ -232,16 +240,26 @@ class CommunitiesBackend {
     try {
       final String userId = _client.auth.currentUser!.id;
 
-      const String imageExtension = '.png';
+      String? pathToUpload;
 
-      final String currentTime = DateTime.now().millisecondsSinceEpoch.toString();
+      if (image != null) {
+        const String imageExtension = 'jpeg';
 
-      final String? pathToUpload = image == null ? null : '/$userId/$currentTime.$imageExtension';
+        final Uint8List bytesToUpload = await FlutterImageCompress.compressWithList(
+          image,
+          quality: 50,
+          minHeight: 320,
+          minWidth: 320,
+          format: CompressFormat.jpeg,
+        );
 
-      if (pathToUpload != null && image != null) {
+        final String currentTime = DateTime.now().millisecondsSinceEpoch.toString();
+
+        pathToUpload = '/$userId/$currentTime.$imageExtension';
+
         await _client.storage.from('community_avatars').uploadBinary(
               pathToUpload,
-              image,
+              bytesToUpload,
               retryAttempts: 5,
             );
       }
@@ -253,7 +271,7 @@ class CommunitiesBackend {
               'name': community.name,
               'description': community.description,
               'owner': userId,
-              'image_path': pathToUpload,
+              'image_path': pathToUpload ?? community.image_path,
             },
           )
           .select('*, profiles(*)')

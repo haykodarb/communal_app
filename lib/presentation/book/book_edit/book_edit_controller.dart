@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
+import 'package:communal/presentation/book/book_list_controller.dart';
 import 'package:communal/presentation/book/book_owned/book_owned_controller.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/presentation/common/common_image_cropper.dart';
@@ -14,8 +15,8 @@ class BookEditController extends GetxController {
   BookEditController({required this.bookId});
 
   final String bookId;
-  final BookOwnedController bookOwnedController =
-      Get.find<BookOwnedController>();
+  final BookOwnedController bookOwnedController = Get.find<BookOwnedController>();
+  BookListController? bookListController;
 
   final Rx<Book> bookForm = Book.empty().obs;
   Book initialForm = Book.empty();
@@ -34,6 +35,10 @@ class BookEditController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
+    if (Get.isRegistered<BookListController>()) {
+      bookListController = Get.find<BookListController>();
+    }
+
     if (bookOwnedController.inheritedBook != null) {
       bookForm.value = bookOwnedController.inheritedBook!;
     } else {
@@ -56,8 +61,8 @@ class BookEditController extends GetxController {
     XFile? pickedImage = await imagePicker.pickImage(
       source: source,
       imageQuality: 100,
-      maxHeight: 1280,
-      maxWidth: 960,
+      maxHeight: 960,
+      maxWidth: 720,
       preferredCameraDevice: CameraDevice.rear,
     );
 
@@ -139,13 +144,13 @@ class BookEditController extends GetxController {
     if (formKey.currentState!.validate()) {
       loading.value = true;
 
-      final BackendResponse response =
-          await BooksBackend.updateBook(bookForm.value, selectedBytes.value);
+      final BackendResponse response = await BooksBackend.updateBook(bookForm.value, selectedBytes.value);
 
       loading.value = false;
 
       if (response.success) {
         bookOwnedController.book.value = bookForm.value;
+        bookListController?.updateBook(bookOwnedController.book.value);
         if (context.mounted) {
           context.pop();
         }

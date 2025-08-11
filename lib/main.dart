@@ -1,3 +1,4 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/dark_theme.dart';
 import 'package:communal/localization.dart';
@@ -7,7 +8,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:communal/light_theme.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -19,9 +19,10 @@ void main() async {
 
   await Hive.initFlutter();
 
-  const String supabaseURL = 'https://supabase.communal.ar';
+  // const String supabaseURL = 'https://supabase.communal.ar';
+  const String supabaseURL = 'https://ievjxqrtftfnwzobklde.supabase.co';
   const String supabaseKey =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.ewogICJyb2xlIjogImFub24iLAogICJpc3MiOiAic3VwYWJhc2UiLAogICJpYXQiOiAxNzQxNDAyODAwLAogICJleHAiOiAxODk5MTY5MjAwCn0.8_DqM1X4Orb-1v8f5GPdCpdTOsyBmI6PL1N5AoAla4M';
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlldmp4cXJ0ZnRmbnd6b2JrbGRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODI4MDYwNTIsImV4cCI6MTk5ODM4MjA1Mn0.45wNq5bt6JUHxJzTEiiKjngSHfLonG8gSXxhzt7Xl5c';
 
   await Supabase.initialize(
     url: supabaseURL,
@@ -35,7 +36,6 @@ void main() async {
 
   svg.cache.putIfAbsent(loader.cacheKey(null), () => loader.loadBytes(null));
 
-  GoogleFonts.config.allowRuntimeFetching = false;
   GoRouter.optionURLReflectsImperativeAPIs = true;
 
   final bool welcomeShown = await UserPreferences.getWelcomeScreenShown();

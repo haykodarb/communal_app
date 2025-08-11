@@ -4,7 +4,6 @@ import 'package:communal/presentation/login/login_password_recovery/login_passwo
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class LoginPasswordRecoveryPage extends StatelessWidget {
   const LoginPasswordRecoveryPage({super.key});
@@ -76,7 +75,7 @@ class LoginPasswordRecoveryPage extends StatelessWidget {
                               child: Text(
                                 'Recover password'.tr,
                                 textAlign: TextAlign.left,
-                                style: GoogleFonts.lora(
+                                style: const TextStyle(
                                   fontSize: 36,
                                   fontWeight: FontWeight.w700,
                                 ),

@@ -76,6 +76,7 @@ class BookOwnedPage extends StatelessWidget {
                     const VerticalDivider(width: 10),
                     Text(
                       controller.book.value.owner.username,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(color: Theme.of(context).colorScheme.primary),
                     ),
                   ],
@@ -164,7 +165,14 @@ class BookOwnedPage extends StatelessWidget {
               final int reviewsCount = controller.completedLoans.length + (ownerHasReview ? 1 : 0);
 
               if (reviewsCount == 0) {
-                return Center(child: Text('No reviews'.tr));
+                return Center(
+                  child: Text(
+                    'No reviews'.tr,
+                    style: const TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                );
               }
 
               return Column(
@@ -379,62 +387,69 @@ class BookOwnedPage extends StatelessWidget {
                               ),
                               width: double.maxFinite,
                               height: 65,
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'Owner'.tr,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Added'.tr,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                          ),
                                         ),
-                                      ),
-                                      FittedBox(
-                                        fit: BoxFit.fitWidth,
-                                        child: Text(
-                                          controller.book.value.owner.username,
-                                          overflow: TextOverflow.fade,
+                                        Text(
+                                          DateFormat('dd/MM/yy', Get.locale?.languageCode)
+                                              .format(controller.book.value.created_at),
                                           style: const TextStyle(fontSize: 16),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'Added'.tr,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Visibility'.tr,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        DateFormat('dd/MM/yy', Get.locale?.languageCode)
-                                            .format(controller.book.value.created_at),
-                                        style: const TextStyle(fontSize: 16),
-                                      ),
-                                    ],
+                                        Text(
+                                          controller.book.value.public ? 'Public'.tr : 'Private'.tr,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(fontSize: 16),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'Status'.tr,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Status'.tr,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        controller.book.value.loaned ? 'Loaned'.tr : 'Available'.tr,
-                                        style: const TextStyle(fontSize: 16),
-                                      ),
-                                    ],
+                                        Text(
+                                          controller.book.value.loaned ? 'Loaned'.tr : 'Available'.tr,
+                                          style: const TextStyle(fontSize: 16),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),

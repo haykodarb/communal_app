@@ -123,7 +123,7 @@ final FloatingActionButtonThemeData _floatingActionButtonThemeData = FloatingAct
   ),
 );
 
-final CardTheme _cardTheme = CardTheme(
+final CardThemeData _cardTheme = CardThemeData(
   color: _darkScheme.surfaceContainer,
   margin: EdgeInsets.zero,
   elevation: 0,
@@ -170,6 +170,12 @@ final ThemeData darkTheme = ThemeData(
   inputDecorationTheme: _inputDecorationTheme,
   iconTheme: _iconThemeData,
   appBarTheme: _appBarTheme,
+  pageTransitionsTheme: const PageTransitionsTheme(
+    builders: {
+      TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+      TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+    },
+  ),
   textButtonTheme: _textButtonTheme,
   cardTheme: _cardTheme,
   canvasColor: _darkScheme.surface,

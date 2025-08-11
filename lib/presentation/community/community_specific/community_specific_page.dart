@@ -87,6 +87,7 @@ class CommunitySpecificPage extends StatelessWidget {
 
             return Scaffold(
               resizeToAvoidBottomInset: false,
+              drawerEnableOpenDragGesture: false,
               extendBody: true,
               appBar: AppBar(
                 title: Text(controller.community.name),

@@ -3,6 +3,7 @@ import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -19,25 +20,34 @@ class BooksBackend {
   static final SupabaseClient _client = Supabase.instance.client;
 
   static Future<Uint8List> getBookCover(Book book, {int height = 960}) async {
-    FileInfo? file = await DefaultCacheManager().getFileFromCache('${book.image_path}-$height');
+    try {
+      // FileInfo? file = await DefaultCacheManager().getFileFromCache('${book.image_path}-$height');
+      FileInfo? file = await DefaultCacheManager().getFileFromCache(book.image_path);
 
-    Uint8List bytes;
+      Uint8List bytes;
 
-    if (file != null) {
-      bytes = await file.file.openRead().toBytes();
-    } else {
-      bytes = await _client.storage.from('book_covers').download(
-            book.image_path,
-            transform: TransformOptions(
-              height: height,
-              quality: 100,
-            ),
-          );
+      if (file != null) {
+        bytes = await file.file.openRead().toBytes();
+      } else {
+        bytes = await _client.storage.from('book_covers').download(
+              book.image_path,
+              /*
+		transform: TransformOptions(
+		height: height,
+		quality: 100,
+		),
+	    */
+            );
 
-      await DefaultCacheManager().putFile('${book.image_path}-$height', bytes, key: '${book.image_path}-$height');
+        // await DefaultCacheManager().putFile('${book.image_path}-$height', bytes, key: '${book.image_path}-$height');
+        await DefaultCacheManager().putFile('${book.image_path}-$height', bytes, key: book.image_path);
+      }
+
+      return bytes;
+    } catch (e) {
+      print(e);
+      return Uint8List(0);
     }
-
-    return bytes;
   }
 
   static Future<BackendResponse> updateBook(Book book, Uint8List? image) async {
@@ -48,13 +58,20 @@ class BooksBackend {
       String fileName;
 
       if (image != null) {
-        const String imageExtension = 'png';
+        const String imageExtension = 'jpeg';
+        final Uint8List bytesToUpload = await FlutterImageCompress.compressWithList(
+          image,
+          quality: 50,
+          minHeight: 720,
+          minWidth: 480,
+          format: CompressFormat.jpeg,
+        );
 
         fileName = '/$userId/$currentTime.$imageExtension';
 
         await _client.storage.from('book_covers').uploadBinary(
               fileName,
-              image,
+              bytesToUpload,
               retryAttempts: 5,
             );
       } else {
@@ -96,13 +113,21 @@ class BooksBackend {
     try {
       final String userId = _client.auth.currentUser!.id;
       final String currentTime = DateTime.now().millisecondsSinceEpoch.toString();
-      const String imageExtension = 'png';
+      const String imageExtension = 'jpeg';
 
       final String pathToUpload = '/$userId/$currentTime.$imageExtension';
 
+      final Uint8List bytesToUpload = await FlutterImageCompress.compressWithList(
+        imageBytes,
+        quality: 50,
+        minHeight: 720,
+        minWidth: 480,
+        format: CompressFormat.jpeg,
+      );
+
       await _client.storage.from('book_covers').uploadBinary(
             pathToUpload,
-            imageBytes,
+            bytesToUpload,
             retryAttempts: 5,
           );
 

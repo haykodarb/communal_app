@@ -16,6 +16,8 @@ const ColorScheme _lightScheme = ColorScheme.light(
   error: Color(0xFFeb6f92),
 );
 
+final Color _overlayColor = _lightScheme.primary.withOpacity(0.075);
+
 final BottomNavigationBarThemeData _bottomNavigationBarTheme = BottomNavigationBarThemeData(
   type: BottomNavigationBarType.fixed,
   selectedItemColor: _lightScheme.primary,
@@ -133,7 +135,7 @@ final FloatingActionButtonThemeData _floatingActionButtonThemeData = FloatingAct
   ),
 );
 
-final CardTheme _cardTheme = CardTheme(
+final CardThemeData _cardTheme = CardThemeData(
   color: _lightScheme.surfaceContainer,
   margin: EdgeInsets.zero,
   elevation: 0,
@@ -164,18 +166,18 @@ final ActionIconThemeData _actionIconThemeData = ActionIconThemeData(
 
 final IconButtonThemeData _iconButtonThemeData = IconButtonThemeData(
   style: IconButton.styleFrom(
-    hoverColor: Colors.transparent,
-    focusColor: Colors.transparent,
-    highlightColor: Colors.transparent,
-    overlayColor: Colors.transparent,
+    hoverColor: _overlayColor,
+    focusColor: _overlayColor,
+    highlightColor: _overlayColor,
+    overlayColor: _overlayColor,
   ),
 );
 
 final ThemeData lightTheme = ThemeData(
   colorScheme: _lightScheme,
-  splashColor: Colors.transparent,
-  highlightColor: Colors.transparent,
-  hoverColor: Colors.transparent,
+  splashColor: _overlayColor,
+  highlightColor: _overlayColor,
+  hoverColor: _overlayColor,
   iconButtonTheme: _iconButtonThemeData,
   fontFamily: 'Poppins',
   primaryColor: _lightScheme.primary,
@@ -190,6 +192,12 @@ final ThemeData lightTheme = ThemeData(
   inputDecorationTheme: _inputDecorationTheme,
   iconTheme: _iconThemeData,
   appBarTheme: _appBarTheme,
+  pageTransitionsTheme: const PageTransitionsTheme(
+    builders: {
+      TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+      TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+    },
+  ),
   cardTheme: _cardTheme,
   canvasColor: _lightScheme.surface,
   disabledColor: _lightScheme.onSurface,

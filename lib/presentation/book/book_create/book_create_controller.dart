@@ -58,8 +58,8 @@ class BookCreateController extends GetxController {
       XFile? pickedImage = await imagePicker.pickImage(
         source: source,
         imageQuality: 100,
-        maxHeight: 1280,
-        maxWidth: 960,
+        maxHeight: 960,
+        maxWidth: 720,
         preferredCameraDevice: CameraDevice.rear,
       );
 
@@ -75,6 +75,8 @@ class BookCreateController extends GetxController {
           aspectRatio: 3 / 4,
         ),
       );
+
+      print('Gets here');
 
       if (croppedBytes == null || croppedBytes.isEmpty) return;
 

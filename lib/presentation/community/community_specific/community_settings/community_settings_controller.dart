@@ -19,8 +19,7 @@ class CommunitySettingsController extends GetxController {
 
   final CommunitySpecificController communitySpecificController = Get.find();
 
-  TextEditingController? textEditingController =
-      TextEditingController.fromValue(
+  TextEditingController? textEditingController = TextEditingController.fromValue(
     TextEditingValue(
       text: Get.find<CommunitySpecificController>().community.name,
     ),
@@ -57,8 +56,8 @@ class CommunitySettingsController extends GetxController {
     XFile? pickedImage = await imagePicker.pickImage(
       source: source,
       imageQuality: 100,
-      maxHeight: 1280,
-      maxWidth: 1280,
+      maxHeight: 640,
+      maxWidth: 640,
     );
 
     if (pickedImage == null) return;
@@ -109,8 +108,7 @@ class CommunitySettingsController extends GetxController {
     ).open(context);
 
     if (confirm) {
-      final BackendResponse response =
-          await UsersBackend.removeCurrentUserFromCommunity(community);
+      final BackendResponse response = await UsersBackend.removeCurrentUserFromCommunity(community);
 
       if (context.mounted) {
         if (response.success) {
@@ -134,8 +132,7 @@ class CommunitySettingsController extends GetxController {
     ).open(context);
 
     if (confirm) {
-      final BackendResponse response =
-          await CommunitiesBackend.deleteCommunity(community);
+      final BackendResponse response = await CommunitiesBackend.deleteCommunity(community);
 
       if (context.mounted) {
         if (response.success) {
@@ -200,14 +197,12 @@ class CommunitySettingsController extends GetxController {
         selectedBytes.value = null;
         _checkIfEdited();
 
-        int? index =
-            communityListController?.listViewController.itemList.indexWhere(
+        int? index = communityListController?.listViewController.itemList.indexWhere(
           (element) => element.id == communityForm.value.id,
         );
 
         if (index != null && index >= 0) {
-          communityListController?.listViewController.itemList[index] =
-              community;
+          communityListController?.listViewController.itemList[index] = community;
         }
 
         communityListController?.listViewController.itemList.refresh();

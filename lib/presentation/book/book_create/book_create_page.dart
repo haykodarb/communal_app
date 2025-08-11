@@ -18,8 +18,8 @@ class BookCreatePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Available for loans?'.tr,
-              style: const TextStyle(fontSize: 14),
+              'Publicly visible?'.tr,
+              style: const TextStyle(fontSize: 16),
             ),
             const Divider(),
             Obx(

@@ -19,7 +19,6 @@ class CommonVerticalBookCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('Rendered: ${book.title}');
     return InkWell(
       onTap: clickable
           ? () {
@@ -27,6 +26,9 @@ class CommonVerticalBookCard extends StatelessWidget {
                 book.owner.isCurrentUser
                     ? '${RouteNames.myBooks}/${book.id}'
                     : RouteNames.foreignBooksPage.replaceFirst(':bookId', book.id),
+                extra: {
+                  'ownerId': book.owner.id,
+                },
               );
             }
           : null,

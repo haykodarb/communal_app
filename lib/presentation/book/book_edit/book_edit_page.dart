@@ -29,8 +29,8 @@ class BookEditPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Available for loans?'.tr,
-              style: const TextStyle(fontSize: 14),
+              'Publicly visible?'.tr,
+              style: const TextStyle(fontSize: 16),
             ),
             const Divider(),
             Obx(
@@ -61,7 +61,7 @@ class BookEditPage extends StatelessWidget {
               loading: controller.firstLoad.value,
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                   child: Form(
                     key: controller.formKey,
                     child: Column(

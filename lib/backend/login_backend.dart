@@ -106,7 +106,7 @@ class LoginBackend {
   }
 
   static Future<void> logout() async {
-    if (!kIsWeb && Platform.isAndroid) {
+    if (kIsWeb || Platform.isAndroid) {
       if (await GoogleSignIn().isSignedIn()) {
         await GoogleSignIn().signOut();
       }

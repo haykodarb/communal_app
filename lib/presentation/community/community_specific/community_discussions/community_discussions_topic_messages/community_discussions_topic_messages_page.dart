@@ -4,6 +4,7 @@ import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_topic_messages/community_discussions_topic_messages_controller.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -133,7 +134,9 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
                     onChanged: controller.onTypedMessageChanged,
                     focusNode: FocusNode(
                       onKeyEvent: (node, event) {
-                        if (!HardwareKeyboard.instance.isShiftPressed && event.logicalKey.keyLabel == 'Enter') {
+                        if (kIsWeb &&
+                            !HardwareKeyboard.instance.isShiftPressed &&
+                            event.logicalKey.keyLabel == 'Enter') {
                           if (event is KeyDownEvent) {
                             controller.onMessageSubmit(context);
                           }
@@ -147,11 +150,12 @@ class CommunityDiscussionsTopicMessagesPage extends StatelessWidget {
                     controller: controller.textEditingController,
                     onTapOutside: (_) {},
                     style: const TextStyle(fontSize: 14),
-                    minLines: 1,
-                    maxLines: 4,
+                    minLines: kIsWeb ? 1 : null,
+                    maxLines: kIsWeb ? 6 : null,
+                    expands: !kIsWeb,
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.symmetric(
-                        vertical: 25,
+                        vertical: kIsWeb ? 25 : 15,
                         horizontal: 20,
                       ),
                       border: OutlineInputBorder(

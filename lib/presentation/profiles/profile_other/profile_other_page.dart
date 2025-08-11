@@ -69,6 +69,9 @@ class ProfileOtherPage extends StatelessWidget {
               IconButton(
                 onPressed: () => context.push(
                   '${RouteNames.messagesPage}/${profile.id}',
+                  extra: {
+                    'ownerId': profile.id,
+                  },
                 ),
                 iconSize: 24,
                 icon: const Icon(Atlas.message),
@@ -337,7 +340,9 @@ class ProfileOtherPage extends StatelessWidget {
       builder: (ProfileOtherController controller) {
         return Scaffold(
           extendBody: true,
-          appBar: Responsive.isMobile(context) ? AppBar(title: const Text('Profile')) : AppBar(),
+          appBar: Responsive.isMobile(context)
+              ? AppBar(title: const Text('Profile'))
+              : (GoRouter.of(context).canPop() ? AppBar(title: const Text('Profile')) : null),
           drawer:
               Responsive.isMobile(context) ? (GoRouter.of(context).canPop() ? null : const CommonDrawerWidget()) : null,
           body: CustomScrollView(
@@ -346,6 +351,7 @@ class ProfileOtherPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Divider(height: Responsive.isMobile(context) || context.canPop() ? 0 : 20),
                     Obx(
                       () {
                         if (controller.loadingProfile.value) {

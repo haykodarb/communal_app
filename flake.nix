@@ -20,9 +20,9 @@
           buildToolsVersions = [ "30.0.3" ];
           cmakeVersions = [ "3.18.1" "3.22.1" ]; 
           includeNDK = true;
-          ndkVersions = [ "23.1.7779620" "26.1.10909125" ];
-          includeSystemImages = true;
-          includeEmulator = true;
+          ndkVersions = [ "23.1.7779620" "26.1.10909125" "26.3.11579264" ];
+          includeSystemImages = false;
+          includeEmulator = false;
           useGoogleAPIs = true;
         };
         androidSdk = androidComposition.androidsdk;
@@ -38,26 +38,25 @@
 	      flutter
 
 	      androidSdk
-              google-chrome
               pkg-config
-              gtk3
+              # gtk3
 	      
 	      # emulator hwdecode
-	      vulkan-loader 
-	      libGL        
+	      # vulkan-loader 
+	      # libGL        
 	      # fixes nagging
-              pcre2.dev
-	      util-linux.dev
-	      libselinux
-	      libsepol
-	      libthai
-	      libdatrie
-	      xorg.libXdmcp
-	      xorg.libXtst
-	      lerc.dev
-	      libxkbcommon
-	      libsysprof-capture
-	      libepoxy
+	      #        pcre2.dev
+	      # util-linux.dev
+	      # libselinux
+	      # libsepol
+	      # libthai
+	      # libdatrie
+	      # xorg.libXdmcp
+	      # xorg.libXtst
+	      # lerc.dev
+	      # libxkbcommon
+	      # libsysprof-capture
+	      # libepoxy
 
 	      jdk17
             ];

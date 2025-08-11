@@ -5,8 +5,10 @@ import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/community/community_list_controller.dart';
 import 'package:communal/responsive.dart';
+import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class CommunityListPage extends StatelessWidget {
   const CommunityListPage({super.key});
@@ -72,6 +74,7 @@ class CommunityListPage extends StatelessWidget {
           ),
           appBar: Responsive.isMobile(context) ? AppBar(title: Text('Communities'.tr)) : null,
           drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
+          drawerEnableOpenDragGesture: false,
           body: CommonListView(
             noItemsText: 'community-list-no-items'.tr,
             childBuilder: (Community community) => _communityCard(controller, community),

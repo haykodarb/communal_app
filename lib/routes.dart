@@ -133,9 +133,11 @@ final GoRoute _myBooksRoutes = GoRoute(
 final GoRoute _communityRoutes = GoRoute(
   path: RouteNames.communityListPage,
   parentNavigatorKey: _shellNavigatorKey,
-  pageBuilder: (context, state) => const NoTransitionPage(
-    child: CommunityListPage(),
-  ),
+  pageBuilder: (context, state) {
+    return const NoTransitionPage(
+      child: CommunityListPage(),
+    );
+  },
   routes: [
     GoRoute(
       path: RouteNames.communityCreatePage,
@@ -252,10 +254,12 @@ final GoRoute _foreignBookPage = GoRoute(
   path: RouteNames.foreignBooksPage,
   parentNavigatorKey: _shellNavigatorKey,
   pageBuilder: (context, state) {
+    final Map<String, String>? extra = state.extra as Map<String, String>?;
+
     return NoTransitionPage(
       child: BookForeignPage(
         bookId: state.pathParameters['bookId']!,
-        key: ValueKey('book-${state.pathParameters['bookId']!}'),
+        ownerId: extra?['ownerId'],
       ),
     );
   },

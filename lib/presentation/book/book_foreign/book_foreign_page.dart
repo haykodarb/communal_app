@@ -12,9 +12,10 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class BookForeignPage extends StatelessWidget {
-  const BookForeignPage({super.key, required this.bookId});
+  const BookForeignPage({super.key, required this.bookId, this.ownerId});
 
   final String bookId;
+  final String? ownerId;
 
   Widget _bookTitle(Book book) {
     return Builder(
@@ -158,7 +159,14 @@ class BookForeignPage extends StatelessWidget {
               final int reviewsCount = controller.completedLoans.length + (ownerHasReview ? 1 : 0);
 
               if (reviewsCount == 0) {
-                return Center(child: Text('No reviews'.tr));
+                return Center(
+                  child: Text(
+                    'No reviews'.tr,
+                    style: const TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                );
               }
 
               return Column(
@@ -267,6 +275,7 @@ class BookForeignPage extends StatelessWidget {
             if (controller.loading.value) {
               return const SizedBox(
                 height: 60,
+                child: CommonLoadingBody(),
               );
             }
 
@@ -320,7 +329,7 @@ class BookForeignPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder(
       tag: bookId,
-      init: BookForeignController(bookId: bookId),
+      init: BookForeignController(bookId: bookId, ownerId: ownerId),
       builder: (BookForeignController controller) {
         return Obx(
           () {

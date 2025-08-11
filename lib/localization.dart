@@ -11,7 +11,7 @@ class LocalizationText extends Translations {
               'No members found in this community.\n\nThis is likely an internet error or a bug with the app.',
           'community-topics-no-items': 'No topics have been created in this community.',
           'landing-upload-books':
-              'Snap photos of your books to add them to the app. Share your collection and let others discover what you love to read.',
+              'Snap photos of your physical books to add them to the app. Share your collection and let others discover what you love to read.',
           'landing-join-communities':
               'Find groups of friends, clubs, or local book lovers. Build shared libraries by collaborating with people you trust.',
           'landing-share-books':
@@ -29,6 +29,9 @@ class LocalizationText extends Translations {
           'Recover password': 'Recuperar contraseña',
           'Name': 'Nombre',
           'Username': 'Usuario',
+          'Visibility': 'Visibilidad',
+          'Public': 'Público',
+          'Private': 'Privado',
           'Send': 'Enviar',
           'Email': 'Email',
           'Password': 'Contraseña',
@@ -66,7 +69,7 @@ class LocalizationText extends Translations {
           'About me': 'Sobre mí',
           'Edit profile': 'Editar perfil',
           'Make email public?': '¿Hacer email público?',
-          'Available for loans?': '¿Disponible para préstamos?',
+          'Publicly visible?': '¿Públicamente visible?',
           'Logout': 'Salir',
           'Please enter something': 'Por favor ingresar algo',
           'Delete account': 'Eliminar cuenta',
@@ -143,7 +146,7 @@ class LocalizationText extends Translations {
               'No se encontraron usuarios en esta comunidad.\nEsto es probablemente un error de conexión o un bug.',
           'community-topics-no-items': 'No se crearon conversaciones en esta comunidad.',
           'landing-upload-books':
-              'Sacá fotos a tus libros para subirlos a la app. Compartí tu colección y permití que otros descubran lo que te gusta leer.',
+              'Sacá fotos a tus libros físicos para subirlos a la app. Compartí tu colección y permití que otros descubran lo que te gusta leer.',
           'landing-join-communities':
               'Encuentra grupos de amigos, clubes o apasionados de los libros. Construí librerías compartidas junto a tu círculo de confianza.',
           'landing-share-books':

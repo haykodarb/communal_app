@@ -53,8 +53,8 @@ class ProfileOwnEditController extends GetxController {
     XFile? pickedImage = await imagePicker.pickImage(
       source: source,
       imageQuality: 80,
-      maxHeight: 750,
-      maxWidth: 750,
+      maxHeight: 320,
+      maxWidth: 320,
       preferredCameraDevice: CameraDevice.rear,
     );
 

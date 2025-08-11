@@ -4,6 +4,7 @@ import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/models/membership.dart';
 import 'package:communal/models/profile.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get_connect/http/src/request/request.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -39,7 +40,8 @@ class UsersBackend {
 
   static Future<Uint8List?> getProfileAvatar(Profile profile, {int height = 240}) async {
     if (profile.avatar_path != null) {
-      FileInfo? file = await DefaultCacheManager().getFileFromCache('${profile.avatar_path!}-$height');
+      //FileInfo? file = await DefaultCacheManager().getFileFromCache('${profile.avatar_path!}-$height');
+      FileInfo? file = await DefaultCacheManager().getFileFromCache(profile.avatar_path!);
 
       Uint8List bytes;
 
@@ -48,14 +50,16 @@ class UsersBackend {
       } else {
         bytes = await _client.storage.from('profile_avatars').download(
               profile.avatar_path!,
-              transform: TransformOptions(
+              /*
+	      transform: TransformOptions(
                 height: height,
                 quality: 100,
               ),
+	      */
             );
 
-        await DefaultCacheManager()
-            .putFile('${profile.avatar_path!}-$height', bytes, key: '${profile.avatar_path!}-$height');
+        //await DefaultCacheManager().putFile('${profile.avatar_path!}-$height', bytes, key: '${profile.avatar_path!}-$height');
+        await DefaultCacheManager().putFile('${profile.avatar_path!}-$height', bytes, key: profile.avatar_path!);
       }
 
       return bytes;
@@ -75,13 +79,21 @@ class UsersBackend {
       String? fileName;
 
       if (image != null) {
-        const String imageExtension = 'png';
+        const String imageExtension = 'jpeg';
+
+        final Uint8List bytesToUpload = await FlutterImageCompress.compressWithList(
+          image,
+          quality: 50,
+          minHeight: 160,
+          minWidth: 160,
+          format: CompressFormat.jpeg,
+        );
 
         fileName = '/$userId/$currentTime.$imageExtension';
 
         await _client.storage.from('profile_avatars').uploadBinary(
               fileName,
-              image,
+              bytesToUpload,
               retryAttempts: 5,
             );
       } else {
@@ -419,8 +431,6 @@ class UsersBackend {
           )
           .select('*, profiles(*), communities(*, profiles(*))')
           .single();
-
-      print(createMembershipResponse);
 
       if (createMembershipResponse.isEmpty) {
         return BackendResponse(success: false, error: 'Error in sending out invitation.');
