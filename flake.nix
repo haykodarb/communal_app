@@ -17,10 +17,10 @@
         {
           platformVersions = [  "31" "33" "34" ];
           abiVersions = [ "armeabi-v7a" "arm64-v8a" "x86_64" ];
-          buildToolsVersions = [ "30.0.3" ];
+          buildToolsVersions = [ "30.0.3" "34.0.0" ];
           cmakeVersions = [ "3.18.1" "3.22.1" ]; 
           includeNDK = true;
-          ndkVersions = [ "23.1.7779620" "26.1.10909125" "26.3.11579264" ];
+          ndkVersions = [ "23.1.7779620" "26.1.10909125" "26.3.11579264" "27.0.12077973" ];
           includeSystemImages = false;
           includeEmulator = false;
           useGoogleAPIs = true;
