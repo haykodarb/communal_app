@@ -1,4 +1,3 @@
-import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/models/message.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';

@@ -108,6 +108,7 @@ class ProfileOwnPage extends StatelessWidget {
     );
   }
 
+  // ignore: unused_element
   Widget _loanCount(ProfileOwnController controller) {
     return Builder(
       builder: (context) {

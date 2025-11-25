@@ -3,7 +3,6 @@ import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/routes.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';

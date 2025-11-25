@@ -64,7 +64,8 @@ class CommonCommunityCard extends StatelessWidget {
                           maxLines: 4,
                           textAlign: TextAlign.left,
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                             fontSize: 14,
                           ),
                         ),
@@ -79,14 +80,20 @@ class CommonCommunityCard extends StatelessWidget {
                     child: FutureBuilder(
                       future: CommunitiesBackend.getCommunityAvatar(community),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.active ||
-                            snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                                ConnectionState.active ||
+                            snapshot.connectionState ==
+                                ConnectionState.waiting) {
                           return const CommonLoadingImage();
                         }
 
-                        if (snapshot.data == null) {
+                        if (snapshot.data!.payload == null ||
+                            !snapshot.data!.success) {
                           return Container(
-                            color: Theme.of(context).colorScheme.tertiary.withOpacity(0.50),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .tertiary
+                                .withOpacity(0.50),
                             padding: const EdgeInsets.all(10),
                             child: FittedBox(
                               fit: BoxFit.scaleDown,
@@ -100,7 +107,7 @@ class CommonCommunityCard extends StatelessWidget {
                         }
 
                         return Image.memory(
-                          snapshot.data!,
+                          snapshot.data!.payload!,
                           fit: BoxFit.cover,
                         );
                       },

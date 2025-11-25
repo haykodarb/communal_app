@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "211459354538",
+    "project_id": "communal-ar",
+    "storage_bucket": "communal-ar.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211459354538:android:5ca9bcecf07a1de1bcc5d3",
+        "android_client_info": {
+          "package_name": "ar.communal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6h0uWvTZVGw3kb_uTVx-Ww5ccvjhdNPs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

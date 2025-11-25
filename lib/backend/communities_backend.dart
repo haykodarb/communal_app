@@ -12,27 +12,32 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class CommunitiesBackend {
   static final SupabaseClient _client = Supabase.instance.client;
 
-  static Future<Uint8List?> getCommunityAvatar(Community community) async {
+  static Future<BackendResponse<Uint8List>> getCommunityAvatar(
+      Community community) async {
     try {
       if (community.image_path == null) {
-        return null;
+        return BackendResponse(success: true, payload: null);
       }
 
-      FileInfo? file = await DefaultCacheManager().getFileFromCache(community.image_path!);
+      FileInfo? file =
+          await DefaultCacheManager().getFileFromCache(community.image_path!);
 
       Uint8List bytes;
 
       if (file != null) {
         bytes = await file.file.openRead().toBytes();
       } else {
-        bytes = await _client.storage.from('community_avatars').download(community.image_path!);
+        bytes = await _client.storage
+            .from('community_avatars')
+            .download(community.image_path!);
 
-        await DefaultCacheManager().putFile(community.image_path!, bytes, key: community.image_path!);
+        await DefaultCacheManager()
+            .putFile(community.image_path!, bytes, key: community.image_path!);
       }
 
-      return bytes;
+      return BackendResponse(success: true, payload: bytes);
     } catch (error) {
-      return null;
+      return BackendResponse(success: false);
     }
   }
 
@@ -66,8 +71,11 @@ class CommunitiesBackend {
 
   static Future<BackendResponse> getCommunityById(String id) async {
     try {
-      final Map<String, dynamic>? response =
-          await _client.from('communities').select('*, profiles(*)').eq('id', id).maybeSingle();
+      final Map<String, dynamic>? response = await _client
+          .from('communities')
+          .select('*, profiles(*)')
+          .eq('id', id)
+          .maybeSingle();
 
       if (response == null || response.isEmpty) {
         return BackendResponse(
@@ -77,7 +85,8 @@ class CommunitiesBackend {
       }
       Community community = Community.fromMap(response);
 
-      final Map<String, dynamic>? membershipResponse = await _client.from('memberships').select('*').match(
+      final Map<String, dynamic>? membershipResponse =
+          await _client.from('memberships').select('*').match(
         {
           'member': UsersBackend.currentUserId,
           'community': id,
@@ -86,7 +95,8 @@ class CommunitiesBackend {
         },
       ).maybeSingle();
 
-      community.isCurrentUserAdmin = membershipResponse != null && membershipResponse['is_admin'];
+      community.isCurrentUserAdmin =
+          membershipResponse != null && membershipResponse['is_admin'];
 
       return BackendResponse(
         success: true,
@@ -109,8 +119,9 @@ class CommunitiesBackend {
           .ilike('name', '%$query%')
           .range(pageKey, pageKey + pageSize - 1);
 
-      final List<Community> communities =
-          response.map((Map<String, dynamic> element) => Community.fromMap(element)).toList();
+      final List<Community> communities = response
+          .map((Map<String, dynamic> element) => Community.fromMap(element))
+          .toList();
 
       return BackendResponse(success: true, payload: communities);
     } catch (e) {
@@ -179,7 +190,8 @@ class CommunitiesBackend {
       if (imageBytes != null) {
         const String imageExtension = 'jpeg';
 
-        final Uint8List bytesToUpload = await FlutterImageCompress.compressWithList(
+        final Uint8List bytesToUpload =
+            await FlutterImageCompress.compressWithList(
           imageBytes,
           quality: 50,
           minHeight: 320,
@@ -187,15 +199,17 @@ class CommunitiesBackend {
           format: CompressFormat.jpeg,
         );
 
-        final String currentTime = DateTime.now().millisecondsSinceEpoch.toString();
+        final String currentTime =
+            DateTime.now().millisecondsSinceEpoch.toString();
 
         pathToUpload = '/$userId/$currentTime.$imageExtension';
 
-        String pathResponse = await _client.storage.from('community_avatars').uploadBinary(
-              pathToUpload,
-              bytesToUpload,
-              retryAttempts: 5,
-            );
+        String pathResponse =
+            await _client.storage.from('community_avatars').uploadBinary(
+                  pathToUpload,
+                  bytesToUpload,
+                  retryAttempts: 5,
+                );
 
         if (!pathResponse.isImageFileName) {
           return BackendResponse(
@@ -236,7 +250,8 @@ class CommunitiesBackend {
     }
   }
 
-  static Future<BackendResponse<Community>> createCommunity(Community community, Uint8List? image) async {
+  static Future<BackendResponse<Community>> createCommunity(
+      Community community, Uint8List? image) async {
     try {
       final String userId = _client.auth.currentUser!.id;
 
@@ -245,7 +260,8 @@ class CommunitiesBackend {
       if (image != null) {
         const String imageExtension = 'jpeg';
 
-        final Uint8List bytesToUpload = await FlutterImageCompress.compressWithList(
+        final Uint8List bytesToUpload =
+            await FlutterImageCompress.compressWithList(
           image,
           quality: 50,
           minHeight: 320,
@@ -253,7 +269,8 @@ class CommunitiesBackend {
           format: CompressFormat.jpeg,
         );
 
-        final String currentTime = DateTime.now().millisecondsSinceEpoch.toString();
+        final String currentTime =
+            DateTime.now().millisecondsSinceEpoch.toString();
 
         pathToUpload = '/$userId/$currentTime.$imageExtension';
 
@@ -295,8 +312,12 @@ class CommunitiesBackend {
 
   static Future<BackendResponse> deleteCommunity(Community community) async {
     try {
-      final Map<String, dynamic> response =
-          await _client.from('communities').delete().eq('id', community.id).select('*, profiles(*)').single();
+      final Map<String, dynamic> response = await _client
+          .from('communities')
+          .delete()
+          .eq('id', community.id)
+          .select('*, profiles(*)')
+          .single();
 
       return BackendResponse(
         success: response.isNotEmpty,

@@ -10,7 +10,6 @@ import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/profiles/profile_own/profile_own_edit/profile_own_edit_controller.dart';
 import 'package:communal/responsive.dart';
 import 'package:communal/routes.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';

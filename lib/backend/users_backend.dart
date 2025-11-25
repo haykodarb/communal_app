@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-import 'package:communal/backend/login_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/models/membership.dart';
@@ -17,8 +16,11 @@ class UsersBackend {
   }
 
   static Future<bool> validateUsername(String username) async {
-    final Map<String, dynamic>? foundUsername =
-        await _client.from('profiles').select().eq('username', username).maybeSingle();
+    final Map<String, dynamic>? foundUsername = await _client
+        .from('profiles')
+        .select()
+        .eq('username', username)
+        .maybeSingle();
 
     return foundUsername == null || foundUsername.isEmpty;
   }
@@ -38,10 +40,12 @@ class UsersBackend {
     }
   }
 
-  static Future<Uint8List?> getProfileAvatar(Profile profile, {int height = 240}) async {
+  static Future<Uint8List?> getProfileAvatar(Profile profile,
+      {int height = 240}) async {
     if (profile.avatar_path != null) {
       //FileInfo? file = await DefaultCacheManager().getFileFromCache('${profile.avatar_path!}-$height');
-      FileInfo? file = await DefaultCacheManager().getFileFromCache(profile.avatar_path!);
+      FileInfo? file =
+          await DefaultCacheManager().getFileFromCache(profile.avatar_path!);
 
       Uint8List bytes;
 
@@ -59,7 +63,9 @@ class UsersBackend {
             );
 
         //await DefaultCacheManager().putFile('${profile.avatar_path!}-$height', bytes, key: '${profile.avatar_path!}-$height');
-        await DefaultCacheManager().putFile('${profile.avatar_path!}-$height', bytes, key: profile.avatar_path!);
+        await DefaultCacheManager().putFile(
+            '${profile.avatar_path!}-$height', bytes,
+            key: profile.avatar_path!);
       }
 
       return bytes;
@@ -68,20 +74,56 @@ class UsersBackend {
     return null;
   }
 
+  static Future<BackendResponse> updateFCMToken(String token) async {
+    try {
+      final String userId = _client.auth.currentUser!.id;
+
+      final Map<String, dynamic> response = await _client
+          .from('profiles')
+          .update(
+            {
+              'fcm_token': token,
+            },
+          )
+          .eq('id', userId)
+          .select('*')
+          .single();
+
+      print(response);
+      return BackendResponse(
+        success: response.isNotEmpty,
+        payload: response.isNotEmpty
+            ? Profile.fromMap(response)
+            : 'Could not update TCM Token. Please try again.',
+      );
+    } on StorageException catch (error) {
+      print(error);
+      return BackendResponse(success: false, payload: error.message);
+    } on PostgrestException catch (error) {
+      print(error);
+      return BackendResponse(success: false, payload: error.message);
+    } catch (error) {
+      print(error);
+      return BackendResponse(success: false, payload: error);
+    }
+  }
+
   static Future<BackendResponse> updateProfile(
     Profile profile,
     Uint8List? image,
   ) async {
     try {
       final String userId = _client.auth.currentUser!.id;
-      final String currentTime = DateTime.now().millisecondsSinceEpoch.toString();
+      final String currentTime =
+          DateTime.now().millisecondsSinceEpoch.toString();
 
       String? fileName;
 
       if (image != null) {
         const String imageExtension = 'jpeg';
 
-        final Uint8List bytesToUpload = await FlutterImageCompress.compressWithList(
+        final Uint8List bytesToUpload =
+            await FlutterImageCompress.compressWithList(
           image,
           quality: 50,
           minHeight: 160,
@@ -116,7 +158,9 @@ class UsersBackend {
 
       return BackendResponse(
         success: response.isNotEmpty,
-        payload: response.isNotEmpty ? Profile.fromMap(response) : 'Could not update profile. Please try again.',
+        payload: response.isNotEmpty
+            ? Profile.fromMap(response)
+            : 'Could not update profile. Please try again.',
       );
     } on StorageException catch (error) {
       return BackendResponse(success: false, payload: error.message);
@@ -139,7 +183,8 @@ class UsersBackend {
 
   static Future<BackendResponse> getUserProfile(String id) async {
     try {
-      final Map<String, dynamic> response = await _client.from('profiles').select().eq('id', id).single();
+      final Map<String, dynamic> response =
+          await _client.from('profiles').select().eq('id', id).single();
 
       return BackendResponse(
         success: response.isNotEmpty,
@@ -163,7 +208,9 @@ class UsersBackend {
           .ilike('username', '%$query%')
           .range(pageKey, pageKey + pageSize - 1);
 
-      final List<Profile> profiles = response.map((Map<String, dynamic> element) => Profile.fromMap(element)).toList();
+      final List<Profile> profiles = response
+          .map((Map<String, dynamic> element) => Profile.fromMap(element))
+          .toList();
 
       return BackendResponse(payload: profiles, success: true);
     } catch (e) {
@@ -237,7 +284,8 @@ class UsersBackend {
           .single();
 
       if (response.isNotEmpty) {
-        return BackendResponse(success: true, payload: Membership.fromMap(response));
+        return BackendResponse(
+            success: true, payload: Membership.fromMap(response));
       }
 
       return BackendResponse(success: false);
@@ -266,7 +314,8 @@ class UsersBackend {
         },
       ).range(pageKey, pageKey + pageSize - 1);
 
-      final List<Membership> memberships = response.map((el) => Membership.fromMap(el)).toList();
+      final List<Membership> memberships =
+          response.map((el) => Membership.fromMap(el)).toList();
 
       return BackendResponse(success: true, payload: memberships);
     } catch (e) {
@@ -346,7 +395,8 @@ class UsersBackend {
           payload: Membership.fromMap(response),
         );
       } else {
-        return BackendResponse(success: false, payload: 'Could not find membership with this ID.');
+        return BackendResponse(
+            success: false, payload: 'Could not find membership with this ID.');
       }
     } on PostgrestException catch (error) {
       return BackendResponse(success: false, payload: error.message);
@@ -390,9 +440,11 @@ class UsersBackend {
     );
   }
 
-  static Future<BackendResponse> changeUserAdminStatus(String communityId, Profile user, bool shouldBeAdmin) async {
+  static Future<BackendResponse> changeUserAdminStatus(
+      String communityId, Profile user, bool shouldBeAdmin) async {
     try {
-      final List<dynamic> updateMembershipResponse = await _client.from('memberships').update(
+      final List<dynamic> updateMembershipResponse =
+          await _client.from('memberships').update(
         {
           'is_admin': shouldBeAdmin,
         },
@@ -433,7 +485,8 @@ class UsersBackend {
           .single();
 
       if (createMembershipResponse.isEmpty) {
-        return BackendResponse(success: false, error: 'Error in sending out invitation.');
+        return BackendResponse(
+            success: false, error: 'Error in sending out invitation.');
       }
 
       return BackendResponse(
@@ -466,7 +519,8 @@ class UsersBackend {
           .single();
 
       if (createMembershipResponse.isEmpty) {
-        return BackendResponse(success: false, payload: 'Error in sending out invitation.');
+        return BackendResponse(
+            success: false, payload: 'Error in sending out invitation.');
       }
 
       return BackendResponse(
@@ -485,7 +539,8 @@ class UsersBackend {
     String userId,
   ) async {
     try {
-      final List<dynamic> response = await _client.from('memberships').delete().match(
+      final List<dynamic> response =
+          await _client.from('memberships').delete().match(
         {
           'member': userId,
           'community': communityId,

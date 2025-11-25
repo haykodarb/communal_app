@@ -48,7 +48,8 @@ class CommunitySettingsPage extends StatelessWidget {
                               return const CommonLoadingImage();
                             }
 
-                            if (snapshot.data!.isEmpty) {
+                            if (!snapshot.data!.success ||
+                                snapshot.data!.payload == null) {
                               return Container(
                                 color: Theme.of(context).colorScheme.primary,
                                 child: Icon(
@@ -60,7 +61,7 @@ class CommunitySettingsPage extends StatelessWidget {
                             }
 
                             return Image.memory(
-                              snapshot.data!,
+                              snapshot.data!.payload!,
                               fit: BoxFit.cover,
                             );
                           },
@@ -91,17 +92,22 @@ class CommunitySettingsPage extends StatelessWidget {
                   child: Obx(
                     () {
                       final bool imageExists =
-                          controller.selectedBytes.value != null || controller.community.image_path != null;
+                          controller.selectedBytes.value != null ||
+                              controller.community.image_path != null;
 
                       final Color buttonBackground = imageExists
                           ? Theme.of(context).colorScheme.surfaceContainer
                           : Theme.of(context).colorScheme.primary;
 
-                      final Color iconColor =
-                          imageExists ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onPrimary;
+                      final Color iconColor = imageExists
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.onPrimary;
 
-                      final Border? buttonBorder =
-                          imageExists ? Border.all(color: Theme.of(context).colorScheme.primary, width: 2) : null;
+                      final Border? buttonBorder = imageExists
+                          ? Border.all(
+                              color: Theme.of(context).colorScheme.primary,
+                              width: 2)
+                          : null;
 
                       if (kIsWeb) {
                         return InkWell(
@@ -206,7 +212,9 @@ class CommunitySettingsPage extends StatelessWidget {
                           child: Obx(
                             () {
                               return ElevatedButton(
-                                onPressed: controller.edited.value ? () => controller.onSubmit(context) : null,
+                                onPressed: controller.edited.value
+                                    ? () => controller.onSubmit(context)
+                                    : null,
                                 child: Text(
                                   'Save'.tr,
                                 ),
@@ -217,7 +225,8 @@ class CommunitySettingsPage extends StatelessWidget {
                         const VerticalDivider(width: 10),
                         Expanded(
                           child: OutlinedButton(
-                            onPressed: () => controller.deleteCommunity(context),
+                            onPressed: () =>
+                                controller.deleteCommunity(context),
                             child: Text(
                               'Delete'.tr,
                             ),
@@ -254,7 +263,8 @@ class CommunitySettingsPage extends StatelessWidget {
               ),
               body: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
                   child: Form(
                     key: controller.formKey,
                     child: Column(
@@ -275,7 +285,8 @@ class CommunitySettingsPage extends StatelessWidget {
                         ),
                         const Divider(height: 10),
                         Visibility(
-                          visible: controller.community.isCurrentUserOwner || controller.community.description != null,
+                          visible: controller.community.isCurrentUserOwner ||
+                              controller.community.description != null,
                           child: CommonTextField(
                             enabled: controller.community.isCurrentUserOwner,
                             callback: controller.onDescriptorChange,

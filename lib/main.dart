@@ -1,19 +1,26 @@
-import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/user_preferences.dart';
+import 'package:communal/backend/users_backend.dart';
 import 'package:communal/dark_theme.dart';
+import 'package:communal/firebase_options.dart';
+import 'package:communal/light_theme.dart';
 import 'package:communal/localization.dart';
 import 'package:communal/routes.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:communal/light_theme.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   initializeDateFormatting();
 
@@ -56,6 +63,16 @@ void main() async {
         : RouteNames.communityListPage,
   );
 
+  await FirebaseMessaging.instance.requestPermission(provisional: true);
+
+  final String? fcmToken = await FirebaseMessaging.instance.getToken();
+
+  if (fcmToken != null) {
+    UsersBackend.updateFCMToken(fcmToken);
+  }
+
+  print('FCM TOKEN: $fcmToken');
+
   runApp(
     MyApp(
       themeMode: await UserPreferences.getSelectedThemeMode(),
@@ -66,16 +83,16 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  final ThemeMode themeMode;
+
+  final Locale locale;
+  final GoRouter router;
   const MyApp({
     super.key,
     required this.themeMode,
     required this.locale,
     required this.router,
   });
-
-  final ThemeMode themeMode;
-  final Locale locale;
-  final GoRouter router;
 
   @override
   Widget build(BuildContext context) {

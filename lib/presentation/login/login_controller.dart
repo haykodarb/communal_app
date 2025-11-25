@@ -1,7 +1,6 @@
 import 'package:communal/backend/login_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/login_form.dart';
-import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
 import 'package:communal/routes.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';

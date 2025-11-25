@@ -5,13 +5,12 @@
 *.swp
 .DS_Store
 .atom/
+.build/
 .buildlog/
 .history
 .svn/
+.swiftpm/
 migrate_working_dir/
-keystore
-
-android/key.properties
 
 # IntelliJ related
 *.iml
@@ -30,7 +29,6 @@ android/key.properties
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
-.packages
 .pub-cache/
 .pub/
 /build/
@@ -45,6 +43,3 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-~/tmp/ccls-cache
-scp.bash
-.direnv

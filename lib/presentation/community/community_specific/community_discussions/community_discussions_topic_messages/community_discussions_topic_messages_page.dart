@@ -2,7 +2,6 @@ import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/discussion.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
-import 'package:communal/presentation/common/common_responsive_page.dart';
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_topic_messages/community_discussions_topic_messages_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';

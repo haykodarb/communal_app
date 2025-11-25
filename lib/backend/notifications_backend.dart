@@ -1,66 +1,7 @@
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
-import 'package:communal/models/loan.dart';
-import 'package:communal/models/membership.dart';
-import 'package:communal/models/profile.dart';
-import 'package:get/get.dart';
+import 'package:communal/models/custom_notification.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-class NotificationType {
-  int id;
-  String table;
-  String event;
-
-  NotificationType({
-    required this.id,
-    required this.table,
-    required this.event,
-  });
-
-  NotificationType.fromMap(Map<String, dynamic> map)
-      : id = map['id'],
-        table = map['table'],
-        event = map['event'];
-
-  NotificationType.empty()
-      : id = 0,
-        table = '',
-        event = '';
-}
-
-class CustomNotification {
-  int id;
-  NotificationType type;
-  Loan? loan;
-  Membership? membership;
-  Profile? sender;
-  Profile receiver;
-  bool seen;
-
-  RxBool loading = false.obs;
-
-  CustomNotification({
-    required this.id,
-    required this.type,
-    required this.receiver,
-    required this.seen,
-  });
-
-  CustomNotification.empty()
-      : id = 0,
-        receiver = Profile.empty(),
-        type = NotificationType.empty(),
-        seen = false;
-
-  CustomNotification.fromMap(Map<String, dynamic> map)
-      : receiver = Profile.fromMap(map['receiver']),
-        sender = map['sender'] == null ? null : Profile.fromMap(map['sender']),
-        id = map['id'],
-        seen = map['seen'],
-        type = NotificationType.fromMap(map['type']),
-        loan = map['loans'] != null ? Loan.fromMap(map['loans']) : null,
-        membership = map['memberships'] != null ? Membership.fromMap(map['memberships']) : null;
-}
 
 class NotificationsBackend {
   static Future<BackendResponse> getUnreadNotificationsCount() async {
@@ -69,11 +10,16 @@ class NotificationsBackend {
 
       final String userId = client.auth.currentUser!.id;
 
-      final int result = await client.from('notifications').count().eq('receiver', userId).eq('seen', false);
+      final int result = await client
+          .from('notifications')
+          .count()
+          .eq('receiver', userId)
+          .eq('seen', false);
 
       return BackendResponse(success: true, payload: result);
     } catch (e) {
-      return BackendResponse(success: false, payload: 'Error, please try again.');
+      return BackendResponse(
+          success: false, payload: 'Error, please try again.');
     }
   }
 
@@ -118,7 +64,8 @@ class NotificationsBackend {
         .eq('seen', false);
   }
 
-  static Future<BackendResponse> getNotifications(int pageKey, int count) async {
+  static Future<BackendResponse> getNotifications(
+      int pageKey, int count) async {
     try {
       final SupabaseClient client = Supabase.instance.client;
 
@@ -140,7 +87,7 @@ class NotificationsBackend {
       ).toList();
 
       return BackendResponse(success: true, payload: notifications);
-    } catch (e, stack) {
+    } catch (e, _) {
       return BackendResponse(
         success: false,
         payload: e,

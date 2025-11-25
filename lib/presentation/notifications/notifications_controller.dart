@@ -3,6 +3,7 @@ import 'package:communal/backend/notifications_backend.dart';
 import 'package:communal/backend/realtime_backend.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
+import 'package:communal/models/custom_notification.dart';
 import 'package:communal/models/realtime_message.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/presentation/common/common_confirmation_dialog.dart';
@@ -14,7 +15,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class NotificationsController extends GetxController {
   static const int pageSize = 20;
 
-  final CommonListViewController<CustomNotification> listViewController = CommonListViewController<CustomNotification>(
+  final CommonListViewController<CustomNotification> listViewController =
+      CommonListViewController<CustomNotification>(
     pageSize: pageSize,
   );
 
@@ -26,7 +28,8 @@ class NotificationsController extends GetxController {
 
     listViewController.registerNewPageCallback(loadNotifications);
 
-    final Stream<RealtimeMessage> stream = RealtimeBackend.streamController.stream;
+    final Stream<RealtimeMessage> stream =
+        RealtimeBackend.streamController.stream;
 
     streamSubscription = stream.listen(realtimeListener);
   }
@@ -35,17 +38,21 @@ class NotificationsController extends GetxController {
     if (realtime.table != 'notifications') return;
 
     if (realtime.eventType == PostgresChangeEvent.delete) {
-      if ((realtime.old_row?.isEmpty ?? true) || realtime.old_row!['id'] == null) return;
+      if ((realtime.old_row?.isEmpty ?? true) ||
+          realtime.old_row!['id'] == null) return;
 
-      listViewController.itemList.removeWhere((element) => element.id == realtime.old_row!['id']);
+      listViewController.itemList
+          .removeWhere((element) => element.id == realtime.old_row!['id']);
       listViewController.itemList.refresh();
       listViewController.pageKey--;
     }
 
     if (realtime.new_row.isEmpty) return;
-    if (realtime.new_row['receiver'] == null || realtime.new_row['receiver'] != UsersBackend.currentUserId) return;
+    if (realtime.new_row['receiver'] == null ||
+        realtime.new_row['receiver'] != UsersBackend.currentUserId) return;
 
-    final BackendResponse response = await NotificationsBackend.getNotificationById(
+    final BackendResponse response =
+        await NotificationsBackend.getNotificationById(
       realtime.new_row['id'],
     );
 
@@ -72,7 +79,8 @@ class NotificationsController extends GetxController {
   }
 
   Future<List<CustomNotification>> loadNotifications(int pageKey) async {
-    final BackendResponse response = await NotificationsBackend.getNotifications(pageKey, pageSize);
+    final BackendResponse response =
+        await NotificationsBackend.getNotifications(pageKey, pageSize);
 
     if (response.success) {
       List<CustomNotification> new_notifs = response.payload;

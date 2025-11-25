@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/backend/communities_backend.dart';
@@ -276,30 +275,27 @@ class SearchCommunityDetailsPage extends StatelessWidget {
     );
   }
 
-  FutureBuilder<Uint8List?> _buildCommunityAvatar(Community community) {
+  FutureBuilder<BackendResponse?> _buildCommunityAvatar(Community community) {
     return FutureBuilder(
       future: CommunitiesBackend.getCommunityAvatar(community),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.active || snapshot.connectionState == ConnectionState.waiting) {
+        if (!snapshot.hasData) {
           return const CommonLoadingImage();
         }
 
-        if (snapshot.data == null) {
+        if (!snapshot.data!.success || snapshot.data!.payload == null) {
           return Container(
-            padding: const EdgeInsets.all(10),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Icon(
-                Atlas.users,
-                color: Theme.of(context).colorScheme.surface,
-                size: 150,
-              ),
+            color: Theme.of(context).colorScheme.primary,
+            child: Icon(
+              Atlas.users,
+              color: Theme.of(context).colorScheme.surface,
+              size: 150,
             ),
           );
         }
 
         return Image.memory(
-          snapshot.data!,
+          snapshot.data!.payload,
           fit: BoxFit.cover,
         );
       },

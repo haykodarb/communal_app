@@ -11,13 +11,18 @@ class LandingController extends GetxController {
 class LandingPage extends StatelessWidget {
   const LandingPage({super.key});
 
+  // ignore: unused_field
   static const List<String> _images = [
     'assets/crow.svg',
     'assets/crow.svg',
     'assets/crow.svg',
   ];
 
-  static final List<String> _titles = ['Upload your books'.tr, 'Join communities'.tr, 'Share books'.tr];
+  static final List<String> _titles = [
+    'Upload your books'.tr,
+    'Join communities'.tr,
+    'Share books'.tr
+  ];
 
   static final List<String> _copies = [
     'landing-upload-books'.tr,
@@ -27,7 +32,8 @@ class LandingPage extends StatelessWidget {
 
   Widget _pageIndicator(BuildContext context, LandingController controller) {
     final Color selectedColor = Theme.of(context).colorScheme.primary;
-    final Color unselectedColor = Theme.of(context).colorScheme.primary.withOpacity(0.4);
+    final Color unselectedColor =
+        Theme.of(context).colorScheme.primary.withValues(alpha: 0.4);
 
     return SizedBox(
       width: 200,
@@ -42,7 +48,9 @@ class LandingPage extends StatelessWidget {
                 height: 20,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(50),
-                  color: controller.pageIndex.value == 0 ? selectedColor : unselectedColor,
+                  color: controller.pageIndex.value == 0
+                      ? selectedColor
+                      : unselectedColor,
                 ),
               );
             },
@@ -55,7 +63,9 @@ class LandingPage extends StatelessWidget {
                 height: 20,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(50),
-                  color: controller.pageIndex.value == 1 ? selectedColor : unselectedColor,
+                  color: controller.pageIndex.value == 1
+                      ? selectedColor
+                      : unselectedColor,
                 ),
               );
             },
@@ -68,7 +78,9 @@ class LandingPage extends StatelessWidget {
                 height: 20,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(50),
-                  color: controller.pageIndex.value == 2 ? selectedColor : unselectedColor,
+                  color: controller.pageIndex.value == 2
+                      ? selectedColor
+                      : unselectedColor,
                 ),
               );
             },
@@ -96,7 +108,8 @@ class LandingPage extends StatelessWidget {
               child: SizedBox(
                 width: 600,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
                   child: Column(
                     children: [
                       const Divider(height: 30),
@@ -127,7 +140,9 @@ class LandingPage extends StatelessWidget {
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 24,
-                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
                                   ),
                                   textAlign: TextAlign.center,
                                 );
@@ -142,7 +157,9 @@ class LandingPage extends StatelessWidget {
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 16,
-                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
                                     ),
                                     textAlign: TextAlign.center,
                                   );

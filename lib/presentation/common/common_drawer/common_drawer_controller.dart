@@ -5,7 +5,6 @@ import 'package:communal/backend/realtime_backend.dart';
 import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
-import 'package:communal/models/message.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/models/realtime_message.dart';
 import 'package:communal/routes.dart';

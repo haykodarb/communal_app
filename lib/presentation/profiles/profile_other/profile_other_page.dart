@@ -57,7 +57,8 @@ class ProfileOtherPage extends StatelessWidget {
                           profile.email ?? '',
                           style: TextStyle(
                             fontWeight: FontWeight.w400,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                             fontSize: 16,
                           ),
                         ),
@@ -114,6 +115,7 @@ class ProfileOtherPage extends StatelessWidget {
     );
   }
 
+  // ignore: unused_element
   Widget _loanCount(ProfileOtherController controller) {
     return Builder(
       builder: (context) {
@@ -153,7 +155,8 @@ class ProfileOtherPage extends StatelessWidget {
       builder: (BuildContext context) {
         final Color selectedBg = Theme.of(context).colorScheme.primary;
         final Color selectedFg = Theme.of(context).colorScheme.onPrimary;
-        final Color unselectedBg = Theme.of(context).colorScheme.surfaceContainer;
+        final Color unselectedBg =
+            Theme.of(context).colorScheme.surfaceContainer;
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           color: Colors.transparent,
@@ -174,7 +177,9 @@ class ProfileOtherPage extends StatelessWidget {
                       () {
                         return Container(
                           decoration: BoxDecoration(
-                            color: controller.currentTabIndex.value == 0 ? selectedBg : unselectedBg,
+                            color: controller.currentTabIndex.value == 0
+                                ? selectedBg
+                                : unselectedBg,
                             borderRadius: BorderRadius.circular(40),
                           ),
                           alignment: Alignment.center,
@@ -182,7 +187,9 @@ class ProfileOtherPage extends StatelessWidget {
                             'Books',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              color: controller.currentTabIndex.value == 0 ? selectedFg : selectedBg,
+                              color: controller.currentTabIndex.value == 0
+                                  ? selectedFg
+                                  : selectedBg,
                             ),
                           ),
                         );
@@ -197,7 +204,9 @@ class ProfileOtherPage extends StatelessWidget {
                       () {
                         return Container(
                           decoration: BoxDecoration(
-                            color: controller.currentTabIndex.value == 1 ? selectedBg : unselectedBg,
+                            color: controller.currentTabIndex.value == 1
+                                ? selectedBg
+                                : unselectedBg,
                             borderRadius: BorderRadius.circular(40),
                           ),
                           alignment: Alignment.center,
@@ -205,7 +214,9 @@ class ProfileOtherPage extends StatelessWidget {
                             'Reviews',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              color: controller.currentTabIndex.value == 1 ? selectedFg : selectedBg,
+                              color: controller.currentTabIndex.value == 1
+                                  ? selectedFg
+                                  : selectedBg,
                             ),
                           ),
                         );
@@ -225,7 +236,8 @@ class ProfileOtherPage extends StatelessWidget {
     return Builder(
       builder: (context) {
         return Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -255,7 +267,9 @@ class ProfileOtherPage extends StatelessWidget {
                               fontSize: 14,
                               fontWeight: FontWeight.w400,
                               height: 1.2,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                           ),
                           const Divider(height: 5),
@@ -266,7 +280,9 @@ class ProfileOtherPage extends StatelessWidget {
                               fontWeight: FontWeight.w400,
                               fontStyle: FontStyle.italic,
                               height: 1.2,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                           ),
                         ],
@@ -342,16 +358,24 @@ class ProfileOtherPage extends StatelessWidget {
           extendBody: true,
           appBar: Responsive.isMobile(context)
               ? AppBar(title: const Text('Profile'))
-              : (GoRouter.of(context).canPop() ? AppBar(title: const Text('Profile')) : null),
-          drawer:
-              Responsive.isMobile(context) ? (GoRouter.of(context).canPop() ? null : const CommonDrawerWidget()) : null,
+              : (GoRouter.of(context).canPop()
+                  ? AppBar(title: const Text('Profile'))
+                  : null),
+          drawer: Responsive.isMobile(context)
+              ? (GoRouter.of(context).canPop()
+                  ? null
+                  : const CommonDrawerWidget())
+              : null,
           body: CustomScrollView(
             slivers: [
               SliverToBoxAdapter(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Divider(height: Responsive.isMobile(context) || context.canPop() ? 0 : 20),
+                    Divider(
+                        height: Responsive.isMobile(context) || context.canPop()
+                            ? 0
+                            : 20),
                     Obx(
                       () {
                         if (controller.loadingProfile.value) {
