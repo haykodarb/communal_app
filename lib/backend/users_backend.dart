@@ -89,7 +89,6 @@ class UsersBackend {
           .select('*')
           .single();
 
-      print(response);
       return BackendResponse(
         success: response.isNotEmpty,
         payload: response.isNotEmpty
@@ -97,13 +96,10 @@ class UsersBackend {
             : 'Could not update TCM Token. Please try again.',
       );
     } on StorageException catch (error) {
-      print(error);
       return BackendResponse(success: false, payload: error.message);
     } on PostgrestException catch (error) {
-      print(error);
       return BackendResponse(success: false, payload: error.message);
     } catch (error) {
-      print(error);
       return BackendResponse(success: false, payload: error);
     }
   }

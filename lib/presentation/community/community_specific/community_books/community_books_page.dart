@@ -52,6 +52,7 @@ class CommunityBooksPage extends StatelessWidget {
                   horizontal: 10,
                   vertical: 10,
                 ),
+		scrollController: communityController.scrollController,
                 controller: controller.listViewController,
                 childBuilder: (Book book) => InkWell(
                   child: CommonVerticalBookCard(book: book),

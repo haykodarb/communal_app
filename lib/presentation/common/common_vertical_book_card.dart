@@ -25,7 +25,8 @@ class CommonVerticalBookCard extends StatelessWidget {
               context.push(
                 book.owner.isCurrentUser
                     ? '${RouteNames.myBooks}/${book.id}'
-                    : RouteNames.foreignBooksPage.replaceFirst(':bookId', book.id),
+                    : RouteNames.foreignBooksPage
+                        .replaceFirst(':bookId', book.id),
                 extra: {
                   'ownerId': book.owner.id,
                 },
@@ -40,6 +41,7 @@ class CommonVerticalBookCard extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         margin: EdgeInsets.zero,
         child: Container(
+          width: axis == Axis.vertical ? null : 200,
           padding: const EdgeInsets.all(5),
           child: Column(
             children: [
@@ -51,9 +53,29 @@ class CommonVerticalBookCard extends StatelessWidget {
                 ),
               ),
               const Divider(height: 10),
-              AdjustableWidthText(
-                card: this,
-                imageKey: _imageKey,
+              Text(
+                book.title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  height: 1.2,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const Divider(height: 5),
+              Text(
+                book.author,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                style: TextStyle(
+                  overflow: TextOverflow.ellipsis,
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontSize: 12,
+                  height: 1.2,
+                ),
               ),
             ],
           ),
@@ -78,32 +100,12 @@ class AdjustableWidthText extends StatefulWidget {
 }
 
 class _AdjustableWidthTextState extends State<AdjustableWidthText> {
-  double imageWidth = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => getImageWidth());
-  }
-
-  void getImageWidth() {
-    if (widget.imageKey.currentContext != null) {
-      final RenderBox renderBox = widget.imageKey.currentContext!.findRenderObject() as RenderBox;
-      if (renderBox.hasSize) {
-        final width = renderBox.size.width;
-        if (width != imageWidth) {
-          setState(() {
-            imageWidth = width;
-          });
-        }
-      }
-    }
-  }
+  double imageWidth = 200;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: widget.card.axis == Axis.vertical ? null : (imageWidth > 0 ? imageWidth : null),
+      width: widget.card.axis == Axis.vertical ? null : 200,
       padding: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
       child: Column(
         children: [

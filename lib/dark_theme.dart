@@ -17,7 +17,8 @@ const ColorScheme _darkScheme = ColorScheme.dark(
   onError: Color(0xFFe0def4),
 );
 
-final BottomNavigationBarThemeData _bottomNavigationBarTheme = BottomNavigationBarThemeData(
+final BottomNavigationBarThemeData _bottomNavigationBarTheme =
+    BottomNavigationBarThemeData(
   type: BottomNavigationBarType.fixed,
   selectedItemColor: _darkScheme.primary,
   unselectedItemColor: _darkScheme.onSurface,
@@ -44,12 +45,13 @@ final AppBarTheme _appBarTheme = AppBarTheme(
   ),
 );
 
-final ElevatedButtonThemeData _elevatedButtonThemeData = ElevatedButtonThemeData(
+final ElevatedButtonThemeData _elevatedButtonThemeData =
+    ElevatedButtonThemeData(
   style: ElevatedButton.styleFrom(
     shadowColor: _darkScheme.primary,
     backgroundColor: _darkScheme.primary,
     foregroundColor: _darkScheme.onPrimary,
-    disabledBackgroundColor: _darkScheme.primary.withOpacity(0.5),
+    disabledBackgroundColor: _darkScheme.primary.withValues(alpha: 0.5),
     disabledForegroundColor: _darkScheme.surface,
     textStyle: const TextStyle(
       fontSize: 20,
@@ -64,9 +66,11 @@ final ElevatedButtonThemeData _elevatedButtonThemeData = ElevatedButtonThemeData
   ),
 );
 
-const DividerThemeData _dividerThemeData = DividerThemeData(color: Colors.transparent);
+const DividerThemeData _dividerThemeData =
+    DividerThemeData(color: Colors.transparent);
 
-final OutlinedButtonThemeData _outlinedButtonThemeData = OutlinedButtonThemeData(
+final OutlinedButtonThemeData _outlinedButtonThemeData =
+    OutlinedButtonThemeData(
   style: OutlinedButton.styleFrom(
     foregroundColor: _darkScheme.primary,
     side: BorderSide(
@@ -115,7 +119,8 @@ final IconThemeData _iconThemeData = IconThemeData(
   color: _darkScheme.onSurface,
 );
 
-final FloatingActionButtonThemeData _floatingActionButtonThemeData = FloatingActionButtonThemeData(
+final FloatingActionButtonThemeData _floatingActionButtonThemeData =
+    FloatingActionButtonThemeData(
   backgroundColor: _darkScheme.primary,
   foregroundColor: _darkScheme.onPrimary,
   shape: RoundedRectangleBorder(

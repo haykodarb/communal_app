@@ -162,7 +162,6 @@ class MessagesPage extends StatelessWidget {
             noItemsText: 'No messages yet.\nChat with other users to get started.',
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
             childBuilder: (rx_message) => _chatCard(controller, rx_message),
-            separator: const Divider(height: 5),
             controller: controller.listViewController,
           ),
         );

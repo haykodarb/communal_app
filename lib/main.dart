@@ -1,12 +1,11 @@
+import 'package:communal/backend/firebase_backend.dart';
 import 'package:communal/backend/user_preferences.dart';
-import 'package:communal/backend/users_backend.dart';
 import 'package:communal/dark_theme.dart';
 import 'package:communal/firebase_options.dart';
 import 'package:communal/light_theme.dart';
 import 'package:communal/localization.dart';
 import 'package:communal/routes.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -63,15 +62,7 @@ void main() async {
         : RouteNames.communityListPage,
   );
 
-  await FirebaseMessaging.instance.requestPermission(provisional: true);
-
-  final String? fcmToken = await FirebaseMessaging.instance.getToken();
-
-  if (fcmToken != null) {
-    UsersBackend.updateFCMToken(fcmToken);
-  }
-
-  print('FCM TOKEN: $fcmToken');
+  await FirebaseBackend.firebaseInit(router);
 
   runApp(
     MyApp(
@@ -113,6 +104,14 @@ class MyApp extends StatelessWidget {
       darkTheme: darkTheme,
       themeMode: themeMode,
       color: Theme.of(context).colorScheme.surface,
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            textScaler: TextScaler.noScaling,
+          ),
+          child: child!,
+        );
+      },
     );
   }
 }

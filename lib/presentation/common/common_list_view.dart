@@ -80,6 +80,7 @@ class CommonListViewController<ItemType> extends GetxController {
   void registerScrollController(ScrollController newScrollController) {
     scrollController = newScrollController;
     scrollController?.addListener(scrollListener);
+    print('controller added');
   }
 
   @override
@@ -91,7 +92,9 @@ class CommonListViewController<ItemType> extends GetxController {
   Future<void> scrollListener() async {
     scrollPosition.value = scrollController?.position.pixels.toInt() ?? 0;
 
-    if (scrollController!.position.maxScrollExtent - scrollController!.position.pixels < 200) {
+    if (scrollController!.position.maxScrollExtent -
+            scrollController!.position.pixels <
+        200) {
       if (loadingMore) return;
       if (fullyLoaded) return;
       if (newPageCallback == null) return;
@@ -150,7 +153,8 @@ class CommonGridView<ItemType> extends StatelessWidget {
     return GetBuilder(
       init: controller,
       initState: (state) {
-        controller.registerScrollController(scrollController ?? ScrollController());
+        controller
+            .registerScrollController(scrollController ?? ScrollController());
       },
       builder: (_) {
         return Obx(
@@ -294,7 +298,8 @@ class CommonListView<ItemType> extends StatelessWidget {
     return GetBuilder(
         init: controller,
         initState: (state) {
-          controller.registerScrollController(scrollController ?? ScrollController());
+          controller
+              .registerScrollController(scrollController ?? ScrollController());
         },
         builder: (_) {
           return Obx(
@@ -390,12 +395,15 @@ class CommonListView<ItemType> extends StatelessWidget {
                           child: IconButton(
                             onPressed: () {
                               controller.scrollController!.animateTo(
-                                controller.scrollController!.position.pixels - 400,
+                                controller.scrollController!.position.pixels -
+                                    400,
                                 duration: const Duration(milliseconds: 300),
                                 curve: Curves.linear,
                               );
                             },
-                            style: IconButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary),
+                            style: IconButton.styleFrom(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.primary),
                             icon: Icon(
                               Icons.chevron_left,
                               color: Theme.of(context).colorScheme.onPrimary,
@@ -410,26 +418,34 @@ class CommonListView<ItemType> extends StatelessWidget {
                     () {
                       final int position = controller.scrollPosition.value;
 
-                      final int maxScrollExtent = (controller.scrollController?.hasClients ?? false)
-                          ? (controller.scrollController!.position.hasContentDimensions
-                              ? controller.scrollController!.position.maxScrollExtent.toInt()
-                              : 0)
-                          : 0;
+                      final int maxScrollExtent =
+                          (controller.scrollController?.hasClients ?? false)
+                              ? (controller.scrollController!.position
+                                      .hasContentDimensions
+                                  ? controller.scrollController!.position
+                                      .maxScrollExtent
+                                      .toInt()
+                                  : 0)
+                              : 0;
 
                       return Visibility(
-                        visible: axis == Axis.horizontal && position != maxScrollExtent,
+                        visible: axis == Axis.horizontal &&
+                            position != maxScrollExtent,
                         child: Container(
                           padding: const EdgeInsets.only(right: 20),
                           alignment: Alignment.centerRight,
                           child: IconButton(
                             onPressed: () {
                               controller.scrollController!.animateTo(
-                                controller.scrollController!.position.pixels + 400,
+                                controller.scrollController!.position.pixels +
+                                    400,
                                 duration: const Duration(milliseconds: 300),
                                 curve: Curves.linear,
                               );
                             },
-                            style: IconButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary),
+                            style: IconButton.styleFrom(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.primary),
                             icon: Icon(
                               Icons.chevron_right,
                               color: Theme.of(context).colorScheme.onPrimary,

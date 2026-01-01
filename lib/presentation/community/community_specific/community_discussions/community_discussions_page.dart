@@ -188,7 +188,6 @@ class CommunityDiscussionsPage extends StatelessWidget {
             CommonListView<DiscussionTopic>(
               noItemsText: 'community-topics-no-items'.tr,
               childBuilder: (DiscussionTopic topic) => _topicCard(topic, controller),
-              separator: const Divider(height: 5),
               controller: controller.listViewController,
               scrollController: communityController.scrollController,
               isSliver: true,

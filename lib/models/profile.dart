@@ -11,6 +11,7 @@ class Profile {
   String? email;
   String? bio;
   String? avatar_path;
+  String? fcm_token;
   bool is_admin = false;
 
   final RxBool loading = false.obs;
@@ -59,5 +60,6 @@ class Profile {
         show_email = map['show_email'],
         bio = map['bio'],
         email = map['email'],
+        fcm_token = map['fcm_token'],
         avatar_path = map['avatar_path'];
 }

@@ -93,7 +93,7 @@ class CommonCommunityCard extends StatelessWidget {
                             color: Theme.of(context)
                                 .colorScheme
                                 .tertiary
-                                .withOpacity(0.50),
+                                .withValues(alpha: 0.50),
                             padding: const EdgeInsets.all(10),
                             child: FittedBox(
                               fit: BoxFit.scaleDown,

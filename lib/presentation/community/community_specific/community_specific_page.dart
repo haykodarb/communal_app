@@ -13,12 +13,20 @@ class CommunitySpecificPage extends StatelessWidget {
   const CommunitySpecificPage({super.key, required this.communityId});
   final String communityId;
 
-  static const List<IconData> _icons = <IconData>[Atlas.book, Atlas.chats, Atlas.users];
+  static const List<IconData> _icons = <IconData>[
+    Atlas.book,
+    Atlas.chats,
+    Atlas.users
+  ];
 
   Widget _tabBarItem(CommunitySpecificController controller, int index) {
     return Builder(
       builder: (context) {
-        final List<String> labels = <String>['Books'.tr, 'Discuss'.tr, 'Members'.tr];
+        final List<String> labels = <String>[
+          'Books'.tr,
+          'Discuss'.tr,
+          'Members'.tr
+        ];
         return Obx(
           () {
             final bool isSelected = controller.selectedIndex.value == index;
@@ -114,7 +122,8 @@ class CommunitySpecificPage extends StatelessWidget {
                         child: ScaleTransition(
                           scale: controller.floatingActionButtonAnimation,
                           child: FloatingActionButton(
-                            onPressed: () => controller.discussionsController.goToDiscussionsTopicCreate(context),
+                            onPressed: () => controller.discussionsController
+                                .goToDiscussionsTopicCreate(context),
                             child: const Icon(Atlas.add_messages),
                           ),
                         ),
@@ -127,7 +136,8 @@ class CommunitySpecificPage extends StatelessWidget {
                               child: ScaleTransition(
                                 scale: controller.floatingActionButtonAnimation,
                                 child: FloatingActionButton(
-                                  onPressed: () => controller.membersController.addUser(context),
+                                  onPressed: () => controller.membersController
+                                      .addUser(context),
                                   child: const Icon(Atlas.user_plus),
                                 ),
                               ),
@@ -141,7 +151,9 @@ class CommunitySpecificPage extends StatelessWidget {
               bottomNavigationBar: Theme(
                 data: Theme.of(context).copyWith(
                   highlightColor: Colors.transparent,
-                  dialogBackgroundColor: Colors.transparent,
+                  dialogTheme: const DialogThemeData(
+                    backgroundColor: Colors.transparent,
+                  ),
                   splashColor: Colors.transparent,
                 ),
                 child: SizedBox(
@@ -151,13 +163,15 @@ class CommunitySpecificPage extends StatelessWidget {
                       position: controller.bottomBarAnimation,
                       child: Container(
                         color: Colors.transparent,
-                        margin: const EdgeInsets.only(bottom: 10, right: 10, left: 10),
+                        margin: const EdgeInsets.only(
+                            bottom: 10, right: 10, left: 10),
                         height: 70,
                         constraints: const BoxConstraints.tightFor(width: 200),
                         child: Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surfaceContainer,
+                            color:
+                                Theme.of(context).colorScheme.surfaceContainer,
                             borderRadius: BorderRadius.circular(50),
                             boxShadow: [
                               BoxShadow(

@@ -39,7 +39,9 @@ class NotificationsController extends GetxController {
 
     if (realtime.eventType == PostgresChangeEvent.delete) {
       if ((realtime.old_row?.isEmpty ?? true) ||
-          realtime.old_row!['id'] == null) return;
+          realtime.old_row!['id'] == null) {
+        return;
+      }
 
       listViewController.itemList
           .removeWhere((element) => element.id == realtime.old_row!['id']);
@@ -49,7 +51,9 @@ class NotificationsController extends GetxController {
 
     if (realtime.new_row.isEmpty) return;
     if (realtime.new_row['receiver'] == null ||
-        realtime.new_row['receiver'] != UsersBackend.currentUserId) return;
+        realtime.new_row['receiver'] != UsersBackend.currentUserId) {
+      return;
+    }
 
     final BackendResponse response =
         await NotificationsBackend.getNotificationById(

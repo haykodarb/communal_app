@@ -59,7 +59,13 @@ class LoansPage extends StatelessWidget {
         const Divider(height: 20),
         CommonFilterRow(
           title: 'Filter by status'.tr,
-          options: ['All'.tr, 'Pending'.tr, 'Accepted'.tr, 'Completed'.tr, 'Rejected'.tr],
+          options: [
+            'All'.tr,
+            'Pending'.tr,
+            'Accepted'.tr,
+            'Completed'.tr,
+            'Rejected'.tr
+          ],
           initialIndex: filterByStateIndex,
           onIndexChange: controller.onFilterByStatusChanged,
         ),
@@ -85,7 +91,8 @@ class LoansPage extends StatelessWidget {
           },
           child: Card(
             margin: EdgeInsets.zero,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             child: Container(
               height: 160,
               padding: const EdgeInsets.all(20),
@@ -112,14 +119,17 @@ class LoansPage extends StatelessWidget {
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                             height: 1.2,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                         const Expanded(child: Divider(height: 5)),
                         Row(
                           children: [
                             Text(
-                              loan.loanee.isCurrentUser ? loan.book.owner.username : loan.loanee.username,
+                              loan.loanee.isCurrentUser
+                                  ? loan.book.owner.username
+                                  : loan.loanee.username,
                               style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
@@ -130,13 +140,22 @@ class LoansPage extends StatelessWidget {
                             Container(
                               decoration: BoxDecoration(
                                 color: loan.loanee.isCurrentUser
-                                    ? Theme.of(context).colorScheme.tertiary.withOpacity(0.25)
-                                    : Theme.of(context).colorScheme.primary.withOpacity(0.25),
+                                    ? Theme.of(context)
+                                        .colorScheme
+                                        .tertiary
+                                        .withValues(alpha: 0.25)
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withValues(alpha: 0.25),
                                 borderRadius: BorderRadius.circular(40),
                               ),
-                              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 2, horizontal: 10),
                               child: Text(
-                                loan.loanee.isCurrentUser ? 'Owner'.tr : 'Loanee'.tr,
+                                loan.loanee.isCurrentUser
+                                    ? 'Owner'.tr
+                                    : 'Loanee'.tr,
                                 style: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w400,
@@ -159,7 +178,8 @@ class LoansPage extends StatelessWidget {
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                             height: 1.2,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                         const Divider(height: 5),
@@ -169,7 +189,8 @@ class LoansPage extends StatelessWidget {
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                             height: 1.2,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ],
@@ -217,8 +238,12 @@ class LoansPage extends StatelessWidget {
         return DefaultTabController(
           length: 3,
           child: Scaffold(
-            appBar: Responsive.isMobile(context) ? AppBar(title: Text('Loans'.tr)) : null,
-            drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
+            appBar: Responsive.isMobile(context)
+                ? AppBar(title: Text('Loans'.tr))
+                : null,
+            drawer: Responsive.isMobile(context)
+                ? const CommonDrawerWidget()
+                : null,
             body: CustomScrollView(
               controller: controller.scrollController,
               slivers: [

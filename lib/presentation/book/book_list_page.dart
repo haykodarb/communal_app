@@ -59,7 +59,9 @@ class BookListPage extends StatelessWidget {
                                     book.title,
                                     style: TextStyle(
                                       fontSize: 16,
-                                      color: Theme.of(context).colorScheme.onSurface,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
                                       fontWeight: FontWeight.w600,
                                       height: 1.25,
                                     ),
@@ -69,7 +71,9 @@ class BookListPage extends StatelessWidget {
                                     book.author,
                                     style: TextStyle(
                                       fontSize: 14,
-                                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
                                       fontWeight: FontWeight.w400,
                                       height: 1.25,
                                     ),
@@ -77,9 +81,12 @@ class BookListPage extends StatelessWidget {
                                   const Expanded(child: Divider()),
                                   Container(
                                     height: 30,
-                                    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 5, horizontal: 10),
                                     decoration: BoxDecoration(
-                                      color: book.loaned ? purple.withOpacity(0.25) : green.withOpacity(0.25),
+                                      color: book.loaned
+                                          ? purple.withValues(alpha: 0.25)
+                                          : green.withValues(alpha: 0.25),
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                     child: Row(
@@ -95,7 +102,9 @@ class BookListPage extends StatelessWidget {
                                         ),
                                         const VerticalDivider(width: 10),
                                         Text(
-                                          book.loaned ? 'Loaned'.tr : 'Available'.tr,
+                                          book.loaned
+                                              ? 'Loaned'.tr
+                                              : 'Available'.tr,
                                         ),
                                       ],
                                     ),
@@ -176,8 +185,11 @@ class BookListPage extends StatelessWidget {
       init: BookListController(),
       builder: (BookListController controller) {
         return Scaffold(
-          drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
-          appBar: Responsive.isMobile(context) ? AppBar(elevation: 10, title: Text('My Books'.tr)) : null,
+          drawer:
+              Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
+          appBar: Responsive.isMobile(context)
+              ? AppBar(elevation: 10, title: Text('My Books'.tr))
+              : null,
           floatingActionButton: FloatingActionButton(
             onPressed: () => controller.goToAddBookPage(context),
             child: const Icon(
@@ -202,12 +214,15 @@ class BookListPage extends StatelessWidget {
                 floating: true,
               ),
               CommonListView<Book>(
-                childBuilder: (Book book) => CommonKeepaliveWrapper(child: _bookCard(book)),
-                separator: const Divider(height: 5),
+                childBuilder: (Book book) => CommonKeepaliveWrapper(
+                  child: _bookCard(book),
+                ),
                 controller: controller.listViewController,
                 scrollController: controller.scrollController,
                 isSliver: true,
-                noItemsText: 'No books found.\n\nYou can upload some with the floating button on the bottom right.'.tr,
+                noItemsText:
+                    'No books found.\n\nYou can upload some with the floating button on the bottom right.'
+                        .tr,
               ),
             ],
           ),

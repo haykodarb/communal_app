@@ -13,7 +13,7 @@ class CommonResponsivePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color borderColor =
-        Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.5);
+        Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5);
 
     return Responsive(
       mobile: Scaffold(

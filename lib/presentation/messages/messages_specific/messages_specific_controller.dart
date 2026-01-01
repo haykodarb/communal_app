@@ -52,7 +52,8 @@ class MessagesSpecificController extends GetxController {
     if (messagesController != null) {
       Profile? profile;
 
-      for (Rx<Message> element in messagesController!.listViewController.itemList) {
+      for (Rx<Message> element
+          in messagesController!.listViewController.itemList) {
         if (element.value.sender.id == userId) {
           profile = element.value.sender;
           break;
@@ -69,18 +70,23 @@ class MessagesSpecificController extends GetxController {
     }
 
     if (userProfile.value == null) {
-      final BackendResponse profileResponse = await UsersBackend.getUserProfile(userId);
+      print(userId);
+
+      final BackendResponse profileResponse =
+          await UsersBackend.getUserProfile(userId);
 
       if (profileResponse.success) {
         userProfile.value = profileResponse.payload;
       }
     }
 
-    final Stream<RealtimeMessage> stream = RealtimeBackend.streamController.stream;
+    final Stream<RealtimeMessage> stream =
+        RealtimeBackend.streamController.stream;
 
     streamSubscription = stream.listen(messageChangeHandler);
 
-    final BackendResponse messagesResponse = await MessagesBackend.getMessagesWithUser(userId, currentIndex);
+    final BackendResponse messagesResponse =
+        await MessagesBackend.getMessagesWithUser(userId, currentIndex);
 
     currentIndex++;
 
@@ -109,7 +115,8 @@ class MessagesSpecificController extends GetxController {
   }
 
   Future<void> scrollControllerListener() async {
-    if (scrollController.position.pixels > scrollController.position.maxScrollExtent * 0.9) {
+    if (scrollController.position.pixels >
+        scrollController.position.maxScrollExtent * 0.9) {
       if (loadingMore) {
         return;
       }
@@ -135,7 +142,8 @@ class MessagesSpecificController extends GetxController {
   }
 
   Future<bool> getMoreMessages() async {
-    final BackendResponse response = await MessagesBackend.getMessagesWithUser(userId, currentIndex);
+    final BackendResponse response =
+        await MessagesBackend.getMessagesWithUser(userId, currentIndex);
 
     if (response.success) {
       final List<Message> newMessages = response.payload;
@@ -153,26 +161,38 @@ class MessagesSpecificController extends GetxController {
     if (realtimeMessage.table != 'messages') return;
 
     if (realtimeMessage.eventType != PostgresChangeEvent.insert &&
-        realtimeMessage.eventType != PostgresChangeEvent.update) return;
+        realtimeMessage.eventType != PostgresChangeEvent.update) {
+      return;
+    }
 
     final Message message = Message(
       id: realtimeMessage.new_row['id'],
       created_at: DateTime.parse(realtimeMessage.new_row['created_at']),
-      sender: Profile(id: realtimeMessage.new_row['sender'], username: '', show_email: false),
-      receiver: Profile(id: realtimeMessage.new_row['receiver'], username: '', show_email: false),
+      sender: Profile(
+          id: realtimeMessage.new_row['sender'],
+          username: '',
+          show_email: false),
+      receiver: Profile(
+          id: realtimeMessage.new_row['receiver'],
+          username: '',
+          show_email: false),
       content: realtimeMessage.new_row['content'],
       is_read: realtimeMessage.new_row['is_read'],
     );
 
-    final bool isCurrentChat = message.receiver.id == userId && message.sender.isCurrentUser ||
-        message.sender.id == userId && message.receiver.isCurrentUser;
+    final bool isCurrentChat =
+        message.receiver.id == userId && message.sender.isCurrentUser ||
+            message.sender.id == userId && message.receiver.isCurrentUser;
 
     if (!isCurrentChat) return;
 
-    final bool messageExists = messages.any((element) => element.id == message.id);
+    final bool messageExists =
+        messages.any((element) => element.id == message.id);
 
     if (messageExists) {
-      messages.firstWhereOrNull((element) => element.id == message.id)?.is_read = message.is_read;
+      messages
+          .firstWhereOrNull((element) => element.id == message.id)
+          ?.is_read = message.is_read;
     } else if (!message.sender.isCurrentUser) {
       messages.insert(0, message);
       MessagesBackend.markMessagesWithUserAsRead(userId);
@@ -211,10 +231,12 @@ class MessagesSpecificController extends GetxController {
 
     messages.insert(0, newMessage);
 
-    final BackendResponse response = await MessagesBackend.submitMessage(userId, typedMessage.value);
+    final BackendResponse response =
+        await MessagesBackend.submitMessage(userId, typedMessage.value);
 
     if (response.success) {
-      final int index = messages.indexWhere((element) => element.id == randomID);
+      final int index =
+          messages.indexWhere((element) => element.id == randomID);
 
       messages[index] = response.payload;
     } else {

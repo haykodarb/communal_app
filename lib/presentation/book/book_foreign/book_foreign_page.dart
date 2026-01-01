@@ -39,7 +39,8 @@ class BookForeignPage extends StatelessWidget {
                   book.author,
                   style: TextStyle(
                     fontSize: 20,
-                    color: Theme.of(context).colorScheme.onSurface.withAlpha(150),
+                    color:
+                        Theme.of(context).colorScheme.onSurface.withAlpha(150),
                     fontWeight: FontWeight.w400,
                   ),
                   textAlign: TextAlign.center,
@@ -59,7 +60,8 @@ class BookForeignPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: InkWell(
             onTap: () {
-              controller.expandCarouselItem.value = !controller.expandCarouselItem.value;
+              controller.expandCarouselItem.value =
+                  !controller.expandCarouselItem.value;
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,7 +77,8 @@ class BookForeignPage extends StatelessWidget {
                     const VerticalDivider(width: 10),
                     Text(
                       controller.book?.owner.username ?? '',
-                      style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary),
                     ),
                   ],
                 ),
@@ -104,7 +107,8 @@ class BookForeignPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: InkWell(
             onTap: () {
-              controller.expandCarouselItem.value = !controller.expandCarouselItem.value;
+              controller.expandCarouselItem.value =
+                  !controller.expandCarouselItem.value;
             },
             child: Container(
               decoration: BoxDecoration(
@@ -130,8 +134,11 @@ class BookForeignPage extends StatelessWidget {
                     child: Obx(
                       () => Text(
                         loan.review ?? '',
-                        overflow: controller.expandCarouselItem.value ? TextOverflow.visible : TextOverflow.ellipsis,
-                        maxLines: controller.expandCarouselItem.value ? null : 4,
+                        overflow: controller.expandCarouselItem.value
+                            ? TextOverflow.visible
+                            : TextOverflow.ellipsis,
+                        maxLines:
+                            controller.expandCarouselItem.value ? null : 4,
                       ),
                     ),
                   ),
@@ -154,9 +161,11 @@ class BookForeignPage extends StatelessWidget {
                 return const CommonLoadingBody();
               }
 
-              bool ownerHasReview = controller.book?.review != null && controller.book!.review!.isNotEmpty;
+              bool ownerHasReview = controller.book?.review != null &&
+                  controller.book!.review!.isNotEmpty;
 
-              final int reviewsCount = controller.completedLoans.length + (ownerHasReview ? 1 : 0);
+              final int reviewsCount =
+                  controller.completedLoans.length + (ownerHasReview ? 1 : 0);
 
               if (reviewsCount == 0) {
                 return Center(
@@ -176,7 +185,8 @@ class BookForeignPage extends StatelessWidget {
                       children: [
                         Obx(
                           () {
-                            if (controller.carouselIndex.value == 0 || reviewsCount <= 1) {
+                            if (controller.carouselIndex.value == 0 ||
+                                reviewsCount <= 1) {
                               return const SizedBox();
                             }
 
@@ -193,7 +203,8 @@ class BookForeignPage extends StatelessWidget {
                         ),
                         Expanded(
                           child: PageView.builder(
-                            itemCount: controller.completedLoans.length + (ownerHasReview ? 1 : 0),
+                            itemCount: controller.completedLoans.length +
+                                (ownerHasReview ? 1 : 0),
                             scrollDirection: Axis.horizontal,
                             controller: controller.reviewsPageController,
                             onPageChanged: (index) {
@@ -206,14 +217,17 @@ class BookForeignPage extends StatelessWidget {
 
                               return _reviewCard(
                                 controller,
-                                controller.completedLoans[index - (ownerHasReview ? 1 : 0)],
+                                controller.completedLoans[
+                                    index - (ownerHasReview ? 1 : 0)],
                               );
                             },
                           ),
                         ),
                         Obx(
                           () {
-                            if (controller.carouselIndex.value == reviewsCount - 1 || reviewsCount < 2) {
+                            if (controller.carouselIndex.value ==
+                                    reviewsCount - 1 ||
+                                reviewsCount < 2) {
                               return const SizedBox();
                             }
 
@@ -232,13 +246,16 @@ class BookForeignPage extends StatelessWidget {
                     ),
                   ),
                   Visibility(
-                    visible: controller.completedLoans.length + (ownerHasReview ? 1 : 0) >= 2,
+                    visible: controller.completedLoans.length +
+                            (ownerHasReview ? 1 : 0) >=
+                        2,
                     child: Container(
                       alignment: Alignment.center,
                       height: 10,
                       width: double.maxFinite,
                       child: ListView.builder(
-                        itemCount: controller.completedLoans.length + (ownerHasReview ? 1 : 0),
+                        itemCount: controller.completedLoans.length +
+                            (ownerHasReview ? 1 : 0),
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
@@ -250,7 +267,10 @@ class BookForeignPage extends StatelessWidget {
                                 shape: BoxShape.circle,
                                 color: index == controller.carouselIndex.value
                                     ? Theme.of(context).colorScheme.primary
-                                    : Theme.of(context).colorScheme.primary.withOpacity(0.25),
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withValues(alpha: 0.25),
                               ),
                             ),
                           );
@@ -283,7 +303,8 @@ class BookForeignPage extends StatelessWidget {
 
             final Book book = controller.book!;
 
-            bool requestByCurrentUser = currentLoan?.loanee.isCurrentUser ?? false;
+            bool requestByCurrentUser =
+                currentLoan?.loanee.isCurrentUser ?? false;
 
             return Stack(
               children: [
@@ -292,7 +313,8 @@ class BookForeignPage extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       if (controller.currentLoan.value != null) {
-                        context.push('${RouteNames.loansPage}/${controller.currentLoan.value!.id}');
+                        context.push(
+                            '${RouteNames.loansPage}/${controller.currentLoan.value!.id}');
                       }
                     },
                     child: Text('View loan'.tr),
@@ -357,7 +379,9 @@ class BookForeignPage extends StatelessWidget {
                             flex: 3,
                             child: Container(
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.surfaceContainer,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainer,
                                 borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(30),
                                   topRight: Radius.circular(30),
@@ -380,7 +404,8 @@ class BookForeignPage extends StatelessWidget {
                                       offset: const Offset(2, 1),
                                       blurRadius: 20,
                                       spreadRadius: 12,
-                                      color: Theme.of(context).colorScheme.surface,
+                                      color:
+                                          Theme.of(context).colorScheme.surface,
                                     ),
                                   ],
                                 ),
@@ -395,7 +420,8 @@ class BookForeignPage extends StatelessWidget {
                                 color: Theme.of(context).colorScheme.surface,
                                 borderRadius: BorderRadius.circular(40),
                               ),
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
                               width: double.maxFinite,
                               height: 65,
                               child: Row(
@@ -403,32 +429,41 @@ class BookForeignPage extends StatelessWidget {
                                 children: [
                                   Expanded(
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           'Owner'.tr,
                                           style: TextStyle(
                                             fontSize: 12,
-                                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant,
                                           ),
                                         ),
-                                        CommonUsernameButton(user: controller.book!.owner),
+                                        CommonUsernameButton(
+                                            user: controller.book!.owner),
                                       ],
                                     ),
                                   ),
                                   Expanded(
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           'Added'.tr,
                                           style: TextStyle(
                                             fontSize: 12,
-                                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant,
                                           ),
                                         ),
                                         Text(
-                                          DateFormat('dd/MM/yy', Get.locale?.languageCode).format(
+                                          DateFormat('dd/MM/yy',
+                                                  Get.locale?.languageCode)
+                                              .format(
                                             controller.book!.created_at,
                                           ),
                                           style: const TextStyle(fontSize: 16),
@@ -438,13 +473,16 @@ class BookForeignPage extends StatelessWidget {
                                   ),
                                   Expanded(
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           'Status'.tr,
                                           style: TextStyle(
                                             fontSize: 12,
-                                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant,
                                           ),
                                         ),
                                         Obx(() {
@@ -453,12 +491,18 @@ class BookForeignPage extends StatelessWidget {
                                           }
 
                                           final bool requestByCurrentUser =
-                                              controller.currentLoan.value?.loanee.isCurrentUser ?? false;
+                                              controller.currentLoan.value
+                                                      ?.loanee.isCurrentUser ??
+                                                  false;
 
                                           return Text(
                                             controller.book!.loaned
-                                                ? (requestByCurrentUser ? 'Loaned'.tr : 'Unavailable'.tr)
-                                                : (requestByCurrentUser ? 'Requested'.tr : 'Available'.tr),
+                                                ? (requestByCurrentUser
+                                                    ? 'Loaned'.tr
+                                                    : 'Unavailable'.tr)
+                                                : (requestByCurrentUser
+                                                    ? 'Requested'.tr
+                                                    : 'Available'.tr),
                                           );
                                         }),
                                       ],

@@ -45,7 +45,7 @@ class NotificationsPage extends StatelessWidget {
         return Card(
           color: notification.seen
               ? null
-              : Theme.of(context).colorScheme.secondary.withOpacity(0.15),
+              : Theme.of(context).colorScheme.secondary.withValues(alpha: 0.15),
           child: InkWell(
             onTap: () {
               if (notification.membership != null &&
@@ -78,7 +78,7 @@ class NotificationsPage extends StatelessWidget {
                                     ? Theme.of(context)
                                         .colorScheme
                                         .secondary
-                                        .withOpacity(0.25)
+                                        .withValues(alpha: 0.25)
                                     : Theme.of(context)
                                         .colorScheme
                                         .surfaceContainer,
@@ -229,7 +229,6 @@ class NotificationsPage extends StatelessWidget {
               childBuilder: (notification) {
                 return _notificationCard(controller, notification);
               },
-              separator: const Divider(height: 5),
               controller: controller.listViewController,
             ),
           );

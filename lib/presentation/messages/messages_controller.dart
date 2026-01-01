@@ -16,7 +16,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class MessagesController extends GetxController {
   static const int pageSize = 20;
 
-  final CommonListViewController<Rx<Message>> listViewController = CommonListViewController(pageSize: pageSize);
+  final CommonListViewController<Rx<Message>> listViewController =
+      CommonListViewController(pageSize: pageSize);
 
   RealtimeChannel? subscription;
 
@@ -28,7 +29,8 @@ class MessagesController extends GetxController {
 
     listViewController.registerNewPageCallback(loadChats);
 
-    final Stream<RealtimeMessage> stream = RealtimeBackend.streamController.stream;
+    final Stream<RealtimeMessage> stream =
+        RealtimeBackend.streamController.stream;
 
     streamSubscription = stream.listen(_realtimeListener);
   }
@@ -43,18 +45,27 @@ class MessagesController extends GetxController {
     if (realtimeMessage.table != 'messages') return;
 
     if (realtimeMessage.eventType != PostgresChangeEvent.insert &&
-        realtimeMessage.eventType != PostgresChangeEvent.update) return;
+        realtimeMessage.eventType != PostgresChangeEvent.update) {
+      return;
+    }
 
     final Message unfetchedMessage = Message(
       id: realtimeMessage.new_row['id'],
       created_at: DateTime.parse(realtimeMessage.new_row['created_at']),
-      sender: Profile(id: realtimeMessage.new_row['sender'], username: '', show_email: false),
-      receiver: Profile(id: realtimeMessage.new_row['receiver'], username: '', show_email: false),
+      sender: Profile(
+          id: realtimeMessage.new_row['sender'],
+          username: '',
+          show_email: false),
+      receiver: Profile(
+          id: realtimeMessage.new_row['receiver'],
+          username: '',
+          show_email: false),
       content: realtimeMessage.new_row['content'],
       is_read: realtimeMessage.new_row['is_read'],
     );
 
-    final BackendResponse response = await MessagesBackend.getChatWithId(unfetchedMessage.id);
+    final BackendResponse response =
+        await MessagesBackend.getChatWithId(unfetchedMessage.id);
 
     if (!response.success) return;
 
@@ -72,8 +83,10 @@ class MessagesController extends GetxController {
 
     final int indexOfExistingChat = listViewController.itemList.indexWhere(
       (element) =>
-          (element.value.receiver.id == message.receiver.id && element.value.sender.id == message.sender.id) ||
-          (element.value.sender.id == message.receiver.id && element.value.receiver.id == message.sender.id),
+          (element.value.receiver.id == message.receiver.id &&
+              element.value.sender.id == message.sender.id) ||
+          (element.value.sender.id == message.receiver.id &&
+              element.value.receiver.id == message.sender.id),
     );
 
     if (indexOfExistingChat >= 0) {
@@ -99,11 +112,14 @@ class MessagesController extends GetxController {
     ).open(context);
 
     if (deleteConfirm) {
-      final BackendResponse response = await MessagesBackend.deleteMessagesWithUser(chatter);
+      final BackendResponse response =
+          await MessagesBackend.deleteMessagesWithUser(chatter);
 
       if (response.success) {
         listViewController.itemList.removeWhere(
-          (element) => element.value.sender.id == chatter.id || element.value.receiver.id == chatter.id,
+          (element) =>
+              element.value.sender.id == chatter.id ||
+              element.value.receiver.id == chatter.id,
         );
         listViewController.pageKey--;
         listViewController.itemList.refresh();
@@ -112,7 +128,8 @@ class MessagesController extends GetxController {
   }
 
   Future<List<Rx<Message>>> loadChats(int pageKey) async {
-    final BackendResponse<List<Message>> response = await MessagesBackend.getDistinctChats(
+    final BackendResponse<List<Message>> response =
+        await MessagesBackend.getDistinctChats(
       pageSize: pageSize,
       pageKey: pageKey,
     );

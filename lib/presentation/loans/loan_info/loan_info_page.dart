@@ -38,8 +38,14 @@ class LoanInfoPage extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 color: loan.isOwned
-                    ? Theme.of(context).colorScheme.primary.withOpacity(0.25)
-                    : Theme.of(context).colorScheme.tertiary.withOpacity(0.25),
+                    ? Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withValues(alpha: 0.25)
+                    : Theme.of(context)
+                        .colorScheme
+                        .tertiary
+                        .withValues(alpha: 0.25),
                 borderRadius: BorderRadius.circular(40),
               ),
               padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
@@ -67,13 +73,16 @@ class LoanInfoPage extends StatelessWidget {
           onTap: () {
             context.push(loan.isOwned
                 ? '${RouteNames.myBooks}/${loan.book.id}'
-                : RouteNames.foreignBooksPage.replaceFirst(':bookId', loan.book.id));
+                : RouteNames.foreignBooksPage
+                    .replaceFirst(':bookId', loan.book.id));
           },
           child: Container(
-            padding: const EdgeInsets.only(left: 20, top: 20, bottom: 20, right: 10),
+            padding:
+                const EdgeInsets.only(left: 20, top: 20, bottom: 20, right: 10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
+              color:
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
             ),
             height: 140,
             child: Row(
@@ -127,7 +136,8 @@ class LoanInfoPage extends StatelessWidget {
           padding: const EdgeInsets.all(5),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
+            color:
+                Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(5),
           ),
           child: Column(
@@ -175,7 +185,9 @@ class LoanInfoPage extends StatelessWidget {
               child: Expanded(
                 child: _dateContainer(
                   'Rejected'.tr,
-                  loan.rejected_at == null ? '-' : DateFormat('dd/MM/yy').format(loan.rejected_at!),
+                  loan.rejected_at == null
+                      ? '-'
+                      : DateFormat('dd/MM/yy').format(loan.rejected_at!),
                 ),
               ),
             ),
@@ -190,7 +202,8 @@ class LoanInfoPage extends StatelessWidget {
                         'Approved'.tr,
                         loan.accepted_at == null
                             ? '-'
-                            : DateFormat('dd/MM/yy', Get.locale!.languageCode).format(loan.accepted_at!),
+                            : DateFormat('dd/MM/yy', Get.locale!.languageCode)
+                                .format(loan.accepted_at!),
                       ),
                     ),
                     const VerticalDivider(width: 5),
@@ -199,7 +212,8 @@ class LoanInfoPage extends StatelessWidget {
                         'Returned'.tr,
                         loan.returned_at == null
                             ? '-'
-                            : DateFormat('dd/MM/yy', Get.locale!.languageCode).format(loan.returned_at!),
+                            : DateFormat('dd/MM/yy', Get.locale!.languageCode)
+                                .format(loan.returned_at!),
                       ),
                     ),
                   ],
@@ -257,7 +271,8 @@ class LoanInfoPage extends StatelessWidget {
                           () => CommonLoadingBody(
                             loading: controller.loading.value,
                             child: ElevatedButton(
-                              onPressed: () => controller.markLoanReturned(context),
+                              onPressed: () =>
+                                  controller.markLoanReturned(context),
                               child: Text('Mark as returned'.tr),
                             ),
                           ),
@@ -323,7 +338,8 @@ class LoanInfoPage extends StatelessWidget {
                       style: const TextStyle(fontSize: 14),
                       decoration: InputDecoration(
                         hintText: 'Write a review...'.tr,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 20),
                         hintStyle: TextStyle(
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
                         ),
