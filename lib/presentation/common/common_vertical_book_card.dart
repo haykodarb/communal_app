@@ -42,7 +42,7 @@ class CommonVerticalBookCard extends StatelessWidget {
         margin: EdgeInsets.zero,
         child: Container(
           width: axis == Axis.vertical ? null : 200,
-          padding: const EdgeInsets.all(5),
+          padding: const EdgeInsets.all(10),
           child: Column(
             children: [
               Expanded(

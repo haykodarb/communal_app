@@ -80,7 +80,6 @@ class CommonListViewController<ItemType> extends GetxController {
   void registerScrollController(ScrollController newScrollController) {
     scrollController = newScrollController;
     scrollController?.addListener(scrollListener);
-    print('controller added');
   }
 
   @override
