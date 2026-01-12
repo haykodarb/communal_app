@@ -8,6 +8,7 @@ import 'package:communal/presentation/common/common_community_card.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/presentation/common/common_search_bar.dart';
+import 'package:communal/presentation/common/common_tab_bar.dart';
 import 'package:communal/presentation/common/common_vertical_book_card.dart';
 import 'package:communal/presentation/search/search_controller.dart';
 import 'package:communal/responsive.dart';
@@ -209,7 +210,17 @@ class SearchPage extends StatelessWidget {
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: _tabBar(controller),
+                  child: Obx(() {
+                    return CommonTabBar(
+                      onTabTapped: controller.onTabTapped,
+                      currentIndex: controller.currentTabIndex,
+                      tabs: const [
+                        'Books',
+                        'Communities',
+                        'Users',
+                      ],
+                    );
+                  }),
                 ),
               ),
               const SliverToBoxAdapter(child: SizedBox(height: 5)),

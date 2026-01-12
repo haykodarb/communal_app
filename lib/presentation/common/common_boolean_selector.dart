@@ -14,7 +14,7 @@ class CommonBooleanSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 60,
-      width: 110,
+      width: 100,
       child: InkWell(
         onTap: callback,
         overlayColor: WidgetStateColor.transparent,
@@ -25,36 +25,72 @@ class CommonBooleanSelector extends StatelessWidget {
             color: Theme.of(context).colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(50),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Stack(
             children: [
-              Container(
-                height: 40,
-                width: 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: value ? Theme.of(context).colorScheme.primary : Colors.transparent,
-                ),
-                padding: EdgeInsets.zero,
-                child: Icon(
-                  Icons.check,
-                  size: 22,
-                  color: value ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.primary,
+              AnimatedSlide(
+                offset: value ? Offset.zero : const Offset(1, 0),
+                duration: const Duration(milliseconds: 200),
+                child: Container(
+                  height: 40,
+                  width: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
               ),
-              Container(
-                height: 40,
-                width: 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: value ? Colors.transparent : Theme.of(context).colorScheme.primary,
-                ),
-                padding: EdgeInsets.zero,
-                child: Icon(
-                  Icons.close,
-                  size: 22,
-                  color: value ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onPrimary,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    height: 40,
+                    width: 40,
+                    padding: EdgeInsets.zero,
+                    color: Colors.transparent,
+                    child: TweenAnimationBuilder(
+                      duration: const Duration(milliseconds: 200),
+                      tween: ColorTween(
+                        begin: value
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.onPrimary,
+                        end: value
+                            ? Theme.of(context).colorScheme.onPrimary
+                            : Theme.of(context).colorScheme.primary,
+                      ),
+                      builder: (context, color, child) {
+                        return Icon(
+                          Icons.check,
+                          size: 22,
+                          color: color,
+                        );
+                      },
+                    ),
+                  ),
+                  Container(
+                    height: 40,
+                    width: 40,
+                    padding: EdgeInsets.zero,
+                    color: Colors.transparent,
+                    child: TweenAnimationBuilder(
+                      duration: const Duration(milliseconds: 200),
+                      tween: ColorTween(
+                        begin: value
+                            ? Theme.of(context).colorScheme.onPrimary
+                            : Theme.of(context).colorScheme.primary,
+                        end: value
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.onPrimary,
+                      ),
+                      builder: (context, color, child) {
+                        return Icon(
+                          Icons.close,
+                          size: 22,
+                          color: color,
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

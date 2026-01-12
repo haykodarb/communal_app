@@ -1,3 +1,4 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_book_cover.dart';
@@ -56,6 +57,17 @@ class ProfileCommonWidgets {
                       ),
                     ),
                   ],
+                ),
+              ),
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () {},
+                  child: Row(
+                    children: [
+                      Icon(Atlas.user_plus),
+                      Text('Add friend'),
+                    ],
+                  ),
                 ),
               ),
               IconButton(
