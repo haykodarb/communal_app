@@ -1,5 +1,5 @@
 import 'package:communal/presentation/common/common_async_text_field.dart';
-import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,7 +20,7 @@ class RegisterPage extends StatelessWidget {
             CommonTextField(
               validator: controller.emailValidator,
               callback: controller.onEmailChange,
-              submitCallback: (value) => controller.onSubmitButton(),
+              submitCallback: (value) => controller.onSubmitButton(context),
               label: 'Email'.tr,
             ),
             const Divider(height: 5),
@@ -30,13 +30,13 @@ class RegisterPage extends StatelessWidget {
               duration: const Duration(milliseconds: 500),
               asyncValidator: controller.asyncUsernameValidator,
               syncValidator: controller.usernameValidator,
-              submitCallback: (value) => controller.onSubmitButton(),
+              submitCallback: (value) => controller.onSubmitButton(context),
             ),
             const Divider(height: 5),
             CommonPasswordField(
               validator: controller.passwordValidator,
               callback: controller.onPasswordChange,
-              submitCallback: (value) => controller.onSubmitButton(),
+              submitCallback: (value) => controller.onSubmitButton(context),
               label: 'Password'.tr,
             ),
             const Divider(height: 5),
@@ -56,21 +56,18 @@ class RegisterPage extends StatelessWidget {
                 ),
                 onPressed: () {
                   context.push(
-                    RouteNames.startPage + RouteNames.registerPage + RouteNames.registerResendPage,
+                    RouteNames.startPage +
+                        RouteNames.registerPage +
+                        RouteNames.registerResendPage,
                   );
                 },
               ),
             ),
             const Divider(height: 30),
-            Obx(
-              () => CommonLoadingBody(
-                loading: controller.loading.value,
-                size: 40,
-                child: ElevatedButton(
-                  onPressed: controller.onSubmitButton,
-                  child: Text('Register'.tr),
-                ),
-              ),
+            CommonButton(
+              onPressed: controller.onSubmitButton,
+              loading: controller.loading,
+              child: Text('Register'.tr),
             ),
           ],
         ),
@@ -122,8 +119,9 @@ class RegisterPage extends StatelessWidget {
                               textAlign: TextAlign.center,
                             ),
                             const Divider(height: 100),
-                            OutlinedButton(
-                              onPressed: () {
+                            CommonButton(
+                              type: CommonButtonType.outlined,
+                              onPressed: (BuildContext context) {
                                 context.go(
                                   RouteNames.startPage + RouteNames.loginPage,
                                 );
@@ -131,16 +129,19 @@ class RegisterPage extends StatelessWidget {
                               child: const Text('Login'),
                             ),
                             const Divider(height: 20),
-                            TextButton(
+                            CommonButton(
+                              type: CommonButtonType.text,
                               child: Text(
                                 'Resend confirmation'.tr,
                                 style: const TextStyle(
                                   fontSize: 18,
                                 ),
                               ),
-                              onPressed: () {
+                              onPressed: (BuildContext context) {
                                 context.push(
-                                  RouteNames.startPage + RouteNames.registerPage + RouteNames.registerResendPage,
+                                  RouteNames.startPage +
+                                      RouteNames.registerPage +
+                                      RouteNames.registerResendPage,
                                 );
                               },
                             ),

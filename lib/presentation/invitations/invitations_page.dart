@@ -1,6 +1,7 @@
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/communities_backend.dart';
 import 'package:communal/models/membership.dart';
+import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
@@ -74,9 +75,11 @@ class InvitationsPage extends StatelessWidget {
                 SizedBox(
                   width: 80,
                   height: 40,
-                  child: ElevatedButton(
-                    onPressed: () =>
-                        controller.respondToInvitation(invitation, true),
+                  child: CommonButton(
+                    onPressed: (_) => controller.respondToInvitation(
+                      invitation,
+                      true,
+                    ),
                     child: const Icon(Icons.done),
                   ),
                 ),
@@ -84,9 +87,11 @@ class InvitationsPage extends StatelessWidget {
                 SizedBox(
                   width: 80,
                   height: 40,
-                  child: OutlinedButton(
-                    onPressed: () =>
-                        controller.respondToInvitation(invitation, false),
+                  child: CommonButton(
+                    onPressed: (_) => controller.respondToInvitation(
+                      invitation,
+                      false,
+                    ),
                     child: const Icon(Icons.close),
                   ),
                 ),

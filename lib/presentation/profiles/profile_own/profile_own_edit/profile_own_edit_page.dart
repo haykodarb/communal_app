@@ -3,6 +3,7 @@ import 'package:communal/backend/login_backend.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/presentation/common/common_async_text_field.dart';
 import 'package:communal/presentation/common/common_boolean_selector.dart';
+import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_confirmation_dialog.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
@@ -48,11 +49,13 @@ class ProfileOwnEditPage extends StatelessWidget {
         builder: (ProfileOwnEditController controller) {
           return Scaffold(
             appBar: AppBar(
-              title: Responsive.isMobile(context) ? Text('Edit profile'.tr) : null,
+              title:
+                  Responsive.isMobile(context) ? Text('Edit profile'.tr) : null,
             ),
             body: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 child: Form(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   key: controller.formKey,
@@ -71,12 +74,13 @@ class ProfileOwnEditPage extends StatelessWidget {
                                   return CommonCircularAvatar(
                                     profile: controller.inheritedProfile.value,
                                     radius: 100,
-                                    image: controller.selectedBytes.value != null
-                                        ? Image.memory(
-                                            controller.selectedBytes.value!,
-                                            fit: BoxFit.cover,
-                                          )
-                                        : null,
+                                    image:
+                                        controller.selectedBytes.value != null
+                                            ? Image.memory(
+                                                controller.selectedBytes.value!,
+                                                fit: BoxFit.cover,
+                                              )
+                                            : null,
                                   );
                                 },
                               ),
@@ -85,11 +89,13 @@ class ProfileOwnEditPage extends StatelessWidget {
                               alignment: Alignment.topRight,
                               child: Obx(
                                 () => Visibility(
-                                  visible: controller.selectedBytes.value != null,
+                                  visible:
+                                      controller.selectedBytes.value != null,
                                   child: IconButton(
                                     icon: Icon(
                                       Icons.close,
-                                      color: Theme.of(context).colorScheme.error,
+                                      color:
+                                          Theme.of(context).colorScheme.error,
                                     ),
                                     iconSize: 40,
                                     onPressed: () {
@@ -141,7 +147,8 @@ class ProfileOwnEditPage extends StatelessWidget {
                                 padding: const EdgeInsets.all(13),
                                 child: Icon(
                                   Atlas.camera,
-                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
                                   size: 24,
                                 ),
                               ),
@@ -160,7 +167,8 @@ class ProfileOwnEditPage extends StatelessWidget {
                                 padding: const EdgeInsets.all(13),
                                 child: Icon(
                                   Atlas.image_gallery,
-                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
                                   size: 24,
                                 ),
                               ),
@@ -178,9 +186,11 @@ class ProfileOwnEditPage extends StatelessWidget {
                                   callback: controller.onUsernameChanged,
                                   label: 'Username'.tr,
                                   duration: const Duration(milliseconds: 500),
-                                  asyncValidator: controller.asyncUsernameValidator,
+                                  asyncValidator:
+                                      controller.asyncUsernameValidator,
                                   syncValidator: controller.usernameValidator,
-                                  initialValue: controller.inheritedProfile.value.username,
+                                  initialValue: controller
+                                      .inheritedProfile.value.username,
                                 );
                               },
                             ),
@@ -191,7 +201,8 @@ class ProfileOwnEditPage extends StatelessWidget {
                                   callback: controller.onBioChanged,
                                   label: 'Bio (Optional)'.tr,
                                   validator: controller.bioValidator,
-                                  initialValue: controller.inheritedProfile.value.bio,
+                                  initialValue:
+                                      controller.inheritedProfile.value.bio,
                                   maxLength: 1000,
                                   maxLines: 10,
                                   minLines: 3,
@@ -204,14 +215,10 @@ class ProfileOwnEditPage extends StatelessWidget {
                       const Divider(height: 20),
                       _showEmailToggleSwitch(controller),
                       const Divider(height: 20),
-                      Obx(
-                        () => CommonLoadingBody(
-                          loading: controller.loading.value,
-                          child: ElevatedButton(
-                            onPressed: () => controller.onSubmit(context),
-                            child: Text('Save'.tr),
-                          ),
-                        ),
+                      CommonButton(
+                        onPressed: controller.onSubmit,
+                        loading: controller.loading,
+                        child: Text('Save'.tr),
                       ),
                       const Divider(height: 50),
                       TextButton(

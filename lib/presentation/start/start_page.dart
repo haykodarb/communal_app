@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/user_preferences.dart';
+import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/foundation.dart';
@@ -111,11 +112,9 @@ class StartPage extends StatelessWidget {
         return SizedBox(
           height: 60,
           width: 110,
-          child: OutlinedButton(
-            onPressed: () => controller.changeThemeMode(context),
-            style: OutlinedButton.styleFrom(
-              padding: EdgeInsets.zero,
-            ),
+          child: CommonButton(
+            type: CommonButtonType.outlined,
+            onPressed: controller.changeThemeMode,
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: Row(
@@ -167,32 +166,25 @@ class StartPage extends StatelessWidget {
   }
 
   Widget _loginButton(StartController controller) {
-    return Builder(
-      builder: (context) {
-        return ElevatedButton(
-          onPressed: () => context.push(
-            RouteNames.startPage + RouteNames.loginPage,
-          ),
-          child: Text(
-            'Login'.tr,
-          ),
-        );
-      },
+    return CommonButton(
+      onPressed: (BuildContext context) => context.push(
+        RouteNames.startPage + RouteNames.loginPage,
+      ),
+      child: Text(
+        'Login'.tr,
+      ),
     );
   }
 
   Widget _registerButton(StartController controller) {
-    return Builder(
-      builder: (context) {
-        return OutlinedButton(
-          onPressed: () => context.push(
-            RouteNames.startPage + RouteNames.registerPage,
-          ),
-          child: Text(
-            'Register'.tr,
-          ),
-        );
-      },
+    return CommonButton(
+      type: CommonButtonType.outlined,
+      onPressed: (BuildContext context) => context.push(
+        RouteNames.startPage + RouteNames.registerPage,
+      ),
+      child: Text(
+        'Register'.tr,
+      ),
     );
   }
 
@@ -252,7 +244,8 @@ class StartPage extends StatelessWidget {
           await UserPreferences.setWelcomeScreenShown(true);
 
           if (uri != null) {
-            final AuthSessionUrlResponse response = await Supabase.instance.client.auth.getSessionFromUrl(uri);
+            final AuthSessionUrlResponse response =
+                await Supabase.instance.client.auth.getSessionFromUrl(uri);
 
             if (response.session.accessToken.isNotEmpty) {
               if (context.mounted) {
@@ -310,8 +303,9 @@ class StartPage extends StatelessWidget {
                                   const Divider(height: 10),
                                   Visibility(
                                     visible: kIsWeb || Platform.isAndroid,
-                                    child: OutlinedButton(
-                                      onPressed: () => controller.signInWithGoogle(context),
+                                    child: CommonButton(
+                                      type: CommonButtonType.outlined,
+                                      onPressed: controller.signInWithGoogle,
                                       child: Text('Sign in with Google'.tr),
                                     ),
                                   ),

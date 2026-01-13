@@ -1,5 +1,6 @@
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_book_cover.dart';
+import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/loans/loan_info/loan_info_controller.dart';
@@ -268,13 +269,10 @@ class LoanInfoPage extends StatelessWidget {
                       children: [
                         const Divider(height: 20),
                         Obx(
-                          () => CommonLoadingBody(
-                            loading: controller.loading.value,
-                            child: ElevatedButton(
-                              onPressed: () =>
-                                  controller.markLoanReturned(context),
-                              child: Text('Mark as returned'.tr),
-                            ),
+                          () => CommonButton(
+                            loading: controller.loading,
+                            onPressed: controller.markLoanReturned,
+                            child: Text('Mark as returned'.tr),
                           ),
                         ),
                       ],
@@ -284,27 +282,24 @@ class LoanInfoPage extends StatelessWidget {
               );
             }
 
-            return Obx(
-              () => CommonLoadingBody(
-                loading: controller.loading.value,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () => controller.acceptLoanRequest(context),
-                        child: Text('Approve'.tr),
-                      ),
-                    ),
-                    const VerticalDivider(width: 10),
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => controller.rejectLoanRequest(context),
-                        child: Text('Reject'.tr),
-                      ),
-                    ),
-                  ],
+            return Row(
+              children: [
+                Expanded(
+                  child: CommonButton(
+                    loading: controller.loading,
+                    onPressed: controller.acceptLoanRequest,
+                    child: Text('Approve'.tr),
+                  ),
                 ),
-              ),
+                const VerticalDivider(width: 10),
+                Expanded(
+                  child: CommonButton(
+                    type: CommonButtonType.outlined,
+                    onPressed: controller.rejectLoanRequest,
+                    child: Text('Reject'.tr),
+                  ),
+                ),
+              ],
             );
           },
         );
@@ -329,7 +324,9 @@ class LoanInfoPage extends StatelessWidget {
                       minLines: 3,
                       maxLines: 10,
                       onChanged: controller.onReviewTextChanged,
-                      onFieldSubmitted: (_) => controller.onReviewSubmit(),
+                      onFieldSubmitted: (_) => controller.onReviewSubmit(
+                        context,
+                      ),
                       controller: TextEditingController.fromValue(
                         TextEditingValue(
                           text: controller.loan.value.review ?? '',
@@ -361,34 +358,34 @@ class LoanInfoPage extends StatelessWidget {
                       ),
                     ),
                     const Divider(height: 20),
-                    Obx(
-                      () => CommonLoadingBody(
-                        loading: controller.loading.value,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: controller.onReviewSubmit,
-                                child: Text('Submit'.tr),
-                              ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CommonButton(
+                            onPressed: controller.onReviewSubmit,
+                            loading: controller.loading,
+                            child: CommonLoadingBody(
+                              child: Text('Submit'.tr),
                             ),
-                            const VerticalDivider(width: 10),
-                            Expanded(
-                              child: OutlinedButton(
-                                onPressed: controller.changeEditingState,
-                                child: Text('Cancel'.tr),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    )
+                        const VerticalDivider(width: 10),
+                        Expanded(
+                          child: CommonButton(
+                            type: CommonButtonType.outlined,
+                            onPressed: controller.changeEditingState,
+                            disabled: controller.loading,
+                            child: Text('Cancel'.tr),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 );
               }
 
               if (loan.review == null) {
-                return ElevatedButton(
+                return CommonButton(
                   onPressed: controller.changeEditingState,
                   child: Text('Add review'.tr),
                 );
@@ -416,7 +413,7 @@ class LoanInfoPage extends StatelessWidget {
                     ],
                   ),
                   const Divider(height: 20),
-                  ElevatedButton(
+                  CommonButton(
                     onPressed: controller.changeEditingState,
                     child: Text('Edit review'.tr),
                   ),
@@ -424,14 +421,10 @@ class LoanInfoPage extends StatelessWidget {
               );
             }
 
-            return Obx(
-              () => CommonLoadingBody(
-                loading: controller.loading.value,
-                child: ElevatedButton(
-                  onPressed: () => controller.withdrawLoanRequest(context),
-                  child: Text('Withdraw request'.tr),
-                ),
-              ),
+            return CommonButton(
+              onPressed: controller.withdrawLoanRequest,
+              loading: controller.loading,
+              child: Text('Withdraw request'.tr),
             );
           },
         );

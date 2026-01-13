@@ -81,7 +81,12 @@ class ProfileCommonHelpers {
       backgroundColor: Colors.transparent,
       forceMaterialTransparency: true,
       scrolledUnderElevation: 0,
-      title: tabBar,
+      title: Padding(
+        padding: const EdgeInsetsGeometry.symmetric(
+          horizontal: 10,
+        ),
+        child: tabBar,
+      ),
       titleSpacing: 0,
       toolbarHeight: 80,
       centerTitle: true,

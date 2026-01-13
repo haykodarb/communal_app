@@ -76,6 +76,27 @@ final ElevatedButtonThemeData _elevatedButtonThemeData =
   ),
 );
 
+final FilledButtonThemeData _filledButtonThemeData = FilledButtonThemeData(
+  style: FilledButton.styleFrom(
+    shadowColor: _lightScheme.primary,
+    backgroundColor: _lightScheme.primary,
+    foregroundColor: _lightScheme.onPrimary,
+    disabledBackgroundColor: _lightScheme.primary.withValues(alpha: 0.5),
+    disabledForegroundColor: _lightScheme.surface,
+    overlayColor: Colors.transparent,
+    textStyle: const TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.w600,
+      fontFamily: 'Poppins',
+    ),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(50),
+    ),
+    minimumSize: const Size.fromHeight(20),
+    fixedSize: const Size.fromHeight(60),
+  ),
+);
+
 const DividerThemeData _dividerThemeData =
     DividerThemeData(color: Colors.transparent);
 
@@ -193,6 +214,7 @@ final ThemeData lightTheme = ThemeData(
   dialogTheme: DialogThemeData(backgroundColor: _lightScheme.surface),
   cardColor: _lightScheme.surface,
   elevatedButtonTheme: _elevatedButtonThemeData,
+  filledButtonTheme: _filledButtonThemeData,
   outlinedButtonTheme: _outlinedButtonThemeData,
   inputDecorationTheme: _inputDecorationTheme,
   iconTheme: _iconThemeData,

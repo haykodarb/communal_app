@@ -97,7 +97,7 @@ class RegisterController extends GetxController {
     });
   }
 
-  Future<void> onSubmitButton() async {
+  Future<void> onSubmitButton(BuildContext? context) async {
     if (formKey.currentState!.validate()) {
       loading.value = true;
       errorMessage.value = '';

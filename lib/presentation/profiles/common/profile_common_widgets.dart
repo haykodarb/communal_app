@@ -1,4 +1,3 @@
-import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_book_cover.dart';
@@ -57,17 +56,6 @@ class ProfileCommonWidgets {
                       ),
                     ),
                   ],
-                ),
-              ),
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () {},
-                  child: Row(
-                    children: [
-                      Icon(Atlas.user_plus),
-                      Text('Add friend'),
-                    ],
-                  ),
                 ),
               ),
               IconButton(
@@ -150,7 +138,6 @@ class ProfileCommonWidgets {
   static Widget tabBar({
     required RxInt currentTabIndex,
     required Function(int) onTabTapped,
-    bool useTranslations = false,
   }) {
     return Builder(
       builder: (BuildContext context) {
@@ -185,7 +172,7 @@ class ProfileCommonWidgets {
                           ),
                           alignment: Alignment.center,
                           child: Text(
-                            useTranslations ? 'Books'.tr : 'Books',
+                            'Books'.tr,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: currentTabIndex.value == 0
@@ -212,7 +199,7 @@ class ProfileCommonWidgets {
                           ),
                           alignment: Alignment.center,
                           child: Text(
-                            useTranslations ? 'Reviews'.tr : 'Reviews',
+                            'Reviews'.tr,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: currentTabIndex.value == 1

@@ -2,6 +2,7 @@ import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
+import 'package:communal/presentation/common/common_tab_bar.dart';
 import 'package:communal/presentation/common/common_vertical_book_card.dart';
 import 'package:communal/presentation/profiles/common/profile_common_helpers.dart';
 import 'package:communal/presentation/profiles/common/profile_common_widgets.dart';
@@ -66,10 +67,10 @@ class ProfileOtherPage extends StatelessWidget {
                 },
               ),
               ProfileCommonHelpers.buildTabBarAppBar(
-                tabBar: ProfileCommonWidgets.tabBar(
-                  currentTabIndex: controller.currentTabIndex,
+                tabBar: CommonTabBar(
+                  currentIndex: controller.currentTabIndex,
                   onTabTapped: controller.onTabTapped,
-                  useTranslations: false,
+                  tabs: const ['Books', 'Reviews'],
                 ),
               ),
               ProfileCommonHelpers.tabBarView(

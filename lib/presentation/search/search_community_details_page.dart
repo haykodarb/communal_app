@@ -6,6 +6,7 @@ import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/models/membership.dart';
+import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_confirmation_dialog.dart';
 import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
@@ -281,8 +282,8 @@ class SearchCommunityDetailsPage extends StatelessWidget {
 
                 if (controller.loading.value) return const Text('');
 
-                return ElevatedButton(
-                  onPressed: () async {
+                return CommonButton(
+                  onPressed: (BuildContext context) async {
                     final bool confirm = await const CommonConfirmationDialog(
                             title: 'Request invite?')
                         .open(context);

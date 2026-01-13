@@ -37,7 +37,8 @@ class LoanInfoController extends GetxController {
     }
 
     if (loansController != null) {
-      inheritedLoan = loansController?.listViewController.itemList.firstWhereOrNull(
+      inheritedLoan =
+          loansController?.listViewController.itemList.firstWhereOrNull(
         (element) => element.id == loanId,
       );
     }
@@ -60,7 +61,7 @@ class LoanInfoController extends GetxController {
     super.onInit();
   }
 
-  void changeEditingState() {
+  void changeEditingState(BuildContext context) {
     editing.value = !editing.value;
   }
 
@@ -72,7 +73,8 @@ class LoanInfoController extends GetxController {
     if (confirm) {
       loading.value = true;
 
-      final BackendResponse response = await LoansBackend.deleteLoan(loan.value);
+      final BackendResponse response =
+          await LoansBackend.deleteLoan(loan.value);
 
       if (response.success) {
         loansController?.removeItemById(inheritedLoan!.id);
@@ -95,7 +97,8 @@ class LoanInfoController extends GetxController {
     if (confirm) {
       loading.value = true;
 
-      final BackendResponse response = await LoansBackend.setLoanParameterTrue(loan.value, 'accepted');
+      final BackendResponse response =
+          await LoansBackend.setLoanParameterTrue(loan.value, 'accepted');
 
       loading.value = false;
 
@@ -123,7 +126,8 @@ class LoanInfoController extends GetxController {
     if (confirm) {
       loading.value = true;
 
-      final BackendResponse response = await LoansBackend.setLoanParameterTrue(loan.value, 'rejected');
+      final BackendResponse response =
+          await LoansBackend.setLoanParameterTrue(loan.value, 'rejected');
 
       if (response.success && inheritedLoan != null) {
         loansController?.listViewController.itemList.removeWhere(
@@ -151,7 +155,8 @@ class LoanInfoController extends GetxController {
     if (confirm) {
       loading.value = true;
 
-      final BackendResponse response = await LoansBackend.setLoanParameterTrue(loan.value, 'returned');
+      final BackendResponse response =
+          await LoansBackend.setLoanParameterTrue(loan.value, 'returned');
 
       if (response.success) {
         loan.value.returned = true;
@@ -183,7 +188,8 @@ class LoanInfoController extends GetxController {
   Future<void> onReviewDelete() async {
     deleting.value = true;
 
-    final BackendResponse response = await LoansBackend.updateLoanReview(loan.value, null);
+    final BackendResponse response =
+        await LoansBackend.updateLoanReview(loan.value, null);
 
     if (response.success) {
       loan.value.review = null;
@@ -194,10 +200,11 @@ class LoanInfoController extends GetxController {
     deleting.value = false;
   }
 
-  Future<void> onReviewSubmit() async {
+  Future<void> onReviewSubmit(BuildContext _) async {
     loading.value = true;
 
-    final BackendResponse response = await LoansBackend.updateLoanReview(loan.value, newReview);
+    final BackendResponse response =
+        await LoansBackend.updateLoanReview(loan.value, newReview);
 
     if (response.success) {
       loan.value.review = newReview;

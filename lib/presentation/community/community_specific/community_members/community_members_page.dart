@@ -1,6 +1,7 @@
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/profile.dart';
+import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
@@ -81,7 +82,8 @@ class CommunityMembersPage extends StatelessWidget {
                         child: Builder(
                           builder: (context) {
                             return Container(
-                              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(
                                   20,
@@ -100,7 +102,8 @@ class CommunityMembersPage extends StatelessWidget {
                         builder: (context) {
                           if (user.id == UsersBackend.currentUserId) {
                             return Container(
-                              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(
                                   20,
@@ -113,7 +116,8 @@ class CommunityMembersPage extends StatelessWidget {
                             );
                           }
 
-                          if (communityController.community.isCurrentUserOwner) {
+                          if (communityController
+                              .community.isCurrentUserOwner) {
                             return PopupMenuButton(
                               itemBuilder: (context) {
                                 return <PopupMenuEntry>[
@@ -124,7 +128,9 @@ class CommunityMembersPage extends StatelessWidget {
                                       context,
                                     ),
                                     child: Text(
-                                      user.is_admin ? 'Remove admin'.tr : 'Make admin'.tr,
+                                      user.is_admin
+                                          ? 'Remove admin'.tr
+                                          : 'Make admin'.tr,
                                     ),
                                   ),
                                   PopupMenuItem(
@@ -212,12 +218,15 @@ class CommunityMembersPage extends StatelessWidget {
               child: Obx(
                 () {
                   return Visibility(
-                    visible: (communityController.community.isCurrentUserAdmin ?? false) &&
-                        controller.requestCount.value > 0,
+                    visible:
+                        (communityController.community.isCurrentUserAdmin ??
+                                false) &&
+                            controller.requestCount.value > 0,
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-                      child: ElevatedButton(
-                        onPressed: () {
+                      padding:
+                          const EdgeInsets.only(left: 10, right: 10, top: 10),
+                      child: CommonButton(
+                        onPressed: (_) {
                           context.push(
                             '${RouteNames.communityListPage}/${controller.communityId}${RouteNames.communityRequestsPage}',
                           );
@@ -238,7 +247,8 @@ class CommunityMembersPage extends StatelessWidget {
             ),
             CommonListView<Profile>(
               noItemsText: 'community-members-no-items'.tr,
-              childBuilder: (Profile member) => _userCardRow(member, controller),
+              childBuilder: (Profile member) =>
+                  _userCardRow(member, controller),
               controller: controller.listViewController,
               scrollController: communityController.scrollController,
               isSliver: true,

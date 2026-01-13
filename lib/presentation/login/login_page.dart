@@ -1,4 +1,4 @@
-import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -46,7 +46,9 @@ class LoginPage extends StatelessWidget {
                 ),
                 onPressed: () {
                   context.push(
-                    RouteNames.startPage + RouteNames.loginPage + RouteNames.loginRecoveryPage,
+                    RouteNames.startPage +
+                        RouteNames.loginPage +
+                        RouteNames.loginRecoveryPage,
                   );
                 },
               ),
@@ -61,16 +63,10 @@ class LoginPage extends StatelessWidget {
               ),
             ),
             const Divider(height: 30),
-            Obx(
-              () => CommonLoadingBody(
-                loading: controller.loading.value,
-                size: 40,
-                child: ElevatedButton(
-                  onPressed: () => controller.loginButtonCallback(context),
-                  child: Text(
-                    'Login'.tr,
-                  ),
-                ),
+            CommonButton(
+              onPressed: controller.loginButtonCallback,
+              child: Text(
+                'Login'.tr,
               ),
             ),
           ],

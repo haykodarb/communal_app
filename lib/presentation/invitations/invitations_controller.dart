@@ -16,9 +16,12 @@ class InvitationsController extends GetxController {
   }
 
   Future<void> respondToInvitation(Membership invitation, bool accept) async {
+    if (invitation.loading.value) return;
+
     invitation.loading.value = true;
 
-    final BackendResponse response = await UsersBackend.respondToInvitation(invitation.id, accept);
+    final BackendResponse response =
+        await UsersBackend.respondToInvitation(invitation.id, accept);
 
     if (response.success) {
       invitationsList.remove(invitation);

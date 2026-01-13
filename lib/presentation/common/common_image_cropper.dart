@@ -1,3 +1,4 @@
+import 'package:communal/presentation/common/common_button.dart';
 import 'package:crop_image/crop_image.dart';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
@@ -53,8 +54,9 @@ class CommonImageCropper extends StatelessWidget {
               child: Row(
                 children: [
                   Expanded(
-                    child: OutlinedButton(
-                      onPressed: () {
+                    child: CommonButton(
+                      type: CommonButtonType.outlined,
+                      onPressed: (BuildContext context) {
                         context.pop();
                       },
                       child: const Text('Cancel'),
@@ -62,8 +64,8 @@ class CommonImageCropper extends StatelessWidget {
                   ),
                   const VerticalDivider(width: 20),
                   Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
+                    child: CommonButton(
+                      onPressed: (_) async {
                         ui.Image bitmap = await cropController.croppedBitmap();
 
                         final data = await bitmap.toByteData(

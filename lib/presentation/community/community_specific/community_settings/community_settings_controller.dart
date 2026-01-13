@@ -19,19 +19,21 @@ class CommunitySettingsController extends GetxController {
 
   final CommunitySpecificController communitySpecificController = Get.find();
 
-  TextEditingController? textEditingController = TextEditingController.fromValue(
+  TextEditingController? textEditingController =
+      TextEditingController.fromValue(
     TextEditingValue(
       text: Get.find<CommunitySpecificController>().community.name,
     ),
   );
 
-  final RxBool edited = false.obs;
+  final RxBool unedited = true.obs;
 
   final Rx<Community> communityForm = Community.empty().obs;
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   final RxBool loading = false.obs;
+  final RxBool deleting = false.obs;
   final RxString errorMessage = ''.obs;
 
   final ImagePicker imagePicker = ImagePicker();
@@ -77,7 +79,7 @@ class CommunitySettingsController extends GetxController {
 
     selectedBytes.value = croppedBytes;
 
-    edited.value = true;
+    unedited.value = false;
 
     _checkIfEdited();
   }
@@ -108,7 +110,8 @@ class CommunitySettingsController extends GetxController {
     ).open(context);
 
     if (confirm) {
-      final BackendResponse response = await UsersBackend.removeCurrentUserFromCommunity(community);
+      final BackendResponse response =
+          await UsersBackend.removeCurrentUserFromCommunity(community);
 
       if (context.mounted) {
         if (response.success) {
@@ -132,7 +135,10 @@ class CommunitySettingsController extends GetxController {
     ).open(context);
 
     if (confirm) {
-      final BackendResponse response = await CommunitiesBackend.deleteCommunity(community);
+      deleting.value = true;
+
+      final BackendResponse response =
+          await CommunitiesBackend.deleteCommunity(community);
 
       if (context.mounted) {
         if (response.success) {
@@ -145,6 +151,8 @@ class CommunitySettingsController extends GetxController {
           CommonAlertDialog(title: response.payload).open(context);
         }
       }
+
+      deleting.value = false;
     }
   }
 
@@ -153,7 +161,7 @@ class CommunitySettingsController extends GetxController {
         communityForm.value.description == community.description &&
         selectedBytes.value == null;
 
-    edited.value = !matchesOriginal;
+    unedited.value = matchesOriginal;
   }
 
   void onNameChange(String value) {
@@ -179,6 +187,8 @@ class CommunitySettingsController extends GetxController {
   }
 
   Future<void> onSubmit(BuildContext context) async {
+    if (deleting.value) return;
+
     if (formKey.currentState!.validate()) {
       loading.value = true;
       errorMessage.value = '';
@@ -197,12 +207,14 @@ class CommunitySettingsController extends GetxController {
         selectedBytes.value = null;
         _checkIfEdited();
 
-        int? index = communityListController?.listViewController.itemList.indexWhere(
+        int? index =
+            communityListController?.listViewController.itemList.indexWhere(
           (element) => element.id == communityForm.value.id,
         );
 
         if (index != null && index >= 0) {
-          communityListController?.listViewController.itemList[index] = community;
+          communityListController?.listViewController.itemList[index] =
+              community;
         }
 
         communityListController?.listViewController.itemList.refresh();

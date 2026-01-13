@@ -1,3 +1,4 @@
+import 'package:communal/presentation/common/common_button.dart';
 import 'package:flutter/material.dart';
 
 class CommonAlertDialog extends StatelessWidget {
@@ -8,7 +9,7 @@ class CommonAlertDialog extends StatelessWidget {
     this.confirmationText = 'Accept',
   });
 
-  final void Function()? confirmCallback;
+  final void Function(BuildContext context)? confirmCallback;
   final String title;
   final String confirmationText;
 
@@ -44,8 +45,9 @@ class CommonAlertDialog extends StatelessWidget {
             ),
             const Divider(height: 40),
             SizedBox(
-              child: ElevatedButton(
-                onPressed: confirmCallback ?? () => Navigator.of(context).pop(),
+              child: CommonButton(
+                onPressed:
+                    confirmCallback ?? (_) => Navigator.of(context).pop(),
                 child: Text(confirmationText),
               ),
             ),

@@ -3,6 +3,7 @@ import 'package:communal/backend/books_backend.dart';
 import 'package:communal/presentation/book/book_edit/book_edit_controller.dart';
 import 'package:communal/presentation/book/book_owned/book_owned_controller.dart';
 import 'package:communal/presentation/common/common_boolean_selector.dart';
+import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
@@ -55,8 +56,8 @@ class BookEditPage extends StatelessWidget {
           appBar: AppBar(
             title: Responsive.isMobile(context) ? Text('Edit book'.tr) : null,
           ),
-          body: Obx(() {
-            return CommonLoadingBody(
+          body: Obx(
+            () => CommonLoadingBody(
               loading: controller.firstLoad.value,
               child: SingleChildScrollView(
                 child: Padding(
@@ -269,23 +270,18 @@ class BookEditPage extends StatelessWidget {
                         const Divider(height: 20),
                         _availableForLoansPrompt(controller),
                         const Divider(height: 20),
-                        Obx(
-                          () => CommonLoadingBody(
-                            loading: controller.loading.value,
-                            child: ElevatedButton(
-                              onPressed: () =>
-                                  controller.onSubmitButton(context),
-                              child: Text('Save'.tr),
-                            ),
-                          ),
+                        CommonButton(
+                          loading: controller.loading,
+                          onPressed: controller.onSubmitButton,
+                          child: Text('Save'.tr),
                         ),
                       ],
                     ),
                   ),
                 ),
               ),
-            );
-          }),
+            ),
+          ),
         );
       },
     );

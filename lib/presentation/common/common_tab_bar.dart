@@ -69,6 +69,55 @@ class CommonTabBar extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final double widthOfTab = constraints.maxWidth / tabs.length;
+          final double heightOfTab = constraints.maxHeight;
+
+          String longestTab =
+              tabs.reduce((a, b) => a.length > b.length ? a : b);
+
+          double calculateFontSize(
+            BuildContext context,
+            String text,
+            double maxWidth,
+            double maxHeight,
+          ) {
+            const double widthPadding = 8;
+            const double heightPadding = 4;
+            double effectiveWidth = maxWidth - widthPadding;
+            double effectiveHeight = maxHeight - heightPadding;
+
+            TextScaler textScaler = MediaQuery.textScalerOf(context);
+            double textScaleFactor = textScaler.scale(1.0);
+            double fontSize = 20;
+            double scaledFontSize = textScaler.scale(fontSize);
+
+            final defaultStyle = DefaultTextStyle.of(context).style;
+            final textStyle = defaultStyle.merge(TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: scaledFontSize,
+            ));
+            final textPainter = TextPainter(
+              text: TextSpan(text: text, style: textStyle),
+              textDirection: TextDirection.ltr,
+            );
+            textPainter.layout();
+            double measuredWidth = textPainter.width;
+            double measuredHeight = textPainter.height;
+
+            double widthScale = effectiveWidth / measuredWidth;
+            double heightScale = effectiveHeight / measuredHeight;
+            double scale = widthScale < heightScale ? widthScale : heightScale;
+
+            scaledFontSize = scaledFontSize * scale;
+            fontSize = textScaleFactor == 0
+                ? fontSize
+                : scaledFontSize / textScaleFactor;
+
+            fontSize = fontSize.floorToDouble();
+            return fontSize.clamp(12, 20);
+          }
+
+          final double fontSize =
+              calculateFontSize(context, longestTab, widthOfTab, heightOfTab);
 
           return Stack(
             children: [
@@ -87,7 +136,7 @@ class CommonTabBar extends StatelessWidget {
                 ),
               ),
               Row(
-                children: children(20),
+                children: children(fontSize),
               ),
             ],
           );

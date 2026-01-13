@@ -1,6 +1,6 @@
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/presentation/common/common_boolean_selector.dart';
-import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/book/book_create/book_create_controller.dart';
 import 'package:communal/responsive.dart';
@@ -71,13 +71,17 @@ class BookCreatePage extends StatelessWidget {
                                 } else {
                                   return Card(
                                     margin: EdgeInsets.zero,
-                                    color: Theme.of(context).colorScheme.surfaceContainer,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .surfaceContainer,
                                     child: Center(
                                       child: Text(
                                         'Add\nimage'.tr,
                                         style: TextStyle(
                                           fontSize: 14,
-                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurfaceVariant,
                                         ),
                                         textAlign: TextAlign.center,
                                       ),
@@ -92,10 +96,13 @@ class BookCreatePage extends StatelessWidget {
                               alignment: Alignment.bottomCenter,
                               child: Obx(
                                 () {
-                                  final bool fileSelected = controller.selectedBytes.value != null;
+                                  final bool fileSelected =
+                                      controller.selectedBytes.value != null;
 
                                   final Color buttonBackground = fileSelected
-                                      ? Theme.of(context).colorScheme.surfaceContainer
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .surfaceContainer
                                       : Theme.of(context).colorScheme.primary;
 
                                   final Color iconColor = fileSelected
@@ -103,7 +110,11 @@ class BookCreatePage extends StatelessWidget {
                                       : Theme.of(context).colorScheme.onPrimary;
 
                                   final Border? buttonBorder = fileSelected
-                                      ? Border.all(color: Theme.of(context).colorScheme.primary, width: 2)
+                                      ? Border.all(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                          width: 2)
                                       : null;
 
                                   if (!Responsive.isMobile(context)) {
@@ -115,7 +126,8 @@ class BookCreatePage extends StatelessWidget {
                                       child: Container(
                                         decoration: BoxDecoration(
                                           border: buttonBorder,
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
                                           color: buttonBackground,
                                         ),
                                         padding: const EdgeInsets.all(13),
@@ -129,8 +141,10 @@ class BookCreatePage extends StatelessWidget {
                                   }
 
                                   return Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       InkWell(
                                         onTap: () => controller.takePicture(
@@ -140,7 +154,8 @@ class BookCreatePage extends StatelessWidget {
                                         child: Container(
                                           decoration: BoxDecoration(
                                             border: buttonBorder,
-                                            borderRadius: BorderRadius.circular(10),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
                                             color: buttonBackground,
                                           ),
                                           padding: const EdgeInsets.all(13),
@@ -160,7 +175,8 @@ class BookCreatePage extends StatelessWidget {
                                         child: Container(
                                           decoration: BoxDecoration(
                                             border: buttonBorder,
-                                            borderRadius: BorderRadius.circular(10),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
                                             color: buttonBackground,
                                           ),
                                           padding: const EdgeInsets.all(13),
@@ -186,7 +202,8 @@ class BookCreatePage extends StatelessWidget {
                         CommonTextField(
                           callback: controller.onTitleChange,
                           label: 'Title',
-                          submitCallback: (_) => controller.onSubmitButton(context),
+                          submitCallback: (_) =>
+                              controller.onSubmitButton(context),
                           validator: (String? value) {
                             return controller.stringValidator(
                               value: value,
@@ -199,7 +216,8 @@ class BookCreatePage extends StatelessWidget {
                         const Divider(height: 5),
                         CommonTextField(
                           callback: controller.onAuthorChange,
-                          submitCallback: (_) => controller.onSubmitButton(context),
+                          submitCallback: (_) =>
+                              controller.onSubmitButton(context),
                           label: 'Author'.tr,
                           validator: (String? value) {
                             return controller.stringValidator(
@@ -229,14 +247,10 @@ class BookCreatePage extends StatelessWidget {
                     const Divider(height: 20),
                     _availableForLoansPrompt(controller),
                     const Divider(height: 20),
-                    Obx(
-                      () => CommonLoadingBody(
-                        loading: controller.loading.value,
-                        child: ElevatedButton(
-                          onPressed: () => controller.onSubmitButton(context),
-                          child: Text('Add'.tr),
-                        ),
-                      ),
+                    CommonButton(
+                      onPressed: controller.onSubmitButton,
+                      loading: controller.loading,
+                      child: Text('Add'.tr),
                     ),
                   ],
                 ),

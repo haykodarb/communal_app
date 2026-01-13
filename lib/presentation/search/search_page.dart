@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:communal/models/book.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/models/profile.dart';
@@ -69,128 +67,6 @@ class SearchPage extends StatelessWidget {
     );
   }
 
-  Widget _tabBar(SearchPageController controller) {
-    return Builder(
-      builder: (BuildContext context) {
-        final Color selectedBg = Theme.of(context).colorScheme.primary;
-        final Color selectedFg = Theme.of(context).colorScheme.onPrimary;
-        final Color unselectedBg =
-            Theme.of(context).colorScheme.surfaceContainer;
-        return Container(
-          padding: const EdgeInsets.all(10),
-          height: 70,
-          width: double.maxFinite,
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceContainer,
-            borderRadius: BorderRadius.circular(50),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: InkWell(
-                  onTap: () => controller.onTabTapped(0),
-                  child: Obx(
-                    () {
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: controller.currentTabIndex.value == 0
-                              ? selectedBg
-                              : unselectedBg,
-                          borderRadius: BorderRadius.circular(40),
-                        ),
-                        alignment: Alignment.center,
-                        child: LayoutBuilder(builder: (context, constraints) {
-                          return Text(
-                            'Books'.tr,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: controller.currentTabIndex.value == 0
-                                  ? selectedFg
-                                  : selectedBg,
-                              fontSize:
-                                  min(30, max(constraints.maxWidth * 0.09, 14)),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          );
-                        }),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              Expanded(
-                child: InkWell(
-                  onTap: () => controller.onTabTapped(1),
-                  child: Obx(
-                    () {
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: controller.currentTabIndex.value == 1
-                              ? selectedBg
-                              : unselectedBg,
-                          borderRadius: BorderRadius.circular(40),
-                        ),
-                        alignment: Alignment.center,
-                        child: LayoutBuilder(builder: (context, constraints) {
-                          return Text(
-                            'Communities'.tr,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: controller.currentTabIndex.value == 1
-                                  ? selectedFg
-                                  : selectedBg,
-                              fontSize:
-                                  min(30, max(constraints.maxWidth * 0.09, 14)),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          );
-                        }),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              Expanded(
-                child: InkWell(
-                  onTap: () => controller.onTabTapped(2),
-                  child: Obx(
-                    () {
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: controller.currentTabIndex.value == 2
-                              ? selectedBg
-                              : unselectedBg,
-                          borderRadius: BorderRadius.circular(40),
-                        ),
-                        alignment: Alignment.center,
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            return Text(
-                              'Users'.tr,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: controller.currentTabIndex.value == 2
-                                    ? selectedFg
-                                    : selectedBg,
-                                fontSize: min(
-                                    30, max(constraints.maxWidth * 0.09, 14)),
-                                fontWeight: FontWeight.w600,
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
@@ -210,17 +86,15 @@ class SearchPage extends StatelessWidget {
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Obx(() {
-                    return CommonTabBar(
-                      onTabTapped: controller.onTabTapped,
-                      currentIndex: controller.currentTabIndex,
-                      tabs: const [
-                        'Books',
-                        'Communities',
-                        'Users',
-                      ],
-                    );
-                  }),
+                  child: CommonTabBar(
+                    onTabTapped: controller.onTabTapped,
+                    currentIndex: controller.currentTabIndex,
+                    tabs: const [
+                      'Books',
+                      'Communities',
+                      'Users',
+                    ],
+                  ),
                 ),
               ),
               const SliverToBoxAdapter(child: SizedBox(height: 5)),

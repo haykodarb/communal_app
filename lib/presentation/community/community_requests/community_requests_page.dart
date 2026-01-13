@@ -35,16 +35,19 @@ class CommunityRequestsController extends GetxController {
     listViewController.registerNewPageCallback(loadRequests);
   }
 
-  Future<void> respondToMembershipRequest(Membership membership, bool accept) async {
+  Future<void> respondToMembershipRequest(
+      Membership membership, bool accept) async {
     membership.loading.value = true;
-    final BackendResponse response = await UsersBackend.respondToMembershipRequest(
+    final BackendResponse response =
+        await UsersBackend.respondToMembershipRequest(
       membership: membership,
       accept: accept,
     );
 
     if (response.success) {
       if (accept) {
-        communityMembersController?.listViewController.addItem(membership.member);
+        communityMembersController?.listViewController
+            .addItem(membership.member);
       }
 
       communityMembersController?.requestCount.value--;
@@ -56,7 +59,8 @@ class CommunityRequestsController extends GetxController {
   }
 
   Future<List<Membership>> loadRequests(int pageKey) async {
-    final BackendResponse<List<Membership>> response = await UsersBackend.getRequestsForCommunity(
+    final BackendResponse<List<Membership>> response =
+        await UsersBackend.getRequestsForCommunity(
       communityId: communityId,
       pageKey: pageKey,
       pageSize: _pageSize,
@@ -137,8 +141,8 @@ class CommunityRequestsPage extends StatelessWidget {
             controller: controller.listViewController,
             noItemsText: 'No pending requests.',
             childBuilder: (Membership membership) {
-              return Obx(() {
-                return CommonLoadingBody(
+              return Obx(
+                () => CommonLoadingBody(
                   loading: membership.loading.value,
                   child: Row(
                     children: [
@@ -149,13 +153,17 @@ class CommunityRequestsPage extends StatelessWidget {
                         child: IconButton(
                           onPressed: () async {
                             final bool confirm =
-                                await const CommonConfirmationDialog(title: 'Accept membership request?').open(context);
+                                await const CommonConfirmationDialog(
+                                        title: 'Accept membership request?')
+                                    .open(context);
                             if (confirm) {
-                              controller.respondToMembershipRequest(membership, true);
+                              controller.respondToMembershipRequest(
+                                  membership, true);
                             }
                           },
                           style: IconButton.styleFrom(
-                            backgroundColor: Theme.of(context).colorScheme.primary,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
                             fixedSize: const Size.fromHeight(60),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -173,13 +181,17 @@ class CommunityRequestsPage extends StatelessWidget {
                         child: IconButton(
                           onPressed: () async {
                             final bool confirm =
-                                await const CommonConfirmationDialog(title: 'Reject membership request?').open(context);
+                                await const CommonConfirmationDialog(
+                                        title: 'Reject membership request?')
+                                    .open(context);
                             if (confirm) {
-                              controller.respondToMembershipRequest(membership, false);
+                              controller.respondToMembershipRequest(
+                                  membership, false);
                             }
                           },
                           style: IconButton.styleFrom(
-                            backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.surfaceContainer,
                             fixedSize: const Size.fromHeight(60),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -197,8 +209,8 @@ class CommunityRequestsPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                );
-              });
+                ),
+              );
             },
           ),
         );

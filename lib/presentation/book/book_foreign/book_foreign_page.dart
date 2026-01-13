@@ -2,6 +2,7 @@ import 'package:communal/models/book.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/book/book_foreign/book_foreign_controller.dart';
 import 'package:communal/presentation/common/common_book_cover.dart';
+import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_username_button.dart';
@@ -310,8 +311,8 @@ class BookForeignPage extends StatelessWidget {
               children: [
                 Visibility(
                   visible: book.loaned && requestByCurrentUser,
-                  child: ElevatedButton(
-                    onPressed: () {
+                  child: CommonButton(
+                    onPressed: (_) {
                       if (controller.currentLoan.value != null) {
                         context.push(
                             '${RouteNames.loansPage}/${controller.currentLoan.value!.id}');
@@ -322,8 +323,9 @@ class BookForeignPage extends StatelessWidget {
                 ),
                 Visibility(
                   visible: !book.loaned && !requestByCurrentUser,
-                  child: ElevatedButton(
-                    onPressed: () => controller.requestLoan(context),
+                  child: CommonButton(
+                    onPressed: controller.requestLoan,
+                    loading: controller.loading,
                     child: Text(
                       'Request'.tr,
                       style: const TextStyle(
@@ -334,8 +336,10 @@ class BookForeignPage extends StatelessWidget {
                 ),
                 Visibility(
                   visible: !book.loaned && requestByCurrentUser,
-                  child: OutlinedButton(
-                    onPressed: () => controller.withdrawLoanRequest(context),
+                  child: CommonButton(
+                    type: CommonButtonType.outlined,
+                    onPressed: controller.withdrawLoanRequest,
+                    loading: controller.loading,
                     child: Text('Withdraw request'.tr),
                   ),
                 ),

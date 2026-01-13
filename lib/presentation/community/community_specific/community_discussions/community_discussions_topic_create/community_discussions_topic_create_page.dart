@@ -1,4 +1,4 @@
-import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_topic_create/community_discussions_topic_create_controller.dart';
 import 'package:flutter/material.dart';
@@ -35,18 +35,12 @@ class CommunityDiscussionsTopicCreatePage extends StatelessWidget {
                     validator: (value) => controller.stringValidator(value, 4),
                   ),
                   const Divider(height: 10),
-                  Obx(
-                    () {
-                      return CommonLoadingBody(
-                        loading: controller.loading.value,
-                        child: ElevatedButton(
-                          onPressed: () => controller.onSubmit(context),
-                          child: Text(
-                            'Create'.tr,
-                          ),
-                        ),
-                      );
-                    },
+                  CommonButton(
+                    onPressed: controller.onSubmit,
+                    loading: controller.loading,
+                    child: Text(
+                      'Create'.tr,
+                    ),
                   ),
                 ],
               ),

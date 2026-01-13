@@ -70,8 +70,8 @@ class CommunitySpecificPage extends StatelessWidget {
                       labels[index],
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.surfaceContainer,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],

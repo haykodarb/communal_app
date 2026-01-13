@@ -270,7 +270,6 @@ class MessagesSpecificPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(userId);
     return GetBuilder(
       init: MessagesSpecificController(
         userId: userId,

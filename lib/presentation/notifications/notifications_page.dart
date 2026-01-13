@@ -1,5 +1,6 @@
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/models/custom_notification.dart';
+import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
@@ -157,40 +158,28 @@ class NotificationsPage extends StatelessWidget {
                               children: [
                                 const VerticalDivider(width: 20),
                                 Expanded(
-                                  child: ElevatedButton(
-                                    onPressed: () =>
-                                        controller.respondToInvitation(
-                                      notification.membership!.id,
-                                      notification,
-                                      true,
-                                      context,
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                      fixedSize: const Size.fromHeight(40),
-                                      textStyle: const TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16,
-                                      ),
-                                    ),
+                                  child: CommonButton(
+                                    onPressed: (BuildContext context) {
+                                      controller.respondToInvitation(
+                                        notification.membership!.id,
+                                        notification,
+                                        true,
+                                        context,
+                                      );
+                                    },
                                     child: const Text('Accept'),
                                   ),
                                 ),
                                 const VerticalDivider(width: 10),
                                 Expanded(
-                                  child: OutlinedButton(
-                                    onPressed: () =>
+                                  child: CommonButton(
+                                    type: CommonButtonType.outlined,
+                                    onPressed: (BuildContext context) =>
                                         controller.respondToInvitation(
                                       notification.membership!.id,
                                       notification,
                                       false,
                                       context,
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      fixedSize: const Size.fromHeight(40),
-                                      textStyle: const TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16,
-                                      ),
                                     ),
                                     child: const Text('Reject'),
                                   ),

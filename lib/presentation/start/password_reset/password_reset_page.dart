@@ -1,7 +1,7 @@
 import 'package:communal/backend/login_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
-import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,8 @@ class PasswordResetController extends GetxController {
 
     if (validForm) {
       loading.value = true;
-      final BackendResponse response = await LoginBackend.updateUserPassword(password);
+      final BackendResponse response =
+          await LoginBackend.updateUserPassword(password);
 
       if (context.mounted) {
         await CommonAlertDialog(title: response.payload).open(context);
@@ -61,7 +62,8 @@ class PasswordResetController extends GetxController {
 class PasswordResetPage extends StatelessWidget {
   const PasswordResetPage({super.key});
 
-  Widget _recoveryForm(PasswordResetController controller, BuildContext context) {
+  Widget _recoveryForm(
+      PasswordResetController controller, BuildContext context) {
     return Form(
       key: controller.formKey,
       child: Column(
@@ -74,15 +76,10 @@ class PasswordResetPage extends StatelessWidget {
             label: 'password'.tr,
           ),
           const Divider(height: 30),
-          Obx(
-            () => CommonLoadingBody(
-              loading: controller.loading.value,
-              size: 40,
-              child: ElevatedButton(
-                onPressed: () => controller.onSubmit(context),
-                child: Text('send'.tr),
-              ),
-            ),
+          CommonButton(
+            loading: controller.loading,
+            onPressed: controller.onSubmit,
+            child: Text('Send'.tr),
           ),
         ],
       ),
@@ -100,11 +97,15 @@ class PasswordResetPage extends StatelessWidget {
             await Supabase.instance.client.auth.getSessionFromUrl(uri);
           } catch (e) {
             if (context.mounted) {
-              await const CommonAlertDialog(title: 'Wrong link.\nPlease re-request a password reset.').open(context);
+              await const CommonAlertDialog(
+                      title: 'Wrong link.\nPlease re-request a password reset.')
+                  .open(context);
             }
           }
         } else {
-          await const CommonAlertDialog(title: 'Wrong link. Please re-request a password reset.').open(context);
+          await const CommonAlertDialog(
+                  title: 'Wrong link. Please re-request a password reset.')
+              .open(context);
         }
       },
       builder: (PasswordResetController controller) {

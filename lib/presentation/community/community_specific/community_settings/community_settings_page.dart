@@ -1,5 +1,6 @@
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/communities_backend.dart';
+import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
@@ -192,53 +193,50 @@ class CommunitySettingsPage extends StatelessWidget {
       builder: (context) {
         final bool userIsOwner = controller.community.isCurrentUserOwner;
         return Obx(
-          () {
-            return CommonLoadingBody(
-              loading: controller.loading.value,
-              child: Stack(
-                children: [
-                  Visibility(
-                    visible: !userIsOwner,
-                    child: OutlinedButton(
-                      onPressed: () => controller.leaveCommunity(context),
-                      child: Text('Leave'.tr),
-                    ),
+          () => CommonLoadingBody(
+            loading: controller.loading.value,
+            child: Stack(
+              children: [
+                Visibility(
+                  visible: !userIsOwner,
+                  child: CommonButton(
+                    type: CommonButtonType.outlined,
+                    onPressed: controller.leaveCommunity,
+                    child: Text('Leave'.tr),
                   ),
-                  Visibility(
-                    visible: userIsOwner,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Obx(
-                            () {
-                              return ElevatedButton(
-                                onPressed: controller.edited.value
-                                    ? () => controller.onSubmit(context)
-                                    : null,
-                                child: Text(
-                                  'Save'.tr,
-                                ),
-                              );
-                            },
+                ),
+                Visibility(
+                  visible: userIsOwner,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: CommonButton(
+                          onPressed: controller.onSubmit,
+                          disabled: controller.unedited,
+                          loading: controller.loading,
+                          child: Text(
+                            'Save'.tr,
                           ),
                         ),
-                        const VerticalDivider(width: 10),
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () =>
-                                controller.deleteCommunity(context),
-                            child: Text(
-                              'Delete'.tr,
-                            ),
+                      ),
+                      const VerticalDivider(width: 10),
+                      Expanded(
+                        child: CommonButton(
+                          type: CommonButtonType.outlined,
+                          onPressed: controller.deleteCommunity,
+                          disabled: controller.loading,
+                          loading: controller.deleting,
+                          child: Text(
+                            'Delete'.tr,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            );
-          },
+                ),
+              ],
+            ),
+          ),
         );
       },
     );

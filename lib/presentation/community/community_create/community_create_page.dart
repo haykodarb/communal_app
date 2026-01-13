@@ -1,5 +1,5 @@
 import 'package:atlas_icons/atlas_icons.dart';
-import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/community/community_create/community_create_controller.dart';
 import 'package:communal/responsive.dart';
@@ -19,7 +19,9 @@ class CommunityCreatePage extends StatelessWidget {
         return Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
-            title: Responsive.isMobile(context) ? Text('Create Community'.tr) : null,
+            title: Responsive.isMobile(context)
+                ? Text('Create Community'.tr)
+                : null,
           ),
           body: SingleChildScrollView(
             child: Padding(
@@ -51,7 +53,9 @@ class CommunityCreatePage extends StatelessWidget {
                                   } else {
                                     return Card(
                                       margin: EdgeInsets.zero,
-                                      color: Theme.of(context).colorScheme.surfaceContainer,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .surfaceContainer,
                                       child: Center(
                                         child: Text(
                                           'Add\nimage'.tr,
@@ -70,10 +74,13 @@ class CommunityCreatePage extends StatelessWidget {
                               alignment: Alignment.bottomCenter,
                               child: Obx(
                                 () {
-                                  final bool fileSelected = controller.selectedBytes.value != null;
+                                  final bool fileSelected =
+                                      controller.selectedBytes.value != null;
 
                                   final Color buttonBackground = fileSelected
-                                      ? Theme.of(context).colorScheme.surfaceContainer
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .surfaceContainer
                                       : Theme.of(context).colorScheme.primary;
 
                                   final Color iconColor = fileSelected
@@ -81,7 +88,11 @@ class CommunityCreatePage extends StatelessWidget {
                                       : Theme.of(context).colorScheme.onPrimary;
 
                                   final Border? buttonBorder = fileSelected
-                                      ? Border.all(color: Theme.of(context).colorScheme.primary, width: 2)
+                                      ? Border.all(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                          width: 2)
                                       : null;
 
                                   if (kIsWeb) {
@@ -93,7 +104,8 @@ class CommunityCreatePage extends StatelessWidget {
                                       child: Container(
                                         decoration: BoxDecoration(
                                           border: buttonBorder,
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
                                           color: buttonBackground,
                                         ),
                                         padding: const EdgeInsets.all(13),
@@ -107,15 +119,19 @@ class CommunityCreatePage extends StatelessWidget {
                                   }
 
                                   return Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       InkWell(
-                                        onTap: () => controller.takePicture(ImageSource.camera, context),
+                                        onTap: () => controller.takePicture(
+                                            ImageSource.camera, context),
                                         child: Container(
                                           decoration: BoxDecoration(
                                             border: buttonBorder,
-                                            borderRadius: BorderRadius.circular(10),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
                                             color: buttonBackground,
                                           ),
                                           padding: const EdgeInsets.all(13),
@@ -128,11 +144,13 @@ class CommunityCreatePage extends StatelessWidget {
                                         ),
                                       ),
                                       InkWell(
-                                        onTap: () => controller.takePicture(ImageSource.gallery, context),
+                                        onTap: () => controller.takePicture(
+                                            ImageSource.gallery, context),
                                         child: Container(
                                           decoration: BoxDecoration(
                                             border: buttonBorder,
-                                            borderRadius: BorderRadius.circular(10),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
                                             color: buttonBackground,
                                           ),
                                           padding: const EdgeInsets.all(13),
@@ -183,16 +201,11 @@ class CommunityCreatePage extends StatelessWidget {
                     const Divider(height: 20),
                     SizedBox(
                       height: 70,
-                      child: Obx(
-                        () => CommonLoadingBody(
-                          loading: controller.loading.value,
-                          size: 40,
-                          child: ElevatedButton(
-                            onPressed: () => controller.onSubmit(context),
-                            child: Text(
-                              'Create'.tr,
-                            ),
-                          ),
+                      child: CommonButton(
+                        loading: controller.loading,
+                        onPressed: controller.onSubmit,
+                        child: Text(
+                          'Create'.tr,
                         ),
                       ),
                     ),

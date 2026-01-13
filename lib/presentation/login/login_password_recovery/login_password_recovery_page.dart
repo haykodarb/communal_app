@@ -1,4 +1,4 @@
-import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/login/login_password_recovery/login_password_recovery_controller.dart';
 import 'package:get/get.dart';
@@ -8,7 +8,8 @@ import 'package:go_router/go_router.dart';
 class LoginPasswordRecoveryPage extends StatelessWidget {
   const LoginPasswordRecoveryPage({super.key});
 
-  Widget _recoveryForm(LoginPasswordRecoveryController controller, BuildContext context) {
+  Widget _recoveryForm(
+      LoginPasswordRecoveryController controller, BuildContext context) {
     return Form(
       key: controller.formKey,
       child: Column(
@@ -21,15 +22,10 @@ class LoginPasswordRecoveryPage extends StatelessWidget {
             label: 'Email'.tr,
           ),
           const Divider(height: 30),
-          Obx(
-            () => CommonLoadingBody(
-              loading: controller.loading.value,
-              size: 40,
-              child: ElevatedButton(
-                onPressed: () => controller.onSubmit(context),
-                child: Text('Send'.tr),
-              ),
-            ),
+          CommonButton(
+            onPressed: controller.onSubmit,
+            loading: controller.loading,
+            child: Text('Send'.tr),
           ),
         ],
       ),

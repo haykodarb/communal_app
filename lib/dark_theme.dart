@@ -66,6 +66,26 @@ final ElevatedButtonThemeData _elevatedButtonThemeData =
   ),
 );
 
+final FilledButtonThemeData _filledButtonThemeData = FilledButtonThemeData(
+  style: FilledButton.styleFrom(
+    shadowColor: _darkScheme.primary,
+    backgroundColor: _darkScheme.primary,
+    foregroundColor: _darkScheme.onPrimary,
+    disabledBackgroundColor: _darkScheme.primary.withValues(alpha: 0.5),
+    disabledForegroundColor: _darkScheme.surface,
+    textStyle: const TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.w700,
+      fontFamily: 'Poppins',
+    ),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(50),
+    ),
+    minimumSize: const Size.fromHeight(20),
+    fixedSize: const Size.fromHeight(60),
+  ),
+);
+
 const DividerThemeData _dividerThemeData =
     DividerThemeData(color: Colors.transparent);
 
@@ -171,6 +191,7 @@ final ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   fontFamily: 'Poppins',
   elevatedButtonTheme: _elevatedButtonThemeData,
+  filledButtonTheme: _filledButtonThemeData,
   outlinedButtonTheme: _outlinedButtonThemeData,
   inputDecorationTheme: _inputDecorationTheme,
   iconTheme: _iconThemeData,

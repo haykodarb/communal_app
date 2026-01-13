@@ -19,10 +19,12 @@ class LoginPasswordRecoveryController extends GetxController {
 
   Future<void> onSubmit(BuildContext context) async {
     final bool? validForm = formKey.currentState?.validate();
+    if (loading.value) return;
 
     if (validForm != null && validForm) {
       loading.value = true;
-      final BackendResponse response = await LoginBackend.sendRecoveryEmail(email.value);
+      final BackendResponse response =
+          await LoginBackend.sendRecoveryEmail(email.value);
 
       if (context.mounted) {
         await CommonAlertDialog(title: response.payload).open(context);

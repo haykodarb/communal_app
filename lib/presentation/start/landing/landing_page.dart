@@ -1,3 +1,4 @@
+import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -169,11 +170,11 @@ class LandingPage extends StatelessWidget {
                             const Divider(height: 30),
                             _pageIndicator(context, controller),
                             const Divider(height: 30),
-                            ElevatedButton(
-                                onPressed: () {
+                            CommonButton(
+                                onPressed: (BuildContext ctx) {
                                   controller.pageIndex.value++;
                                   if (controller.pageIndex.value >= 3) {
-                                    context.go(RouteNames.startPage);
+                                    ctx.go(RouteNames.startPage);
                                   }
                                 },
                                 child: const Text('Next')),

@@ -1,3 +1,4 @@
+import 'package:communal/presentation/common/common_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -11,8 +12,8 @@ class CommonConfirmationDialog extends StatelessWidget {
     this.cancelText = 'Cancel',
   });
 
-  final void Function()? confirmCallback;
-  final void Function()? cancelCallback;
+  final void Function(BuildContext context)? confirmCallback;
+  final void Function(BuildContext context)? cancelCallback;
   final String title;
   final String confirmationText;
   final String cancelText;
@@ -57,15 +58,18 @@ class CommonConfirmationDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: confirmCallback ?? () => context.pop(true),
+                  child: CommonButton(
+                    onPressed: confirmCallback ??
+                        (BuildContext _) => context.pop(true),
                     child: Text(confirmationText),
                   ),
                 ),
                 const VerticalDivider(width: 20),
                 Expanded(
-                  child: OutlinedButton(
-                    onPressed: cancelCallback ?? () => context.pop(false),
+                  child: CommonButton(
+                    type: CommonButtonType.outlined,
+                    onPressed: cancelCallback ??
+                        (BuildContext _) => context.pop(false),
                     child: Text(cancelText),
                   ),
                 ),

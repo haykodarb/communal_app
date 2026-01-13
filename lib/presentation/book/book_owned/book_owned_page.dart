@@ -2,6 +2,7 @@ import 'package:communal/models/book.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/book/book_owned/book_owned_controller.dart';
 import 'package:communal/presentation/common/common_book_cover.dart';
+import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_username_button.dart';
@@ -300,35 +301,31 @@ class BookOwnedPage extends StatelessWidget {
             Visibility(
               visible: (!controller.book.value.loaned ||
                   !controller.book.value.public),
-              child: Obx(
-                () {
-                  return CommonLoadingBody(
-                    loading: controller.deleting.value,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () => controller.editBook(context),
-                            child: Text('Edit'.tr),
-                          ),
-                        ),
-                        const VerticalDivider(),
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () => controller.deleteBook(context),
-                            child: Text('Delete'.tr),
-                          ),
-                        ),
-                      ],
+              child: Row(
+                children: [
+                  Expanded(
+                    child: CommonButton(
+                      onPressed: controller.editBook,
+                      disabled: controller.deleting,
+                      child: Text('Edit'.tr),
                     ),
-                  );
-                },
+                  ),
+                  const VerticalDivider(),
+                  Expanded(
+                    child: CommonButton(
+                      type: CommonButtonType.outlined,
+                      onPressed: controller.deleteBook,
+                      loading: controller.deleting,
+                      child: Text('Delete'.tr),
+                    ),
+                  ),
+                ],
               ),
             ),
             Visibility(
               visible: controller.book.value.loaned,
-              child: ElevatedButton(
-                onPressed: () {
+              child: CommonButton(
+                onPressed: (_) {
                   if (controller.currentLoan.value != null) {
                     context.push(
                         '${RouteNames.loansPage}/${controller.currentLoan.value!.id}');
@@ -349,172 +346,165 @@ class BookOwnedPage extends StatelessWidget {
       init: BookOwnedController(bookId: bookId),
       builder: (BookOwnedController controller) {
         return Obx(
-          () {
-            return CommonLoadingBody(
-              loading: controller.firstLoad.value,
-              child: Scaffold(
-                appBar: AppBar(),
-                body: SafeArea(
-                  child: Stack(
-                    children: [
-                      Column(
-                        children: [
-                          const Expanded(
-                            child: SizedBox(),
+          () => CommonLoadingBody(
+            loading: controller.firstLoad.value,
+            child: Scaffold(
+              appBar: AppBar(),
+              body: SafeArea(
+                child: Stack(
+                  children: [
+                    Column(
+                      children: [
+                        const Expanded(
+                          child: SizedBox(),
+                        ),
+                        Expanded(
+                          flex: 3,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .surfaceContainer,
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(30),
+                                topRight: Radius.circular(30),
+                              ),
+                            ),
                           ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        children: [
                           Expanded(
                             flex: 3,
                             child: Container(
                               decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .surfaceContainer,
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(30),
-                                  topRight: Radius.circular(30),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Column(
-                          children: [
-                            Expanded(
-                              flex: 3,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      offset: const Offset(2, 1),
-                                      blurRadius: 20,
-                                      spreadRadius: 12,
-                                      color:
-                                          Theme.of(context).colorScheme.surface,
-                                    ),
-                                  ],
-                                ),
-                                child: CommonBookCover(
-                                  controller.book.value,
-                                ),
-                              ),
-                            ),
-                            const Divider(height: 20),
-                            Obx(() => _bookTitle(controller.book.value)),
-                            const Divider(height: 20),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.surface,
-                                borderRadius: BorderRadius.circular(40),
-                              ),
-                              width: double.maxFinite,
-                              height: 65,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          'Added'.tr,
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSurfaceVariant,
-                                          ),
-                                        ),
-                                        Text(
-                                          DateFormat('dd/MM/yy',
-                                                  Get.locale?.languageCode)
-                                              .format(controller
-                                                  .book.value.created_at),
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          'Visibility'.tr,
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSurfaceVariant,
-                                          ),
-                                        ),
-                                        Text(
-                                          controller.book.value.public
-                                              ? 'Public'.tr
-                                              : 'Private'.tr,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          'Status'.tr,
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSurfaceVariant,
-                                          ),
-                                        ),
-                                        Text(
-                                          controller.book.value.loaned
-                                              ? 'Loaned'.tr
-                                              : 'Available'.tr,
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                      ],
-                                    ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    offset: const Offset(2, 1),
+                                    blurRadius: 20,
+                                    spreadRadius: 12,
+                                    color:
+                                        Theme.of(context).colorScheme.surface,
                                   ),
                                 ],
                               ),
+                              child: CommonBookCover(
+                                controller.book.value,
+                              ),
                             ),
-                            const Divider(height: 20),
-                            Expanded(
-                              flex: 2,
-                              child: _reviewsTab(controller),
+                          ),
+                          const Divider(height: 20),
+                          Obx(() => _bookTitle(controller.book.value)),
+                          const Divider(height: 20),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.surface,
+                              borderRadius: BorderRadius.circular(40),
                             ),
-                            const Divider(height: 20),
-                            _buttonRow(controller),
-                            const Divider(height: 20),
-                          ],
-                        ),
+                            width: double.maxFinite,
+                            height: 65,
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Added'.tr,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurfaceVariant,
+                                        ),
+                                      ),
+                                      Text(
+                                        DateFormat('dd/MM/yy',
+                                                Get.locale?.languageCode)
+                                            .format(controller
+                                                .book.value.created_at),
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Visibility'.tr,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurfaceVariant,
+                                        ),
+                                      ),
+                                      Text(
+                                        controller.book.value.public
+                                            ? 'Public'.tr
+                                            : 'Private'.tr,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Status'.tr,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurfaceVariant,
+                                        ),
+                                      ),
+                                      Text(
+                                        controller.book.value.loaned
+                                            ? 'Loaned'.tr
+                                            : 'Available'.tr,
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Divider(height: 20),
+                          Expanded(
+                            flex: 2,
+                            child: _reviewsTab(controller),
+                          ),
+                          const Divider(height: 20),
+                          _buttonRow(controller),
+                          const Divider(height: 20),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            );
-          },
+            ),
+          ),
         );
       },
     );

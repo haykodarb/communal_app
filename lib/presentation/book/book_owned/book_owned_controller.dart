@@ -53,11 +53,13 @@ class BookOwnedController extends GetxController {
 
     loadingCarousel.value = true;
 
-    inheritedBook = bookListController?.listViewController.itemList.firstWhereOrNull(
+    inheritedBook =
+        bookListController?.listViewController.itemList.firstWhereOrNull(
       (element) => element.id == bookId,
     );
 
-    inheritedBook ??= profileOwnController?.bookListController.itemList.firstWhereOrNull(
+    inheritedBook ??=
+        profileOwnController?.bookListController.itemList.firstWhereOrNull(
       (element) => element.id == bookId,
     );
 
@@ -76,7 +78,8 @@ class BookOwnedController extends GetxController {
 
     completedLoans.clear();
 
-    final BackendResponse response = await LoansBackend.getCompletedLoansForItem(
+    final BackendResponse response =
+        await LoansBackend.getCompletedLoansForItem(
       bookId: bookId,
     );
 
@@ -94,15 +97,16 @@ class BookOwnedController extends GetxController {
           context: context,
           builder: (context) => CommonConfirmationDialog(
             title: 'Delete book?',
-            confirmCallback: () => Navigator.of(context).pop(true),
-            cancelCallback: () => Navigator.of(context).pop(false),
+            confirmCallback: (_) => Navigator.of(context).pop(true),
+            cancelCallback: (_) => Navigator.of(context).pop(false),
           ),
         ) ??
         false;
 
     if (deleteConfirm) {
       deleting.value = true;
-      final BackendResponse response = await BooksBackend.deleteBook(book.value);
+      final BackendResponse response =
+          await BooksBackend.deleteBook(book.value);
 
       if (response.success) {
         bookListController?.deleteBook(book.value);
@@ -125,7 +129,8 @@ class BookOwnedController extends GetxController {
   Future<void> loadCurrentLoan() async {
     loading.value = true;
 
-    final BackendResponse response = await LoansBackend.getCurrentLoanForBook(bookId);
+    final BackendResponse response =
+        await LoansBackend.getCurrentLoanForBook(bookId);
 
     if (response.success) {
       currentLoan.value = response.payload;
