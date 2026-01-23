@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 
-class CommonBooleanSelector extends StatelessWidget {
-  const CommonBooleanSelector({
+class CommonSwitch extends StatelessWidget {
+  const CommonSwitch({
     super.key,
     required this.callback,
     required this.value,
+    this.icons,
+    this.labels,
   });
 
   final void Function() callback;
   final bool value;
+  final List<IconData>? icons;
+  final List<String>? labels;
 
   @override
   Widget build(BuildContext context) {
@@ -58,10 +62,23 @@ class CommonBooleanSelector extends StatelessWidget {
                             : Theme.of(context).colorScheme.primary,
                       ),
                       builder: (context, color, child) {
-                        return Icon(
-                          Icons.check,
-                          size: 22,
-                          color: color,
+                        return Visibility(
+                          visible: labels != null,
+                          replacement: Icon(
+                            icons?[0] ?? Icons.check,
+                            size: 22,
+                            color: color,
+                          ),
+                          child: Center(
+                            child: Text(
+                              labels?[0] ?? '',
+                              style: TextStyle(
+                                color: color,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
                         );
                       },
                     ),
@@ -82,10 +99,23 @@ class CommonBooleanSelector extends StatelessWidget {
                             : Theme.of(context).colorScheme.onPrimary,
                       ),
                       builder: (context, color, child) {
-                        return Icon(
-                          Icons.close,
-                          size: 22,
-                          color: color,
+                        return Visibility(
+                          visible: labels != null,
+                          replacement: Icon(
+                            icons?[1] ?? Icons.close,
+                            size: 22,
+                            color: color,
+                          ),
+                          child: Center(
+                            child: Text(
+                              labels?[1] ?? '',
+                              style: TextStyle(
+                                color: color,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
                         );
                       },
                     ),

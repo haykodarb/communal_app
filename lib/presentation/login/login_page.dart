@@ -64,7 +64,11 @@ class LoginPage extends StatelessWidget {
             ),
             const Divider(height: 30),
             CommonButton(
+              loading: controller.loading,
               onPressed: controller.loginButtonCallback,
+              style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(60),
+              ),
               child: Text(
                 'Login'.tr,
               ),

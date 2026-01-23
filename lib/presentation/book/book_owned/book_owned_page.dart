@@ -307,13 +307,19 @@ class BookOwnedPage extends StatelessWidget {
                     child: CommonButton(
                       onPressed: controller.editBook,
                       disabled: controller.deleting,
+                      style: FilledButton.styleFrom(
+                        minimumSize: const Size(0, 60),
+                      ),
                       child: Text('Edit'.tr),
                     ),
                   ),
                   const VerticalDivider(),
                   Expanded(
                     child: CommonButton(
-                      type: CommonButtonType.outlined,
+                      type: CommonButtonType.tonal,
+                      style: FilledButton.styleFrom(
+                        minimumSize: const Size(0, 60),
+                      ),
                       onPressed: controller.deleteBook,
                       loading: controller.deleting,
                       child: Text('Delete'.tr),
@@ -328,7 +334,8 @@ class BookOwnedPage extends StatelessWidget {
                 onPressed: (_) {
                   if (controller.currentLoan.value != null) {
                     context.push(
-                        '${RouteNames.loansPage}/${controller.currentLoan.value!.id}');
+                      '${RouteNames.loansPage}/${controller.currentLoan.value!.id}',
+                    );
                   }
                 },
                 child: Text('View loan'.tr),

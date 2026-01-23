@@ -70,7 +70,7 @@ class ProfileOtherPage extends StatelessWidget {
                 tabBar: CommonTabBar(
                   currentIndex: controller.currentTabIndex,
                   onTabTapped: controller.onTabTapped,
-                  tabs: const ['Books', 'Reviews'],
+                  tabs:  ['Books'.tr, 'Reviews'.tr],
                 ),
               ),
               ProfileCommonHelpers.tabBarView(

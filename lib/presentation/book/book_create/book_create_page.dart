@@ -1,5 +1,5 @@
 import 'package:atlas_icons/atlas_icons.dart';
-import 'package:communal/presentation/common/common_boolean_selector.dart';
+import 'package:communal/presentation/common/common_switch.dart';
 import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/book/book_create/book_create_controller.dart';
@@ -23,7 +23,7 @@ class BookCreatePage extends StatelessWidget {
             ),
             const Divider(),
             Obx(
-              () => CommonBooleanSelector(
+              () => CommonSwitch(
                 callback: controller.onPublicChange,
                 value: controller.bookForm.value.public,
               ),
@@ -250,6 +250,9 @@ class BookCreatePage extends StatelessWidget {
                     CommonButton(
                       onPressed: controller.onSubmitButton,
                       loading: controller.loading,
+                      style: FilledButton.styleFrom(
+                        minimumSize: const Size.fromHeight(60),
+                      ),
                       child: Text('Add'.tr),
                     ),
                   ],

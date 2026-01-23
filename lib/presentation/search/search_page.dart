@@ -89,10 +89,9 @@ class SearchPage extends StatelessWidget {
                   child: CommonTabBar(
                     onTabTapped: controller.onTabTapped,
                     currentIndex: controller.currentTabIndex,
-                    tabs: const [
-                      'Books',
-                      'Communities',
-                      'Users',
+                    tabs:  [
+                      'Books'.tr,
+                      'Users'.tr,
                     ],
                   ),
                 ),
@@ -130,7 +129,7 @@ class SearchPage extends StatelessWidget {
                             'No books found in any of the communities you are a part of.',
                         controller: controller.bookListController,
                       );
-                    case 1:
+                    case 2:
                       return CommonListView<Community>(
                         padding: const EdgeInsets.only(
                           bottom: 20,
@@ -154,7 +153,7 @@ class SearchPage extends StatelessWidget {
                         ),
                         controller: controller.communityListController,
                       );
-                    case 2:
+                    case 1:
                       return CommonListView<Profile>(
                         padding: const EdgeInsets.only(
                           bottom: 20,

@@ -24,7 +24,7 @@ class ProfileOwnPage extends StatelessWidget {
         return Scaffold(
           extendBody: true,
           appBar: Responsive.isMobile(context)
-              ? AppBar(title: const Text('My Profile'))
+              ? AppBar(title: Text('My Profile'.tr))
               : null,
           drawer:
               Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
@@ -32,8 +32,13 @@ class ProfileOwnPage extends StatelessWidget {
             controller: controller.scrollController,
             slivers: [
               ProfileCommonHelpers.buildProfileHeader(
-                avatarRow: Obx(
-                  () => ProfileCommonWidgets.avatarRow(
+                avatarRow: Obx(() {
+                  if (controller.commonDrawerController.currentUserProfile.value
+                      .id.isEmpty) {
+                    return const SizedBox();
+                  }
+
+                  return ProfileCommonWidgets.avatarRow(
                     profile: controller
                         .commonDrawerController.currentUserProfile.value,
                     icon: Atlas.pencil,
@@ -44,14 +49,15 @@ class ProfileOwnPage extends StatelessWidget {
                       );
                     },
                     isOwnProfile: true,
-                  ),
-                ),
+                  );
+                }),
                 showBio: controller
                         .commonDrawerController.currentUserProfile.value.bio !=
                     null,
                 bio: Obx(
-                  () => ProfileCommonWidgets.bio(controller
-                      .commonDrawerController.currentUserProfile.value),
+                  () => ProfileCommonWidgets.bio(
+                    controller.commonDrawerController.currentUserProfile.value,
+                  ),
                 ),
               ),
               ProfileCommonHelpers.buildTabBarAppBar(

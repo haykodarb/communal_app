@@ -13,6 +13,7 @@ class Profile {
   String? avatar_path;
   String? fcm_token;
   bool is_admin = false;
+  bool is_friend = false;
 
   final RxBool loading = false.obs;
 

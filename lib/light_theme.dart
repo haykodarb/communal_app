@@ -16,7 +16,8 @@ const ColorScheme _lightScheme = ColorScheme.light(
   error: Color(0xFFeb6f92),
 );
 
-final Color _overlayColor = _lightScheme.primary.withValues(alpha: 0.075);
+// final Color _overlayColor = _lightScheme.primary.withValues(alpha: 0.075);
+final Color _overlayColor = Colors.transparent;
 
 final BottomNavigationBarThemeData _bottomNavigationBarTheme =
     BottomNavigationBarThemeData(
@@ -71,14 +72,12 @@ final ElevatedButtonThemeData _elevatedButtonThemeData =
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(50),
     ),
-    minimumSize: const Size.fromHeight(20),
-    fixedSize: const Size.fromHeight(60),
+    maximumSize: const Size.fromHeight(60),
   ),
 );
 
 final FilledButtonThemeData _filledButtonThemeData = FilledButtonThemeData(
   style: FilledButton.styleFrom(
-    shadowColor: _lightScheme.primary,
     backgroundColor: _lightScheme.primary,
     foregroundColor: _lightScheme.onPrimary,
     disabledBackgroundColor: _lightScheme.primary.withValues(alpha: 0.5),
@@ -92,8 +91,7 @@ final FilledButtonThemeData _filledButtonThemeData = FilledButtonThemeData(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(50),
     ),
-    minimumSize: const Size.fromHeight(20),
-    fixedSize: const Size.fromHeight(60),
+    maximumSize: const Size.fromHeight(60),
   ),
 );
 
@@ -106,18 +104,17 @@ final OutlinedButtonThemeData _outlinedButtonThemeData =
     foregroundColor: _lightScheme.primary,
     side: BorderSide(
       color: _lightScheme.primary,
-      width: 2,
+      width: 1.5,
     ),
     textStyle: const TextStyle(
       fontSize: 20,
-      fontWeight: FontWeight.w700,
+      fontWeight: FontWeight.w600,
       fontFamily: 'Poppins',
     ),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(50),
     ),
-    minimumSize: const Size.fromHeight(20),
-    fixedSize: const Size.fromHeight(60),
+    maximumSize: const Size.fromHeight(60),
   ),
 );
 

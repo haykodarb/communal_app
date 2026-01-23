@@ -19,16 +19,27 @@ class CommonLoadingBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (loading) {
-      return Align(
-        alignment: alignment,
-        child: LoadingAnimationWidget.threeArchedCircle(
-          color: color ?? Theme.of(context).colorScheme.primary,
-          size: size,
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Visibility(
+          visible: loading,
+          child: Align(
+            alignment: alignment,
+            child: LoadingAnimationWidget.threeArchedCircle(
+              color: color ?? Theme.of(context).colorScheme.primary,
+              size: size,
+            ),
+          ),
         ),
-      );
-    }
-
-    return child;
+        Visibility(
+          visible: !loading,
+          maintainState: true,
+          maintainAnimation: true,
+          maintainSize: true,
+          child: child,
+        ),
+      ],
+    );
   }
 }

@@ -171,13 +171,17 @@ class LandingPage extends StatelessWidget {
                             _pageIndicator(context, controller),
                             const Divider(height: 30),
                             CommonButton(
-                                onPressed: (BuildContext ctx) {
-                                  controller.pageIndex.value++;
-                                  if (controller.pageIndex.value >= 3) {
-                                    ctx.go(RouteNames.startPage);
-                                  }
-                                },
-                                child: const Text('Next')),
+                              style: FilledButton.styleFrom(
+                                minimumSize: const Size.fromHeight(60),
+                              ),
+                              onPressed: (BuildContext ctx) {
+                                controller.pageIndex.value++;
+                                if (controller.pageIndex.value >= 3) {
+                                  ctx.go(RouteNames.startPage);
+                                }
+                              },
+                              child: const Text('Next'),
+                            ),
                             const Divider(height: 20),
                             TextButton(
                               onPressed: () {

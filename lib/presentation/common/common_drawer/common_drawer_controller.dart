@@ -53,17 +53,21 @@ class CommonDrawerController extends GetxController {
 
     RealtimeBackend.subscribeToDatabaseChanges();
 
-    versionNumber.value = 'Version: ${packageInfo.version}+${packageInfo.buildNumber}';
+    versionNumber.value =
+        'Version: ${packageInfo.version}+${packageInfo.buildNumber}';
 
     final BackendResponse userResponse = await UsersBackend.getUserProfile(
       UsersBackend.currentUserId,
     );
 
+    print(userResponse.success);
     if (userResponse.success) {
       currentUserProfile.value = userResponse.payload;
+      currentUserProfile.refresh();
     }
 
-    final BackendResponse notificationResponse = await NotificationsBackend.getUnreadNotificationsCount();
+    final BackendResponse notificationResponse =
+        await NotificationsBackend.getUnreadNotificationsCount();
 
     if (notificationResponse.success) {
       globalNotifications.value = notificationResponse.payload;
@@ -71,7 +75,8 @@ class CommonDrawerController extends GetxController {
 
     getUnreadChats();
 
-    realtimeSubscription ??= RealtimeBackend.streamController.stream.listen(realtimeChangeHandler);
+    realtimeSubscription ??=
+        RealtimeBackend.streamController.stream.listen(realtimeChangeHandler);
   }
 
   @override
@@ -86,7 +91,8 @@ class CommonDrawerController extends GetxController {
   Future<void> realtimeChangeHandler(RealtimeMessage realtime) async {
     switch (realtime.table) {
       case 'messages':
-        if (realtime.eventType == PostgresChangeEvent.insert || realtime.eventType == PostgresChangeEvent.update) {
+        if (realtime.eventType == PostgresChangeEvent.insert ||
+            realtime.eventType == PostgresChangeEvent.update) {
           if (realtime.new_row['receiver'] == UsersBackend.currentUserId) {
             debounceTimer?.cancel();
 
@@ -102,10 +108,12 @@ class CommonDrawerController extends GetxController {
 
       case 'notifications':
         if (realtime.eventType != PostgresChangeEvent.delete) {
-          if (realtime.new_row['receiver'] != UsersBackend.currentUserId) return;
+          if (realtime.new_row['receiver'] != UsersBackend.currentUserId)
+            return;
         }
 
-        final BackendResponse notificationResponse = await NotificationsBackend.getUnreadNotificationsCount();
+        final BackendResponse notificationResponse =
+            await NotificationsBackend.getUnreadNotificationsCount();
 
         if (notificationResponse.success) {
           globalNotifications.value = notificationResponse.payload;
@@ -119,7 +127,8 @@ class CommonDrawerController extends GetxController {
   }
 
   Future<void> getUnreadChats() async {
-    final BackendResponse<int> response = await MessagesBackend.getUnreadChatCount();
+    final BackendResponse<int> response =
+        await MessagesBackend.getUnreadChatCount();
 
     if (response.success) {
       messageNotifications.value = response.payload ?? 0;
@@ -127,7 +136,8 @@ class CommonDrawerController extends GetxController {
   }
 
   Future<void> changeThemeMode(BuildContext context) async {
-    final ThemeMode newThemeMode = UserPreferences.isDarkMode(context) ? ThemeMode.light : ThemeMode.dark;
+    final ThemeMode newThemeMode =
+        UserPreferences.isDarkMode(context) ? ThemeMode.light : ThemeMode.dark;
 
     Get.changeThemeMode(newThemeMode);
 

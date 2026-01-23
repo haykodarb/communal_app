@@ -16,7 +16,7 @@ class CommonTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color selectedBg = Theme.of(context).colorScheme.primary;
-    final Color selectedFg = Theme.of(context).colorScheme.onPrimary;
+    final Color selectedFg = Theme.of(context).colorScheme.primary;
     final int length = tabs.length;
 
     int lengthOfLongestTab = 0;
@@ -33,6 +33,8 @@ class CommonTabBar extends StatelessWidget {
           return Expanded(
             child: InkWell(
               onTap: () => onTabTapped(index),
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
               child: Container(
                 alignment: Alignment.center,
                 color: Colors.transparent,
@@ -59,7 +61,7 @@ class CommonTabBar extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(5),
       height: 70,
       width: double.maxFinite,
       decoration: BoxDecoration(
@@ -129,7 +131,10 @@ class CommonTabBar extends StatelessWidget {
                     height: double.maxFinite,
                     width: constraints.maxWidth / length,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),

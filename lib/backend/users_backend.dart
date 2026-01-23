@@ -180,7 +180,7 @@ class UsersBackend {
   static Future<BackendResponse> getUserProfile(String id) async {
     try {
       final Map<String, dynamic> response =
-          await _client.from('profiles').select().eq('id', id).single();
+          await _client.from('profiles').select('*').eq('id', id).single();
 
       return BackendResponse(
         success: response.isNotEmpty,

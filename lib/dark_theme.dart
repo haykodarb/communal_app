@@ -55,14 +55,13 @@ final ElevatedButtonThemeData _elevatedButtonThemeData =
     disabledForegroundColor: _darkScheme.surface,
     textStyle: const TextStyle(
       fontSize: 20,
-      fontWeight: FontWeight.w700,
+      fontWeight: FontWeight.w600,
       fontFamily: 'Poppins',
     ),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(50),
     ),
-    minimumSize: const Size.fromHeight(20),
-    fixedSize: const Size.fromHeight(60),
+    maximumSize: const Size.fromHeight(60),
   ),
 );
 
@@ -75,14 +74,13 @@ final FilledButtonThemeData _filledButtonThemeData = FilledButtonThemeData(
     disabledForegroundColor: _darkScheme.surface,
     textStyle: const TextStyle(
       fontSize: 20,
-      fontWeight: FontWeight.w700,
+      fontWeight: FontWeight.w600,
       fontFamily: 'Poppins',
     ),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(50),
     ),
-    minimumSize: const Size.fromHeight(20),
-    fixedSize: const Size.fromHeight(60),
+    maximumSize: const Size.fromHeight(60),
   ),
 );
 
@@ -99,14 +97,13 @@ final OutlinedButtonThemeData _outlinedButtonThemeData =
     ),
     textStyle: const TextStyle(
       fontSize: 20,
-      fontWeight: FontWeight.w700,
+      fontWeight: FontWeight.w600,
       fontFamily: 'Poppins',
     ),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(50),
     ),
-    minimumSize: const Size.fromHeight(20),
-    fixedSize: const Size.fromHeight(60),
+    maximumSize: const Size.fromHeight(60),
   ),
 );
 

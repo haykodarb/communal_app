@@ -2,7 +2,7 @@ import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/presentation/book/book_edit/book_edit_controller.dart';
 import 'package:communal/presentation/book/book_owned/book_owned_controller.dart';
-import 'package:communal/presentation/common/common_boolean_selector.dart';
+import 'package:communal/presentation/common/common_switch.dart';
 import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
@@ -34,7 +34,7 @@ class BookEditPage extends StatelessWidget {
             ),
             const Divider(),
             Obx(
-              () => CommonBooleanSelector(
+              () => CommonSwitch(
                 callback: controller.onPublicChange,
                 value: controller.bookForm.value.public,
               ),
@@ -273,6 +273,9 @@ class BookEditPage extends StatelessWidget {
                         CommonButton(
                           loading: controller.loading,
                           onPressed: controller.onSubmitButton,
+                          style: FilledButton.styleFrom(
+                            minimumSize: const Size.fromHeight(60),
+                          ),
                           child: Text('Save'.tr),
                         ),
                       ],

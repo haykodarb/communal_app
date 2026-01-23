@@ -3,6 +3,7 @@ import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_switch.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -21,145 +22,31 @@ class StartPage extends StatelessWidget {
   static const List<String> _languages = ['English', 'Español'];
 
   Widget _dropdownLanguageButton(StartController controller) {
-    return Builder(
-      builder: (context) {
-        return Container(
-          height: 60,
-          width: 110,
-          decoration: BoxDecoration(
-            border: Border.all(
-              width: 2,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            borderRadius: BorderRadius.circular(50),
-          ),
-          child: DropdownButton2(
-            isExpanded: true,
-            onChanged: controller.changeLanguage,
-            dropdownStyleData: const DropdownStyleData(
-              elevation: 0,
-              offset: Offset(0, -5),
-              padding: EdgeInsets.zero,
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-              ),
-            ),
-            buttonStyleData: const ButtonStyleData(
-              overlayColor: WidgetStateColor.transparent,
-              padding: EdgeInsets.symmetric(horizontal: 20),
-            ),
-            alignment: Alignment.center,
-            menuItemStyleData: const MenuItemStyleData(
-              height: 60,
-              padding: EdgeInsets.only(top: 5),
-              overlayColor: WidgetStateColor.transparent,
-            ),
-            underline: const SizedBox.shrink(),
-            iconStyleData: IconStyleData(
-              iconSize: 30,
-              icon: Icon(
-                Icons.keyboard_arrow_down,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              openMenuIcon: Icon(
-                Icons.keyboard_arrow_up,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            hint: Row(
-              children: [
-                Icon(
-                  Atlas.language_translation_bold,
-                  size: 24,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ],
-            ),
-            items: _locales.mapIndexed(
-              (index, element) {
-                return DropdownMenuItem<Locale>(
-                  value: element,
-                  child: Container(
-                    width: double.maxFinite,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      border: Border.all(
-                        width: 1,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: Center(
-                      child: Text(
-                        _languages[index],
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ).toList(),
-          ),
-        );
+    return CommonSwitch(
+      callback: () {
+        if (Get.locale == _locales[0]) {
+          UserPreferences.setSelectedLocale(_locales[1]);
+          Get.updateLocale(_locales[1]);
+        } else {
+          UserPreferences.setSelectedLocale(_locales[0]);
+          Get.updateLocale(_locales[0]);
+        }
       },
+      value: Get.locale == _locales[0],
+      labels: const [
+        "EN",
+        "ES",
+      ],
     );
   }
 
   Widget _changeThemeButton(StartController controller) {
     return Builder(
       builder: (context) {
-        return SizedBox(
-          height: 60,
-          width: 110,
-          child: CommonButton(
-            type: CommonButtonType.outlined,
-            onPressed: controller.changeThemeMode,
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: UserPreferences.isDarkMode(context)
-                          ? Colors.transparent
-                          : Theme.of(context).colorScheme.primary,
-                    ),
-                    padding: EdgeInsets.zero,
-                    child: Icon(
-                      Atlas.sunny,
-                      size: 22,
-                      color: UserPreferences.isDarkMode(context)
-                          ? Theme.of(context).colorScheme.primary
-                          : Theme.of(context).colorScheme.onPrimary,
-                    ),
-                  ),
-                  Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: UserPreferences.isDarkMode(context)
-                          ? Theme.of(context).colorScheme.primary
-                          : Colors.transparent,
-                    ),
-                    padding: EdgeInsets.zero,
-                    child: Icon(
-                      Atlas.moon,
-                      size: 22,
-                      color: UserPreferences.isDarkMode(context)
-                          ? Theme.of(context).colorScheme.onPrimary
-                          : Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+        return CommonSwitch(
+          value: !UserPreferences.isDarkMode(context),
+          callback: () => controller.changeThemeMode(context),
+          icons: const [Atlas.sunny_bold, Atlas.moon_bold],
         );
       },
     );
@@ -167,8 +54,12 @@ class StartPage extends StatelessWidget {
 
   Widget _loginButton(StartController controller) {
     return CommonButton(
+      type: CommonButtonType.outlined,
       onPressed: (BuildContext context) => context.push(
         RouteNames.startPage + RouteNames.loginPage,
+      ),
+      style: OutlinedButton.styleFrom(
+        minimumSize: const Size.fromHeight(60),
       ),
       child: Text(
         'Login'.tr,
@@ -178,9 +69,11 @@ class StartPage extends StatelessWidget {
 
   Widget _registerButton(StartController controller) {
     return CommonButton(
-      type: CommonButtonType.outlined,
       onPressed: (BuildContext context) => context.push(
         RouteNames.startPage + RouteNames.registerPage,
+      ),
+      style: FilledButton.styleFrom(
+        minimumSize: const Size.fromHeight(60),
       ),
       child: Text(
         'Register'.tr,
@@ -304,9 +197,11 @@ class StartPage extends StatelessWidget {
                                   Visibility(
                                     visible: kIsWeb || Platform.isAndroid,
                                     child: CommonButton(
-                                      type: CommonButtonType.outlined,
+                                      style: FilledButton.styleFrom(
+                                        minimumSize: const Size.fromHeight(60),
+                                      ),
                                       onPressed: controller.signInWithGoogle,
-                                      child: Text('Sign in with Google'.tr),
+                                      child: Text('Enter with Google'.tr),
                                     ),
                                   ),
                                 ],

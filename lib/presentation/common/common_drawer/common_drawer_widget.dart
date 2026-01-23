@@ -35,8 +35,9 @@ class CommonDrawerWidget extends StatelessWidget {
                   ),
                   child: Builder(
                     builder: (context) {
-                      final Color color =
-                          selected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurface;
+                      final Color color = selected
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.onSurface;
 
                       return Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -76,13 +77,19 @@ class CommonDrawerWidget extends StatelessWidget {
                                     alignment: Alignment.center,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      border: Border.all(color: Theme.of(context).colorScheme.primary, width: 1.5),
+                                      border: Border.all(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                          width: 1.5),
                                     ),
                                     child: Text(
                                       notifications.value.toString(),
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                        color: Theme.of(context).colorScheme.primary,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
@@ -114,21 +121,27 @@ class CommonDrawerWidget extends StatelessWidget {
         child: Builder(
           builder: (context) {
             return InkWell(
-              onTap: () => controller.goToRoute(RouteNames.profileOwnPage, context),
+              onTap: () =>
+                  controller.goToRoute(RouteNames.profileOwnPage, context),
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
                 width: double.maxFinite,
                 color: Theme.of(context).colorScheme.surface,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Obx(
-                      () => CommonCircularAvatar(
+                    Obx(() {
+                      if (controller.currentUserProfile.value.id.isEmpty) {
+                        return const SizedBox();
+                      }
+
+                      return CommonCircularAvatar(
                         profile: controller.currentUserProfile.value,
                         radius: 40,
                         clickable: true,
-                      ),
-                    ),
+                      );
+                    }),
                     const VerticalDivider(width: 20),
                     Expanded(
                       child: Obx(
@@ -187,8 +200,10 @@ class CommonDrawerWidget extends StatelessWidget {
                         return _drawerButton(
                           text: 'Profile'.tr,
                           icon: Atlas.account,
-                          selected: controller.currentRoute.value == RouteNames.profileOwnPage,
-                          callback: () => controller.goToRoute(RouteNames.profileOwnPage, context),
+                          selected: controller.currentRoute.value ==
+                              RouteNames.profileOwnPage,
+                          callback: () => controller.goToRoute(
+                              RouteNames.profileOwnPage, context),
                         );
                       }),
                       Divider(
@@ -200,7 +215,8 @@ class CommonDrawerWidget extends StatelessWidget {
                         return _drawerButton(
                           text: 'Notifications'.tr,
                           icon: Atlas.bell,
-                          selected: controller.currentRoute.value == RouteNames.notificationsPage,
+                          selected: controller.currentRoute.value ==
+                              RouteNames.notificationsPage,
                           callback: () => controller.goToRoute(
                             RouteNames.notificationsPage,
                             context,
@@ -217,7 +233,8 @@ class CommonDrawerWidget extends StatelessWidget {
                         return _drawerButton(
                           text: 'Search'.tr,
                           icon: Atlas.magnifying_glass,
-                          selected: controller.currentRoute.value == RouteNames.searchPage,
+                          selected: controller.currentRoute.value ==
+                              RouteNames.searchPage,
                           callback: () => controller.goToRoute(
                             RouteNames.searchPage,
                             context,
@@ -234,8 +251,10 @@ class CommonDrawerWidget extends StatelessWidget {
                           return _drawerButton(
                             text: 'Messages'.tr,
                             icon: Atlas.chats,
-                            selected: controller.currentRoute.value == RouteNames.messagesPage,
-                            callback: () => controller.goToRoute(RouteNames.messagesPage, context),
+                            selected: controller.currentRoute.value ==
+                                RouteNames.messagesPage,
+                            callback: () => controller.goToRoute(
+                                RouteNames.messagesPage, context),
                             notifications: controller.messageNotifications,
                           );
                         },
@@ -250,8 +269,10 @@ class CommonDrawerWidget extends StatelessWidget {
                           return _drawerButton(
                             text: 'My Books'.tr,
                             icon: Atlas.library,
-                            selected: controller.currentRoute.value == RouteNames.myBooks,
-                            callback: () => controller.goToRoute(RouteNames.myBooks, context),
+                            selected: controller.currentRoute.value ==
+                                RouteNames.myBooks,
+                            callback: () => controller.goToRoute(
+                                RouteNames.myBooks, context),
                           );
                         },
                       ),
@@ -264,7 +285,8 @@ class CommonDrawerWidget extends StatelessWidget {
                         () {
                           return _drawerButton(
                             text: 'Communities'.tr,
-                            selected: controller.currentRoute.value == RouteNames.communityListPage,
+                            selected: controller.currentRoute.value ==
+                                RouteNames.communityListPage,
                             icon: Atlas.users,
                             callback: () => controller.goToRoute(
                               RouteNames.communityListPage,
@@ -282,7 +304,8 @@ class CommonDrawerWidget extends StatelessWidget {
                         () {
                           return _drawerButton(
                             text: 'Loans'.tr,
-                            selected: controller.currentRoute.value == RouteNames.loansPage,
+                            selected: controller.currentRoute.value ==
+                                RouteNames.loansPage,
                             icon: Atlas.account_arrows,
                             callback: () => controller.goToRoute(
                               RouteNames.loansPage,
@@ -298,8 +321,12 @@ class CommonDrawerWidget extends StatelessWidget {
                       ),
                       _drawerButton(
                         selected: false,
-                        icon: UserPreferences.isDarkMode(context) ? Atlas.sunny : Atlas.moon,
-                        text: UserPreferences.isDarkMode(context) ? 'Light'.tr : 'Dark'.tr,
+                        icon: UserPreferences.isDarkMode(context)
+                            ? Atlas.sunny
+                            : Atlas.moon,
+                        text: UserPreferences.isDarkMode(context)
+                            ? 'Light'.tr
+                            : 'Dark'.tr,
                         callback: () => controller.changeThemeMode(context),
                       ),
                       Divider(
@@ -310,11 +337,14 @@ class CommonDrawerWidget extends StatelessWidget {
                       _drawerButton(
                         selected: false,
                         icon: Atlas.language_translation,
-                        text: Get.locale == const Locale('es', 'ES') ? 'English' : 'Español',
+                        text: Get.locale == const Locale('es', 'ES')
+                            ? 'English'
+                            : 'Español',
                         callback: () async {
-                          final Locale newLocale = Get.locale == const Locale('es', 'ES')
-                              ? const Locale('en', 'US')
-                              : const Locale('es', 'ES');
+                          final Locale newLocale =
+                              Get.locale == const Locale('es', 'ES')
+                                  ? const Locale('en', 'US')
+                                  : const Locale('es', 'ES');
 
                           await Get.updateLocale(newLocale);
                           await UserPreferences.setSelectedLocale(newLocale);
@@ -337,7 +367,9 @@ class CommonDrawerWidget extends StatelessWidget {
                             controller.versionNumber.value,
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                           ),
                         ),

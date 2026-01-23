@@ -32,28 +32,28 @@ class CommonConfirmationDialog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       child: Container(
         width: 400,
-        height: 250,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(20),
           color: Theme.of(context).colorScheme.surface,
           border: Border.all(
             color: Theme.of(context).colorScheme.primary,
-            width: 2,
+            width: 0.5,
           ),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+        padding: const EdgeInsets.all(30),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(
-              child: Center(
-                child: Text(
-                  title,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 18),
-                ),
+            const Divider(height: 20),
+            Center(
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 20),
               ),
             ),
+            const Divider(height: 40),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -61,16 +61,32 @@ class CommonConfirmationDialog extends StatelessWidget {
                   child: CommonButton(
                     onPressed: confirmCallback ??
                         (BuildContext _) => context.pop(true),
-                    child: Text(confirmationText),
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size(0, 60),
+                    ),
+                    child: Text(
+                      confirmationText,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
                 const VerticalDivider(width: 20),
                 Expanded(
                   child: CommonButton(
                     type: CommonButtonType.outlined,
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size(0, 60),
+                    ),
                     onPressed: cancelCallback ??
                         (BuildContext _) => context.pop(false),
-                    child: Text(cancelText),
+                    child: Text(
+                      cancelText,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
               ],
