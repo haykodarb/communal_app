@@ -57,6 +57,7 @@ dependencies:
   flutter_image_compress: ^2.4.0
   firebase_messaging: ^16.0.4
   firebase_core: ^4.2.1
+  auto_size_text: ^3.0.0
 
 dev_dependencies:
   flutter_test:

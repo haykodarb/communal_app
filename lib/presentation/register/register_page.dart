@@ -15,6 +15,7 @@ class RegisterPage extends StatelessWidget {
       return Form(
         key: controller.formKey,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             CommonTextField(

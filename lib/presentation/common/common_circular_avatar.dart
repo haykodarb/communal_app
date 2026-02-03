@@ -23,9 +23,10 @@ class CommonCircularAvatarController extends GetxController {
     super.onInit();
 
     loading.value = true;
-    print('Getting profile avatar for ${profile.username}');
+
     bytes = await UsersBackend.getProfileAvatar(profile, height: 120);
-    if (bytes!.isNotEmpty) {
+
+    if (bytes != null && bytes!.isNotEmpty) {
       loading.value = false;
     }
   }
@@ -38,31 +39,42 @@ class CommonCircularAvatar extends StatelessWidget {
     required this.radius,
     this.image,
     this.clickable = false,
+    this.color,
   });
 
   final Image? image;
   final Profile profile;
   final double radius;
   final bool clickable;
+  final Color? color;
 
   Widget _imageAvatar(CommonCircularAvatarController controller) {
     return Obx(
       () {
-        if (controller.loading.value) return const CommonLoadingImage();
+        if (controller.loading.value) {
+          return Container(
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+            ),
+            clipBehavior: Clip.hardEdge,
+            height: radius * 2,
+            width: radius * 2,
+            child: const CommonLoadingImage(),
+          );
+        }
 
         if (image != null) {
           return Container(
             clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.transparent,
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: image!.image,
-              ),
               shape: BoxShape.circle,
             ),
             height: radius * 2,
             width: radius * 2,
+            child: Image(
+              image: image!.image,
+            ),
           );
         }
 
@@ -75,23 +87,18 @@ class CommonCircularAvatar extends StatelessWidget {
           opacity: hasData ? 1 : 0,
           duration: const Duration(milliseconds: 200),
           child: Container(
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(
+            clipBehavior: Clip.antiAlias,
+            decoration: const BoxDecoration(
               color: Colors.transparent,
-              image: hasData
-                  ? DecorationImage(
-                      fit: BoxFit.cover,
-                      image: Image.memory(
-                        controller.bytes!,
-                        fit: BoxFit.fitWidth,
-                        gaplessPlayback: true,
-                      ).image,
-                    )
-                  : null,
               shape: BoxShape.circle,
             ),
             height: radius * 2,
             width: radius * 2,
+            child: Image.memory(
+              controller.bytes!,
+              isAntiAlias: true,
+              gaplessPlayback: true,
+            ),
           ),
         );
       },
@@ -112,7 +119,7 @@ class CommonCircularAvatar extends StatelessWidget {
       builder: (context) {
         return CircleAvatar(
           radius: radius,
-          backgroundColor: Theme.of(context).colorScheme.primary,
+          backgroundColor: color ?? Theme.of(context).colorScheme.primary,
           child: LayoutBuilder(
             builder: (context, constraints) {
               return Container(

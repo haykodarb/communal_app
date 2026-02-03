@@ -1,13 +1,14 @@
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:flutter/material.dart';
 
-const ColorScheme _darkScheme = ColorScheme.dark(
+ColorScheme _darkScheme = const ColorScheme.dark(
   surface: Color(0xFF1A1825),
   surfaceContainer: Color(0xFF201D2F),
   primary: Color(0xFFebbcba),
   shadow: Color(0xFF524f67),
   secondary: Color(0xFF9ccfd8),
   tertiary: Color(0xFFc4a7e7),
+  tertiaryContainer: Color(0xFF5D5172),
   error: Color(0xFFeb6f92),
   onPrimary: Color(0xFF191724),
   onSecondary: Color(0xFF191724),
@@ -67,11 +68,12 @@ final ElevatedButtonThemeData _elevatedButtonThemeData =
 
 final FilledButtonThemeData _filledButtonThemeData = FilledButtonThemeData(
   style: FilledButton.styleFrom(
-    shadowColor: _darkScheme.primary,
     backgroundColor: _darkScheme.primary,
     foregroundColor: _darkScheme.onPrimary,
     disabledBackgroundColor: _darkScheme.primary.withValues(alpha: 0.5),
     disabledForegroundColor: _darkScheme.surface,
+    overlayColor: Colors.transparent,
+    shadowColor: Colors.transparent,
     textStyle: const TextStyle(
       fontSize: 20,
       fontWeight: FontWeight.w600,
@@ -84,8 +86,9 @@ final FilledButtonThemeData _filledButtonThemeData = FilledButtonThemeData(
   ),
 );
 
-const DividerThemeData _dividerThemeData =
-    DividerThemeData(color: Colors.transparent);
+DividerThemeData _dividerThemeData = const DividerThemeData(
+  color: Colors.transparent,
+);
 
 final OutlinedButtonThemeData _outlinedButtonThemeData =
     OutlinedButtonThemeData(

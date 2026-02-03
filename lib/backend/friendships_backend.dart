@@ -23,32 +23,44 @@ class FriendshipsBackend {
         return BackendResponse(success: true, payload: null);
       }
 
+      print(friendship);
       return BackendResponse(
-          success: true, payload: Friendship.fromMap(friendship));
+        success: true,
+        payload: Friendship.fromMap(friendship),
+      );
     } on PostgrestException catch (error) {
+      print(error);
       return BackendResponse(success: false, error: error.message);
     } catch (error) {
+      print(error);
       return BackendResponse(success: false, error: error.toString());
     }
   }
 
   static Future<BackendResponse<Friendship>> sendFriendRequest(
-      String targetUserId) async {
+    String targetUserId,
+  ) async {
     try {
       if (targetUserId == currentUserId) {
         return BackendResponse(
-            success: false, error: 'Cannot send friend request to yourself.');
+          success: false,
+          error: 'Cannot send friend request to yourself.',
+        );
       }
 
       final Map<String, dynamic>? existingFriendship = await _client
           .from('friendships')
           .select('*')
-          .or('and(requester.eq.$currentUserId,responder.eq.$targetUserId),and(requester.eq.$targetUserId,responder.eq.$currentUserId)')
+          .or(
+            'and(requester.eq.$currentUserId,responder.eq.$targetUserId),and(requester.eq.$targetUserId,responder.eq.$currentUserId)',
+          )
           .maybeSingle();
 
       if (existingFriendship != null) {
         return BackendResponse(
-            success: false, error: 'Friendship already exists.');
+          success: false,
+          error: 'Friendship already exists.',
+        );
       }
 
       final Map<String, dynamic> createResponse = await _client
@@ -59,7 +71,8 @@ class FriendshipsBackend {
             'accepted': null,
           })
           .select(
-              '*, requester_profile:profiles!requester(*), responder_profile:profiles!responder(*)')
+            '*, requester_profile:profiles!requester(*), responder_profile:profiles!responder(*)',
+          )
           .single();
 
       return BackendResponse(

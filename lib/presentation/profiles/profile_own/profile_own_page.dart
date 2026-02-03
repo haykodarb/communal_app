@@ -28,71 +28,74 @@ class ProfileOwnPage extends StatelessWidget {
               : null,
           drawer:
               Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
-          body: CustomScrollView(
-            controller: controller.scrollController,
-            slivers: [
-              ProfileCommonHelpers.buildProfileHeader(
-                avatarRow: Obx(() {
-                  if (controller.commonDrawerController.currentUserProfile.value
-                      .id.isEmpty) {
-                    return const SizedBox();
-                  }
+          body: SafeArea(
+            child: CustomScrollView(
+              controller: controller.scrollController,
+              slivers: [
+                ProfileCommonHelpers.buildProfileHeader(
+                  avatarRow: Obx(() {
+                    if (controller.commonDrawerController.currentUserProfile
+                        .value.id.isEmpty) {
+                      return const SizedBox();
+                    }
 
-                  return ProfileCommonWidgets.avatarRow(
-                    profile: controller
-                        .commonDrawerController.currentUserProfile.value,
-                    icon: Atlas.pencil,
-                    onIconPressed: () {
-                      context.push(
-                        RouteNames.profileOwnPage +
-                            RouteNames.profileOwnEditPage,
-                      );
+                    return ProfileCommonWidgets.avatarRow(
+                      profile: controller
+                          .commonDrawerController.currentUserProfile.value,
+                      icon: Atlas.pencil,
+                      onIconPressed: () {
+                        context.push(
+                          RouteNames.profileOwnPage +
+                              RouteNames.profileOwnEditPage,
+                        );
+                      },
+                      isOwnProfile: true,
+                    );
+                  }),
+                  showBio: controller.commonDrawerController.currentUserProfile
+                          .value.bio !=
+                      null,
+                  bio: Obx(
+                    () => ProfileCommonWidgets.bio(
+                      controller
+                          .commonDrawerController.currentUserProfile.value,
+                    ),
+                  ),
+                ),
+                ProfileCommonHelpers.buildTabBarAppBar(
+                  tabBar: CommonTabBar(
+                    currentIndex: controller.currentTabIndex,
+                    onTabTapped: controller.onTabTapped,
+                    tabs: const ['Books', 'Reviews'],
+                  ),
+                ),
+                ProfileCommonHelpers.tabBarView(
+                  currentTabIndex: controller.currentTabIndex,
+                  bookListController: controller.bookListController,
+                  reviewListController: controller.reviewListController,
+                  scrollController: controller.scrollController,
+                  bookCardBuilder: (Book book) => InkWell(
+                    onTap: () {
+                      context.push('${RouteNames.myBooks}/${book.id}');
                     },
-                    isOwnProfile: true,
-                  );
-                }),
-                showBio: controller
-                        .commonDrawerController.currentUserProfile.value.bio !=
-                    null,
-                bio: Obx(
-                  () => ProfileCommonWidgets.bio(
-                    controller.commonDrawerController.currentUserProfile.value,
+                    child: CommonVerticalBookCard(
+                      book: book,
+                    ),
                   ),
-                ),
-              ),
-              ProfileCommonHelpers.buildTabBarAppBar(
-                tabBar: CommonTabBar(
-                  currentIndex: controller.currentTabIndex,
-                  onTabTapped: controller.onTabTapped,
-                  tabs: const ['Books', 'Reviews'],
-                ),
-              ),
-              ProfileCommonHelpers.tabBarView(
-                currentTabIndex: controller.currentTabIndex,
-                bookListController: controller.bookListController,
-                reviewListController: controller.reviewListController,
-                scrollController: controller.scrollController,
-                bookCardBuilder: (Book book) => InkWell(
-                  onTap: () {
-                    context.push('${RouteNames.myBooks}/${book.id}');
-                  },
-                  child: CommonVerticalBookCard(
-                    book: book,
+                  reviewCardBuilder: (Loan loan) =>
+                      ProfileCommonWidgets.reviewCard(
+                    loan: loan,
+                    onTap: () {
+                      context.push('${RouteNames.loansPage}/${loan.id}');
+                    },
                   ),
+                  booksNoItemsText:
+                      'You have not uploaded any books.\n\nYou can start doing so from the "My Books" page.',
+                  reviewsNoItemsText:
+                      'You have not reviews any books yet.\n\nYou can leave reviews on books you loan from other people.',
                 ),
-                reviewCardBuilder: (Loan loan) =>
-                    ProfileCommonWidgets.reviewCard(
-                  loan: loan,
-                  onTap: () {
-                    context.push('${RouteNames.loansPage}/${loan.id}');
-                  },
-                ),
-                booksNoItemsText:
-                    'You have not uploaded any books.\n\nYou can start doing so from the "My Books" page.',
-                reviewsNoItemsText:
-                    'You have not reviews any books yet.\n\nYou can leave reviews on books you loan from other people.',
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },

@@ -23,7 +23,7 @@ class ProfileOwnEditPage extends StatelessWidget {
               'Make email public?'.tr,
               style: const TextStyle(fontSize: 14),
             ),
-            const Divider(),
+            const Expanded(child: VerticalDivider()),
             Obx(
               () => CommonSwitch(
                 callback: controller.onShowEmailChanged,
@@ -46,109 +46,73 @@ class ProfileOwnEditPage extends StatelessWidget {
               title:
                   Responsive.isMobile(context) ? Text('Edit profile'.tr) : null,
             ),
-            body: SingleChildScrollView(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                child: Form(
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  key: controller.formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: 200,
-                        width: 200,
-                        child: Stack(
-                          children: [
-                            Align(
-                              alignment: Alignment.center,
-                              child: Obx(
-                                () {
-                                  return CommonCircularAvatar(
-                                    profile: controller.inheritedProfile.value,
-                                    radius: 100,
-                                    image:
-                                        controller.selectedBytes.value != null
-                                            ? Image.memory(
-                                                controller.selectedBytes.value!,
-                                                fit: BoxFit.cover,
-                                              )
-                                            : null,
-                                  );
-                                },
+            body: SafeArea(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 20,
+                  ),
+                  child: Form(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    key: controller.formKey,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 200,
+                          width: 200,
+                          child: Stack(
+                            children: [
+                              Align(
+                                alignment: Alignment.center,
+                                child: Obx(
+                                  () {
+                                    return CommonCircularAvatar(
+                                      profile:
+                                          controller.inheritedProfile.value,
+                                      radius: 100,
+                                      image: controller.selectedBytes.value !=
+                                              null
+                                          ? Image.memory(
+                                              controller.selectedBytes.value!,
+                                              fit: BoxFit.cover,
+                                            )
+                                          : null,
+                                    );
+                                  },
+                                ),
                               ),
-                            ),
-                            Align(
-                              alignment: Alignment.topRight,
-                              child: Obx(
-                                () => Visibility(
-                                  visible:
-                                      controller.selectedBytes.value != null,
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.close,
-                                      color:
-                                          Theme.of(context).colorScheme.error,
+                              Align(
+                                alignment: Alignment.topRight,
+                                child: Obx(
+                                  () => Visibility(
+                                    visible:
+                                        controller.selectedBytes.value != null,
+                                    child: AspectRatio(
+                                      aspectRatio: 1,
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.close,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .error,
+                                        ),
+                                        iconSize: 40,
+                                        onPressed: () {
+                                          controller.selectedBytes.value = null;
+                                        },
+                                      ),
                                     ),
-                                    iconSize: 40,
-                                    onPressed: () {
-                                      controller.selectedBytes.value = null;
-                                    },
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      const Divider(height: 10),
-                      Builder(builder: (context) {
-                        if (!Responsive.isMobile(context)) {
-                          return InkWell(
-                            onTap: () => controller.takePicture(
-                              ImageSource.gallery,
-                              context,
-                            ),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                              padding: const EdgeInsets.all(13),
-                              child: Icon(
-                                Atlas.image_gallery,
-                                color: Theme.of(context).colorScheme.onPrimary,
-                                size: 24,
-                              ),
-                            ),
-                          );
-                        }
-
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            InkWell(
-                              onTap: () => controller.takePicture(
-                                ImageSource.camera,
-                                context,
-                              ),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                                padding: const EdgeInsets.all(13),
-                                child: Icon(
-                                  Atlas.camera,
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                  size: 24,
-                                ),
-                              ),
-                            ),
-                            const VerticalDivider(width: 25),
-                            InkWell(
+                        const Divider(height: 10),
+                        Builder(builder: (context) {
+                          if (!Responsive.isMobile(context)) {
+                            return InkWell(
                               onTap: () => controller.takePicture(
                                 ImageSource.gallery,
                                 context,
@@ -158,7 +122,7 @@ class ProfileOwnEditPage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(10),
                                   color: Theme.of(context).colorScheme.primary,
                                 ),
-                                padding: const EdgeInsets.all(13),
+                                padding: const EdgeInsets.all(16),
                                 child: Icon(
                                   Atlas.image_gallery,
                                   color:
@@ -166,84 +130,131 @@ class ProfileOwnEditPage extends StatelessWidget {
                                   size: 24,
                                 ),
                               ),
-                            ),
-                          ],
-                        );
-                      }),
-                      const Divider(height: 30),
-                      Form(
-                        child: Column(
-                          children: [
-                            Obx(
-                              () {
-                                return CommonAsyncTextField(
-                                  callback: controller.onUsernameChanged,
-                                  label: 'Username'.tr,
-                                  duration: const Duration(milliseconds: 500),
-                                  asyncValidator:
-                                      controller.asyncUsernameValidator,
-                                  syncValidator: controller.usernameValidator,
-                                  initialValue: controller
-                                      .inheritedProfile.value.username,
-                                );
-                              },
-                            ),
-                            const Divider(height: 5),
-                            Obx(
-                              () {
-                                return CommonTextField(
-                                  callback: controller.onBioChanged,
-                                  label: 'Bio (Optional)'.tr,
-                                  validator: controller.bioValidator,
-                                  initialValue:
-                                      controller.inheritedProfile.value.bio,
-                                  maxLength: 1000,
-                                  maxLines: 10,
-                                  minLines: 3,
-                                );
-                              },
-                            ),
-                          ],
+                            );
+                          }
+
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              InkWell(
+                                onTap: () => controller.takePicture(
+                                  ImageSource.camera,
+                                  context,
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                  padding: const EdgeInsets.all(16),
+                                  child: Icon(
+                                    Atlas.camera,
+                                    color:
+                                        Theme.of(context).colorScheme.onPrimary,
+                                    size: 24,
+                                  ),
+                                ),
+                              ),
+                              const VerticalDivider(width: 25),
+                              InkWell(
+                                onTap: () => controller.takePicture(
+                                  ImageSource.gallery,
+                                  context,
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                  padding: const EdgeInsets.all(16),
+                                  child: Icon(
+                                    Atlas.image_gallery,
+                                    color:
+                                        Theme.of(context).colorScheme.onPrimary,
+                                    size: 24,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }),
+                        const Divider(height: 30),
+                        Form(
+                          child: Column(
+                            children: [
+                              Obx(
+                                () {
+                                  return CommonAsyncTextField(
+                                    callback: controller.onUsernameChanged,
+                                    label: 'Username'.tr,
+                                    duration: const Duration(milliseconds: 500),
+                                    asyncValidator:
+                                        controller.asyncUsernameValidator,
+                                    syncValidator: controller.usernameValidator,
+                                    initialValue: controller
+                                        .inheritedProfile.value.username,
+                                  );
+                                },
+                              ),
+                              const Divider(height: 5),
+                              Obx(
+                                () {
+                                  return CommonTextField(
+                                    callback: controller.onBioChanged,
+                                    label: 'Bio (Optional)'.tr,
+                                    validator: controller.bioValidator,
+                                    initialValue:
+                                        controller.inheritedProfile.value.bio,
+                                    maxLength: 1000,
+                                    maxLines: 10,
+                                    minLines: 3,
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      const Divider(height: 20),
-                      _showEmailToggleSwitch(controller),
-                      const Divider(height: 20),
-                      CommonButton(
-                        onPressed: controller.onSubmit,
-                        loading: controller.loading,
-                        style: FilledButton.styleFrom(
-                          minimumSize: const Size.fromHeight(60),
+                        const Divider(height: 20),
+                        _showEmailToggleSwitch(controller),
+                        const Divider(height: 20),
+                        SizedBox(
+                          width: double.maxFinite,
+                          child: CommonButton(
+                            onPressed: controller.onSubmit,
+                            loading: controller.loading,
+                            child: Text('Save'.tr),
+                          ),
                         ),
-                        child: Text('Save'.tr),
-                      ),
-                      const Divider(height: 50),
-                      // TextButton(
-                      //   onPressed: () async {
-                      //     final bool res = await const CommonConfirmationDialog(
-                      //       title:
-                      //           'Are you sure you want to delete your account? This is immediate and cannot be undone.',
-                      //     ).open(context);
-                      //
-                      //     if (res) {
-                      //       controller.loading.value = true;
-                      //       final bool result = await UsersBackend.deleteUser();
-                      //
-                      //       if (result) {
-                      //         await LoginBackend.logout();
-                      //         if (context.mounted) {
-                      //           context.go(RouteNames.startPage);
-                      //         }
-                      //       }
-                      //       controller.loading.value = false;
-                      //     }
-                      //   },
-                      //   child: Text(
-                      //     'Delete account'.tr,
-                      //     style: const TextStyle(fontSize: 20),
-                      //   ),
-                      // ),
-                    ],
+                        const Divider(height: 30),
+                        // TextButton(
+                        //   onPressed: () async {
+                        //     final bool res = await  CommonConfirmationDialog(
+                        //       title:
+                        //           'Are you sure you want to delete your account? This is immediate and cannot be undone.',
+                        //     ).open(context);
+                        //
+                        //     if (res) {
+                        //       controller.loading.value = true;
+                        //       final bool result = await UsersBackend.deleteUser();
+                        //
+                        //       if (result) {
+                        //         await LoginBackend.logout();
+                        //         if (context.mounted) {
+                        //           context.go(RouteNames.startPage);
+                        //         }
+                        //       }
+                        //       controller.loading.value = false;
+                        //     }
+                        //   },
+                        //   child: Text(
+                        //     'Delete account'.tr,
+                        //     style:  TextStyle(fontSize: 20),
+                        //   ),
+                        // ),
+                      ],
+                    ),
                   ),
                 ),
               ),

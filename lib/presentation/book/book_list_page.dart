@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_filter_bottomsheet.dart';
@@ -44,7 +45,6 @@ class BookListPage extends StatelessWidget {
                           CommonBookCover(
                             book,
                             radius: 0,
-                            height: 240,
                           ),
                           // const VerticalDivider(width: 10),
                           Expanded(
@@ -55,10 +55,13 @@ class BookListPage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Text(
+                                  AutoSizeText(
                                     book.title,
+                                    maxLines: 3,
+                                    minFontSize: 12,
+                                    overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 14,
                                       color: Theme.of(context)
                                           .colorScheme
                                           .onSurface,
@@ -67,10 +70,12 @@ class BookListPage extends StatelessWidget {
                                     ),
                                   ),
                                   const Divider(height: 5),
-                                  Text(
+                                  AutoSizeText(
                                     book.author,
+                                    maxLines: 3,
+                                    minFontSize: 10,
                                     style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 12,
                                       color: Theme.of(context)
                                           .colorScheme
                                           .onSurfaceVariant,
@@ -163,7 +168,7 @@ class BookListPage extends StatelessWidget {
   Widget _searchRow(BookListController controller) {
     return Builder(builder: (context) {
       return Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10, bottom: 2),
+        padding: const EdgeInsets.only(left: 5, right: 5, bottom: 2),
         child: CommonSearchBar(
           searchCallback: controller.searchBooks,
           filterCallback: () {

@@ -68,7 +68,8 @@ class _CommonFilterRowState extends State<CommonFilterRow> {
                 highlightColor: Colors.transparent,
                 overlayColor: WidgetStateColor.transparent,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(40),
                     border: Border.all(
@@ -101,21 +102,23 @@ class CommonFilterBottomsheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomSheet(
-      onClosing: () {},
-      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
-      enableDrag: false,
-      showDragHandle: false,
-      builder: (context) {
-        return SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(30),
-            child: Column(
-              children: children,
+    return SafeArea(
+      child: BottomSheet(
+        onClosing: () {},
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+        enableDrag: false,
+        showDragHandle: false,
+        builder: (context) {
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(30),
+              child: Column(
+                children: children,
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

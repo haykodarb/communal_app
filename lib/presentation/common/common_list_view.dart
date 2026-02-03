@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -273,17 +272,17 @@ class CommonListView<ItemType> extends StatelessWidget {
     required this.controller,
     this.axis = Axis.vertical,
     this.scrollPhysics = const AlwaysScrollableScrollPhysics(),
-    this.padding = const EdgeInsets.all(10),
     this.separator = const Divider(height: 5),
     this.isSliver = false,
     this.scrollController,
     this.noItemsText = 'No items.',
+    this.padding,
     super.key,
   });
 
   final Widget Function(ItemType) childBuilder;
   final Widget separator;
-  final EdgeInsets padding;
+  final EdgeInsets? padding;
   final CommonListViewController controller;
   final ScrollPhysics scrollPhysics;
   final bool isSliver;
@@ -294,171 +293,174 @@ class CommonListView<ItemType> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder(
-        init: controller,
-        initState: (state) {
-          controller
-              .registerScrollController(scrollController ?? ScrollController());
-        },
-        builder: (_) {
-          return Obx(
-            () {
-              if (controller.firstLoad.value) {
-                if (isSliver) {
-                  return const SliverFillRemaining(
-                    hasScrollBody: false,
-                    fillOverscroll: false,
-                    child: CommonLoadingBody(),
-                  );
-                }
+    const EdgeInsets fallbackPadding = EdgeInsets.all(10);
 
-                return const CommonLoadingBody();
+    return GetBuilder(
+      init: controller,
+      initState: (state) {
+        controller
+            .registerScrollController(scrollController ?? ScrollController());
+      },
+      builder: (_) {
+        return Obx(
+          () {
+            if (controller.firstLoad.value) {
+              if (isSliver) {
+                return const SliverFillRemaining(
+                  hasScrollBody: false,
+                  fillOverscroll: false,
+                  child: CommonLoadingBody(),
+                );
               }
 
-              if (controller.itemList.isEmpty) {
-                if (isSliver) {
-                  return SliverFillRemaining(
-                    hasScrollBody: false,
-                    fillOverscroll: false,
-                    child: Center(
-                      child: SizedBox(
-                        width: 300,
-                        child: Text(
-                          noItemsText,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 16),
-                        ),
+              return const CommonLoadingBody();
+            }
+
+            if (controller.itemList.isEmpty) {
+              if (isSliver) {
+                return SliverFillRemaining(
+                  hasScrollBody: false,
+                  fillOverscroll: false,
+                  child: Center(
+                    child: SizedBox(
+                      width: 300,
+                      child: Text(
+                        noItemsText,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 16),
                       ),
                     ),
+                  ),
+                );
+              }
+
+              return Center(
+                child: SizedBox(
+                  width: 300,
+                  child: Text(
+                    noItemsText,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+              );
+            }
+
+            final List<Widget> widgets = List.generate(
+              controller.itemList.length * 2 - 1,
+              (int index) {
+                if (index % 2 == 0) {
+                  return childBuilder(
+                    controller.itemList[(index / 2).floor()],
                   );
                 }
 
-                return Center(
-                  child: SizedBox(
-                    width: 300,
-                    child: Text(
-                      noItemsText,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  ),
-                );
-              }
+                return separator;
+              },
+              growable: true,
+            );
 
-              final List<Widget> widgets = List.generate(
-                controller.itemList.length * 2 - 1,
-                (int index) {
-                  if (index % 2 == 0) {
-                    return childBuilder(
-                      controller.itemList[(index / 2).floor()],
+            if (controller.showLoadingMore.value) {
+              widgets.add(separator);
+              widgets.add(separator);
+              widgets.add(const CommonLoadingBody(size: 30));
+            }
+
+            if (isSliver) {
+              return SliverPadding(
+                padding: padding ?? fallbackPadding,
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate(widgets),
+                ),
+              );
+            }
+
+            return Stack(
+              children: [
+                ListView(
+                  padding: padding ?? fallbackPadding,
+                  controller: controller.scrollController,
+                  physics: scrollPhysics,
+                  scrollDirection: axis,
+                  children: widgets,
+                ),
+                Obx(
+                  () {
+                    final int position = controller.scrollPosition.value;
+                    return Visibility(
+                      visible: axis == Axis.horizontal && position != 0,
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 20),
+                        alignment: Alignment.centerLeft,
+                        child: IconButton(
+                          onPressed: () {
+                            controller.scrollController!.animateTo(
+                              controller.scrollController!.position.pixels -
+                                  400,
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.linear,
+                            );
+                          },
+                          style: IconButton.styleFrom(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary),
+                          icon: Icon(
+                            Icons.chevron_left,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            size: 40,
+                          ),
+                        ),
+                      ),
                     );
-                  }
+                  },
+                ),
+                Obx(
+                  () {
+                    final int position = controller.scrollPosition.value;
 
-                  return separator;
-                },
-                growable: true,
-              );
+                    final int maxScrollExtent =
+                        (controller.scrollController?.hasClients ?? false)
+                            ? (controller.scrollController!.position
+                                    .hasContentDimensions
+                                ? controller
+                                    .scrollController!.position.maxScrollExtent
+                                    .toInt()
+                                : 0)
+                            : 0;
 
-              if (controller.showLoadingMore.value) {
-                widgets.add(separator);
-                widgets.add(separator);
-                widgets.add(const CommonLoadingBody(size: 30));
-              }
-
-              if (isSliver) {
-                return SliverPadding(
-                  padding: padding,
-                  sliver: SliverList(
-                    delegate: SliverChildListDelegate(widgets),
-                  ),
-                );
-              }
-
-              return Stack(
-                children: [
-                  ListView(
-                    padding: padding,
-                    controller: controller.scrollController,
-                    physics: scrollPhysics,
-                    scrollDirection: axis,
-                    children: widgets,
-                  ),
-                  Obx(
-                    () {
-                      final int position = controller.scrollPosition.value;
-                      return Visibility(
-                        visible: axis == Axis.horizontal && position != 0,
-                        child: Container(
-                          padding: const EdgeInsets.only(left: 20),
-                          alignment: Alignment.centerLeft,
-                          child: IconButton(
-                            onPressed: () {
-                              controller.scrollController!.animateTo(
-                                controller.scrollController!.position.pixels -
-                                    400,
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.linear,
-                              );
-                            },
-                            style: IconButton.styleFrom(
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.primary),
-                            icon: Icon(
-                              Icons.chevron_left,
-                              color: Theme.of(context).colorScheme.onPrimary,
-                              size: 40,
-                            ),
+                    return Visibility(
+                      visible: axis == Axis.horizontal &&
+                          position != maxScrollExtent,
+                      child: Container(
+                        padding: const EdgeInsets.only(right: 20),
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          onPressed: () {
+                            controller.scrollController!.animateTo(
+                              controller.scrollController!.position.pixels +
+                                  400,
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.linear,
+                            );
+                          },
+                          style: IconButton.styleFrom(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary),
+                          icon: Icon(
+                            Icons.chevron_right,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            size: 40,
                           ),
                         ),
-                      );
-                    },
-                  ),
-                  Obx(
-                    () {
-                      final int position = controller.scrollPosition.value;
-
-                      final int maxScrollExtent =
-                          (controller.scrollController?.hasClients ?? false)
-                              ? (controller.scrollController!.position
-                                      .hasContentDimensions
-                                  ? controller.scrollController!.position
-                                      .maxScrollExtent
-                                      .toInt()
-                                  : 0)
-                              : 0;
-
-                      return Visibility(
-                        visible: axis == Axis.horizontal &&
-                            position != maxScrollExtent,
-                        child: Container(
-                          padding: const EdgeInsets.only(right: 20),
-                          alignment: Alignment.centerRight,
-                          child: IconButton(
-                            onPressed: () {
-                              controller.scrollController!.animateTo(
-                                controller.scrollController!.position.pixels +
-                                    400,
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.linear,
-                              );
-                            },
-                            style: IconButton.styleFrom(
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.primary),
-                            icon: Icon(
-                              Icons.chevron_right,
-                              color: Theme.of(context).colorScheme.onPrimary,
-                              size: 40,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-        });
+                      ),
+                    );
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 }

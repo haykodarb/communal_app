@@ -1,8 +1,6 @@
 import 'package:communal/models/book.dart';
-import 'package:communal/models/community.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
-import 'package:communal/presentation/common/common_community_card.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/presentation/common/common_search_bar.dart';
@@ -78,99 +76,77 @@ class SearchPage extends StatelessWidget {
               : null,
           drawer:
               Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
-          body: CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                  child:
-                      SizedBox(height: Responsive.isMobile(context) ? 0 : 20)),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: CommonTabBar(
-                    onTabTapped: controller.onTabTapped,
-                    currentIndex: controller.currentTabIndex,
-                    tabs:  [
-                      'Books'.tr,
-                      'Users'.tr,
-                    ],
+          body: SafeArea(
+            child: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                    child:
+                        SizedBox(height: Responsive.isMobile(context) ? 0 : 20)),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: CommonTabBar(
+                      onTabTapped: controller.onTabTapped,
+                      currentIndex: controller.currentTabIndex,
+                      tabs: [
+                        'Books'.tr,
+                        'Users'.tr,
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              const SliverToBoxAdapter(child: SizedBox(height: 5)),
-              SliverAppBar(
-                title: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: CommonSearchBar(
-                    searchCallback: controller.onQueryChanged,
-                    focusNode: FocusNode(),
+                const SliverToBoxAdapter(child: SizedBox(height: 5)),
+                SliverAppBar(
+                  title: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: CommonSearchBar(
+                      searchCallback: controller.onQueryChanged,
+                      focusNode: FocusNode(),
+                    ),
                   ),
+                  titleSpacing: 0,
+                  toolbarHeight: 60,
+                  centerTitle: true,
+                  automaticallyImplyLeading: false,
+                  pinned: true,
                 ),
-                titleSpacing: 0,
-                toolbarHeight: 60,
-                centerTitle: true,
-                automaticallyImplyLeading: false,
-                pinned: true,
-              ),
-              const SliverToBoxAdapter(child: SizedBox(height: 5)),
-              Obx(
-                () {
-                  switch (controller.currentTabIndex.value) {
-                    case 0:
-                      return CommonGridView<Book>(
-                        padding: const EdgeInsets.only(
-                          bottom: 20,
-                          left: 10,
-                          right: 10,
-                        ),
-                        isSliver: true,
-                        childBuilder: (Book book) =>
-                            CommonVerticalBookCard(book: book),
-                        noItemsText:
-                            'No books found in any of the communities you are a part of.',
-                        controller: controller.bookListController,
-                      );
-                    case 2:
-                      return CommonListView<Community>(
-                        padding: const EdgeInsets.only(
-                          bottom: 20,
-                          left: 10,
-                          right: 10,
-                        ),
-                        isSliver: true,
-                        childBuilder: (Community community) =>
-                            CommonCommunityCard(
-                          community: community,
-                          callback: () {
-                            context.push(
-                              RouteNames.searchPage +
-                                  RouteNames.searchCommunityDetailsPage
-                                      .replaceFirst(
-                                    ':communityId',
-                                    community.id,
-                                  ),
-                            );
-                          },
-                        ),
-                        controller: controller.communityListController,
-                      );
-                    case 1:
-                      return CommonListView<Profile>(
-                        padding: const EdgeInsets.only(
-                          bottom: 20,
-                          left: 10,
-                          right: 10,
-                        ),
-                        isSliver: true,
-                        childBuilder: (Profile profile) => _userCard(profile),
-                        controller: controller.profileListController,
-                        noItemsText: 'No users found, likely a network issue.',
-                      );
-                    default:
-                      return const SizedBox.shrink();
-                  }
-                },
-              ),
-            ],
+                const SliverToBoxAdapter(child: SizedBox(height: 5)),
+                Obx(
+                  () {
+                    switch (controller.currentTabIndex.value) {
+                      case 0:
+                        return CommonGridView<Book>(
+                          padding: const EdgeInsets.only(
+                            bottom: 20,
+                            left: 10,
+                            right: 10,
+                          ),
+                          isSliver: true,
+                          childBuilder: (Book book) =>
+                              CommonVerticalBookCard(book: book),
+                          noItemsText:
+                              'No books found in any of the communities you are a part of.',
+                          controller: controller.bookListController,
+                        );
+                      case 1:
+                        return CommonListView<Profile>(
+                          padding: const EdgeInsets.only(
+                            bottom: 20,
+                            left: 10,
+                            right: 10,
+                          ),
+                          isSliver: true,
+                          childBuilder: (Profile profile) => _userCard(profile),
+                          controller: controller.profileListController,
+                          noItemsText: 'No users found, likely a network issue.',
+                        );
+                      default:
+                        return const SizedBox.shrink();
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
         );
       },

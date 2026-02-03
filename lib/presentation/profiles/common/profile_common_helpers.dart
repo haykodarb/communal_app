@@ -19,7 +19,10 @@ class ProfileCommonHelpers {
       () {
         if (currentTabIndex.value == 0) {
           return CommonGridView<Book>(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 10,
+            ),
             controller: bookListController,
             scrollController: scrollController,
             noItemsText: booksNoItemsText,
@@ -30,7 +33,10 @@ class ProfileCommonHelpers {
 
         if (currentTabIndex.value == 1) {
           return CommonListView<Loan>(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 10,
+            ),
             controller: reviewListController,
             scrollController: scrollController,
             noItemsText: reviewsNoItemsText,
@@ -66,7 +72,7 @@ class ProfileCommonHelpers {
             visible: showBio,
             child: bio,
           ),
-          const Divider(height: 10),
+          // Divider(height: 10),
           // ProfileCommonWidgets.loanCount(),
           const Divider(height: 10),
         ],

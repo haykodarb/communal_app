@@ -24,8 +24,8 @@ abstract class ProfileCommonController extends GetxController {
   }
 
   @override
-  void onReady() {
-    super.onReady();
+  void onInit() {
+    super.onInit();
     reviewListController.registerNewPageCallback(loadReviews);
     bookListController.registerNewPageCallback(loadBooks);
   }

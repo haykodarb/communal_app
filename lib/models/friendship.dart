@@ -2,7 +2,7 @@ import 'package:communal/models/profile.dart';
 import 'package:get/get.dart';
 
 class Friendship {
-  final String id;
+  final int id;
   final DateTime created_at;
   final Profile requester;
   final Profile responder;

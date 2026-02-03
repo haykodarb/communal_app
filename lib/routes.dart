@@ -86,14 +86,18 @@ class RouteNames {
   static const String notificationsPage = '/notifications';
 }
 
-final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> _shellNavigatorKey =
+    GlobalKey<NavigatorState>();
 
 final GoRoute _myBooksRoutes = GoRoute(
   path: RouteNames.myBooks,
   parentNavigatorKey: _shellNavigatorKey,
   pageBuilder: (context, state) {
     return const NoTransitionPage(
-      child: BookListPage(),
+      child: SafeArea(
+        top: false,
+        child: BookListPage(),
+      ),
     );
   },
   routes: [
@@ -101,7 +105,9 @@ final GoRoute _myBooksRoutes = GoRoute(
       path: RouteNames.bookCreatePage,
       parentNavigatorKey: _shellNavigatorKey,
       pageBuilder: (context, state) => const NoTransitionPage(
-        child: BookCreatePage(),
+        child: SafeArea(
+          child: BookCreatePage(),
+        ),
       ),
     ),
     GoRoute(
@@ -109,8 +115,11 @@ final GoRoute _myBooksRoutes = GoRoute(
       parentNavigatorKey: _shellNavigatorKey,
       pageBuilder: (context, state) {
         return NoTransitionPage(
-          child: BookOwnedPage(
-            bookId: state.pathParameters['bookId']!,
+          child: SafeArea(
+            top: false,
+            child: BookOwnedPage(
+              bookId: state.pathParameters['bookId']!,
+            ),
           ),
         );
       },
@@ -120,8 +129,11 @@ final GoRoute _myBooksRoutes = GoRoute(
           parentNavigatorKey: _shellNavigatorKey,
           pageBuilder: (context, state) {
             return NoTransitionPage(
-              child: BookEditPage(
-                bookId: state.pathParameters['bookId']!,
+              child: SafeArea(
+                top: false,
+                child: BookEditPage(
+                  bookId: state.pathParameters['bookId']!,
+                ),
               ),
             );
           },
@@ -135,7 +147,10 @@ final GoRoute _communityRoutes = GoRoute(
   parentNavigatorKey: _shellNavigatorKey,
   pageBuilder: (context, state) {
     return const NoTransitionPage(
-      child: CommunityListPage(),
+      child: SafeArea(
+        top: false,
+        child: CommunityListPage(),
+      ),
     );
   },
   routes: [
@@ -143,7 +158,10 @@ final GoRoute _communityRoutes = GoRoute(
       path: RouteNames.communityCreatePage,
       parentNavigatorKey: _shellNavigatorKey,
       pageBuilder: (context, state) => const NoTransitionPage(
-        child: CommunityCreatePage(),
+        child: SafeArea(
+          top: false,
+          child: CommunityCreatePage(),
+        ),
       ),
     ),
     GoRoute(
@@ -151,8 +169,11 @@ final GoRoute _communityRoutes = GoRoute(
       parentNavigatorKey: _shellNavigatorKey,
       pageBuilder: (context, state) {
         return NoTransitionPage(
-          child: CommunitySpecificPage(
-            communityId: state.pathParameters['communityId']!,
+          child: SafeArea(
+            top: false,
+            child: CommunitySpecificPage(
+              communityId: state.pathParameters['communityId']!,
+            ),
           ),
         );
       },
@@ -162,8 +183,11 @@ final GoRoute _communityRoutes = GoRoute(
           parentNavigatorKey: _shellNavigatorKey,
           pageBuilder: (context, state) {
             return NoTransitionPage(
-              child: CommunityDiscussionsTopicCreatePage(
-                communityId: state.pathParameters['communityId']!,
+              child: SafeArea(
+                top: false,
+                child: CommunityDiscussionsTopicCreatePage(
+                  communityId: state.pathParameters['communityId']!,
+                ),
               ),
             );
           },
@@ -173,8 +197,11 @@ final GoRoute _communityRoutes = GoRoute(
           parentNavigatorKey: _shellNavigatorKey,
           pageBuilder: (context, state) {
             return NoTransitionPage(
-              child: CommunityDiscussionsTopicMessagesPage(
-                topicId: state.pathParameters['topicId']!,
+              child: SafeArea(
+                top: false,
+                child: CommunityDiscussionsTopicMessagesPage(
+                  topicId: state.pathParameters['topicId']!,
+                ),
               ),
             );
           },
@@ -183,15 +210,21 @@ final GoRoute _communityRoutes = GoRoute(
           path: RouteNames.communitySettingsPage,
           parentNavigatorKey: _shellNavigatorKey,
           pageBuilder: (context, state) => const NoTransitionPage(
-            child: CommunitySettingsPage(),
+            child: SafeArea(
+              top: false,
+              child: CommunitySettingsPage(),
+            ),
           ),
         ),
         GoRoute(
           path: RouteNames.communityInvitePage,
           parentNavigatorKey: _shellNavigatorKey,
           pageBuilder: (context, state) => NoTransitionPage(
-            child: CommunityInvitePage(
-              communityId: state.pathParameters['communityId']!,
+            child: SafeArea(
+              top: false,
+              child: CommunityInvitePage(
+                communityId: state.pathParameters['communityId']!,
+              ),
             ),
           ),
         ),
@@ -199,8 +232,11 @@ final GoRoute _communityRoutes = GoRoute(
           path: RouteNames.communityRequestsPage,
           parentNavigatorKey: _shellNavigatorKey,
           pageBuilder: (context, state) => NoTransitionPage(
-            child: CommunityRequestsPage(
-              communityId: state.pathParameters['communityId']!,
+            child: SafeArea(
+              top: false,
+              child: CommunityRequestsPage(
+                communityId: state.pathParameters['communityId']!,
+              ),
             ),
           ),
         ),
@@ -213,7 +249,10 @@ final GoRoute _messagesRoutes = GoRoute(
   path: RouteNames.messagesPage,
   parentNavigatorKey: _shellNavigatorKey,
   pageBuilder: (context, state) => const NoTransitionPage(
-    child: MessagesPage(),
+    child: SafeArea(
+      top: false,
+      child: MessagesPage(),
+    ),
   ),
   routes: [
     GoRoute(
@@ -221,8 +260,11 @@ final GoRoute _messagesRoutes = GoRoute(
       parentNavigatorKey: _shellNavigatorKey,
       pageBuilder: (context, state) {
         return NoTransitionPage(
-          child: MessagesSpecificPage(
-            userId: state.pathParameters['userId']!,
+          child: SafeArea(
+            top: false,
+            child: MessagesSpecificPage(
+              userId: state.pathParameters['userId']!,
+            ),
           ),
         );
       },
@@ -235,8 +277,11 @@ final GoRoute _profilesRoutes = GoRoute(
   parentNavigatorKey: _shellNavigatorKey,
   pageBuilder: (context, state) {
     return NoTransitionPage(
-      child: ProfileOtherPage(
-        userId: state.pathParameters['userId']!,
+      child: SafeArea(
+        top: false,
+        child: ProfileOtherPage(
+          userId: state.pathParameters['userId']!,
+        ),
       ),
     );
   },

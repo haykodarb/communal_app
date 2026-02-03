@@ -84,11 +84,11 @@ class CommonTabBar extends StatelessWidget {
           ) {
             const double widthPadding = 8;
             const double heightPadding = 4;
-            double effectiveWidth = maxWidth - widthPadding;
-            double effectiveHeight = maxHeight - heightPadding;
+            final double effectiveWidth = maxWidth - widthPadding;
+            final double effectiveHeight = maxHeight - heightPadding;
 
-            TextScaler textScaler = MediaQuery.textScalerOf(context);
-            double textScaleFactor = textScaler.scale(1.0);
+            final TextScaler textScaler = MediaQuery.textScalerOf(context);
+            final double textScaleFactor = textScaler.scale(1.0);
             double fontSize = 20;
             double scaledFontSize = textScaler.scale(fontSize);
 

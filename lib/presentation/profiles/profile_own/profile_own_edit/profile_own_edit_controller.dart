@@ -52,9 +52,9 @@ class ProfileOwnEditController extends GetxController {
   Future<void> takePicture(ImageSource source, BuildContext context) async {
     XFile? pickedImage = await imagePicker.pickImage(
       source: source,
-      imageQuality: 80,
-      maxHeight: 320,
-      maxWidth: 320,
+      imageQuality: 100,
+      maxHeight: 1080,
+      maxWidth: 1080,
       preferredCameraDevice: CameraDevice.rear,
     );
 

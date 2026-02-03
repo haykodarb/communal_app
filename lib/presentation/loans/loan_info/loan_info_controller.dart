@@ -31,6 +31,7 @@ class LoanInfoController extends GetxController {
 
   @override
   Future<void> onInit() async {
+    super.onInit();
     loadingPage.value = true;
     if (Get.isRegistered<LoansController>()) {
       loansController = Get.find<LoansController>();
@@ -58,7 +59,6 @@ class LoanInfoController extends GetxController {
     }
 
     loadingPage.value = false;
-    super.onInit();
   }
 
   void changeEditingState(BuildContext context) {
@@ -85,6 +85,8 @@ class LoanInfoController extends GetxController {
         if (context.mounted) {
           CommonAlertDialog(title: response.payload).open(context);
         }
+
+        loading.value = false;
       }
     }
   }

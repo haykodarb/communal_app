@@ -21,7 +21,8 @@ class CommunityListPage extends StatelessWidget {
           children: [
             CommonCommunityCard(
               community: community,
-              callback: () => controller.goToCommunitySpecific(community, context),
+              callback: () =>
+                  controller.goToCommunitySpecific(community, context),
             ),
             Align(
               alignment: Alignment.topRight,
@@ -70,12 +71,18 @@ class CommunityListPage extends StatelessWidget {
               size: 35,
             ),
           ),
-          appBar: Responsive.isMobile(context) ? AppBar(title: Text('Communities'.tr)) : null,
-          drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
+          appBar: Responsive.isMobile(context)
+              ? AppBar(title: Text('Communities'.tr))
+              : null,
+          drawer:
+              Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
           drawerEnableOpenDragGesture: false,
           body: CommonListView(
             noItemsText: 'community-list-no-items'.tr,
-            childBuilder: (Community community) => _communityCard(controller, community),
+            childBuilder: (Community community) => _communityCard(
+              controller,
+              community,
+            ),
             controller: controller.listViewController,
           ),
         );

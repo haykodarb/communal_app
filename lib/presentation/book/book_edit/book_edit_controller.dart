@@ -61,8 +61,8 @@ class BookEditController extends GetxController {
     XFile? pickedImage = await imagePicker.pickImage(
       source: source,
       imageQuality: 100,
-      maxHeight: 960,
-      maxWidth: 720,
+      maxHeight: 1440,
+      maxWidth: 1080,
       preferredCameraDevice: CameraDevice.rear,
     );
 

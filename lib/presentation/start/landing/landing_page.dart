@@ -112,6 +112,7 @@ class LandingPage extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const Divider(height: 30),
                       Expanded(
@@ -133,6 +134,7 @@ class LandingPage extends StatelessWidget {
                       Expanded(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Obx(
                               () {
@@ -150,30 +152,26 @@ class LandingPage extends StatelessWidget {
                               },
                             ),
                             const Divider(height: 20),
-                            Center(
-                              child: Obx(
-                                () {
-                                  return Text(
-                                    _copies[controller.pageIndex.value],
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurfaceVariant,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  );
-                                },
-                              ),
+                            Obx(
+                              () {
+                                return Text(
+                                  _copies[controller.pageIndex.value],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                );
+                              },
                             ),
                             const Divider(height: 30),
                             _pageIndicator(context, controller),
                             const Divider(height: 30),
                             CommonButton(
-                              style: FilledButton.styleFrom(
-                                minimumSize: const Size.fromHeight(60),
-                              ),
+                              type: CommonButtonType.filled,
                               onPressed: (BuildContext ctx) {
                                 controller.pageIndex.value++;
                                 if (controller.pageIndex.value >= 3) {
@@ -183,18 +181,6 @@ class LandingPage extends StatelessWidget {
                               child: const Text('Next'),
                             ),
                             const Divider(height: 20),
-                            TextButton(
-                              onPressed: () {
-                                context.go(RouteNames.startPage);
-                              },
-                              style: TextButton.styleFrom(
-                                textStyle: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              child: const Text('Skip'),
-                            ),
                           ],
                         ),
                       ),

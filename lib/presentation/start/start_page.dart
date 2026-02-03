@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:atlas_icons/atlas_icons.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
@@ -11,15 +12,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:communal/presentation/start/start_controller.dart';
 import 'package:go_router/go_router.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:collection/collection.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class StartPage extends StatelessWidget {
   const StartPage({super.key});
 
   static const List<Locale> _locales = [Locale('en', 'US'), Locale('es', 'ES')];
-  static const List<String> _languages = ['English', 'Español'];
 
   Widget _dropdownLanguageButton(StartController controller) {
     return CommonSwitch(
@@ -58,9 +56,6 @@ class StartPage extends StatelessWidget {
       onPressed: (BuildContext context) => context.push(
         RouteNames.startPage + RouteNames.loginPage,
       ),
-      style: OutlinedButton.styleFrom(
-        minimumSize: const Size.fromHeight(60),
-      ),
       child: Text(
         'Login'.tr,
       ),
@@ -71,9 +66,6 @@ class StartPage extends StatelessWidget {
     return CommonButton(
       onPressed: (BuildContext context) => context.push(
         RouteNames.startPage + RouteNames.registerPage,
-      ),
-      style: FilledButton.styleFrom(
-        minimumSize: const Size.fromHeight(60),
       ),
       child: Text(
         'Register'.tr,
@@ -108,15 +100,13 @@ class StartPage extends StatelessWidget {
                   fit: BoxFit.contain,
                 ),
               ),
-              FittedBox(
-                child: Text(
-                  'Communal',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 60,
-                    fontWeight: FontWeight.w800,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+              AutoSizeText(
+                'Communal',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 40,
+                  fontWeight: FontWeight.w800,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
             ],
@@ -128,96 +118,99 @@ class StartPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder(
-      init: StartController(context: context),
-      initState: (state) async {
-        try {
-          Uri? uri = GoRouter.of(context).state?.uri;
+    return SafeArea(
+    top: false,
+      child: GetBuilder(
+        init: StartController(context: context),
+        initState: (state) async {
+          try {
+            Uri? uri = GoRouter.of(context).state?.uri;
 
-          await UserPreferences.setWelcomeScreenShown(true);
+            await UserPreferences.setWelcomeScreenShown(true);
 
-          if (uri != null) {
-            final AuthSessionUrlResponse response =
-                await Supabase.instance.client.auth.getSessionFromUrl(uri);
+            if (uri != null) {
+              final AuthSessionUrlResponse response =
+                  await Supabase.instance.client.auth.getSessionFromUrl(uri);
 
-            if (response.session.accessToken.isNotEmpty) {
-              if (context.mounted) {
-                GoRouter.of(context).go(RouteNames.communityListPage);
+              if (response.session.accessToken.isNotEmpty) {
+                if (context.mounted) {
+                  GoRouter.of(context).go(RouteNames.communityListPage);
+                }
               }
             }
+          } on AuthException catch (_) {
+            return;
+          } catch (e) {
+            if (kDebugMode) {
+              print(e);
+            }
           }
-        } on AuthException catch (_) {
-          return;
-        } catch (e) {
-          if (kDebugMode) {
-            print(e);
-          }
-        }
-      },
-      builder: (StartController controller) {
-        return Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          body: SafeArea(
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 30,
-                  vertical: 30,
-                ),
-                child: SizedBox(
-                  width: 600,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _dropdownLanguageButton(controller),
-                          _changeThemeButton(controller),
-                        ],
-                      ),
-                      Flexible(
-                        flex: 2,
-                        child: _logo(),
-                      ),
-                      const Divider(height: 10),
-                      Expanded(
-                        flex: 1,
-                        child: Obx(
-                          () {
-                            return CommonLoadingBody(
-                              loading: controller.loading.value,
-                              child: Column(
-                                children: [
-                                  _loginButton(controller),
-                                  const Divider(height: 10),
-                                  _registerButton(controller),
-                                  const Divider(height: 10),
-                                  Visibility(
-                                    visible: kIsWeb || Platform.isAndroid,
-                                    child: CommonButton(
-                                      style: FilledButton.styleFrom(
-                                        minimumSize: const Size.fromHeight(60),
-                                      ),
-                                      onPressed: controller.signInWithGoogle,
-                                      child: Text('Enter with Google'.tr),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
+        },
+        builder: (StartController controller) {
+          return Scaffold(
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            body: SafeArea(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 30,
+                    vertical: 30,
+                  ),
+                  child: SizedBox(
+                    width: 600,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _dropdownLanguageButton(controller),
+                            _changeThemeButton(controller),
+                          ],
                         ),
-                      ),
-                    ],
+                        const Divider(height: 10),
+                        Expanded(
+                          flex: 3,
+                          child: _logo(),
+                        ),
+                        const Divider(height: 10),
+                        Expanded(
+                          flex: 2,
+                          child: Obx(
+                            () {
+                              return CommonLoadingBody(
+                                loading: controller.loading.value,
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    _loginButton(controller),
+                                    const Divider(height: 10),
+                                    _registerButton(controller),
+                                    const Divider(height: 10),
+                                    Visibility(
+                                      visible: kIsWeb || Platform.isAndroid,
+                                      child: CommonButton(
+                                        onPressed: controller.signInWithGoogle,
+                                        child: Text('Enter with Google'.tr),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

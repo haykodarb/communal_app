@@ -17,6 +17,57 @@ import 'package:intl/intl.dart';
 class LoansPage extends StatelessWidget {
   const LoansPage({super.key});
 
+  @override
+  Widget build(BuildContext context) {
+    return GetBuilder(
+      init: LoansController(),
+      builder: (LoansController controller) {
+        return DefaultTabController(
+          length: 3,
+          child: SafeArea(
+            child: Scaffold(
+              appBar: Responsive.isMobile(context)
+                  ? AppBar(title: Text('Loans'.tr))
+                  : null,
+              drawer: Responsive.isMobile(context)
+                  ? const CommonDrawerWidget()
+                  : null,
+              body: CustomScrollView(
+                controller: controller.scrollController,
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: Responsive.isMobile(context) ? 0 : 20,
+                    ),
+                  ),
+                  SliverAppBar(
+                    title: _searchRow(controller),
+                    titleSpacing: 0,
+                    stretch: true,
+                    toolbarHeight: 55,
+                    centerTitle: true,
+                    automaticallyImplyLeading: false,
+                    floating: true,
+                  ),
+                  CommonListView<Loan>(
+                    noItemsText:
+                        'You have not loaned or borrowed any books yet.\n\nYou can get started by joining communities and searching their libraries for books you might enjoy.',
+                    childBuilder: (Loan loan) => CommonKeepaliveWrapper(
+                      child: _loanCard(loan, controller),
+                    ),
+                    controller: controller.listViewController,
+                    scrollController: controller.scrollController,
+                    isSliver: true,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _bottomSheet(LoansController controller) {
     LoansFilterParams filterParams = controller.filterParams.value;
 
@@ -91,13 +142,13 @@ class LoansPage extends StatelessWidget {
           },
           child: Card(
             margin: EdgeInsets.zero,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
             child: Container(
-              height: 160,
               padding: const EdgeInsets.all(20),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Expanded(
@@ -106,6 +157,8 @@ class LoansPage extends StatelessWidget {
                       children: [
                         Text(
                           loan.book.title,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -115,6 +168,8 @@ class LoansPage extends StatelessWidget {
                         const Divider(height: 5),
                         Text(
                           loan.book.author,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
@@ -123,7 +178,7 @@ class LoansPage extends StatelessWidget {
                                 Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
-                        const Expanded(child: Divider(height: 5)),
+                        const Divider(height: 20),
                         Row(
                           children: [
                             Text(
@@ -151,7 +206,9 @@ class LoansPage extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(40),
                               ),
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 2, horizontal: 10),
+                                vertical: 2,
+                                horizontal: 10,
+                              ),
                               child: Text(
                                 loan.loanee.isCurrentUser
                                     ? 'Owner'.tr
@@ -196,9 +253,14 @@ class LoansPage extends StatelessWidget {
                       ],
                     ),
                   ),
+                  const VerticalDivider(width: 10),
                   SizedBox(
                     height: 120,
-                    child: CommonBookCover(loan.book, height: 120),
+                    child: Center(
+                      child: CommonBookCover(
+                        loan.book,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -213,7 +275,11 @@ class LoansPage extends StatelessWidget {
     return Builder(
       builder: (context) {
         return Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10, bottom: 2),
+          padding: const EdgeInsets.only(
+            left: 10,
+            right: 10,
+            bottom: 2,
+          ),
           child: CommonSearchBar(
             searchCallback: controller.onSearchTextChanged,
             filterCallback: () {
@@ -224,54 +290,6 @@ class LoansPage extends StatelessWidget {
               );
             },
             focusNode: FocusNode(),
-          ),
-        );
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GetBuilder(
-      init: LoansController(),
-      builder: (LoansController controller) {
-        return DefaultTabController(
-          length: 3,
-          child: Scaffold(
-            appBar: Responsive.isMobile(context)
-                ? AppBar(title: Text('Loans'.tr))
-                : null,
-            drawer: Responsive.isMobile(context)
-                ? const CommonDrawerWidget()
-                : null,
-            body: CustomScrollView(
-              controller: controller.scrollController,
-              slivers: [
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: Responsive.isMobile(context) ? 0 : 20,
-                  ),
-                ),
-                SliverAppBar(
-                  title: _searchRow(controller),
-                  titleSpacing: 0,
-                  toolbarHeight: 55,
-                  centerTitle: true,
-                  automaticallyImplyLeading: false,
-                  floating: true,
-                ),
-                CommonListView<Loan>(
-                  noItemsText:
-                      'You have not loaned or borrowed any books yet.\n\nYou can get started by joining communities and searching their libraries for books you might enjoy.',
-                  childBuilder: (Loan loan) => CommonKeepaliveWrapper(
-                    child: _loanCard(loan, controller),
-                  ),
-                  controller: controller.listViewController,
-                  scrollController: controller.scrollController,
-                  isSliver: true,
-                ),
-              ],
-            ),
           ),
         );
       },

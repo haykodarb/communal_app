@@ -4,7 +4,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 class CommonLoadingBody extends StatelessWidget {
   const CommonLoadingBody({
     super.key,
-    this.child = const SizedBox(),
+    this.child = const SizedBox.shrink(),
     this.loading = true,
     this.size = 50,
     this.alignment = Alignment.center,
@@ -19,27 +19,16 @@ class CommonLoadingBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Visibility(
-          visible: loading,
-          child: Align(
-            alignment: alignment,
-            child: LoadingAnimationWidget.threeArchedCircle(
-              color: color ?? Theme.of(context).colorScheme.primary,
-              size: size,
-            ),
-          ),
+    if (loading) {
+      return Align(
+        alignment: alignment,
+        child: LoadingAnimationWidget.threeArchedCircle(
+          color: color ?? Theme.of(context).colorScheme.primary,
+          size: size,
         ),
-        Visibility(
-          visible: !loading,
-          maintainState: true,
-          maintainAnimation: true,
-          maintainSize: true,
-          child: child,
-        ),
-      ],
-    );
+      );
+    }
+
+    return child;
   }
 }

@@ -9,7 +9,7 @@ class CommonConfirmationDialog extends StatelessWidget {
     this.confirmCallback,
     this.cancelCallback,
     this.confirmationText = 'Yes',
-    this.cancelText = 'Cancel',
+    this.cancelText = 'No',
   });
 
   final void Function(BuildContext context)? confirmCallback;
@@ -61,9 +61,6 @@ class CommonConfirmationDialog extends StatelessWidget {
                   child: CommonButton(
                     onPressed: confirmCallback ??
                         (BuildContext _) => context.pop(true),
-                    style: FilledButton.styleFrom(
-                      minimumSize: const Size(0, 60),
-                    ),
                     child: Text(
                       confirmationText,
                       style: const TextStyle(
@@ -76,11 +73,9 @@ class CommonConfirmationDialog extends StatelessWidget {
                 Expanded(
                   child: CommonButton(
                     type: CommonButtonType.outlined,
-                    style: OutlinedButton.styleFrom(
-                      minimumSize: const Size(0, 60),
-                    ),
                     onPressed: cancelCallback ??
                         (BuildContext _) => context.pop(false),
+                    expand: true,
                     child: Text(
                       cancelText,
                       style: const TextStyle(

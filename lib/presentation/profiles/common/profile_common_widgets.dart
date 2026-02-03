@@ -1,5 +1,7 @@
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/friendships_backend.dart';
+import 'package:communal/models/backend_response.dart';
+import 'package:communal/models/friendship.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_book_cover.dart';
@@ -16,6 +18,7 @@ class ProfileCommonWidgets {
   static Widget _editProfileButton() {
     return CommonButton(
       type: CommonButtonType.outlined,
+      expand: false,
       style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 12),
       ),
@@ -45,31 +48,57 @@ class ProfileCommonWidgets {
   }
 
   static Widget _removeFriendButton(Profile profile) {
+    final bool isPending = profile.friendship?.isAccepted ?? false;
+
     return CommonButton(
       type: CommonButtonType.outlined,
+      expand: false,
       style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 12),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(
-            Atlas.user_check_bold,
-            size: 16,
-          ),
-          const VerticalDivider(width: 4),
-          Text(
-            'Friends'.tr,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
+      child: Visibility(
+        visible: isPending,
+        replacement: Row(
+          children: [
+            const Icon(
+              Atlas.user_minus_bold,
+              size: 16,
             ),
-          ),
-        ],
+            const VerticalDivider(width: 4),
+            Text(
+              'Pending'.tr,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Atlas.user_check_bold,
+              size: 16,
+            ),
+            const VerticalDivider(width: 4),
+            Text(
+              'Friends'.tr,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
       ),
       onPressed: (BuildContext context) async {
+        final String text = isPending
+            ? 'Remove ${profile.username} as friend?'
+            : 'Withdraw friend request?';
+
         final bool confirm = await CommonConfirmationDialog(
-          title: 'Remove ${profile.username} as friend?',
+          title: text,
         ).open(context);
 
         if (confirm) {
@@ -84,6 +113,7 @@ class ProfileCommonWidgets {
       style: FilledButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 12),
       ),
+      expand: false,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -117,9 +147,10 @@ class ProfileCommonWidgets {
     return AspectRatio(
       aspectRatio: 1,
       child: CommonButton(
-        type: profile.is_friend
+        type: profile.friendship != null
             ? CommonButtonType.filledIcon
             : CommonButtonType.outlinedIcon,
+        expand: false,
         onPressed: (BuildContext context) {
           context.push(
             '${RouteNames.messagesPage}/${profile.id}',
@@ -202,36 +233,25 @@ class ProfileCommonWidgets {
                           ],
                         ),
                       ),
-                      child: Visibility(
-                        visible: !profile.is_friend,
-                        replacement: SizedBox(
-                          height: 35,
-                          child: Row(
-                            children: [
-                              _removeFriendButton(profile),
-                              const VerticalDivider(width: 8),
-                              _messageUserButton(profile),
-                              const Expanded(child: SizedBox()),
-                            ],
-                          ),
-                        ),
-                        child: SizedBox(
-                          height: 35,
-                          child: Row(
-                            children: [
-                              _addFriendButton(profile),
-                              const VerticalDivider(width: 8),
-                              _messageUserButton(profile),
-                              const Expanded(child: SizedBox()),
-                            ],
-                          ),
+                      child: SizedBox(
+                        height: 35,
+                        child: Row(
+                          children: [
+                            Visibility(
+                              visible: profile.friendship == null,
+                              replacement: _removeFriendButton(profile),
+                              child: _addFriendButton(profile),
+                            ),
+                            const VerticalDivider(width: 8),
+                            _messageUserButton(profile),
+                            const Expanded(child: SizedBox()),
+                          ],
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-              // _removeFriendButton(),
             ],
           ),
         );
@@ -240,7 +260,6 @@ class ProfileCommonWidgets {
   }
 
   static Widget bio(Profile profile) {
-    profile.is_friend = true;
     return Builder(
       builder: (context) {
         return Padding(
@@ -397,8 +416,9 @@ class ProfileCommonWidgets {
     return Builder(
       builder: (context) {
         final card = Card(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -453,7 +473,6 @@ class ProfileCommonWidgets {
                       height: 100,
                       child: CommonBookCover(
                         loan.book,
-                        height: onTap != null ? 120 : 960,
                       ),
                     ),
                   ],

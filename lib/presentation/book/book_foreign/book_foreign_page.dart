@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/book/book_foreign/book_foreign_controller.dart';
@@ -24,30 +25,28 @@ class BookForeignPage extends StatelessWidget {
         return Container(
           width: double.maxFinite,
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Column(
-              children: [
-                Text(
-                  book.title,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.center,
+          child: Column(
+            children: [
+              AutoSizeText(
+                book.title,
+                maxLines: 2,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
                 ),
-                Text(
-                  book.author,
-                  style: TextStyle(
-                    fontSize: 20,
-                    color:
-                        Theme.of(context).colorScheme.onSurface.withAlpha(150),
-                    fontWeight: FontWeight.w400,
-                  ),
-                  textAlign: TextAlign.center,
+                textAlign: TextAlign.center,
+              ),
+              AutoSizeText(
+                book.author,
+                maxLines: 2,
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Theme.of(context).colorScheme.onSurface.withAlpha(150),
+                  fontWeight: FontWeight.w400,
                 ),
-              ],
-            ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         );
       },
@@ -291,39 +290,46 @@ class BookForeignPage extends StatelessWidget {
   Widget _buttonRow(BookForeignController controller) {
     return Builder(
       builder: (context) {
-        return Obx(
-          () {
-            if (controller.loading.value) {
-              return const SizedBox(
-                height: 60,
-                child: CommonLoadingBody(),
-              );
-            }
-
-            final Loan? currentLoan = controller.currentLoan.value;
-
-            final Book book = controller.book!;
-
-            bool requestByCurrentUser =
-                currentLoan?.loanee.isCurrentUser ?? false;
-
-            return Stack(
-              children: [
-                Visibility(
-                  visible: book.loaned && requestByCurrentUser,
-                  child: CommonButton(
-                    onPressed: (_) {
-                      if (controller.currentLoan.value != null) {
-                        context.push(
-                            '${RouteNames.loansPage}/${controller.currentLoan.value!.id}');
-                      }
-                    },
-                    child: Text('View loan'.tr),
-                  ),
-                ),
-                Visibility(
-                  visible: !book.loaned && !requestByCurrentUser,
-                  child: CommonButton(
+        return Row(
+          children: [
+            Expanded(
+              child: Obx(
+                () {
+                  if (controller.loading.value) {
+                    return const SizedBox(
+                      height: 60,
+                      child: CommonLoadingBody(),
+                    );
+                  }
+              
+                  final Loan? currentLoan = controller.currentLoan.value;
+              
+                  final Book book = controller.book!;
+              
+                  bool requestByCurrentUser =
+                      currentLoan?.loanee.isCurrentUser ?? false;
+              
+                  if (requestByCurrentUser) {
+                    if (book.loaned) {
+                      return CommonButton(
+                        onPressed: (_) {
+                          if (controller.currentLoan.value != null) {
+                            context.push(
+                                '${RouteNames.loansPage}/${controller.currentLoan.value!.id}');
+                          }
+                        },
+                        child: Text('View loan'.tr),
+                      );
+                    }
+                    return CommonButton(
+                      type: CommonButtonType.outlined,
+                      onPressed: controller.withdrawLoanRequest,
+                      loading: controller.loading,
+                      child: Text('Withdraw request'.tr),
+                    );
+                  }
+              
+                  return CommonButton(
                     onPressed: controller.requestLoan,
                     loading: controller.loading,
                     child: Text(
@@ -332,20 +338,11 @@ class BookForeignPage extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                  ),
-                ),
-                Visibility(
-                  visible: !book.loaned && requestByCurrentUser,
-                  child: CommonButton(
-                    type: CommonButtonType.outlined,
-                    onPressed: controller.withdrawLoanRequest,
-                    loading: controller.loading,
-                    child: Text('Withdraw request'.tr),
-                  ),
-                ),
-              ],
-            );
-          },
+                  );
+                },
+              ),
+            ),
+          ],
         );
       },
     );

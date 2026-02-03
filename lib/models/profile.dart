@@ -1,4 +1,5 @@
 import 'package:communal/backend/users_backend.dart';
+import 'package:communal/models/friendship.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,7 +14,8 @@ class Profile {
   String? avatar_path;
   String? fcm_token;
   bool is_admin = false;
-  bool is_friend = false;
+
+  Friendship? friendship;
 
   final RxBool loading = false.obs;
 

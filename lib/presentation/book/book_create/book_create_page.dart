@@ -50,6 +50,7 @@ class BookCreatePage extends StatelessWidget {
                 key: controller.formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+		  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Container(
                       height: 350,
@@ -250,9 +251,6 @@ class BookCreatePage extends StatelessWidget {
                     CommonButton(
                       onPressed: controller.onSubmitButton,
                       loading: controller.loading,
-                      style: FilledButton.styleFrom(
-                        minimumSize: const Size.fromHeight(60),
-                      ),
                       child: Text('Add'.tr),
                     ),
                   ],

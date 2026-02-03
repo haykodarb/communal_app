@@ -42,9 +42,6 @@ class SearchPageController extends GetxController {
         await bookListController.reloadList();
         break;
       case 1:
-        await communityListController.reloadList();
-        break;
-      case 2:
         await profileListController.reloadList();
         break;
       default:

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/book/book_owned/book_owned_controller.dart';
@@ -26,30 +27,30 @@ class BookOwnedPage extends StatelessWidget {
         return Container(
           width: double.maxFinite,
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Column(
-              children: [
-                Text(
-                  book.title,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.center,
+          child: Column(
+            children: [
+              AutoSizeText(
+                book.title,
+                maxLines: 2,
+                minFontSize: 14,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
                 ),
-                Text(
-                  book.author,
-                  style: TextStyle(
-                    fontSize: 20,
-                    color:
-                        Theme.of(context).colorScheme.onSurface.withAlpha(150),
-                    fontWeight: FontWeight.w400,
-                  ),
-                  textAlign: TextAlign.center,
+                textAlign: TextAlign.center,
+              ),
+              AutoSizeText(
+                book.author,
+                maxLines: 2,
+                minFontSize: 12,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w400,
                 ),
-              ],
-            ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         );
       },
@@ -81,7 +82,8 @@ class BookOwnedPage extends StatelessWidget {
                       controller.book.value.owner.username,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary),
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     ),
                   ],
                 ),
@@ -307,9 +309,6 @@ class BookOwnedPage extends StatelessWidget {
                     child: CommonButton(
                       onPressed: controller.editBook,
                       disabled: controller.deleting,
-                      style: FilledButton.styleFrom(
-                        minimumSize: const Size(0, 60),
-                      ),
                       child: Text('Edit'.tr),
                     ),
                   ),
@@ -317,9 +316,6 @@ class BookOwnedPage extends StatelessWidget {
                   Expanded(
                     child: CommonButton(
                       type: CommonButtonType.tonal,
-                      style: FilledButton.styleFrom(
-                        minimumSize: const Size(0, 60),
-                      ),
                       onPressed: controller.deleteBook,
                       loading: controller.deleting,
                       child: Text('Delete'.tr),
@@ -330,15 +326,21 @@ class BookOwnedPage extends StatelessWidget {
             ),
             Visibility(
               visible: controller.book.value.loaned,
-              child: CommonButton(
-                onPressed: (_) {
-                  if (controller.currentLoan.value != null) {
-                    context.push(
-                      '${RouteNames.loansPage}/${controller.currentLoan.value!.id}',
-                    );
-                  }
-                },
-                child: Text('View loan'.tr),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: CommonButton(
+                      onPressed: (_) {
+                        if (controller.currentLoan.value != null) {
+                          context.push(
+                            '${RouteNames.loansPage}/${controller.currentLoan.value!.id}',
+                          );
+                        }
+                      },
+                      child: Text('View loan'.tr),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -366,7 +368,7 @@ class BookOwnedPage extends StatelessWidget {
                           child: SizedBox(),
                         ),
                         Expanded(
-                          flex: 3,
+                          flex: 4,
                           child: Container(
                             decoration: BoxDecoration(
                               color: Theme.of(context)
@@ -386,7 +388,7 @@ class BookOwnedPage extends StatelessWidget {
                       child: Column(
                         children: [
                           Expanded(
-                            flex: 3,
+                            flex: 4,
                             child: Container(
                               decoration: BoxDecoration(
                                 boxShadow: [
@@ -401,6 +403,7 @@ class BookOwnedPage extends StatelessWidget {
                               ),
                               child: CommonBookCover(
                                 controller.book.value,
+                                expandOnTap: true,
                               ),
                             ),
                           ),

@@ -7,6 +7,7 @@ const ColorScheme _lightScheme = ColorScheme.light(
   primary: Color(0xFFd7827e),
   secondary: Color(0xFF286983),
   tertiary: Color(0xFF907aa9),
+  tertiaryContainer: Color(0xFFCBBDCB),
   shadow: Color(0xFFcecacd),
   onPrimary: Color(0xFFfffaf3),
   onSecondary: Color(0xFFfffaf3),
@@ -16,8 +17,7 @@ const ColorScheme _lightScheme = ColorScheme.light(
   error: Color(0xFFeb6f92),
 );
 
-// final Color _overlayColor = _lightScheme.primary.withValues(alpha: 0.075);
-final Color _overlayColor = Colors.transparent;
+const Color _overlayColor = Colors.transparent;
 
 final BottomNavigationBarThemeData _bottomNavigationBarTheme =
     BottomNavigationBarThemeData(
@@ -83,6 +83,7 @@ final FilledButtonThemeData _filledButtonThemeData = FilledButtonThemeData(
     disabledBackgroundColor: _lightScheme.primary.withValues(alpha: 0.5),
     disabledForegroundColor: _lightScheme.surface,
     overlayColor: Colors.transparent,
+    shadowColor: Colors.transparent,
     textStyle: const TextStyle(
       fontSize: 20,
       fontWeight: FontWeight.w600,
@@ -104,7 +105,7 @@ final OutlinedButtonThemeData _outlinedButtonThemeData =
     foregroundColor: _lightScheme.primary,
     side: BorderSide(
       color: _lightScheme.primary,
-      width: 1.5,
+      width: 2,
     ),
     textStyle: const TextStyle(
       fontSize: 20,
@@ -121,7 +122,10 @@ final OutlinedButtonThemeData _outlinedButtonThemeData =
 final InputDecorationTheme _inputDecorationTheme = InputDecorationTheme(
   fillColor: _lightScheme.surfaceContainer,
   filled: true,
-  labelStyle: TextStyle(color: _lightScheme.onSurfaceVariant, fontSize: 14),
+  labelStyle: TextStyle(
+    color: _lightScheme.onSurfaceVariant,
+    fontSize: 14,
+  ),
   floatingLabelStyle: TextStyle(color: _lightScheme.onSurface),
   focusedBorder: const OutlineInputBorder(borderSide: BorderSide.none),
   border: const OutlineInputBorder(borderSide: BorderSide.none),
@@ -201,6 +205,7 @@ final ThemeData lightTheme = ThemeData(
   splashColor: _overlayColor,
   highlightColor: _overlayColor,
   hoverColor: _overlayColor,
+  visualDensity: VisualDensity.compact,
   iconButtonTheme: _iconButtonThemeData,
   fontFamily: 'Poppins',
   primaryColor: _lightScheme.primary,

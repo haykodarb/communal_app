@@ -9,6 +9,7 @@ import 'package:communal/presentation/common/common_confirmation_dialog.dart';
 import 'package:communal/presentation/community/community_specific/community_books/community_books_controller.dart';
 import 'package:communal/presentation/loans/loans_controller.dart';
 import 'package:communal/presentation/profiles/profile_other/profile_other_controller.dart';
+import 'package:communal/presentation/search/search_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -24,6 +25,7 @@ class BookForeignController extends GetxController {
 
   CommunityBooksController? communityBookController;
   ProfileOtherController? profileOtherController;
+  SearchPageController? searchController;
 
   final Rxn<Loan> currentLoan = Rxn<Loan>();
 
@@ -54,11 +56,21 @@ class BookForeignController extends GetxController {
       profileOtherController = Get.find<ProfileOtherController>(tag: ownerId);
     }
 
-    book = communityBookController?.listViewController.itemList.firstWhereOrNull(
+    if (Get.isRegistered<SearchPageController>()) {
+      searchController = Get.find<SearchPageController>();
+    }
+
+    book =
+        communityBookController?.listViewController.itemList.firstWhereOrNull(
       (element) => element.id == bookId,
     );
 
-    book ??= profileOtherController?.bookListController.itemList.firstWhereOrNull(
+    book ??=
+        profileOtherController?.bookListController.itemList.firstWhereOrNull(
+      (element) => element.id == bookId,
+    );
+
+    book ??= searchController?.bookListController.itemList.firstWhereOrNull(
       (element) => element.id == bookId,
     );
 
@@ -79,7 +91,8 @@ class BookForeignController extends GetxController {
 
     completedLoans.clear();
 
-    final BackendResponse response = await LoansBackend.getCompletedLoansForItem(bookId: bookId);
+    final BackendResponse response =
+        await LoansBackend.getCompletedLoansForItem(bookId: bookId);
 
     if (response.success) {
       completedLoans.addAll(response.payload);
@@ -93,7 +106,8 @@ class BookForeignController extends GetxController {
   Future<void> checkLoanStatus() async {
     loading.value = true;
 
-    final BackendResponse currentLoanResponse = await LoansBackend.getCurrentLoanForBook(bookId);
+    final BackendResponse currentLoanResponse =
+        await LoansBackend.getCurrentLoanForBook(bookId);
 
     if (currentLoanResponse.success) {
       currentLoan.value = currentLoanResponse.payload;
@@ -113,7 +127,8 @@ class BookForeignController extends GetxController {
     if (confirm) {
       loading.value = true;
 
-      final BackendResponse response = await LoansBackend.deleteLoan(currentLoan.value!);
+      final BackendResponse response =
+          await LoansBackend.deleteLoan(currentLoan.value!);
 
       if (response.success) {
         final String loanId = currentLoan.value!.id;

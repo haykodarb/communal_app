@@ -3,6 +3,7 @@ import 'package:communal/backend/login_backend.dart';
 import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
+import 'package:communal/presentation/common/common_loading_image.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -78,10 +79,11 @@ class CommonDrawerWidget extends StatelessWidget {
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       border: Border.all(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                          width: 1.5),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        width: 1.5,
+                                      ),
                                     ),
                                     child: Text(
                                       notifications.value.toString(),
@@ -124,8 +126,10 @@ class CommonDrawerWidget extends StatelessWidget {
               onTap: () =>
                   controller.goToRoute(RouteNames.profileOwnPage, context),
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 30,
+                ),
                 width: double.maxFinite,
                 color: Theme.of(context).colorScheme.surface,
                 child: Row(
@@ -133,7 +137,15 @@ class CommonDrawerWidget extends StatelessWidget {
                   children: [
                     Obx(() {
                       if (controller.currentUserProfile.value.id.isEmpty) {
-                        return const SizedBox();
+                        return Container(
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                          ),
+                          clipBehavior: Clip.hardEdge,
+                          height: 40 * 2,
+                          width: 40 * 2,
+                          child: const CommonLoadingImage(),
+                        );
                       }
 
                       return CommonCircularAvatar(
@@ -152,6 +164,7 @@ class CommonDrawerWidget extends StatelessWidget {
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.onSurface,
                             fontSize: 16,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
@@ -170,236 +183,240 @@ class CommonDrawerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     const double dividerHeight = 7.5;
 
-    return GetBuilder(
-      init: Get.find<CommonDrawerController>(),
-      global: true,
-      builder: (CommonDrawerController controller) {
-        final Color dividerColor = Theme.of(context).colorScheme.surface;
-        return Drawer(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(0),
-          ),
-          elevation: 20,
-          child: Container(
-            color: Theme.of(context).colorScheme.surfaceContainer,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                _drawerHeader(controller),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const Divider(
-                        thickness: 0,
-                        color: Colors.transparent,
-                        height: dividerHeight,
-                      ),
-                      Obx(() {
-                        return _drawerButton(
-                          text: 'Profile'.tr,
-                          icon: Atlas.account,
-                          selected: controller.currentRoute.value ==
-                              RouteNames.profileOwnPage,
-                          callback: () => controller.goToRoute(
-                              RouteNames.profileOwnPage, context),
-                        );
-                      }),
-                      Divider(
-                        thickness: 2,
-                        color: dividerColor,
-                        height: dividerHeight,
-                      ),
-                      Obx(() {
-                        return _drawerButton(
-                          text: 'Notifications'.tr,
-                          icon: Atlas.bell,
-                          selected: controller.currentRoute.value ==
+    return SafeArea(
+      top: false,
+      child: GetBuilder(
+        init: Get.find<CommonDrawerController>(),
+        global: true,
+        builder: (CommonDrawerController controller) {
+          final Color dividerColor = Theme.of(context).colorScheme.surface;
+          return Drawer(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(0),
+            ),
+            elevation: 20,
+            child: Container(
+              color: Theme.of(context).colorScheme.surfaceContainer,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  _drawerHeader(controller),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Divider(
+                          thickness: 0,
+                          color: Colors.transparent,
+                          height: dividerHeight,
+                        ),
+                        Obx(() {
+                          return _drawerButton(
+                            text: 'Profile'.tr,
+                            icon: Atlas.account,
+                            selected: controller.currentRoute.value ==
+                                RouteNames.profileOwnPage,
+                            callback: () => controller.goToRoute(
+                                RouteNames.profileOwnPage, context),
+                          );
+                        }),
+                        Divider(
+                          thickness: 2,
+                          color: dividerColor,
+                          height: dividerHeight,
+                        ),
+                        Obx(() {
+                          return _drawerButton(
+                            text: 'Notifications'.tr,
+                            icon: Atlas.bell,
+                            selected: controller.currentRoute.value ==
+                                RouteNames.notificationsPage,
+                            callback: () => controller.goToRoute(
                               RouteNames.notificationsPage,
-                          callback: () => controller.goToRoute(
-                            RouteNames.notificationsPage,
-                            context,
-                          ),
-                          notifications: controller.globalNotifications,
-                        );
-                      }),
-                      Divider(
-                        thickness: 2,
-                        color: dividerColor,
-                        height: dividerHeight,
-                      ),
-                      Obx(() {
-                        return _drawerButton(
-                          text: 'Search'.tr,
-                          icon: Atlas.magnifying_glass,
-                          selected: controller.currentRoute.value ==
+                              context,
+                            ),
+                            notifications: controller.globalNotifications,
+                          );
+                        }),
+                        Divider(
+                          thickness: 2,
+                          color: dividerColor,
+                          height: dividerHeight,
+                        ),
+                        Obx(() {
+                          return _drawerButton(
+                            text: 'Search'.tr,
+                            icon: Atlas.magnifying_glass,
+                            selected: controller.currentRoute.value ==
+                                RouteNames.searchPage,
+                            callback: () => controller.goToRoute(
                               RouteNames.searchPage,
-                          callback: () => controller.goToRoute(
-                            RouteNames.searchPage,
-                            context,
-                          ),
-                        );
-                      }),
-                      Divider(
-                        thickness: 2,
-                        color: dividerColor,
-                        height: dividerHeight,
-                      ),
-                      Obx(
-                        () {
-                          return _drawerButton(
-                            text: 'Messages'.tr,
-                            icon: Atlas.chats,
-                            selected: controller.currentRoute.value ==
-                                RouteNames.messagesPage,
-                            callback: () => controller.goToRoute(
-                                RouteNames.messagesPage, context),
-                            notifications: controller.messageNotifications,
+                              context,
+                            ),
                           );
-                        },
-                      ),
-                      Divider(
-                        thickness: 2,
-                        color: dividerColor,
-                        height: dividerHeight,
-                      ),
-                      Obx(
-                        () {
-                          return _drawerButton(
-                            text: 'My Books'.tr,
-                            icon: Atlas.library,
-                            selected: controller.currentRoute.value ==
-                                RouteNames.myBooks,
-                            callback: () => controller.goToRoute(
-                                RouteNames.myBooks, context),
-                          );
-                        },
-                      ),
-                      Divider(
-                        thickness: 2,
-                        color: dividerColor,
-                        height: dividerHeight,
-                      ),
-                      Obx(
-                        () {
-                          return _drawerButton(
-                            text: 'Communities'.tr,
-                            selected: controller.currentRoute.value ==
+                        }),
+                        Divider(
+                          thickness: 2,
+                          color: dividerColor,
+                          height: dividerHeight,
+                        ),
+                        Obx(
+                          () {
+                            return _drawerButton(
+                              text: 'Messages'.tr,
+                              icon: Atlas.chats,
+                              selected: controller.currentRoute.value ==
+                                  RouteNames.messagesPage,
+                              callback: () => controller.goToRoute(
+                                  RouteNames.messagesPage, context),
+                              notifications: controller.messageNotifications,
+                            );
+                          },
+                        ),
+                        Divider(
+                          thickness: 2,
+                          color: dividerColor,
+                          height: dividerHeight,
+                        ),
+                        Obx(
+                          () {
+                            return _drawerButton(
+                              text: 'My Books'.tr,
+                              icon: Atlas.library,
+                              selected: controller.currentRoute.value ==
+                                  RouteNames.myBooks,
+                              callback: () => controller.goToRoute(
+                                  RouteNames.myBooks, context),
+                            );
+                          },
+                        ),
+                        Divider(
+                          thickness: 2,
+                          color: dividerColor,
+                          height: dividerHeight,
+                        ),
+                        Obx(
+                          () {
+                            return _drawerButton(
+                              text: 'Communities'.tr,
+                              selected: controller.currentRoute.value ==
+                                  RouteNames.communityListPage,
+                              icon: Atlas.users,
+                              callback: () => controller.goToRoute(
                                 RouteNames.communityListPage,
-                            icon: Atlas.users,
-                            callback: () => controller.goToRoute(
-                              RouteNames.communityListPage,
-                              context,
-                            ),
-                          );
-                        },
-                      ),
-                      Divider(
-                        thickness: 2,
-                        color: dividerColor,
-                        height: dividerHeight,
-                      ),
-                      Obx(
-                        () {
-                          return _drawerButton(
-                            text: 'Loans'.tr,
-                            selected: controller.currentRoute.value ==
+                                context,
+                              ),
+                            );
+                          },
+                        ),
+                        Divider(
+                          thickness: 2,
+                          color: dividerColor,
+                          height: dividerHeight,
+                        ),
+                        Obx(
+                          () {
+                            return _drawerButton(
+                              text: 'Loans'.tr,
+                              selected: controller.currentRoute.value ==
+                                  RouteNames.loansPage,
+                              icon: Atlas.account_arrows,
+                              callback: () => controller.goToRoute(
                                 RouteNames.loansPage,
-                            icon: Atlas.account_arrows,
-                            callback: () => controller.goToRoute(
-                              RouteNames.loansPage,
-                              context,
-                            ),
-                          );
-                        },
-                      ),
-                      Divider(
-                        thickness: 2,
-                        color: dividerColor,
-                        height: dividerHeight,
-                      ),
-                      _drawerButton(
-                        selected: false,
-                        icon: UserPreferences.isDarkMode(context)
-                            ? Atlas.sunny
-                            : Atlas.moon,
-                        text: UserPreferences.isDarkMode(context)
-                            ? 'Light'.tr
-                            : 'Dark'.tr,
-                        callback: () => controller.changeThemeMode(context),
-                      ),
-                      Divider(
-                        thickness: 2,
-                        color: dividerColor,
-                        height: dividerHeight,
-                      ),
-                      _drawerButton(
-                        selected: false,
-                        icon: Atlas.language_translation,
-                        text: Get.locale == const Locale('es', 'ES')
-                            ? 'English'
-                            : 'Español',
-                        callback: () async {
-                          final Locale newLocale =
-                              Get.locale == const Locale('es', 'ES')
-                                  ? const Locale('en', 'US')
-                                  : const Locale('es', 'ES');
+                                context,
+                              ),
+                            );
+                          },
+                        ),
+                        Divider(
+                          thickness: 2,
+                          color: dividerColor,
+                          height: dividerHeight,
+                        ),
+                        _drawerButton(
+                          selected: false,
+                          icon: UserPreferences.isDarkMode(context)
+                              ? Atlas.sunny
+                              : Atlas.moon,
+                          text: UserPreferences.isDarkMode(context)
+                              ? 'Light'.tr
+                              : 'Dark'.tr,
+                          callback: () => controller.changeThemeMode(context),
+                        ),
+                        Divider(
+                          thickness: 2,
+                          color: dividerColor,
+                          height: dividerHeight,
+                        ),
+                        _drawerButton(
+                          selected: false,
+                          icon: Atlas.language_translation,
+                          text: Get.locale == const Locale('es', 'ES')
+                              ? 'English'
+                              : 'Español',
+                          callback: () async {
+                            final Locale newLocale =
+                                Get.locale == const Locale('es', 'ES')
+                                    ? const Locale('en', 'US')
+                                    : const Locale('es', 'ES');
 
-                          await Get.updateLocale(newLocale);
-                          await UserPreferences.setSelectedLocale(newLocale);
-                        },
-                      ),
-                      const Expanded(
-                        flex: 3,
-                        child: SizedBox(),
-                      ),
-                      Divider(
-                        thickness: 2,
-                        color: dividerColor,
-                        height: dividerHeight,
-                      ),
-                      Container(
-                        padding: const EdgeInsets.only(left: 20),
-                        width: double.maxFinite,
-                        child: Obx(
-                          () => Text(
-                            controller.versionNumber.value,
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
+                            await Get.updateLocale(newLocale);
+                            await UserPreferences.setSelectedLocale(newLocale);
+                          },
+                        ),
+                        const Expanded(
+                          flex: 3,
+                          child: SizedBox(),
+                        ),
+                        Divider(
+                          thickness: 2,
+                          color: dividerColor,
+                          height: dividerHeight,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.only(left: 20),
+                          width: double.maxFinite,
+                          child: Obx(
+                            () => Text(
+                              controller.versionNumber.value,
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
+                                fontSize: 14,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Divider(
-                        thickness: 2,
-                        color: dividerColor,
-                        height: dividerHeight,
-                      ),
-                      _drawerButton(
-                        text: 'Logout'.tr,
-                        selected: false,
-                        icon: Atlas.double_arrow_right_circle,
-                        callback: () async {
-                          await LoginBackend.logout();
-                          Get.deleteAll();
-                          if (context.mounted) {
-                            context.go(RouteNames.startPage);
-                          }
-                        },
-                      ),
-                      const Divider(height: 10),
-                    ],
+                        Divider(
+                          thickness: 2,
+                          color: dividerColor,
+                          height: dividerHeight,
+                        ),
+                        _drawerButton(
+                          text: 'Logout'.tr,
+                          selected: false,
+                          icon: Atlas.double_arrow_right_circle,
+                          callback: () async {
+                            await LoginBackend.logout();
+                            Get.deleteAll();
+                            if (context.mounted) {
+                              context.go(RouteNames.startPage);
+                            }
+                          },
+                        ),
+                        const Divider(height: 10),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

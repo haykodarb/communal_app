@@ -24,19 +24,6 @@ class NotificationsPage extends StatelessWidget {
     return iconMap[type.table];
   }
 
-  Widget _actionButton(CustomNotification notification) {
-    switch (notification.type.table) {
-      case 'loans':
-        return const Icon(
-          Icons.arrow_forward_ios_rounded,
-          size: 30,
-          opticalSize: 30,
-        );
-      default:
-        return const SizedBox.shrink();
-    }
-  }
-
   Widget _notificationCard(
     NotificationsController controller,
     CustomNotification notification,
@@ -63,7 +50,7 @@ class NotificationsPage extends StatelessWidget {
               }
             },
             child: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(15),
               child: Obx(
                 () {
                   return CommonLoadingBody(
@@ -73,42 +60,43 @@ class NotificationsPage extends StatelessWidget {
                         Row(
                           children: [
                             Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: notification.seen
-                                    ? Theme.of(context)
-                                        .colorScheme
-                                        .secondary
-                                        .withValues(alpha: 0.25)
-                                    : Theme.of(context)
-                                        .colorScheme
-                                        .surfaceContainer,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                _notificationIcon(notification.type),
-                                color: notification.seen
-                                    ? Theme.of(context).colorScheme.onPrimary
-                                    : Theme.of(context).colorScheme.secondary,
-                                size: 26,
-                              ),
-                            ),
-                            const VerticalDivider(),
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: notification.seen
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .secondary
+                                          .withValues(alpha: 0.25)
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .surfaceContainer,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  _notificationIcon(notification.type),
+                                  color: notification.seen
+                                      ? Theme.of(context).colorScheme.onPrimary
+                                      : Theme.of(context).colorScheme.secondary,
+                                  size: 26,
+                                )),
+                            const VerticalDivider(width: 10),
                             Expanded(
                               child: RichText(
                                 text: TextSpan(
                                   style: TextStyle(
-                                    fontSize: 16,
-                                    height: 1.5,
+                                    fontSize: 14,
                                     color:
                                         Theme.of(context).colorScheme.onSurface,
-                                    fontWeight: notification.seen
-                                        ? FontWeight.w400
-                                        : FontWeight.w500,
+                                    fontWeight: FontWeight.w400,
+                                    height: 1.25,
                                   ),
                                   children: <TextSpan>[
                                     TextSpan(
                                       text: notification.type.notificationStart,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        height: 1.25,
+                                      ),
                                     ),
                                     TextSpan(
                                       text: notification.loan?.book.title ??
@@ -118,7 +106,9 @@ class NotificationsPage extends StatelessWidget {
                                       style: TextStyle(
                                         color: Theme.of(context)
                                             .colorScheme
-                                            .primary,
+                                            .secondary,
+                                        fontWeight: FontWeight.w500,
+                                        height: 1.25,
                                       ),
                                     ),
                                     TextSpan(
@@ -129,8 +119,8 @@ class NotificationsPage extends StatelessWidget {
                                         color: Theme.of(context)
                                             .colorScheme
                                             .onSurface,
-                                        fontSize: 16,
-                                        height: 1.5,
+                                        fontSize: 14,
+                                        height: 1.25,
                                       ),
                                     ),
                                     TextSpan(
@@ -138,15 +128,16 @@ class NotificationsPage extends StatelessWidget {
                                       style: TextStyle(
                                         color: Theme.of(context)
                                             .colorScheme
-                                            .primary,
+                                            .secondary,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14,
+                                        height: 1.25,
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
                             ),
-                            const VerticalDivider(width: 25),
-                            _actionButton(notification),
                           ],
                         ),
                         Visibility(
@@ -204,9 +195,11 @@ class NotificationsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-        init: NotificationsController(),
-        builder: (NotificationsController controller) {
-          return Scaffold(
+      init: NotificationsController(),
+      builder: (NotificationsController controller) {
+        return SafeArea(
+          top: false,
+          child: Scaffold(
             drawer: Responsive.isMobile(context)
                 ? const CommonDrawerWidget()
                 : null,
@@ -220,7 +213,9 @@ class NotificationsPage extends StatelessWidget {
               },
               controller: controller.listViewController,
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 }

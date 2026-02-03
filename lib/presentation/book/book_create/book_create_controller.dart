@@ -58,8 +58,8 @@ class BookCreateController extends GetxController {
       XFile? pickedImage = await imagePicker.pickImage(
         source: source,
         imageQuality: 100,
-        maxHeight: 960,
-        maxWidth: 720,
+        maxHeight: 1440,
+        maxWidth: 1080,
         preferredCameraDevice: CameraDevice.rear,
       );
 
@@ -75,8 +75,6 @@ class BookCreateController extends GetxController {
           aspectRatio: 3 / 4,
         ),
       );
-
-      print('Gets here');
 
       if (croppedBytes == null || croppedBytes.isEmpty) return;
 
@@ -133,7 +131,8 @@ class BookCreateController extends GetxController {
     );
   }
 
-  String? stringValidator({required String? value, required int length, required bool optional}) {
+  String? stringValidator(
+      {required String? value, required int length, required bool optional}) {
     if (optional) {
       if (value == null || value.isEmpty) return null;
     } else {
@@ -171,7 +170,8 @@ class BookCreateController extends GetxController {
       if (!context.mounted) return;
 
       if (response.success) {
-        bookListController.listViewController.itemList.insert(0, response.payload);
+        bookListController.listViewController.itemList
+            .insert(0, response.payload);
         bookListController.listViewController.itemList.refresh();
         bookListController.listViewController.pageKey++;
         context.pop(response.payload);

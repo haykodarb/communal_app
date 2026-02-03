@@ -9,8 +9,6 @@ class FirebaseBackend {
     RemoteMessage message,
     GoRouter router,
   ) async {
-    print(message.toMap());
-
     if (message.data['table'] != null) {
       switch (message.data['table']) {
         case 'messages':

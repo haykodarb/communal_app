@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -37,7 +36,8 @@ class CommonAsyncTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController textController = TextEditingController(text: initialValue);
+    final TextEditingController textController =
+        TextEditingController(text: initialValue);
 
     return GetBuilder<CommonAsyncTextFieldController>(
       init: CommonAsyncTextFieldController(),
@@ -45,7 +45,8 @@ class CommonAsyncTextField extends StatelessWidget {
         return Obx(
           () {
             final bool isValidating = controller.isValidating.value;
-            final String? asyncValidationMessage = controller.asyncValidationMessage.value;
+            final String? asyncValidationMessage =
+                controller.asyncValidationMessage.value;
 
             return TextFormField(
               validator: (String? value) {
@@ -80,7 +81,8 @@ class CommonAsyncTextField extends StatelessWidget {
                   duration,
                   () async {
                     controller.isValidating.value = true;
-                    controller.asyncValidationMessage.value = await asyncValidator(value);
+                    controller.asyncValidationMessage.value =
+                        await asyncValidator(value);
                     controller.isValidating.value = false;
                   },
                 );
@@ -90,6 +92,7 @@ class CommonAsyncTextField extends StatelessWidget {
               maxLines: maxLines,
               maxLength: maxLength,
               onFieldSubmitted: submitCallback,
+              style: const TextStyle(fontSize: 16),
               decoration: InputDecoration(
                 counter: const SizedBox.shrink(),
                 suffixIcon: Visibility(
@@ -109,6 +112,7 @@ class CommonAsyncTextField extends StatelessWidget {
                 ),
                 label: Text(
                   label,
+                  style: const TextStyle(fontSize: 14),
                 ),
                 alignLabelWithHint: true,
               ),

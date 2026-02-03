@@ -52,7 +52,9 @@ class LoansBackend {
 
       if (response == null || response.isEmpty) {
         return BackendResponse(
-            success: false, payload: 'Could not update review.');
+          success: false,
+          payload: 'Could not update review.',
+        );
       }
 
       return BackendResponse(success: true, payload: review);

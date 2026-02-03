@@ -10,7 +10,8 @@ enum CommonButtonType {
   outlined,
   text,
   outlinedIcon,
-  filledIcon
+  filledIcon,
+  tonalIcon,
 }
 
 class CommonButton extends StatelessWidget {
@@ -22,6 +23,7 @@ class CommonButton extends StatelessWidget {
     this.disabled,
     this.type = CommonButtonType.filled,
     this.style,
+    this.expand = true,
   });
 
   final RxBool? loading;
@@ -30,17 +32,32 @@ class CommonButton extends StatelessWidget {
   final Widget child;
   final ButtonStyle? style;
   final CommonButtonType type;
+  final bool expand;
 
   Widget _buildButton(
     void Function()? callback,
     CommonButtonType type,
     BuildContext context,
   ) {
+    ButtonStyle? finalStyle = style;
+    if (expand) {
+      finalStyle = style?.copyWith(
+            fixedSize: const WidgetStatePropertyAll(
+              Size.fromHeight(60),
+            ),
+          ) ??
+          FilledButton.styleFrom(
+            fixedSize: const Size.fromHeight(60),
+          );
+    }
+
+    const double loaderSize = 30;
+
     switch (type) {
       case CommonButtonType.filled:
         return FilledButton(
           onPressed: callback,
-          style: style,
+          style: finalStyle,
           child: CommonLoadingBody(
             loading: loading?.value ?? false,
             color: Theme.of(context).colorScheme.onPrimary,
@@ -51,9 +68,9 @@ class CommonButton extends StatelessWidget {
       case CommonButtonType.tonal:
         return FilledButton.tonal(
           onPressed: callback,
-          style: style?.copyWith(
+          style: finalStyle?.copyWith(
                 backgroundColor: WidgetStatePropertyAll(
-                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.25),
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
                 ),
                 foregroundColor: WidgetStatePropertyAll(
                   Theme.of(context).colorScheme.primary,
@@ -64,23 +81,23 @@ class CommonButton extends StatelessWidget {
                 backgroundColor: Theme.of(context)
                     .colorScheme
                     .primary
-                    .withValues(alpha: 0.25),
+                    .withValues(alpha: 0.15),
               ),
           child: CommonLoadingBody(
             loading: loading?.value ?? false,
             color: Theme.of(context).colorScheme.primary,
-            size: 30,
+            size: loaderSize,
             child: child,
           ),
         );
       case CommonButtonType.elevated:
         return ElevatedButton(
           onPressed: callback,
-          style: style,
+          style: finalStyle,
           child: CommonLoadingBody(
             loading: loading?.value ?? false,
             color: Theme.of(context).colorScheme.onPrimary,
-            size: 30,
+            size: loaderSize,
             child: child,
           ),
         );
@@ -88,17 +105,17 @@ class CommonButton extends StatelessWidget {
       case CommonButtonType.outlined:
         return OutlinedButton(
           onPressed: callback,
-          style: style,
+          style: finalStyle,
           child: CommonLoadingBody(
             loading: loading?.value ?? false,
-            size: 30,
+            size: loaderSize,
             child: child,
           ),
         );
       case CommonButtonType.outlinedIcon:
         return CommonLoadingBody(
           loading: loading?.value ?? false,
-          size: 30,
+          size: loaderSize,
           child: Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
@@ -118,7 +135,7 @@ class CommonButton extends StatelessWidget {
       case CommonButtonType.filledIcon:
         return CommonLoadingBody(
           loading: loading?.value ?? false,
-          size: 30,
+          size: loaderSize,
           child: Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
@@ -132,13 +149,31 @@ class CommonButton extends StatelessWidget {
             ),
           ),
         );
+      case CommonButtonType.tonalIcon:
+        return CommonLoadingBody(
+          loading: loading?.value ?? false,
+          size: loaderSize,
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color:
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
+            ),
+            child: IconButton(
+              onPressed: callback,
+              color: Theme.of(context).colorScheme.primary,
+              padding: EdgeInsets.zero,
+              icon: child,
+            ),
+          ),
+        );
       case CommonButtonType.text:
         return TextButton(
           onPressed: callback,
-          style: style,
+          style: finalStyle,
           child: CommonLoadingBody(
             loading: loading?.value ?? false,
-            size: 30,
+            size: loaderSize,
             child: child,
           ),
         );

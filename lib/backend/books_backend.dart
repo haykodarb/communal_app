@@ -22,28 +22,27 @@ class BooksBackend {
   static Future<Uint8List> getBookCover(Book book, {int height = 960}) async {
     try {
       // FileInfo? file = await DefaultCacheManager().getFileFromCache('${book.image_path}-$height');
-      FileInfo? file = await DefaultCacheManager().getFileFromCache(book.image_path);
+      FileInfo? file = await DefaultCacheManager().getFileFromCache(
+        book.image_path,
+      );
 
       Uint8List bytes;
 
       if (file != null) {
         bytes = await file.file.openRead().toBytes();
       } else {
-        bytes = await _client.storage.from('book_covers').download(
-              book.image_path,
-              /*
-		transform: TransformOptions(
-		height: height,
-		quality: 100,
-		),
-	    */
-            );
+        bytes =
+            await _client.storage.from('book_covers').download(book.image_path);
 
         // await DefaultCacheManager().putFile('${book.image_path}-$height', bytes, key: '${book.image_path}-$height');
-        await DefaultCacheManager().putFile('${book.image_path}-$height', bytes, key: book.image_path);
+        await DefaultCacheManager()
+            .putFile('${book.image_path}-$height', bytes, key: book.image_path);
       }
 
       return bytes;
+    } on StorageException catch (e) {
+      print(e);
+      return Uint8List(0);
     } catch (e) {
       print(e);
       return Uint8List(0);
@@ -53,13 +52,15 @@ class BooksBackend {
   static Future<BackendResponse> updateBook(Book book, Uint8List? image) async {
     try {
       final String userId = _client.auth.currentUser!.id;
-      final String currentTime = DateTime.now().millisecondsSinceEpoch.toString();
+      final String currentTime =
+          DateTime.now().millisecondsSinceEpoch.toString();
 
       String fileName;
 
       if (image != null) {
         const String imageExtension = 'jpeg';
-        final Uint8List bytesToUpload = await FlutterImageCompress.compressWithList(
+        final Uint8List bytesToUpload =
+            await FlutterImageCompress.compressWithList(
           image,
           quality: 50,
           minHeight: 720,
@@ -95,7 +96,9 @@ class BooksBackend {
 
       return BackendResponse(
         success: response.isNotEmpty,
-        payload: response.isNotEmpty ? Book.fromMap(response) : 'Could not update book. Please try again.',
+        payload: response.isNotEmpty
+            ? Book.fromMap(response)
+            : 'Could not update book. Please try again.',
       );
     } on StorageException catch (error) {
       return BackendResponse(success: false, payload: error.message);
@@ -112,12 +115,14 @@ class BooksBackend {
   ) async {
     try {
       final String userId = _client.auth.currentUser!.id;
-      final String currentTime = DateTime.now().millisecondsSinceEpoch.toString();
+      final String currentTime =
+          DateTime.now().millisecondsSinceEpoch.toString();
       const String imageExtension = 'jpeg';
 
       final String pathToUpload = '/$userId/$currentTime.$imageExtension';
 
-      final Uint8List bytesToUpload = await FlutterImageCompress.compressWithList(
+      final Uint8List bytesToUpload =
+          await FlutterImageCompress.compressWithList(
         imageBytes,
         quality: 50,
         minHeight: 720,
@@ -148,7 +153,9 @@ class BooksBackend {
 
       return BackendResponse(
         success: response.isNotEmpty,
-        payload: response.isNotEmpty ? Book.fromMap(response) : 'Could not create book. Please try again.',
+        payload: response.isNotEmpty
+            ? Book.fromMap(response)
+            : 'Could not create book. Please try again.',
       );
     } on StorageException catch (error) {
       return BackendResponse(success: false, payload: error.message);
@@ -159,7 +166,8 @@ class BooksBackend {
 
   static Future<BackendResponse> deleteBook(Book book) async {
     try {
-      final List<dynamic> response = await _client.from('books').delete().eq('id', book.id).select();
+      final List<dynamic> response =
+          await _client.from('books').delete().eq('id', book.id).select();
 
       if (response.isNotEmpty) {
         _client.storage.from('book_covers').remove(
@@ -209,25 +217,29 @@ class BooksBackend {
     try {
       String userId = userToQuery ?? UsersBackend.currentUserId;
 
-      PostgrestFilterBuilder filter = _client.from('books').select('*, profiles(*)').eq('owner', userId);
+      PostgrestFilterBuilder filter =
+          _client.from('books').select('*, profiles(*)').eq('owner', userId);
 
       PostgrestTransformBuilder transform;
 
       if (query != null) {
         if (query.search_query != null) {
-          filter = filter.or('title.ilike.%${query.search_query}%, author.ilike.%${query.search_query}%');
+          filter = filter.or(
+              'title.ilike.%${query.search_query}%, author.ilike.%${query.search_query}%');
         }
 
         if (query.loaned != null) {
           filter = filter.eq('loaned', query.loaned!);
         }
 
-        transform = filter.order(query.order_by, ascending: query.order_by == 'created_at' ? false : true);
+        transform = filter.order(query.order_by,
+            ascending: query.order_by == 'created_at' ? false : true);
       } else {
         transform = filter.order('created_at');
       }
 
-      final List<Map<String, dynamic>> response = await transform.range(pageKey, pageKey + pageSize - 1);
+      final List<Map<String, dynamic>> response =
+          await transform.range(pageKey, pageKey + pageSize - 1);
 
       final List<Book> bookList = response
           .map(
@@ -246,8 +258,11 @@ class BooksBackend {
 
   static Future<BackendResponse> getBookById(String id) async {
     try {
-      final Map<String, dynamic>? response =
-          await _client.from('books').select('*, profiles(*)').eq('id', id).maybeSingle();
+      final Map<String, dynamic>? response = await _client
+          .from('books')
+          .select('*, profiles(*)')
+          .eq('id', id)
+          .maybeSingle();
 
       return BackendResponse(
         success: response != null,

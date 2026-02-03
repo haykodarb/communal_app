@@ -16,11 +16,12 @@ class CommonSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: SizedBox(
-            height: 50,
+    return SizedBox(
+      height: 50,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
             child: TextField(
               expands: true,
               onChanged: searchCallback,
@@ -73,33 +74,39 @@ class CommonSearchBar extends StatelessWidget {
               ),
             ),
           ),
-        ),
-        Visibility(
-          visible: filterCallback != null,
-          child: Row(
-            children: [
-              const VerticalDivider(width: 5),
-              IconButton(
-                onPressed: filterCallback ?? () {},
-                iconSize: 20,
-                style: IconButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
-                  focusColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  fixedSize: const Size(50, 50),
+          Visibility(
+            visible: filterCallback != null,
+            child: Row(
+              children: [
+                const VerticalDivider(width: 5),
+                SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: IconButton(
+                    onPressed: filterCallback ?? () {},
+                    iconSize: 20,
+                    style: IconButton.styleFrom(
+                      backgroundColor:
+                          Theme.of(context).colorScheme.surfaceContainer,
+                      focusColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    icon: Icon(
+                      Atlas.horizontal_sliders_dots,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
-                icon: Icon(
-                  Atlas.horizontal_sliders_dots,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
