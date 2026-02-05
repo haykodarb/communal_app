@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:communal/backend/friendships_backend.dart';
 import 'package:communal/backend/notifications_backend.dart';
 import 'package:communal/backend/realtime_backend.dart';
 import 'package:communal/backend/users_backend.dart';
@@ -99,22 +100,23 @@ class NotificationsController extends GetxController {
     return [];
   }
 
-  Future<void> respondToInvitation(
-    String membershipId,
+  Future<void> respondToFriendshipRequest(
+    int friendshipId,
     CustomNotification notification,
     bool value,
     BuildContext context,
   ) async {
     final bool accept = await CommonConfirmationDialog(
-      title: '${value ? 'Accept' : 'Reject'} this invitation?',
+      title: '${value ? 'Accept' : 'Reject'} this request?',
     ).open(context);
 
     if (!accept) return;
     notification.loading.value = true;
 
-    final BackendResponse response = await UsersBackend.respondToInvitation(
-      membershipId,
-      value,
+    final BackendResponse response =
+        await FriendshipsBackend.respondToFriendRequest(
+      friendshipId: friendshipId,
+      accept: value,
     );
 
     if (response.success) {

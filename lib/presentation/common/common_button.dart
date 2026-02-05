@@ -24,6 +24,7 @@ class CommonButton extends StatelessWidget {
     this.type = CommonButtonType.filled,
     this.style,
     this.expand = true,
+    this.loaderSize = 30,
   });
 
   final RxBool? loading;
@@ -33,6 +34,7 @@ class CommonButton extends StatelessWidget {
   final ButtonStyle? style;
   final CommonButtonType type;
   final bool expand;
+  final double loaderSize;
 
   Widget _buildButton(
     void Function()? callback,
@@ -51,8 +53,6 @@ class CommonButton extends StatelessWidget {
           );
     }
 
-    const double loaderSize = 30;
-
     switch (type) {
       case CommonButtonType.filled:
         return FilledButton(
@@ -61,7 +61,7 @@ class CommonButton extends StatelessWidget {
           child: CommonLoadingBody(
             loading: loading?.value ?? false,
             color: Theme.of(context).colorScheme.onPrimary,
-            size: 30,
+            size: loaderSize,
             child: child,
           ),
         );

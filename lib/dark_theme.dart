@@ -62,6 +62,7 @@ final ElevatedButtonThemeData _elevatedButtonThemeData =
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(50),
     ),
+    minimumSize: const Size(30, 20),
     maximumSize: const Size.fromHeight(60),
   ),
 );
@@ -82,6 +83,7 @@ final FilledButtonThemeData _filledButtonThemeData = FilledButtonThemeData(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(50),
     ),
+    minimumSize: const Size(30, 20),
     maximumSize: const Size.fromHeight(60),
   ),
 );
@@ -106,6 +108,7 @@ final OutlinedButtonThemeData _outlinedButtonThemeData =
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(50),
     ),
+    minimumSize: const Size(30, 20),
     maximumSize: const Size.fromHeight(60),
   ),
 );

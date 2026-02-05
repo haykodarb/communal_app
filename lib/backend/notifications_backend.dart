@@ -74,7 +74,7 @@ class NotificationsBackend {
       final List<Map<String, dynamic>> result = await client
           .from('notifications')
           .select(
-            '*, type(*), receiver:profiles!receiver(*), sender:profiles!sender(*), loans!left(*, books!left(*, profiles(*)),  loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)), memberships!left(*, communities(*, profiles(*)), profiles(*))',
+            '*, type(*), receiver:profiles!receiver(*), sender:profiles!sender(*), loans!left(*, books!left(*, profiles(*)),  loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)), friendships!left(*,requester_profile:profiles!requester(*), responder_profile:profiles!responder(*))',
           )
           .eq('receiver', userId)
           .order('created_at', ascending: false)

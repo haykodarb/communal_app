@@ -31,9 +31,6 @@ class FriendshipsBackend {
     } on PostgrestException catch (error) {
       print(error);
       return BackendResponse(success: false, error: error.message);
-    } catch (error) {
-      print(error);
-      return BackendResponse(success: false, error: error.toString());
     }
   }
 
@@ -81,8 +78,6 @@ class FriendshipsBackend {
       );
     } on PostgrestException catch (error) {
       return BackendResponse(success: false, error: error.message);
-    } catch (error) {
-      return BackendResponse(success: false, error: error.toString());
     }
   }
 
@@ -137,7 +132,7 @@ class FriendshipsBackend {
   }
 
   static Future<BackendResponse<Friendship>> respondToFriendRequest({
-    required String friendshipId,
+    required int friendshipId,
     required bool accept,
   }) async {
     try {
@@ -189,15 +184,13 @@ class FriendshipsBackend {
     }
   }
 
-  static Future<BackendResponse> deleteFriendship(String friendshipId) async {
+  static Future<BackendResponse> deleteFriendship(int friendshipId) async {
     try {
       await _client.from('friendships').delete().eq('id', friendshipId);
 
       return BackendResponse(success: true);
     } on PostgrestException catch (error) {
       return BackendResponse(success: false, error: error.message);
-    } catch (error) {
-      return BackendResponse(success: false, error: error.toString());
     }
   }
 

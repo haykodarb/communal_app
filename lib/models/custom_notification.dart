@@ -1,9 +1,10 @@
+import 'package:communal/models/friendship.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/models/membership.dart';
 import 'package:communal/models/profile.dart';
 import 'package:get/get.dart';
 
- class NotificationType {
+class NotificationType {
   int id;
   String table;
   String event;
@@ -31,9 +32,9 @@ import 'package:get/get.dart';
       'created': 'A request has been submitted for ',
       'returned': 'Your loan for ',
     },
-    'memberships': {
-      'created': 'You have been invited to join the community ',
-      'accepted': 'You have joined the community ',
+    'friendships': {
+      'created': null,
+      'accepted': 'You became friends with ',
     },
   };
 
@@ -44,8 +45,8 @@ import 'package:get/get.dart';
       'created': ' by ',
       'returned': ' has been marked as returned by ',
     },
-    'memberships': {
-      'created': null,
+    'friendships': {
+      'created': '\nsent you a friend request.',
       'accepted': null,
     },
   };
@@ -53,11 +54,13 @@ import 'package:get/get.dart';
   String get notificationStart => (_notificationStarts[table]?[event] ?? '').tr;
   String? get notificationEnd => _notificationEnds[table]?[event]?.tr;
 }
+
 class CustomNotification {
   int id;
   NotificationType type;
   Loan? loan;
   Membership? membership;
+  Friendship? friendship;
   Profile? sender;
   Profile receiver;
   bool seen;
@@ -84,7 +87,7 @@ class CustomNotification {
         seen = map['seen'],
         type = NotificationType.fromMap(map['type']),
         loan = map['loans'] != null ? Loan.fromMap(map['loans']) : null,
-        membership = map['memberships'] != null
-            ? Membership.fromMap(map['memberships'])
+        friendship = map['friendships'] != null
+            ? Friendship.fromMap(map['friendships'])
             : null;
 }
