@@ -286,7 +286,6 @@ class UsersBackend {
 
       return BackendResponse(success: false);
     } catch (e) {
-      print(e);
       return BackendResponse(success: false);
     }
   }

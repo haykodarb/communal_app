@@ -1,6 +1,9 @@
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/profile.dart';
+import 'package:communal/routes.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class Community {
   String id;
@@ -24,6 +27,10 @@ class Community {
 
   bool get isCurrentUserOwner {
     return UsersBackend.currentUserId == owner.id;
+  }
+
+  void goToCommunityPage(BuildContext context) {
+    context.push('${RouteNames.communityListPage}/$id');
   }
 
   Community.fromMembershipMap(Map<String, dynamic> map)

@@ -70,8 +70,6 @@ class MessagesSpecificController extends GetxController {
     }
 
     if (userProfile.value == null) {
-      print(userId);
-
       final BackendResponse profileResponse =
           await UsersBackend.getUserProfile(userId);
 

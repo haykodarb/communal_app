@@ -72,7 +72,7 @@ class CommonConfirmationDialog extends StatelessWidget {
                 const VerticalDivider(width: 20),
                 Expanded(
                   child: CommonButton(
-                    type: CommonButtonType.outlined,
+                    type: CommonButtonType.tonal,
                     onPressed: cancelCallback ??
                         (BuildContext _) => context.pop(false),
                     expand: true,

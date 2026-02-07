@@ -80,8 +80,10 @@ class SearchPage extends StatelessWidget {
             child: CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(
-                    child:
-                        SizedBox(height: Responsive.isMobile(context) ? 0 : 20)),
+                  child: SizedBox(
+                    height: Responsive.isMobile(context) ? 0 : 20,
+                  ),
+                ),
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -138,7 +140,8 @@ class SearchPage extends StatelessWidget {
                           isSliver: true,
                           childBuilder: (Profile profile) => _userCard(profile),
                           controller: controller.profileListController,
-                          noItemsText: 'No users found, likely a network issue.',
+                          noItemsText:
+                              'No users found, likely a network issue.',
                         );
                       default:
                         return const SizedBox.shrink();

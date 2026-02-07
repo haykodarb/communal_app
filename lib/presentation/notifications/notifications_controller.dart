@@ -100,6 +100,46 @@ class NotificationsController extends GetxController {
     return [];
   }
 
+  Future<void> respondToCommunityInvitation(
+    String membershipId,
+    CustomNotification notification,
+    bool value,
+    BuildContext context,
+  ) async {
+    final bool accept = await CommonConfirmationDialog(
+      title: '${value ? 'Accept' : 'Reject'} this request?',
+    ).open(context);
+
+    if (!accept) return;
+    notification.loading.value = true;
+
+    final BackendResponse response = await UsersBackend.respondToInvitation(
+      membershipId,
+      value,
+    );
+
+    if (response.success) {
+      if (value) {
+        notification.type.event = 'accepted';
+      } else {
+        listViewController.itemList.removeWhere(
+          (element) => element.id == notification.id,
+        );
+      }
+
+      listViewController.itemList.refresh();
+
+      notification.loading.value = false;
+    } else {
+      notification.loading.value = false;
+      if (!context.mounted) return;
+
+      const CommonAlertDialog(
+        title: 'Could not accept invitation, server error.',
+      ).open(context);
+    }
+  }
+
   Future<void> respondToFriendshipRequest(
     int friendshipId,
     CustomNotification notification,
@@ -136,7 +176,7 @@ class NotificationsController extends GetxController {
       if (!context.mounted) return;
 
       const CommonAlertDialog(
-        title: 'Could not accept invitation, server error.',
+        title: 'Could not accept friendship request, server error.',
       ).open(context);
     }
   }

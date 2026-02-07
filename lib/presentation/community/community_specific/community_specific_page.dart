@@ -31,47 +31,33 @@ class CommunitySpecificPage extends StatelessWidget {
           () {
             final bool isSelected = controller.selectedIndex.value == index;
 
-            if (!isSelected) {
-              return Expanded(
-                flex: 2,
-                child: InkWell(
-                  enableFeedback: true,
-                  onTap: () {
-                    controller.selectedIndex.value = index;
-                  },
-                  child: SizedBox(
-                    width: 40,
-                    child: Icon(
-                      _icons[index],
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                ),
-              );
-            }
-
             return Expanded(
-              flex: 3,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  borderRadius: BorderRadius.circular(40),
-                ),
+              flex: isSelected ? 3 : 2,
+              child: InkWell(
+                enableFeedback: true,
+                onTap: () {
+                  if (isSelected) return;
+                  controller.selectedIndex.value = index;
+                },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
                       _icons[index],
-                      color: Theme.of(context).colorScheme.surfaceContainer,
+                      color: Theme.of(context).colorScheme.primary,
                       size: 24,
                     ),
                     const VerticalDivider(width: 10),
-                    Text(
-                      labels[index],
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.surfaceContainer,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                    AnimatedOpacity(
+                      opacity: isSelected ? 1 : 0,
+                      duration: const Duration(milliseconds: 300),
+                      child: Text(
+                        labels[index],
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontSize: isSelected ? 16 : 0,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ],
@@ -164,7 +150,10 @@ class CommunitySpecificPage extends StatelessWidget {
                       child: Container(
                         color: Colors.transparent,
                         margin: const EdgeInsets.only(
-                            bottom: 10, right: 10, left: 10),
+                          bottom: 10,
+                          right: 10,
+                          left: 10,
+                        ),
                         height: 70,
                         constraints: const BoxConstraints.tightFor(width: 200),
                         child: Container(
@@ -182,14 +171,42 @@ class CommunitySpecificPage extends StatelessWidget {
                               ),
                             ],
                           ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: List.generate(
-                              _icons.length,
-                              (index) {
-                                return _tabBarItem(controller, index);
-                              },
-                            ),
+                          child: Stack(
+                            children: [
+                              Obx(() {
+                                return AnimatedSlide(
+                                  offset: Offset(
+                                    controller.selectedIndex.value * 0.66666667,
+                                    0,
+                                  ),
+                                  duration: const Duration(milliseconds: 300),
+                                  child: LayoutBuilder(
+                                    builder: (context, constraints) {
+                                      return Container(
+                                        width: constraints.maxWidth * (3 / 7),
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary
+                                              .withValues(alpha: 0.15),
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
+                              }),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: List.generate(
+                                  _icons.length,
+                                  (index) {
+                                    return _tabBarItem(controller, index);
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),

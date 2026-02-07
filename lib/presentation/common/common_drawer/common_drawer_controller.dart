@@ -60,7 +60,6 @@ class CommonDrawerController extends GetxController {
       UsersBackend.currentUserId,
     );
 
-    print(userResponse.success);
     if (userResponse.success) {
       currentUserProfile.value = userResponse.payload;
       currentUserProfile.refresh();
@@ -108,8 +107,9 @@ class CommonDrawerController extends GetxController {
 
       case 'notifications':
         if (realtime.eventType != PostgresChangeEvent.delete) {
-          if (realtime.new_row['receiver'] != UsersBackend.currentUserId)
+          if (realtime.new_row['receiver'] != UsersBackend.currentUserId) {
             return;
+          }
         }
 
         final BackendResponse notificationResponse =

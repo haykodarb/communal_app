@@ -1,7 +1,10 @@
 import 'package:communal/models/book.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/models/profile.dart';
+import 'package:communal/routes.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class Loan {
   String id;
@@ -74,4 +77,10 @@ class Loan {
         accepted = false,
         rejected = false,
         returned = false;
+
+  void goToLoanInfoPage(BuildContext context) {
+    context.push(
+      '${RouteNames.loansPage}/$id',
+    );
+  }
 }

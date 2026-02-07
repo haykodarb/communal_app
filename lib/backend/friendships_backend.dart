@@ -23,13 +23,11 @@ class FriendshipsBackend {
         return BackendResponse(success: true, payload: null);
       }
 
-      print(friendship);
       return BackendResponse(
         success: true,
         payload: Friendship.fromMap(friendship),
       );
     } on PostgrestException catch (error) {
-      print(error);
       return BackendResponse(success: false, error: error.message);
     }
   }
