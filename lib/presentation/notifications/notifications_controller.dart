@@ -153,11 +153,14 @@ class NotificationsController extends GetxController {
     if (!accept) return;
     notification.loading.value = true;
 
-    final BackendResponse response =
-        await FriendshipsBackend.respondToFriendRequest(
-      friendshipId: friendshipId,
-      accept: value,
-    );
+    // Rejecting deletes the request (its notification cascades) so the sender
+    // can ask again; a rejected row would block new requests for the pair.
+    final BackendResponse response = value
+        ? await FriendshipsBackend.respondToFriendRequest(
+            friendshipId: friendshipId,
+            accept: true,
+          )
+        : await FriendshipsBackend.deleteFriendship(friendshipId);
 
     if (response.success) {
       if (value) {
@@ -175,8 +178,9 @@ class NotificationsController extends GetxController {
       notification.loading.value = false;
       if (!context.mounted) return;
 
-      const CommonAlertDialog(
-        title: 'Could not accept friendship request, server error.',
+      CommonAlertDialog(
+        title:
+            'Could not ${value ? 'accept' : 'reject'} friendship request, server error.',
       ).open(context);
     }
   }
