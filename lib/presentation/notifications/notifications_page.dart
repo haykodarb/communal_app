@@ -25,10 +25,11 @@ class NotificationsPage extends StatelessWidget {
                 : null,
             body: CommonListView<CustomNotification>(
               noItemsText: 'No notifications.',
-              childBuilder: (notification) {
+              childBuilder: (notification, index) {
                 return NotificationWidgetFactory.create(
                   notification: notification,
                   controller: controller,
+                  index: index,
                 );
               },
               controller: controller.listViewController,

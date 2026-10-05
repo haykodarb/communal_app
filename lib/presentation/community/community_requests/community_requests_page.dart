@@ -140,7 +140,7 @@ class CommunityRequestsPage extends StatelessWidget {
           body: CommonListView<Membership>(
             controller: controller.listViewController,
             noItemsText: 'No pending requests.',
-            childBuilder: (Membership membership) {
+            childBuilder: (Membership membership, _) {
               return Obx(
                 () => CommonLoadingBody(
                   loading: membership.loading.value,

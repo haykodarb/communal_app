@@ -9,7 +9,8 @@ class LocalizationText extends Translations {
           'community-books-no-items': 'No books found in this community.',
           'community-members-no-items':
               'No members found in this community.\n\nThis is likely an internet error or a bug with the app.',
-          'community-topics-no-items': 'No topics have been created in this community.',
+          'community-topics-no-items':
+              'No topics have been created in this community.',
           'landing-upload-books':
               'Snap photos of your physical books to add them to the app. Share your collection and let others discover what you love to read.',
           'landing-join-communities':
@@ -19,6 +20,8 @@ class LocalizationText extends Translations {
         },
         'es_ES': {
           'Login': 'Ingresar',
+          'Language': 'Idioma',
+          'Theme': 'Tema',
           'Register': 'Registrarse',
           'Sign in': 'Iniciar sesión',
           'Create account': 'Crear cuenta',
@@ -71,7 +74,7 @@ class LocalizationText extends Translations {
           'Light': 'Claro',
           'Save': 'Guardar',
           'About me': 'Sobre mí',
-          'Make email public?': '¿Hacer email público?',
+          'Show email?': '¿Mostrar email?',
           'Publicly visible?': '¿Públicamente visible?',
           'Logout': 'Salir',
           'Please enter something': 'Por favor ingresar algo',
@@ -128,7 +131,8 @@ class LocalizationText extends Translations {
           'Your request for ': 'Tu solicitud por ',
           'A request has been submitted for ': 'Ingresó una solicitud por ',
           'Your loan for ': 'Tu préstamo de ',
-          'You have been invited to join the community ': 'Fuiste invitado a unirte a la comunidad ',
+          'You have been invited to join the community ':
+              'Fuiste invitado a unirte a la comunidad ',
           'You have joined the community ': 'Te uniste a la comunidad ',
           ' has been accepted by ': ' fue aceptada por ',
           ' has been rejected by ': ' fue rechazada por ',
@@ -145,10 +149,12 @@ class LocalizationText extends Translations {
               'No tienes libros en tu biblioteca.\n\nPuedes subir algunos usando el botón flotante abajo a la derecha.',
           'community-list-no-items':
               'Aún no te uniste a ninguna comunidad.\n\nPodes crear una propia o solicitar una invitación a comunidades existentes.',
-          'community-books-no-items': 'No se encontraron libros en esta comunidad.',
+          'community-books-no-items':
+              'No se encontraron libros en esta comunidad.',
           'community-members-no-items':
               'No se encontraron usuarios en esta comunidad.\nEsto es probablemente un error de conexión o un bug.',
-          'community-topics-no-items': 'No se crearon conversaciones en esta comunidad.',
+          'community-topics-no-items':
+              'No se crearon conversaciones en esta comunidad.',
           'landing-upload-books':
               'Sacá fotos a tus libros físicos para subirlos a la app. Compartí tu colección y permití que otros descubran lo que te gusta leer.',
           'landing-join-communities':

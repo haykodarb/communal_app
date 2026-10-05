@@ -191,7 +191,7 @@ class ProfileOwnPage extends StatelessWidget {
                       book: book,
                     ),
                   ),
-                  reviewCardBuilder: (Loan loan) =>
+                  reviewCardBuilder: (Loan loan, _) =>
                       ProfileCommonWidgets.reviewCard(
                     loan: loan,
                     onTap: () {

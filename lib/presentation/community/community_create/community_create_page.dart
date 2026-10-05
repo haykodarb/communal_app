@@ -29,6 +29,7 @@ class CommunityCreatePage extends StatelessWidget {
               child: Form(
                 key: controller.formKey,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Container(
                       width: 300,
@@ -199,14 +200,11 @@ class CommunityCreatePage extends StatelessWidget {
                       ),
                     ),
                     const Divider(height: 20),
-                    SizedBox(
-                      height: 70,
-                      child: CommonButton(
-                        loading: controller.loading,
-                        onPressed: controller.onSubmit,
-                        child: Text(
-                          'Create'.tr,
-                        ),
+                    CommonButton(
+                      loading: controller.loading,
+                      onPressed: controller.onSubmit,
+                      child: Text(
+                        'Create'.tr,
                       ),
                     ),
                   ],

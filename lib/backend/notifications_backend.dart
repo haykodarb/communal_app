@@ -77,7 +77,7 @@ class NotificationsBackend {
             '*, type(*), receiver:profiles!receiver(*), sender:profiles!sender(*), loans!left(*, books!left(*, profiles(*)),  loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)), friendships!left(*,requester_profile:profiles!requester(*), responder_profile:profiles!responder(*))',
           )
           .eq('receiver', userId)
-          .order('created_at', ascending: false)
+          .order('updated_at', ascending: false)
           .range(pageKey, pageKey + (count - 1));
 
       final List<CustomNotification> notifications = result.map(
@@ -87,7 +87,7 @@ class NotificationsBackend {
       ).toList();
 
       return BackendResponse(success: true, payload: notifications);
-    } catch (e, _) {
+    } catch (e) {
       return BackendResponse(
         success: false,
         payload: e,

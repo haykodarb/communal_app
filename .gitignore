@@ -48,3 +48,6 @@ app.*.map.json
 ~/tmp/ccls-cache
 scp.bash
 .direnv
+/.playwright-mcp
+/.opencode
+/opencode.json

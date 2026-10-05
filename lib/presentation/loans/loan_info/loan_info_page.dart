@@ -224,11 +224,11 @@ class LoanInfoPage extends StatelessWidget {
       builder: (context) {
         return Column(
           children: [
-            const Align(
+             Align(
               alignment: Alignment.topLeft,
               child: Text(
-                'Estado de la solicitud',
-                style: TextStyle(
+                'Request status'.tr,
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
                 ),

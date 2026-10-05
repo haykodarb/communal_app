@@ -1,4 +1,5 @@
 import 'package:atlas_icons/atlas_icons.dart';
+import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/material.dart';
 
 ColorScheme _darkScheme = const ColorScheme.dark(
@@ -116,12 +117,15 @@ final OutlinedButtonThemeData _outlinedButtonThemeData =
 final InputDecorationTheme _inputDecorationTheme = InputDecorationTheme(
   fillColor: _darkScheme.surfaceContainer,
   filled: true,
-  labelStyle: TextStyle(color: _darkScheme.onSurfaceVariant),
-  floatingLabelStyle: TextStyle(color: _darkScheme.onSurface),
+  labelStyle: TextStyle(
+    color: _darkScheme.onSurfaceVariant,
+    fontSize: 14,
+  ),
   floatingLabelBehavior: FloatingLabelBehavior.never,
   focusedBorder: const OutlineInputBorder(borderSide: BorderSide.none),
   border: const OutlineInputBorder(borderSide: BorderSide.none),
   enabledBorder: const OutlineInputBorder(borderSide: BorderSide.none),
+  hintStyle: const TextStyle(fontSize: 14),
   errorBorder: OutlineInputBorder(
     borderSide: BorderSide(
       color: _darkScheme.error,
@@ -138,6 +142,7 @@ final InputDecorationTheme _inputDecorationTheme = InputDecorationTheme(
   isDense: true,
   contentPadding: const EdgeInsets.all(20),
 );
+
 final IconThemeData _iconThemeData = IconThemeData(
   color: _darkScheme.onSurface,
 );
@@ -155,7 +160,7 @@ final CardThemeData _cardTheme = CardThemeData(
   color: _darkScheme.surfaceContainer,
   margin: EdgeInsets.zero,
   elevation: 0,
-  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
 );
 
 final PopupMenuThemeData _popupMenuTheme = PopupMenuThemeData(
@@ -190,6 +195,7 @@ final ActionIconThemeData _actionIconThemeData = ActionIconThemeData(
 );
 final ThemeData darkTheme = ThemeData(
   useMaterial3: true,
+  visualDensity: VisualDensity.compact,
   colorScheme: _darkScheme,
   brightness: Brightness.dark,
   fontFamily: 'Poppins',

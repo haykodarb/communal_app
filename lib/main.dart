@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:communal/backend/firebase_backend.dart';
 import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/dark_theme.dart';
@@ -6,6 +8,7 @@ import 'package:communal/light_theme.dart';
 import 'package:communal/localization.dart';
 import 'package:communal/routes.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -14,12 +17,16 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+bool get _isFirebaseSupported => kIsWeb || Platform.isAndroid || Platform.isIOS;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  if (_isFirebaseSupported) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
 
   initializeDateFormatting();
 
@@ -52,17 +59,19 @@ void main() async {
     routes: routes,
     onException: (_, GoRouterState state, GoRouter router) {
       if (Supabase.instance.client.auth.currentUser != null) {
-        router.go(RouteNames.communityListPage);
+        router.go(RouteNames.myBooks);
       } else {
         router.go(RouteNames.startPage);
       }
     },
     initialLocation: Supabase.instance.client.auth.currentUser == null
         ? (welcomeShown ? RouteNames.startPage : RouteNames.landingPage)
-        : RouteNames.communityListPage,
+        : RouteNames.myBooks,
   );
 
-  await FirebaseBackend.firebaseInit(router);
+  if (_isFirebaseSupported) {
+    await FirebaseBackend.firebaseInit(router);
+  }
 
   runApp(
     MyApp(

@@ -1,4 +1,5 @@
 import 'package:atlas_icons/atlas_icons.dart';
+import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/material.dart';
 
 const ColorScheme _lightScheme = ColorScheme.light(
@@ -98,8 +99,9 @@ final FilledButtonThemeData _filledButtonThemeData = FilledButtonThemeData(
   ),
 );
 
-const DividerThemeData _dividerThemeData =
-    DividerThemeData(color: Colors.transparent);
+const DividerThemeData _dividerThemeData = DividerThemeData(
+  color: Colors.transparent,
+);
 
 final OutlinedButtonThemeData _outlinedButtonThemeData =
     OutlinedButtonThemeData(
@@ -205,6 +207,7 @@ final IconButtonThemeData _iconButtonThemeData = IconButtonThemeData(
 
 final ThemeData lightTheme = ThemeData(
   colorScheme: _lightScheme,
+  useMaterial3: true,
   splashColor: _overlayColor,
   highlightColor: _overlayColor,
   hoverColor: _overlayColor,

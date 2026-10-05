@@ -11,7 +11,7 @@ class ProfileCommonHelpers {
     required CommonListViewController<Loan> reviewListController,
     required ScrollController scrollController,
     required Widget Function(Book) bookCardBuilder,
-    required Widget Function(Loan) reviewCardBuilder,
+    required Widget Function(Loan, int?) reviewCardBuilder,
     String booksNoItemsText = 'No books.',
     String reviewsNoItemsText = 'No reviews.',
   }) {

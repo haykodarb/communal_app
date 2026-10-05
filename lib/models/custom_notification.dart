@@ -61,6 +61,7 @@ class CustomNotification {
   Loan? loan;
   Membership? membership;
   Friendship? friendship;
+  DateTime updated_at;
   Profile? sender;
   Profile receiver;
   bool seen;
@@ -72,18 +73,21 @@ class CustomNotification {
     required this.type,
     required this.receiver,
     required this.seen,
+    required this.updated_at,
   });
 
   CustomNotification.empty()
       : id = 0,
         receiver = Profile.empty(),
         type = NotificationType.empty(),
+	updated_at = DateTime.now(),
         seen = false;
 
   CustomNotification.fromMap(Map<String, dynamic> map)
       : receiver = Profile.fromMap(map['receiver']),
         sender = map['sender'] == null ? null : Profile.fromMap(map['sender']),
         id = map['id'],
+        updated_at = DateTime.parse(map['updated_at']),
         seen = map['seen'],
         type = NotificationType.fromMap(map['type']),
         loan = map['loans'] != null ? Loan.fromMap(map['loans']) : null,

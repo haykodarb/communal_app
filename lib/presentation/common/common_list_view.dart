@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 
 class CommonListViewController<ItemType> extends GetxController {
@@ -199,66 +200,59 @@ class CommonGridView<ItemType> extends StatelessWidget {
               );
             }
 
-            final List<Widget> firstColumnChildren = [];
-            final List<Widget> secondColumnChildren = [];
-
-            for (int i = 0; i < controller.itemList.length; i++) {
-              final ItemType item = controller.itemList[i];
-
-              if (i % 2 == 0) {
-                firstColumnChildren.add(childBuilder(item));
-                firstColumnChildren.add(horizontalSeparator);
-              } else {
-                secondColumnChildren.add(childBuilder(item));
-                secondColumnChildren.add(horizontalSeparator);
-              }
-            }
-
-            final List<Widget> mainColumnChildren = [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: firstColumnChildren,
-                    ),
-                  ),
-                  verticalSeparator,
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: secondColumnChildren,
-                    ),
-                  ),
-                ],
-              ),
-            ];
-
-            if (controller.showLoadingMore.value) {
-              mainColumnChildren.add(horizontalSeparator);
-              mainColumnChildren.add(horizontalSeparator);
-              mainColumnChildren.add(const CommonLoadingBody(size: 30));
-            }
-
-            final Widget masonry = Padding(
-              padding: padding,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: mainColumnChildren,
-              ),
-            );
-
             if (isSliver) {
-              return SliverToBoxAdapter(
-                child: masonry,
+              return SliverPadding(
+                padding: padding,
+                sliver: SliverMainAxisGroup(
+                  slivers: [
+                    SliverMasonryGrid.count(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 8,
+                      crossAxisSpacing: 8,
+                      childCount: controller.itemList.length,
+                      itemBuilder: (context, index) {
+                        final ItemType item = controller.itemList[index];
+                        return childBuilder(item);
+                      },
+                    ),
+                    Obx(
+                      () {
+                        return SliverVisibility(
+                          visible: controller.showLoadingMore.value,
+                          sliver: const SliverToBoxAdapter(
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 30),
+                              child: CommonLoadingBody(size: 30),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               );
             }
 
-            return SingleChildScrollView(child: masonry);
+            return Padding(
+              padding: padding,
+              child: Column(
+                children: [
+                  MasonryGridView.count(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 8,
+                    crossAxisSpacing: 8,
+                    itemCount: controller.itemList.length,
+                    itemBuilder: (context, index) {
+                      final ItemType item = controller.itemList[index];
+                      return childBuilder(item);
+                    },
+                  ),
+                  const CommonLoadingBody(
+                    size: 30,
+                  ),
+                ],
+              ),
+            );
           },
         );
       },
@@ -280,7 +274,7 @@ class CommonListView<ItemType> extends StatelessWidget {
     super.key,
   });
 
-  final Widget Function(ItemType) childBuilder;
+  final Widget Function(ItemType, int) childBuilder;
   final Widget separator;
   final EdgeInsets? padding;
   final CommonListViewController controller;
@@ -346,13 +340,20 @@ class CommonListView<ItemType> extends StatelessWidget {
               );
             }
 
+            int childrenBuilt = 0;
+
             final List<Widget> widgets = List.generate(
               controller.itemList.length * 2 - 1,
               (int index) {
                 if (index % 2 == 0) {
-                  return childBuilder(
+                  Widget ret = childBuilder(
                     controller.itemList[(index / 2).floor()],
+                    childrenBuilt,
                   );
+
+                  childrenBuilt++;
+
+                  return ret;
                 }
 
                 return separator;
@@ -382,6 +383,7 @@ class CommonListView<ItemType> extends StatelessWidget {
                   controller: controller.scrollController,
                   physics: scrollPhysics,
                   scrollDirection: axis,
+                  addAutomaticKeepAlives: true,
                   children: widgets,
                 ),
                 Obx(
@@ -402,8 +404,9 @@ class CommonListView<ItemType> extends StatelessWidget {
                             );
                           },
                           style: IconButton.styleFrom(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.primary),
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                          ),
                           icon: Icon(
                             Icons.chevron_left,
                             color: Theme.of(context).colorScheme.onPrimary,
@@ -444,8 +447,9 @@ class CommonListView<ItemType> extends StatelessWidget {
                             );
                           },
                           style: IconButton.styleFrom(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.primary),
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                          ),
                           icon: Icon(
                             Icons.chevron_right,
                             color: Theme.of(context).colorScheme.onPrimary,

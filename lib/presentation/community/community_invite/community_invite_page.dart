@@ -160,7 +160,7 @@ class CommunityInvitePage extends StatelessWidget {
                   child: Card(
                     child: CommonListView<Profile>(
                       controller: controller.listViewController,
-                      childBuilder: (Profile profile) {
+                      childBuilder: (Profile profile, _) {
                         return CommonKeepaliveWrapper(child: _userCard(context, controller, profile));
                       },
                     ),

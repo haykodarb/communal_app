@@ -78,6 +78,7 @@ class SearchPage extends StatelessWidget {
               Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
           body: SafeArea(
             child: CustomScrollView(
+              controller: controller.scrollController,
               slivers: [
                 SliverToBoxAdapter(
                   child: SizedBox(
@@ -124,6 +125,7 @@ class SearchPage extends StatelessWidget {
                             right: 10,
                           ),
                           isSliver: true,
+                          scrollController: controller.scrollController,
                           childBuilder: (Book book) =>
                               CommonVerticalBookCard(book: book),
                           noItemsText:
@@ -138,7 +140,9 @@ class SearchPage extends StatelessWidget {
                             right: 10,
                           ),
                           isSliver: true,
-                          childBuilder: (Profile profile) => _userCard(profile),
+                          scrollController: controller.scrollController,
+                          childBuilder: (Profile profile, _) =>
+                              _userCard(profile),
                           controller: controller.profileListController,
                           noItemsText:
                               'No users found, likely a network issue.',

@@ -8,17 +8,22 @@ import 'package:communal/models/book.dart';
 import 'package:communal/models/community.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_list_view.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SearchPageController extends GetxController {
   static const int pageSize = 20;
-  final CommonListViewController<Book> bookListController = CommonListViewController(pageSize: pageSize);
-  final CommonListViewController<Community> communityListController = CommonListViewController(pageSize: pageSize);
-  final CommonListViewController<Profile> profileListController = CommonListViewController(pageSize: pageSize);
+  final CommonListViewController<Book> bookListController =
+      CommonListViewController(pageSize: pageSize);
+  final CommonListViewController<Community> communityListController =
+      CommonListViewController(pageSize: pageSize);
+  final CommonListViewController<Profile> profileListController =
+      CommonListViewController(pageSize: pageSize);
   String query = '';
   Timer? debounceTimer;
 
   final RxInt currentTabIndex = 0.obs;
+  final ScrollController scrollController = ScrollController();
 
   void onTabTapped(int value) {
     currentTabIndex.value = value;
@@ -58,7 +63,8 @@ class SearchPageController extends GetxController {
   }
 
   Future<List<Community>> searchCommunities(int pageKey) async {
-    final BackendResponse response = await CommunitiesBackend.searchAllCommunities(
+    final BackendResponse response =
+        await CommunitiesBackend.searchAllCommunities(
       pageKey: pageKey,
       pageSize: pageSize,
       query: query,
@@ -86,7 +92,8 @@ class SearchPageController extends GetxController {
   }
 
   Future<List<Book>> searchBooks(int pageKey) async {
-    final BackendResponse response = await BooksBackend.getBooksInAllCommunities(
+    final BackendResponse response =
+        await BooksBackend.getBooksFriendsOfFriends(
       pageKey: pageKey,
       query: query,
       pageSize: pageSize,

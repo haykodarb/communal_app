@@ -273,6 +273,74 @@ class BooksBackend {
     }
   }
 
+  static Future<BackendResponse> getBooksFriendsOfFriends({
+    required int pageKey,
+    required String query,
+    required int pageSize,
+  }) async {
+    try {
+      final List<dynamic> booksResponse = await _client
+          .rpc(
+            'get_books_friends_of_friends',
+            params: {
+              'offset_num': pageKey,
+              'limit_num': pageSize,
+              'search_query': query,
+            },
+          )
+          .select('*, profiles(*)')
+          .limit(pageSize)
+          .order('created_at');
+
+      final List<Book> listOfBooks = booksResponse
+          .map(
+            (element) => Book.fromMap(element),
+          )
+          .toList();
+
+      return BackendResponse(
+        success: true,
+        payload: listOfBooks,
+      );
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
+    }
+  }
+
+  static Future<BackendResponse> getBooksFriends({
+    required int pageKey,
+    required String query,
+    required int pageSize,
+  }) async {
+    try {
+      final List<dynamic> booksResponse = await _client
+          .rpc(
+            'get_books_friends',
+            params: {
+              'offset_num': pageKey,
+              'limit_num': pageSize,
+              'search_query': query,
+            },
+          )
+          .select('*, profiles(*)')
+          .limit(pageSize)
+          .order('created_at');
+
+      final List<Book> listOfBooks = booksResponse
+          .map(
+            (element) => Book.fromMap(element),
+          )
+          .toList();
+
+      return BackendResponse(
+        success: true,
+        payload: listOfBooks,
+      );
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
+    }
+  }
+
   static Future<BackendResponse> getBooksInAllCommunities({
     required int pageKey,
     required String query,

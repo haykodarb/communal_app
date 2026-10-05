@@ -79,7 +79,7 @@ class CommunityListPage extends StatelessWidget {
           drawerEnableOpenDragGesture: false,
           body: CommonListView(
             noItemsText: 'community-list-no-items'.tr,
-            childBuilder: (Community community) => _communityCard(
+            childBuilder: (Community community, _) => _communityCard(
               controller,
               community,
             ),

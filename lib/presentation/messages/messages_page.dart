@@ -15,7 +15,9 @@ class MessagesPage extends StatelessWidget {
   Widget _chatCard(MessagesController controller, Rx<Message> rx_message) {
     final Message staticMessage = rx_message.value;
 
-    final Profile staticChatter = staticMessage.sender.isCurrentUser ? staticMessage.receiver : staticMessage.sender;
+    final Profile staticChatter = staticMessage.sender.isCurrentUser
+        ? staticMessage.receiver
+        : staticMessage.sender;
 
     return Builder(
       builder: (context) {
@@ -45,7 +47,9 @@ class MessagesPage extends StatelessWidget {
 
                       final Message message = rx_message.value;
 
-                      final Profile chatter = message.sender.isCurrentUser ? message.receiver : message.sender;
+                      final Profile chatter = message.sender.isCurrentUser
+                          ? message.receiver
+                          : message.sender;
 
                       if (message.unread_messages != null) {
                         hightlightMessage = message.unread_messages! > 0;
@@ -73,14 +77,17 @@ class MessagesPage extends StatelessWidget {
                                 ),
                                 const VerticalDivider(width: 10),
                                 Text(
-                                  DateFormat.MMMEd(Get.locale!.toString()).format(
+                                  DateFormat.MMMEd(Get.locale!.toString())
+                                      .format(
                                     message.created_at.toLocal(),
                                   ),
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: hightlightMessage
                                         ? Theme.of(context).colorScheme.primary
-                                        : Theme.of(context).colorScheme.onSurfaceVariant,
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant,
                                     fontWeight: FontWeight.w400,
                                     fontStyle: FontStyle.italic,
                                     height: 1,
@@ -102,7 +109,9 @@ class MessagesPage extends StatelessWidget {
                                         style: TextStyle(
                                           fontSize: 12,
                                           overflow: TextOverflow.ellipsis,
-                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurfaceVariant,
                                           height: 1,
                                         ),
                                       ),
@@ -114,9 +123,12 @@ class MessagesPage extends StatelessWidget {
                                     child: Container(
                                       height: 25,
                                       width: 25,
-                                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5, horizontal: 5),
                                       decoration: BoxDecoration(
-                                        color: Theme.of(context).colorScheme.primary,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
                                         shape: BoxShape.circle,
                                       ),
                                       child: Center(
@@ -125,7 +137,9 @@ class MessagesPage extends StatelessWidget {
                                           style: TextStyle(
                                             fontSize: 12,
                                             overflow: TextOverflow.ellipsis,
-                                            color: Theme.of(context).colorScheme.onPrimary,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onPrimary,
                                             fontWeight: FontWeight.w600,
                                             height: 1,
                                           ),
@@ -156,12 +170,16 @@ class MessagesPage extends StatelessWidget {
       init: MessagesController(),
       builder: (MessagesController controller) {
         return Scaffold(
-          drawer: Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
-          appBar: Responsive.isMobile(context) ? AppBar(title: Text('Messages'.tr)) : null,
+          drawer:
+              Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
+          appBar: Responsive.isMobile(context)
+              ? AppBar(title: Text('Messages'.tr))
+              : null,
           body: CommonListView<Rx<Message>>(
-            noItemsText: 'No messages yet.\nChat with other users to get started.',
+            noItemsText:
+                'No messages yet.\nChat with other users to get started.',
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-            childBuilder: (rx_message) => _chatCard(controller, rx_message),
+            childBuilder: (rx_message, _) => _chatCard(controller, rx_message),
             controller: controller.listViewController,
           ),
         );

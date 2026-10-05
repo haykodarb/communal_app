@@ -10,7 +10,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class CommunityDiscussionsPage extends StatelessWidget {
-  const CommunityDiscussionsPage({super.key, required this.communityController});
+  const CommunityDiscussionsPage(
+      {super.key, required this.communityController});
 
   final CommunitySpecificController communityController;
 
@@ -26,7 +27,8 @@ class CommunityDiscussionsPage extends StatelessWidget {
     });
   }
 
-  Widget _topicCard(DiscussionTopic topic, CommunityDiscussionsController controller) {
+  Widget _topicCard(
+      DiscussionTopic topic, CommunityDiscussionsController controller) {
     return Builder(builder: (context) {
       return InkWell(
         onTap: () => controller.goToTopicMessages(topic, context),
@@ -39,7 +41,8 @@ class CommunityDiscussionsPage extends StatelessWidget {
               children: [
                 Text(
                   topic.name,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w600),
                 ),
                 const Divider(height: 15),
                 Visibility(
@@ -79,7 +82,9 @@ class CommunityDiscussionsPage extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w400,
-                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
                                     fontStyle: FontStyle.italic,
                                   ),
                                 ),
@@ -93,7 +98,9 @@ class CommunityDiscussionsPage extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400,
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
                               ),
                             ),
                           ],
@@ -132,14 +139,17 @@ class CommunityDiscussionsPage extends StatelessWidget {
                                 ),
                                 Text(
                                   DateFormat.MMMEd().format(
-                                    topic.last_message?.created_at ?? DateTime.now(),
+                                    topic.last_message?.created_at ??
+                                        DateTime.now(),
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w400,
-                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
                                     fontStyle: FontStyle.italic,
                                   ),
                                 ),
@@ -153,7 +163,9 @@ class CommunityDiscussionsPage extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400,
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
                               ),
                             ),
                           ],
@@ -187,7 +199,8 @@ class CommunityDiscussionsPage extends StatelessWidget {
             ),
             CommonListView<DiscussionTopic>(
               noItemsText: 'community-topics-no-items'.tr,
-              childBuilder: (DiscussionTopic topic) => _topicCard(topic, controller),
+              childBuilder: (DiscussionTopic topic, _) =>
+                  _topicCard(topic, controller),
               controller: controller.listViewController,
               scrollController: communityController.scrollController,
               isSliver: true,

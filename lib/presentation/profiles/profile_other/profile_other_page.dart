@@ -274,7 +274,7 @@ class ProfileOtherPage extends StatelessWidget {
                 bookCardBuilder: (Book book) => CommonVerticalBookCard(
                   book: book,
                 ),
-                reviewCardBuilder: (Loan loan) =>
+                reviewCardBuilder: (Loan loan, _) =>
                     ProfileCommonWidgets.reviewCard(
                   loan: loan,
                   onTap: null,

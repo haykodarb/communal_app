@@ -326,7 +326,7 @@ class SearchCommunityDetailsPage extends StatelessWidget {
       child: CommonListView<Book>(
         padding: const EdgeInsets.all(10),
         separator: const VerticalDivider(width: 10),
-        childBuilder: (Book book) => CommonVerticalBookCard(
+        childBuilder: (Book book, _) => CommonVerticalBookCard(
           book: book,
           axis: Axis.horizontal,
           clickable: false,

@@ -247,7 +247,7 @@ class CommunityMembersPage extends StatelessWidget {
             ),
             CommonListView<Profile>(
               noItemsText: 'community-members-no-items'.tr,
-              childBuilder: (Profile member) =>
+              childBuilder: (Profile member, _) =>
                   _userCardRow(member, controller),
               controller: controller.listViewController,
               scrollController: communityController.scrollController,

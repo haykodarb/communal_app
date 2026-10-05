@@ -219,7 +219,7 @@ class BookListPage extends StatelessWidget {
                 floating: true,
               ),
               CommonListView<Book>(
-                childBuilder: (Book book) => CommonKeepaliveWrapper(
+                childBuilder: (Book book, _) => CommonKeepaliveWrapper(
                   child: _bookCard(book),
                 ),
                 controller: controller.listViewController,

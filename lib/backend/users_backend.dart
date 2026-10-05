@@ -64,8 +64,10 @@ class UsersBackend {
 
         //await DefaultCacheManager().putFile('${profile.avatar_path!}-$height', bytes, key: '${profile.avatar_path!}-$height');
         await DefaultCacheManager().putFile(
-            '${profile.avatar_path!}-$height', bytes,
-            key: profile.avatar_path!);
+          '${profile.avatar_path!}-$height',
+          bytes,
+          key: profile.avatar_path!,
+        );
       }
 
       return bytes;

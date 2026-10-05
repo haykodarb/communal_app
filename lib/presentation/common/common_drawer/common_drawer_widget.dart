@@ -1,6 +1,5 @@
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/login_backend.dart';
-import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
 import 'package:communal/presentation/common/common_loading_image.dart';
@@ -135,25 +134,30 @@ class CommonDrawerWidget extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Obx(() {
-                      if (controller.currentUserProfile.value.id.isEmpty) {
-                        return Container(
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                          ),
-                          clipBehavior: Clip.hardEdge,
-                          height: 40 * 2,
-                          width: 40 * 2,
-                          child: const CommonLoadingImage(),
-                        );
-                      }
+                    Obx(
+                      () {
+                        if (controller.currentUserProfile.value.id.isEmpty) {
+                          return Container(
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                            ),
+                            clipBehavior: Clip.hardEdge,
+                            height: 40 * 2,
+                            width: 40 * 2,
+                            child: const CommonLoadingImage(),
+                          );
+                        }
 
-                      return CommonCircularAvatar(
-                        profile: controller.currentUserProfile.value,
-                        radius: 40,
-                        clickable: true,
-                      );
-                    }),
+                        print(
+                            'Profile changed - Image: ${controller.currentUserProfile.value.avatar_path}');
+
+                        return CommonCircularAvatar(
+                          profile: controller.currentUserProfile.value,
+                          radius: 40,
+                          clickable: true,
+                        );
+                      },
+                    ),
                     const VerticalDivider(width: 20),
                     Expanded(
                       child: Obx(
@@ -296,25 +300,25 @@ class CommonDrawerWidget extends StatelessWidget {
                           color: dividerColor,
                           height: dividerHeight,
                         ),
-                        Obx(
-                          () {
-                            return _drawerButton(
-                              text: 'Communities'.tr,
-                              selected: controller.currentRoute.value ==
-                                  RouteNames.communityListPage,
-                              icon: Atlas.users,
-                              callback: () => controller.goToRoute(
-                                RouteNames.communityListPage,
-                                context,
-                              ),
-                            );
-                          },
-                        ),
-                        Divider(
-                          thickness: 2,
-                          color: dividerColor,
-                          height: dividerHeight,
-                        ),
+                        // Obx(
+                        //   () {
+                        //     return _drawerButton(
+                        //       text: 'Communities'.tr,
+                        //       selected: controller.currentRoute.value ==
+                        //           RouteNames.communityListPage,
+                        //       icon: Atlas.users,
+                        //       callback: () => controller.goToRoute(
+                        //         RouteNames.communityListPage,
+                        //         context,
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
+                        // Divider(
+                        //   thickness: 2,
+                        //   color: dividerColor,
+                        //   height: dividerHeight,
+                        // ),
                         Obx(
                           () {
                             return _drawerButton(
@@ -327,42 +331,6 @@ class CommonDrawerWidget extends StatelessWidget {
                                 context,
                               ),
                             );
-                          },
-                        ),
-                        Divider(
-                          thickness: 2,
-                          color: dividerColor,
-                          height: dividerHeight,
-                        ),
-                        _drawerButton(
-                          selected: false,
-                          icon: UserPreferences.isDarkMode(context)
-                              ? Atlas.sunny
-                              : Atlas.moon,
-                          text: UserPreferences.isDarkMode(context)
-                              ? 'Light'.tr
-                              : 'Dark'.tr,
-                          callback: () => controller.changeThemeMode(context),
-                        ),
-                        Divider(
-                          thickness: 2,
-                          color: dividerColor,
-                          height: dividerHeight,
-                        ),
-                        _drawerButton(
-                          selected: false,
-                          icon: Atlas.language_translation,
-                          text: Get.locale == const Locale('es', 'ES')
-                              ? 'English'
-                              : 'Español',
-                          callback: () async {
-                            final Locale newLocale =
-                                Get.locale == const Locale('es', 'ES')
-                                    ? const Locale('en', 'US')
-                                    : const Locale('es', 'ES');
-
-                            await Get.updateLocale(newLocale);
-                            await UserPreferences.setSelectedLocale(newLocale);
                           },
                         ),
                         const Expanded(

@@ -1,4 +1,5 @@
 import 'package:atlas_icons/atlas_icons.dart';
+import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/presentation/common/common_async_text_field.dart';
 import 'package:communal/presentation/common/common_switch.dart';
 import 'package:communal/presentation/common/common_button.dart';
@@ -12,6 +13,62 @@ import 'package:image_picker/image_picker.dart';
 
 class ProfileOwnEditPage extends StatelessWidget {
   const ProfileOwnEditPage({super.key});
+  static const List<Locale> _locales = [Locale('en', 'US'), Locale('es', 'ES')];
+
+  Widget _themeToggleSwitch(ProfileOwnEditController controller) {
+    return Builder(
+      builder: (context) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Theme'.tr,
+              style: const TextStyle(fontSize: 16),
+            ),
+            const Expanded(child: VerticalDivider()),
+            CommonSwitch(
+              value: !UserPreferences.isDarkMode(context),
+              callback: () => controller.changeThemeMode(context),
+              icons: const [Atlas.sunny_bold, Atlas.moon_bold],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _languageToggleSwitch(ProfileOwnEditController controller) {
+    return Builder(
+      builder: (context) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Language'.tr,
+              style: const TextStyle(fontSize: 16),
+            ),
+            const Expanded(child: VerticalDivider()),
+            CommonSwitch(
+              callback: () {
+                if (Get.locale == _locales[0]) {
+                  UserPreferences.setSelectedLocale(_locales[1]);
+                  Get.updateLocale(_locales[1]);
+                } else {
+                  UserPreferences.setSelectedLocale(_locales[0]);
+                  Get.updateLocale(_locales[0]);
+                }
+              },
+              value: Get.locale == _locales[0],
+              labels: const [
+                "EN",
+                "ES",
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Widget _showEmailToggleSwitch(ProfileOwnEditController controller) {
     return Builder(
@@ -20,8 +77,8 @@ class ProfileOwnEditPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Make email public?'.tr,
-              style: const TextStyle(fontSize: 14),
+              'Show email?'.tr,
+              style: const TextStyle(fontSize: 16),
             ),
             const Expanded(child: VerticalDivider()),
             Obx(
@@ -88,20 +145,17 @@ class ProfileOwnEditPage extends StatelessWidget {
                                   () => Visibility(
                                     visible:
                                         controller.selectedBytes.value != null,
-                                    child: AspectRatio(
-                                      aspectRatio: 1,
-                                      child: IconButton(
-                                        icon: Icon(
-                                          Icons.close,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .error,
-                                        ),
-                                        iconSize: 40,
-                                        onPressed: () {
-                                          controller.selectedBytes.value = null;
-                                        },
+                                    child: IconButton(
+                                      icon: Icon(
+                                        Icons.close,
+                                        color:
+                                            Theme.of(context).colorScheme.error,
                                       ),
+                                      iconSize: 40,
+                                      padding: EdgeInsets.zero,
+                                      onPressed: () {
+                                        controller.selectedBytes.value = null;
+                                      },
                                     ),
                                   ),
                                 ),
@@ -219,6 +273,10 @@ class ProfileOwnEditPage extends StatelessWidget {
                         const Divider(height: 20),
                         _showEmailToggleSwitch(controller),
                         const Divider(height: 20),
+                        _languageToggleSwitch(controller),
+                        const Divider(height: 20),
+                        _themeToggleSwitch(controller),
+                        const Divider(height: 20),
                         SizedBox(
                           width: double.maxFinite,
                           child: CommonButton(
@@ -227,7 +285,7 @@ class ProfileOwnEditPage extends StatelessWidget {
                             child: Text('Save'.tr),
                           ),
                         ),
-                        const Divider(height: 30),
+                        const Divider(height: 10),
                         // TextButton(
                         //   onPressed: () async {
                         //     final bool res = await  CommonConfirmationDialog(

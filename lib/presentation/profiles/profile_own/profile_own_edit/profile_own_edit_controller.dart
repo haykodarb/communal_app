@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/profile.dart';
@@ -13,7 +14,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:string_validator/string_validator.dart';
 
 class ProfileOwnEditController extends GetxController {
-  final Rx<Profile> inheritedProfile = Get.find<CommonDrawerController>().currentUserProfile;
+  final Rx<Profile> inheritedProfile =
+      Get.find<CommonDrawerController>().currentUserProfile;
 
   final ImagePicker imagePicker = ImagePicker();
   final Rxn<Uint8List> selectedBytes = Rxn<Uint8List>();
@@ -147,6 +149,15 @@ class ProfileOwnEditController extends GetxController {
     return null;
   }
 
+  Future<void> changeThemeMode(BuildContext context) async {
+    final ThemeMode newThemeMode =
+        UserPreferences.isDarkMode(context) ? ThemeMode.light : ThemeMode.dark;
+
+    Get.changeThemeMode(newThemeMode);
+
+    UserPreferences.setSelectedThemeMode(newThemeMode);
+  }
+
   Future<void> onSubmit(BuildContext context) async {
     if (formKey.currentState!.validate()) {
       loading.value = true;
@@ -165,7 +176,10 @@ class ProfileOwnEditController extends GetxController {
       loading.value = false;
 
       if (response.success) {
-        Get.find<CommonDrawerController>().currentUserProfile.value = response.payload;
+        Get.find<CommonDrawerController>().currentUserProfile.value =
+            response.payload;
+
+        Get.find<CommonDrawerController>().currentUserProfile.refresh();
       }
 
       if (context.mounted) {

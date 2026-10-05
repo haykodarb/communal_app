@@ -24,7 +24,7 @@ class CommonCircularAvatarController extends GetxController {
 
     loading.value = true;
 
-    bytes = await UsersBackend.getProfileAvatar(profile, height: 120);
+    bytes = await UsersBackend.getProfileAvatar(profile);
 
     if (bytes != null && bytes!.isNotEmpty) {
       loading.value = false;
@@ -98,6 +98,7 @@ class CommonCircularAvatar extends StatelessWidget {
               controller.bytes!,
               isAntiAlias: true,
               gaplessPlayback: true,
+              fit: BoxFit.cover,
             ),
           ),
         );
@@ -146,6 +147,8 @@ class CommonCircularAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('Building CommonCircularAvatar -- Path: ${profile.avatar_path}');
+
     return GetBuilder(
       tag: profile.avatar_path,
       init: CommonCircularAvatarController(profile: profile),
@@ -162,7 +165,9 @@ class CommonCircularAvatar extends StatelessWidget {
             ),
             child: (profile.avatar_path == null && image == null)
                 ? (_iconAvatar())
-                : CommonKeepaliveWrapper(child: _imageAvatar(controller)),
+                : CommonKeepaliveWrapper(
+                    child: _imageAvatar(controller),
+                  ),
           ),
         );
       },

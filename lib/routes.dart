@@ -373,7 +373,7 @@ final GoRoute _startRoutes = GoRoute(
   path: RouteNames.startPage,
   redirect: (context, state) {
     if (Supabase.instance.client.auth.currentUser != null) {
-      return RouteNames.communityListPage;
+      return RouteNames.myBooks;
     }
 
     return null;

@@ -1,4 +1,5 @@
 import 'package:atlas_icons/atlas_icons.dart';
+import 'package:communal/constants.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/community/community_specific/community_books/community_books_page.dart';
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_page.dart';
@@ -45,18 +46,25 @@ class CommunitySpecificPage extends StatelessWidget {
                     Icon(
                       _icons[index],
                       color: Theme.of(context).colorScheme.primary,
-                      size: 24,
+                      size: 22,
                     ),
                     const VerticalDivider(width: 10),
                     AnimatedOpacity(
                       opacity: isSelected ? 1 : 0,
-                      duration: const Duration(milliseconds: 300),
-                      child: Text(
-                        labels[index],
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontSize: isSelected ? 16 : 0,
-                          fontWeight: FontWeight.w600,
+                      duration: Constants.animationDuration,
+                      child: SizedBox(
+                        width: isSelected ? null : 0,
+                        child: AnimatedSize(
+                          duration: Constants.animationDuration,
+                          curve: isSelected ? Curves.easeIn : Curves.easeOut,
+                          child: Text(
+                            labels[index],
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontSize: isSelected ? 14 : 0,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -179,7 +187,7 @@ class CommunitySpecificPage extends StatelessWidget {
                                     controller.selectedIndex.value * 0.66666667,
                                     0,
                                   ),
-                                  duration: const Duration(milliseconds: 300),
+                                  duration: Constants.animationDuration,
                                   child: LayoutBuilder(
                                     builder: (context, constraints) {
                                       return Container(
