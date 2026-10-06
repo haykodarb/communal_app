@@ -140,10 +140,7 @@ class ProfileOtherPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           height: avatarHeight +
               20 +
-              ProfileCommonWidgets.infoLineHeight(
-                profile,
-                via: controller.viaNote,
-              ),
+              ProfileCommonWidgets.viaLineHeight(controller.viaNote),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -187,10 +184,8 @@ class ProfileOtherPage extends StatelessWidget {
                           ),
                         ),
                         // Mutual friends load before the header is built.
-                        ProfileCommonWidgets.infoLine(
-                          profile,
-                          via: controller.viaNote,
-                        ),
+                        if (controller.viaNote != null)
+                          ProfileCommonWidgets.viaLine(controller.viaNote!),
                       ],
                     ),
                     SizedBox(

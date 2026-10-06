@@ -1,61 +1,30 @@
 import 'package:communal/models/loan.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_book_cover.dart';
-import 'package:atlas_icons/atlas_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class ProfileCommonWidgets {
-  /// One line under the name: the location and, for a friend of a friend,
-  /// how you're connected ("via <friend>").
-  /// Extra header height to reserve when [infoLine] shows something.
-  static double infoLineHeight(Profile profile, {String? via}) =>
-      (profile.location ?? '').isNotEmpty || via != null ? 20 : 0;
-
-  static Widget infoLine(Profile profile, {String? via}) {
-    final bool hasLocation = (profile.location ?? '').isNotEmpty;
-    if (!hasLocation && via == null) return const SizedBox.shrink();
-
+  /// How you're connected to a friend of a friend ("via <friend>"), shown
+  /// under the name.
+  static Widget viaLine(String via) {
     return Builder(
       builder: (context) {
-        return Row(
-          children: [
-            if (hasLocation) ...[
-              Icon(
-                Atlas.pin_destination,
-                size: 16,
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-              const VerticalDivider(width: 4),
-              Flexible(
-                child: Text(
-                  profile.location!,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ),
-            ],
-            if (hasLocation && via != null) const VerticalDivider(width: 8),
-            if (via != null)
-              Flexible(
-                child: Text(
-                  via,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Theme.of(context).colorScheme.tertiary,
-                  ),
-                ),
-              ),
-          ],
+        return Text(
+          via,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: 14,
+            color: Theme.of(context).colorScheme.tertiary,
+          ),
         );
       },
     );
   }
+
+  /// Extra header height to reserve when [viaLine] is shown.
+  static double viaLineHeight(String? via) => via == null ? 0 : 20;
 
   static Widget bio(Profile profile) {
     return Builder(

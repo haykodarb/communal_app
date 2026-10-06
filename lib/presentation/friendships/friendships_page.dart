@@ -111,7 +111,6 @@ class FriendshipsPage extends StatelessWidget {
                       childBuilder: (Friendship friendship, _) => Obx(
                         () => CommonUserCard(
                           profile: friendship.otherUser,
-                          subtitle: friendship.otherUser.location,
                           actions: friendship.loading.value
                               ? const [
                                   SizedBox(

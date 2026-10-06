@@ -175,7 +175,6 @@ class UsersBackend {
               'username': profile.username,
               'show_email': profile.show_email,
               'bio': profile.bio,
-              'location': profile.location,
               'extended_circle': profile.extended_circle,
               'avatar_path': fileName,
             },

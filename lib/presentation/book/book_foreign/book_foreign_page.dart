@@ -8,7 +8,6 @@ import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_username_button.dart';
 import 'package:communal/routes.dart';
-import 'package:communal/presentation/profiles/common/profile_common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -302,14 +301,14 @@ class BookForeignPage extends StatelessWidget {
                       child: CommonLoadingBody(),
                     );
                   }
-              
+
                   final Loan? currentLoan = controller.currentLoan.value;
-              
+
                   final Book book = controller.book!;
-              
+
                   bool requestByCurrentUser =
                       currentLoan?.loanee.isCurrentUser ?? false;
-              
+
                   if (requestByCurrentUser) {
                     if (book.loaned) {
                       return CommonButton(
@@ -329,7 +328,7 @@ class BookForeignPage extends StatelessWidget {
                       child: Text('Withdraw request'.tr),
                     );
                   }
-              
+
                   if (book.loaned) {
                     return CommonButton(
                       type: controller.waitlisted.value
@@ -528,17 +527,6 @@ class BookForeignPage extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            if ((controller.book!.owner.location ?? '')
-                                .isNotEmpty) ...[
-                              const Divider(height: 10),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 20),
-                                child: ProfileCommonWidgets.infoLine(
-                                  controller.book!.owner,
-                                ),
-                              ),
-                            ],
                             const Divider(height: 20),
                             Expanded(
                               flex: 2,

@@ -29,7 +29,6 @@ class ProfileOwnEditController extends GetxController {
   RxString newUsername = ''.obs;
   RxnString newBio = RxnString();
   final RxBool newShowEmail = false.obs;
-  RxnString newLocation = RxnString();
   final RxBool newExtendedCircle = true.obs;
 
   Timer? debounce;
@@ -42,7 +41,6 @@ class ProfileOwnEditController extends GetxController {
     newBio.value = inheritedProfile.value.bio;
     addBio.value = inheritedProfile.value.bio != null;
     newShowEmail.value = inheritedProfile.value.show_email;
-    newLocation.value = inheritedProfile.value.location;
     newExtendedCircle.value = inheritedProfile.value.extended_circle;
 
     inheritedProfile.listen(
@@ -51,7 +49,6 @@ class ProfileOwnEditController extends GetxController {
         newBio.value = inheritedProfile.value.bio;
         addBio.value = inheritedProfile.value.bio != null;
         newShowEmail.value = inheritedProfile.value.show_email;
-        newLocation.value = inheritedProfile.value.location;
         newExtendedCircle.value = inheritedProfile.value.extended_circle;
       },
     );
@@ -91,10 +88,6 @@ class ProfileOwnEditController extends GetxController {
     } else {
       newBio.value = value;
     }
-  }
-
-  void onLocationChanged(String value) {
-    newLocation.value = value.trim().isEmpty ? null : value.trim();
   }
 
   void onExtendedCircleChanged() {
@@ -181,7 +174,6 @@ class ProfileOwnEditController extends GetxController {
       newProfile.show_email = newShowEmail.value;
       newProfile.bio = newBio.value;
       newProfile.username = newUsername.value;
-      newProfile.location = newLocation.value;
       newProfile.extended_circle = newExtendedCircle.value;
 
       final BackendResponse response = await UsersBackend.updateProfile(

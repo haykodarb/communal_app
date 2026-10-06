@@ -3,17 +3,15 @@ import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:flutter/material.dart';
 
 /// A user in a list (search results, friends): avatar and name opening the
-/// profile, an optional second line and trailing buttons.
+/// profile, plus optional trailing buttons.
 class CommonUserCard extends StatelessWidget {
   const CommonUserCard({
     super.key,
     required this.profile,
-    this.subtitle,
     this.actions = const [],
   });
 
   final Profile profile;
-  final String? subtitle;
   final List<Widget> actions;
 
   @override
@@ -38,25 +36,10 @@ class CommonUserCard extends StatelessWidget {
                 ),
                 const VerticalDivider(width: 10),
                 Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        profile.username,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                      if (subtitle != null && subtitle!.isNotEmpty)
-                        Text(
-                          subtitle!,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                    ],
+                  child: Text(
+                    profile.username,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontWeight: FontWeight.w500),
                   ),
                 ),
                 for (final Widget action in actions) ...[

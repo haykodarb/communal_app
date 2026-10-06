@@ -14,9 +14,6 @@ class Profile {
   String? avatar_path;
   String? fcm_token;
 
-  /// Rough location (neighbourhood/city), optional.
-  String? location;
-
   /// Show my books to friends of friends (otherwise friends only).
   bool extended_circle = true;
   bool is_admin = false;
@@ -61,7 +58,6 @@ class Profile {
         bio = source.bio,
         email = source.email,
         avatar_path = source.avatar_path,
-        location = source.location,
         extended_circle = source.extended_circle,
         is_admin = source.is_admin;
 
@@ -72,7 +68,6 @@ class Profile {
         bio = map['bio'],
         email = map['email'],
         fcm_token = map['fcm_token'],
-        location = map['location'],
         extended_circle = map['extended_circle'] ?? true,
         avatar_path = map['avatar_path'];
 }

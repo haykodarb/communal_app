@@ -62,8 +62,7 @@ class ProfileOwnPage extends StatelessWidget {
       builder: (context) {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          height:
-              avatarHeight + 20 + ProfileCommonWidgets.infoLineHeight(profile),
+          height: avatarHeight + 20,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -106,7 +105,6 @@ class ProfileOwnPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        ProfileCommonWidgets.infoLine(profile),
                       ],
                     ),
                     SizedBox(

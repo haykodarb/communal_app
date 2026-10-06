@@ -290,19 +290,6 @@ class ProfileOwnEditPage extends StatelessWidget {
                                   );
                                 },
                               ),
-                              const Divider(height: 5),
-                              Obx(
-                                () {
-                                  return CommonTextField(
-                                    callback: controller.onLocationChanged,
-                                    label: 'Location (Optional)'.tr,
-                                    validator: (_) => null,
-                                    initialValue: controller
-                                        .inheritedProfile.value.location,
-                                    maxLength: 60,
-                                  );
-                                },
-                              ),
                             ],
                           ),
                         ),

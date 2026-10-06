@@ -165,44 +165,51 @@ class LocalizationText extends Translations {
           'Withdraw': 'Retirar',
           'Accept': 'Aceptar',
           'Message': 'Mensaje',
-          'Location': 'Ubicación',
-          'Apply': 'Aplicar',
           'Accept this request?': '¿Aceptar esta solicitud?',
           'Reject this request?': '¿Rechazar esta solicitud?',
           'Withdraw friend request?': '¿Retirar solicitud de amistad?',
           'Remove {name} as friend?': '¿Eliminar a {name} de tus amigos?',
           'No pending requests.': 'No hay solicitudes pendientes.',
           'Server error.': 'Error del servidor.',
-          'You have no friends yet. Find people in Search.': 'Todavía no tenés amigos. Buscá personas en Buscar.',
+          'You have no friends yet. Find people in Search.':
+              'Todavía no tenés amigos. Buscá personas en Buscar.',
           'You have not sent any requests.': 'No enviaste ninguna solicitud.',
           'You requested this book from': 'Solicitaste este libro a',
           'requested this book': 'solicitó este libro',
           'via {name}': 'vía {name}',
           'and {n} more': 'y {n} más',
-          'No books found among your friends and their friends.': 'No se encontraron libros entre tus amigos y sus amigos.',
-          'Location (neighbourhood or city)': 'Ubicación (barrio o ciudad)',
-          'Location (Optional)': 'Ubicación (Opcional)',
+          'No books found among your friends and their friends.':
+              'No se encontraron libros entre tus amigos y sus amigos.',
           'Notify me when available': 'Avisarme cuando esté disponible',
           'Stop notifying me': 'Dejar de avisarme',
           ' is available again.': ' está disponible de nuevo.',
-          'Show my books to friends of friends': 'Mostrar mis libros a amigos de amigos',
+          'Show my books to friends of friends':
+              'Mostrar mis libros a amigos de amigos',
           'Account settings': 'Configuración de la cuenta',
           'Please enter a valid email': 'Ingresá un email válido',
           'New email': 'Nuevo email',
           'Change email': 'Cambiar email',
-          'Check your inbox: we sent a confirmation link to {email}.': 'Revisá tu bandeja de entrada: enviamos un link de confirmación a {email}.',
-          'Waiting for confirmation of {email}.': 'Esperando la confirmación de {email}.',
+          'Check your inbox: we sent a confirmation link to {email}.':
+              'Revisá tu bandeja de entrada: enviamos un link de confirmación a {email}.',
+          'Waiting for confirmation of {email}.':
+              'Esperando la confirmación de {email}.',
           'New password': 'Nueva contraseña',
           'Repeat password': 'Repetir contraseña',
           'Change password': 'Cambiar contraseña',
           'Passwords do not match': 'Las contraseñas no coinciden',
           'Password updated.': 'Contraseña actualizada.',
-          'Password must be at least 6 characters long': 'La contraseña debe tener al menos 6 caracteres',
-          'Password should only include ASCII characters': 'La contraseña solo puede incluir caracteres ASCII',
-          'Error in updating password, please try again.': 'Error al actualizar la contraseña, intentá de nuevo.',
-          'This deletes your profile, books, loans, messages and friendships. It cannot be undone.': 'Esto borra tu perfil, libros, préstamos, mensajes y amistades. No se puede deshacer.',
-          'Are you sure you want to delete your account? This is immediate and cannot be undone.': '¿Seguro que querés borrar tu cuenta? Es inmediato y no se puede deshacer.',
-          'Could not delete your account, please try again.': 'No se pudo borrar tu cuenta, intentá de nuevo.',
+          'Password must be at least 6 characters long':
+              'La contraseña debe tener al menos 6 caracteres',
+          'Password should only include ASCII characters':
+              'La contraseña solo puede incluir caracteres ASCII',
+          'Error in updating password, please try again.':
+              'Error al actualizar la contraseña, intentá de nuevo.',
+          'This deletes your profile, books, loans, messages and friendships. It cannot be undone.':
+              'Esto borra tu perfil, libros, préstamos, mensajes y amistades. No se puede deshacer.',
+          'Are you sure you want to delete your account? This is immediate and cannot be undone.':
+              '¿Seguro que querés borrar tu cuenta? Es inmediato y no se puede deshacer.',
+          'Could not delete your account, please try again.':
+              'No se pudo borrar tu cuenta, intentá de nuevo.',
           'landing-share-books':
               'Solicitá libros de tus compañeros o prestá los tuyos. Seguí tus prestamos y charla sobre tus lecturas con otros.',
         },

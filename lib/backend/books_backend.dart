@@ -308,12 +308,10 @@ class BooksBackend {
   }
 
   /// get_network_books RPC: available books of your friends and of their
-  /// friends who opted in, with the connecting friend (viaUsername) and an
-  /// optional owner-location filter.
+  /// friends who opted in, with the connecting friend (viaUsername).
   static Future<BackendResponse> getNetworkBooks({
     required int pageKey,
     required String query,
-    required String location,
     required int pageSize,
   }) async {
     try {
@@ -323,22 +321,17 @@ class BooksBackend {
           'offset_num': pageKey,
           'limit_num': pageSize,
           'search_query': query,
-          'location_query': location,
         },
       );
 
       // The RPC returns bare book rows; fetch their owners in one query.
-      final List<String> ownerIds = rows
-          .map((row) => row['book']['owner'] as String)
-          .toSet()
-          .toList();
+      final List<String> ownerIds =
+          rows.map((row) => row['book']['owner'] as String).toSet().toList();
 
       final Map<String, Map<String, dynamic>> owners = {};
       if (ownerIds.isNotEmpty) {
-        final List<Map<String, dynamic>> profiles = await _client
-            .from('profiles')
-            .select('*')
-            .inFilter('id', ownerIds);
+        final List<Map<String, dynamic>> profiles =
+            await _client.from('profiles').select('*').inFilter('id', ownerIds);
         for (final Map<String, dynamic> profile in profiles) {
           owners[profile['id']] = profile;
         }

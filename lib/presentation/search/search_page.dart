@@ -1,10 +1,5 @@
 import 'package:communal/models/book.dart';
 import 'package:communal/models/profile.dart';
-import 'package:atlas_icons/atlas_icons.dart';
-import 'package:communal/presentation/common/common_button.dart';
-import 'package:communal/presentation/common/common_filter_bottomsheet.dart';
-import 'package:communal/presentation/common/common_pill_button.dart';
-import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/common/common_user_card.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/common/common_list_view.dart';
@@ -19,51 +14,9 @@ import 'package:get/get.dart';
 class SearchPage extends StatelessWidget {
   const SearchPage({super.key});
 
-  String _note(Book book) {
-    return [
-      if (book.viaUsername != null)
-        'via {name}'.tr.replaceFirst('{name}', book.viaUsername!),
-      if ((book.owner.location ?? '').isNotEmpty) book.owner.location!,
-    ].join(' · ');
-  }
-
-  Widget _locationSheet(SearchPageController controller) {
-    String draft = controller.location.value;
-
-    return Builder(
-      builder: (context) {
-        void apply(String value) {
-          controller.onLocationChanged(value);
-          Navigator.of(context).pop();
-        }
-
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: CommonFilterBottomsheet(
-            children: [
-              CommonTextField(
-                label: 'Location (neighbourhood or city)'.tr,
-                initialValue: draft,
-                validator: (_) => null,
-                callback: (value) => draft = value,
-                submitCallback: apply,
-              ),
-              const Divider(height: 20),
-              SizedBox(
-                width: double.maxFinite,
-                child: CommonButton(
-                  onPressed: (_) => apply(draft),
-                  child: Text('Apply'.tr),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  String? _note(Book book) => book.viaUsername == null
+      ? null
+      : 'via {name}'.tr.replaceFirst('{name}', book.viaUsername!);
 
   @override
   Widget build(BuildContext context) {
@@ -102,19 +55,9 @@ class SearchPage extends StatelessWidget {
                 SliverAppBar(
                   title: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Obx(
-                      () => CommonSearchBar(
-                        searchCallback: controller.onQueryChanged,
-                        focusNode: FocusNode(),
-                        filterCallback: controller.currentTabIndex.value == 0
-                            ? () => showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  builder: (context) =>
-                                      _locationSheet(controller),
-                                )
-                            : null,
-                      ),
+                    child: CommonSearchBar(
+                      searchCallback: controller.onQueryChanged,
+                      focusNode: FocusNode(),
                     ),
                   ),
                   titleSpacing: 0,
@@ -122,28 +65,6 @@ class SearchPage extends StatelessWidget {
                   centerTitle: true,
                   automaticallyImplyLeading: false,
                   pinned: true,
-                ),
-                Obx(
-                  () {
-                    if (controller.currentTabIndex.value != 0 ||
-                        controller.location.value.isEmpty) {
-                      return const SliverToBoxAdapter(child: SizedBox.shrink());
-                    }
-
-                    return SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 15, top: 5),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: CommonPillButton(
-                            icon: Atlas.pin_destination,
-                            label: '${controller.location.value}  ✕',
-                            onPressed: (_) => controller.onLocationChanged(''),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
                 ),
                 const SliverToBoxAdapter(child: SizedBox(height: 5)),
                 Obx(
@@ -176,10 +97,8 @@ class SearchPage extends StatelessWidget {
                           ),
                           isSliver: true,
                           scrollController: controller.scrollController,
-                          childBuilder: (Profile profile, _) =>
-                              CommonUserCard(
+                          childBuilder: (Profile profile, _) => CommonUserCard(
                             profile: profile,
-                            subtitle: profile.location,
                           ),
                           controller: controller.profileListController,
                           noItemsText:
