@@ -3,7 +3,9 @@ import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_pill_button.dart';
 import 'package:communal/presentation/loans/loan_info/loan_info_controller.dart';
 import 'package:communal/responsive.dart';
 import 'package:communal/routes.dart';
@@ -40,15 +42,17 @@ class LoanInfoPage extends StatelessWidget {
               ),
               Visibility(
                 visible: !loan.isOwned,
-                child: const Text(
-                  'You requested this book from',
-                  style: TextStyle(fontSize: 14),
+                child: Text(
+                  'You requested this book from'.tr,
+                  style: const TextStyle(fontSize: 14),
                 ),
               ),
               const VerticalDivider(width: 5),
               CommonButton(
                 type: CommonButtonType.text,
-                onPressed: (BuildContext context) {},
+                onPressed: (BuildContext context) =>
+                    (loan.isOwned ? loan.loanee : loan.book.owner)
+                        .goToProfilePage(context),
                 expand: false,
                 style: TextButton.styleFrom(
                   foregroundColor: Theme.of(context).colorScheme.secondary,
@@ -66,7 +70,16 @@ class LoanInfoPage extends StatelessWidget {
               const VerticalDivider(width: 5),
               Visibility(
                 visible: loan.isOwned,
-                child: const Text('requested this book'),
+                child: Text('requested this book'.tr),
+              ),
+              const Spacer(),
+              // Message the other person to arrange the handover.
+              CommonPillButton(
+                icon: Atlas.comment_dots_bold,
+                label: 'Message'.tr,
+                onPressed: (BuildContext context) => context.push(
+                  '${RouteNames.messagesPage}/${loan.isOwned ? loan.loanee.id : loan.book.owner.id}',
+                ),
               ),
             ],
           ),
