@@ -51,9 +51,12 @@ class SearchPage extends StatelessWidget {
                 submitCallback: apply,
               ),
               const Divider(height: 20),
-              CommonButton(
-                onPressed: (_) => apply(draft),
-                child: Text('Apply'.tr),
+              SizedBox(
+                width: double.maxFinite,
+                child: CommonButton(
+                  onPressed: (_) => apply(draft),
+                  child: Text('Apply'.tr),
+                ),
               ),
             ],
           ),

@@ -138,7 +138,12 @@ class ProfileOtherPage extends StatelessWidget {
       builder: (context) {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          height: avatarHeight + 20,
+          height: avatarHeight +
+              20 +
+              ProfileCommonWidgets.infoLineHeight(
+                profile,
+                via: controller.viaNote,
+              ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [

@@ -94,7 +94,8 @@ class ProfileOwnAccountController extends GetxController {
 
     if (!deleted) {
       deleteLoading.value = false;
-      errorMessage.value = 'Could not delete your account, please try again.'.tr;
+      errorMessage.value =
+          'Could not delete your account, please try again.'.tr;
       return;
     }
 

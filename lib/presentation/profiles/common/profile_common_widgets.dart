@@ -9,6 +9,10 @@ import 'package:intl/intl.dart';
 class ProfileCommonWidgets {
   /// One line under the name: the location and, for a friend of a friend,
   /// how you're connected ("via <friend>").
+  /// Extra header height to reserve when [infoLine] shows something.
+  static double infoLineHeight(Profile profile, {String? via}) =>
+      (profile.location ?? '').isNotEmpty || via != null ? 20 : 0;
+
   static Widget infoLine(Profile profile, {String? via}) {
     final bool hasLocation = (profile.location ?? '').isNotEmpty;
     if (!hasLocation && via == null) return const SizedBox.shrink();

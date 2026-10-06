@@ -31,48 +31,55 @@ class LoanInfoPage extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           child: Row(
             children: [
-              Visibility(
-                visible: loan.isOwned,
-                child: CommonCircularAvatar(
-                  profile: loan.loanee,
-                  color: Theme.of(context).colorScheme.secondary,
-                  radius: 25,
-                  clickable: true,
+              Expanded(
+                child: Row(
+                  children: [
+                    Visibility(
+                      visible: loan.isOwned,
+                      child: CommonCircularAvatar(
+                        profile: loan.loanee,
+                        color: Theme.of(context).colorScheme.secondary,
+                        radius: 25,
+                        clickable: true,
+                      ),
+                    ),
+                    if (!loan.isOwned)
+                      Flexible(
+                        child: Text(
+                          'You requested this book from'.tr,
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ),
+                    const VerticalDivider(width: 5),
+                    Flexible(
+                      child: CommonButton(
+                        type: CommonButtonType.text,
+                        onPressed: (BuildContext context) =>
+                            (loan.isOwned ? loan.loanee : loan.book.owner)
+                                .goToProfilePage(context),
+                        expand: false,
+                        style: TextButton.styleFrom(
+                          foregroundColor:
+                              Theme.of(context).colorScheme.secondary,
+                          textStyle: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                          ),
+                        ),
+                        child: Text(
+                          loan.isOwned
+                              ? loan.loanee.username
+                              : loan.book.owner.username,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                    const VerticalDivider(width: 5),
+                    if (loan.isOwned)
+                      Flexible(child: Text('requested this book'.tr)),
+                  ],
                 ),
               ),
-              Visibility(
-                visible: !loan.isOwned,
-                child: Text(
-                  'You requested this book from'.tr,
-                  style: const TextStyle(fontSize: 14),
-                ),
-              ),
-              const VerticalDivider(width: 5),
-              CommonButton(
-                type: CommonButtonType.text,
-                onPressed: (BuildContext context) =>
-                    (loan.isOwned ? loan.loanee : loan.book.owner)
-                        .goToProfilePage(context),
-                expand: false,
-                style: TextButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.secondary,
-                  textStyle: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                ),
-                child: Text(
-                  loan.isOwned
-                      ? loan.loanee.username
-                      : loan.book.owner.username,
-                ),
-              ),
-              const VerticalDivider(width: 5),
-              Visibility(
-                visible: loan.isOwned,
-                child: Text('requested this book'.tr),
-              ),
-              const Spacer(),
               // Message the other person to arrange the handover.
               CommonPillButton(
                 icon: Atlas.comment_dots_bold,
@@ -237,7 +244,7 @@ class LoanInfoPage extends StatelessWidget {
       builder: (context) {
         return Column(
           children: [
-             Align(
+            Align(
               alignment: Alignment.topLeft,
               child: Text(
                 'Request status'.tr,

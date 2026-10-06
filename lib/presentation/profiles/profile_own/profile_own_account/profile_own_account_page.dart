@@ -40,16 +40,18 @@ class ProfileOwnAccountPage extends StatelessWidget {
   }
 
   Widget _message(RxnString message) {
-    return Obx(
-      () => Visibility(
-        visible: message.value != null,
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: Text(
-            message.value ?? '',
-            style: TextStyle(
-              fontSize: 14,
-              color: Theme.of(Get.context!).colorScheme.primary,
+    return Builder(
+      builder: (context) => Obx(
+        () => Visibility(
+          visible: message.value != null,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Text(
+              message.value ?? '',
+              style: TextStyle(
+                fontSize: 14,
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ),
           ),
         ),
@@ -99,10 +101,13 @@ class ProfileOwnAccountPage extends StatelessWidget {
                         ),
                         const Divider(height: 10),
                         _message(controller.emailMessage),
-                        CommonButton(
-                          loading: controller.emailLoading,
-                          onPressed: controller.changeEmail,
-                          child: Text('Change email'.tr),
+                        SizedBox(
+                          width: double.maxFinite,
+                          child: CommonButton(
+                            loading: controller.emailLoading,
+                            onPressed: controller.changeEmail,
+                            child: Text('Change email'.tr),
+                          ),
                         ),
                       ],
                     ),
@@ -130,10 +135,13 @@ class ProfileOwnAccountPage extends StatelessWidget {
                         ),
                         const Divider(height: 10),
                         _message(controller.passwordMessage),
-                        CommonButton(
-                          loading: controller.passwordLoading,
-                          onPressed: controller.changePassword,
-                          child: Text('Change password'.tr),
+                        SizedBox(
+                          width: double.maxFinite,
+                          child: CommonButton(
+                            loading: controller.passwordLoading,
+                            onPressed: controller.changePassword,
+                            child: Text('Change password'.tr),
+                          ),
                         ),
                       ],
                     ),
@@ -156,14 +164,15 @@ class ProfileOwnAccountPage extends StatelessWidget {
                     ),
                   ),
                   // Destructive: the outlined button in the error color.
-                  Theme(
-                    data: Theme.of(context).copyWith(
-                      colorScheme:
-                          Theme.of(context).colorScheme.copyWith(primary: error),
-                    ),
+                  SizedBox(
+                    width: double.maxFinite,
                     child: CommonButton(
                       type: CommonButtonType.outlined,
                       loading: controller.deleteLoading,
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: error,
+                        side: BorderSide(color: error, width: 2),
+                      ),
                       onPressed: controller.deleteAccount,
                       child: Text('Delete account'.tr),
                     ),
