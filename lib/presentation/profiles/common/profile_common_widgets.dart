@@ -1,11 +1,58 @@
 import 'package:communal/models/loan.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_book_cover.dart';
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class ProfileCommonWidgets {
+  /// One line under the name: the location and, for a friend of a friend,
+  /// how you're connected ("via <friend>").
+  static Widget infoLine(Profile profile, {String? via}) {
+    final bool hasLocation = (profile.location ?? '').isNotEmpty;
+    if (!hasLocation && via == null) return const SizedBox.shrink();
+
+    return Builder(
+      builder: (context) {
+        return Row(
+          children: [
+            if (hasLocation) ...[
+              Icon(
+                Atlas.pin_destination,
+                size: 16,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+              const VerticalDivider(width: 4),
+              Flexible(
+                child: Text(
+                  profile.location!,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+            ],
+            if (hasLocation && via != null) const VerticalDivider(width: 8),
+            if (via != null)
+              Flexible(
+                child: Text(
+                  via,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+
   static Widget bio(Profile profile) {
     return Builder(
       builder: (context) {

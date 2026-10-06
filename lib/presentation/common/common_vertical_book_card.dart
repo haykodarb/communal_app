@@ -10,9 +10,13 @@ class CommonVerticalBookCard extends StatelessWidget {
     required this.book,
     this.clickable = true,
     this.axis = Axis.vertical,
+    this.note,
   });
 
   final Book book;
+
+  /// Optional third line, e.g. "via <friend> · <location>".
+  final String? note;
   final bool clickable;
   final Axis axis;
   final GlobalKey _imageKey = GlobalKey();
@@ -77,6 +81,19 @@ class CommonVerticalBookCard extends StatelessWidget {
                   height: 1.2,
                 ),
               ),
+              if (note != null && note!.isNotEmpty)
+                Text(
+                  note!,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  style: TextStyle(
+                    overflow: TextOverflow.ellipsis,
+                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).colorScheme.tertiary,
+                    fontSize: 10,
+                    height: 1.2,
+                  ),
+                ),
             ],
           ),
         ),

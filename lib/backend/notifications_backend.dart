@@ -4,6 +4,12 @@ import 'package:communal/models/custom_notification.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class NotificationsBackend {
+  static const String _select =
+      '*, type(*), receiver:profiles!receiver(*), sender:profiles!sender(*), '
+      'loans!left(*, books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)), '
+      'friendships!left(*, requester_profile:profiles!requester(*), responder_profile:profiles!responder(*)), '
+      'books!left(*, profiles(*))';
+
   static Future<BackendResponse> getUnreadNotificationsCount() async {
     try {
       final SupabaseClient client = Supabase.instance.client;
@@ -30,7 +36,7 @@ class NotificationsBackend {
       final Map<String, dynamic> result = await client
           .from('notifications')
           .select(
-            '*, type(*), receiver:profiles!receiver(*), sender:profiles!sender(*), loans!left(*, books!left(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)), memberships!left(*, communities(*), profiles(*))',
+            _select,
           )
           .eq('id', id)
           .single();
@@ -74,7 +80,7 @@ class NotificationsBackend {
       final List<Map<String, dynamic>> result = await client
           .from('notifications')
           .select(
-            '*, type(*), receiver:profiles!receiver(*), sender:profiles!sender(*), loans!left(*, books!left(*, profiles(*)),  loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)), friendships!left(*,requester_profile:profiles!requester(*), responder_profile:profiles!responder(*))',
+            _select,
           )
           .eq('receiver', userId)
           .order('updated_at', ascending: false)

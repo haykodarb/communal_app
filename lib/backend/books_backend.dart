@@ -307,6 +307,91 @@ class BooksBackend {
     }
   }
 
+  /// get_network_books RPC: available books of your friends and of their
+  /// friends who opted in, with the connecting friend (viaUsername) and an
+  /// optional owner-location filter.
+  static Future<BackendResponse> getNetworkBooks({
+    required int pageKey,
+    required String query,
+    required String location,
+    required int pageSize,
+  }) async {
+    try {
+      final List<dynamic> rows = await _client.rpc(
+        'get_network_books',
+        params: {
+          'offset_num': pageKey,
+          'limit_num': pageSize,
+          'search_query': query,
+          'location_query': location,
+        },
+      );
+
+      // The RPC returns bare book rows; fetch their owners in one query.
+      final List<String> ownerIds = rows
+          .map((row) => row['book']['owner'] as String)
+          .toSet()
+          .toList();
+
+      final Map<String, Map<String, dynamic>> owners = {};
+      if (ownerIds.isNotEmpty) {
+        final List<Map<String, dynamic>> profiles = await _client
+            .from('profiles')
+            .select('*')
+            .inFilter('id', ownerIds);
+        for (final Map<String, dynamic> profile in profiles) {
+          owners[profile['id']] = profile;
+        }
+      }
+
+      final List<Book> listOfBooks = rows.map((row) {
+        final Map<String, dynamic> bookMap =
+            Map<String, dynamic>.from(row['book']);
+        bookMap['profiles'] = owners[bookMap['owner']];
+        return Book.fromMap(bookMap)..viaUsername = row['via_username'];
+      }).toList();
+
+      return BackendResponse(success: true, payload: listOfBooks);
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
+    }
+  }
+
+  static Future<bool> isOnWaitlist(String bookId) async {
+    final PostgrestResponse response = await _client
+        .from('waitlist')
+        .select('*')
+        .eq('user', _client.auth.currentUser!.id)
+        .eq('book', bookId)
+        .count(CountOption.exact);
+
+    return response.count > 0;
+  }
+
+  /// "Notify me when available" on a book someone else has borrowed.
+  static Future<BackendResponse> setWaitlisted(
+    String bookId,
+    bool waitlisted,
+  ) async {
+    try {
+      final String userId = _client.auth.currentUser!.id;
+
+      if (waitlisted) {
+        await _client.from('waitlist').insert({'user': userId, 'book': bookId});
+      } else {
+        await _client
+            .from('waitlist')
+            .delete()
+            .eq('user', userId)
+            .eq('book', bookId);
+      }
+
+      return BackendResponse(success: true);
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
+    }
+  }
+
   static Future<BackendResponse> getBooksFriends({
     required int pageKey,
     required String query,

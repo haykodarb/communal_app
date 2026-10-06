@@ -25,8 +25,36 @@ class UsersBackend {
     return foundUsername == null || foundUsername.isEmpty;
   }
 
+  /// Deletes the signed-in user. Rows cascade from the profile; storage
+  /// objects don't, so the covers and avatar are removed first.
   static Future<bool> deleteUser() async {
     try {
+      // Paths are stored with a leading '/', object names have none.
+      String objectName(String path) => path.replaceFirst(RegExp(r'^/+'), '');
+
+      final List<Map<String, dynamic>> books = await _client
+          .from('books')
+          .select('image_path')
+          .eq('owner', currentUserId);
+      final List<String> covers = books
+          .map((book) => objectName(book['image_path'] as String))
+          .where((name) => name.isNotEmpty)
+          .toList();
+      if (covers.isNotEmpty) {
+        await _client.storage.from('book_covers').remove(covers);
+      }
+
+      final Map<String, dynamic> profile = await _client
+          .from('profiles')
+          .select('avatar_path')
+          .eq('id', currentUserId)
+          .single();
+      if (profile['avatar_path'] != null) {
+        await _client.storage
+            .from('profile_avatars')
+            .remove([objectName(profile['avatar_path'])]);
+      }
+
       await _client.rpc(
         'delete_user',
         params: {
@@ -147,6 +175,8 @@ class UsersBackend {
               'username': profile.username,
               'show_email': profile.show_email,
               'bio': profile.bio,
+              'location': profile.location,
+              'extended_circle': profile.extended_circle,
               'avatar_path': fileName,
             },
           )
@@ -190,6 +220,20 @@ class UsersBackend {
       );
     } on PostgrestException catch (error) {
       return BackendResponse(success: false, payload: error.message);
+    }
+  }
+
+  /// Friends you share with another user, for "via <friend>" on profiles.
+  static Future<List<Profile>> getMutualFriends(String otherUserId) async {
+    try {
+      final List<dynamic> response = await _client.rpc(
+        'get_mutual_friends',
+        params: {'other': otherUserId},
+      );
+
+      return response.map((row) => Profile.fromMap(row)).toList();
+    } catch (error) {
+      return [];
     }
   }
 

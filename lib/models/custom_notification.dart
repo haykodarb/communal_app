@@ -1,3 +1,4 @@
+import 'package:communal/models/book.dart';
 import 'package:communal/models/friendship.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/models/membership.dart';
@@ -36,6 +37,9 @@ class NotificationType {
       'created': null,
       'accepted': 'You became friends with ',
     },
+    'books': {
+      'available': null,
+    },
   };
 
   static const _notificationEnds = {
@@ -49,6 +53,9 @@ class NotificationType {
       'created': '\nsent you a friend request.',
       'accepted': null,
     },
+    'books': {
+      'available': ' is available again.',
+    },
   };
 
   String get notificationStart => (_notificationStarts[table]?[event] ?? '').tr;
@@ -61,6 +68,9 @@ class CustomNotification {
   Loan? loan;
   Membership? membership;
   Friendship? friendship;
+
+  /// books/available: a waitlisted book is back.
+  Book? book;
   DateTime updated_at;
   Profile? sender;
   Profile receiver;
@@ -93,5 +103,6 @@ class CustomNotification {
         loan = map['loans'] != null ? Loan.fromMap(map['loans']) : null,
         friendship = map['friendships'] != null
             ? Friendship.fromMap(map['friendships'])
-            : null;
+            : null,
+        book = map['books'] != null ? Book.fromMap(map['books']) : null;
 }

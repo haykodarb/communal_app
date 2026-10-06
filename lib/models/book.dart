@@ -14,6 +14,9 @@ class Book {
   bool loaned;
   bool public;
 
+  /// Network search: the friend connecting you to a friend of a friend.
+  String? viaUsername;
+
   Uint8List? image_data;
 
   RxBool loading = false.obs;
