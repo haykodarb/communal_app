@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:communal/backend/friendships_backend.dart';
 import 'package:communal/backend/messages_backend.dart';
 import 'package:communal/backend/notifications_backend.dart';
 import 'package:communal/backend/realtime_backend.dart';
@@ -21,6 +22,7 @@ const List<String> rootRoutes = [
   RouteNames.notificationsPage,
   RouteNames.communityListPage,
   RouteNames.messagesPage,
+  RouteNames.friendsPage,
   RouteNames.loansPage,
 ];
 
@@ -30,6 +32,7 @@ class CommonDrawerController extends GetxController {
   final String initialRoute;
   final RxInt messageNotifications = 0.obs;
   final RxInt globalNotifications = 0.obs;
+  final RxInt friendRequests = 0.obs;
   final RxString versionNumber = ''.obs;
   final RxString currentRoute = ''.obs;
   final Rx<Profile> currentUserProfile = Profile.empty().obs;
@@ -73,6 +76,7 @@ class CommonDrawerController extends GetxController {
     }
 
     getUnreadChats();
+    getFriendRequests();
 
     realtimeSubscription ??=
         RealtimeBackend.streamController.stream.listen(realtimeChangeHandler);
@@ -119,10 +123,23 @@ class CommonDrawerController extends GetxController {
           globalNotifications.value = notificationResponse.payload;
         }
 
+        // friendships aren't in the realtime publication, but each request
+        // creates, retypes or (when deleted) cascades a notification.
+        await getFriendRequests();
+
         break;
 
       default:
         break;
+    }
+  }
+
+  Future<void> getFriendRequests() async {
+    final BackendResponse<int> response =
+        await FriendshipsBackend.getPendingRequestsCount();
+
+    if (response.success) {
+      friendRequests.value = response.payload ?? 0;
     }
   }
 

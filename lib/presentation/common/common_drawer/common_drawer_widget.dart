@@ -286,6 +286,24 @@ class CommonDrawerWidget extends StatelessWidget {
                         Obx(
                           () {
                             return _drawerButton(
+                              text: 'Friends'.tr,
+                              icon: Atlas.users,
+                              selected: controller.currentRoute.value ==
+                                  RouteNames.friendsPage,
+                              callback: () => controller.goToRoute(
+                                  RouteNames.friendsPage, context),
+                              notifications: controller.friendRequests,
+                            );
+                          },
+                        ),
+                        Divider(
+                          thickness: 2,
+                          color: dividerColor,
+                          height: dividerHeight,
+                        ),
+                        Obx(
+                          () {
+                            return _drawerButton(
                               text: 'My Books'.tr,
                               icon: Atlas.library,
                               selected: controller.currentRoute.value ==

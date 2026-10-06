@@ -11,6 +11,7 @@ import 'package:communal/presentation/community/community_specific/community_dis
 import 'package:communal/presentation/community/community_specific/community_discussions/community_discussions_topic_messages/community_discussions_topic_messages_page.dart';
 import 'package:communal/presentation/community/community_specific/community_settings/community_settings_page.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_page.dart';
+import 'package:communal/presentation/friendships/friendships_page.dart';
 import 'package:communal/presentation/loans/loan_info/loan_info_page.dart';
 import 'package:communal/presentation/loans/loans_page.dart';
 import 'package:communal/presentation/login/login_page.dart';
@@ -53,6 +54,8 @@ class RouteNames {
 
   static const String profileOwnPage = '/my-profile';
   static const String profileOwnEditPage = '/edit';
+
+  static const String friendsPage = '/friends';
 
   static const String profileOtherPage = '/profile/:userId';
 
@@ -287,6 +290,14 @@ final GoRoute _profilesRoutes = GoRoute(
   },
 );
 
+final GoRoute _friendsRoutes = GoRoute(
+  path: RouteNames.friendsPage,
+  parentNavigatorKey: _shellNavigatorKey,
+  pageBuilder: (context, state) => const NoTransitionPage(
+    child: FriendshipsPage(),
+  ),
+);
+
 final GoRoute _notificationsRoutes = GoRoute(
   path: RouteNames.notificationsPage,
   parentNavigatorKey: _shellNavigatorKey,
@@ -458,6 +469,7 @@ final List<RouteBase> routes = <RouteBase>[
       _myBooksRoutes,
       _messagesRoutes,
       _notificationsRoutes,
+      _friendsRoutes,
       _foreignBookPage,
     ],
   ),
