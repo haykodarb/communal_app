@@ -13,6 +13,7 @@ import 'package:communal/presentation/community/community_specific/community_set
 import 'package:communal/presentation/community/community_specific/community_specific_page.dart';
 import 'package:communal/presentation/friendships/friendships_page.dart';
 import 'package:communal/presentation/loans/loan_info/loan_info_page.dart';
+import 'package:communal/presentation/profiles/profile_own/profile_own_account/profile_own_account_page.dart';
 import 'package:communal/presentation/loans/loans_page.dart';
 import 'package:communal/presentation/login/login_page.dart';
 import 'package:communal/presentation/book/book_owned/book_owned_page.dart';
@@ -54,6 +55,7 @@ class RouteNames {
 
   static const String profileOwnPage = '/my-profile';
   static const String profileOwnEditPage = '/edit';
+  static const String profileOwnAccountPage = '/account';
 
   static const String friendsPage = '/friends';
 
@@ -376,6 +378,15 @@ final GoRoute _myProfileRoutes = GoRoute(
       pageBuilder: (context, state) => const NoTransitionPage(
         child: ProfileOwnEditPage(),
       ),
+      routes: [
+        GoRoute(
+          path: RouteNames.profileOwnAccountPage,
+          parentNavigatorKey: _shellNavigatorKey,
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: ProfileOwnAccountPage(),
+          ),
+        ),
+      ],
     ),
   ],
 );

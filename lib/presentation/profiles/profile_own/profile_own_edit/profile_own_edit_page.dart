@@ -7,6 +7,8 @@ import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/profiles/profile_own/profile_own_edit/profile_own_edit_controller.dart';
 import 'package:communal/responsive.dart';
+import 'package:communal/routes.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -67,6 +69,27 @@ class ProfileOwnEditPage extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+
+  Widget _extendedCircleToggleSwitch(ProfileOwnEditController controller) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          child: Text(
+            'Show my books to friends of friends'.tr,
+            style: const TextStyle(fontSize: 16),
+          ),
+        ),
+        const VerticalDivider(),
+        Obx(
+          () => CommonSwitch(
+            callback: controller.onExtendedCircleChanged,
+            value: controller.newExtendedCircle.value,
+          ),
+        ),
+      ],
     );
   }
 
@@ -267,11 +290,26 @@ class ProfileOwnEditPage extends StatelessWidget {
                                   );
                                 },
                               ),
+                              const Divider(height: 5),
+                              Obx(
+                                () {
+                                  return CommonTextField(
+                                    callback: controller.onLocationChanged,
+                                    label: 'Location (Optional)'.tr,
+                                    validator: (_) => null,
+                                    initialValue: controller
+                                        .inheritedProfile.value.location,
+                                    maxLength: 60,
+                                  );
+                                },
+                              ),
                             ],
                           ),
                         ),
                         const Divider(height: 20),
                         _showEmailToggleSwitch(controller),
+                        const Divider(height: 20),
+                        _extendedCircleToggleSwitch(controller),
                         const Divider(height: 20),
                         _languageToggleSwitch(controller),
                         const Divider(height: 20),
@@ -286,31 +324,16 @@ class ProfileOwnEditPage extends StatelessWidget {
                           ),
                         ),
                         const Divider(height: 10),
-                        // TextButton(
-                        //   onPressed: () async {
-                        //     final bool res = await  CommonConfirmationDialog(
-                        //       title:
-                        //           'Are you sure you want to delete your account? This is immediate and cannot be undone.',
-                        //     ).open(context);
-                        //
-                        //     if (res) {
-                        //       controller.loading.value = true;
-                        //       final bool result = await UsersBackend.deleteUser();
-                        //
-                        //       if (result) {
-                        //         await LoginBackend.logout();
-                        //         if (context.mounted) {
-                        //           context.go(RouteNames.startPage);
-                        //         }
-                        //       }
-                        //       controller.loading.value = false;
-                        //     }
-                        //   },
-                        //   child: Text(
-                        //     'Delete account'.tr,
-                        //     style:  TextStyle(fontSize: 20),
-                        //   ),
-                        // ),
+                        SizedBox(
+                          width: double.maxFinite,
+                          child: CommonButton(
+                            type: CommonButtonType.outlined,
+                            onPressed: (context) => context.push(
+                              '${RouteNames.profileOwnPage}${RouteNames.profileOwnEditPage}${RouteNames.profileOwnAccountPage}',
+                            ),
+                            child: Text('Account settings'.tr),
+                          ),
+                        ),
                       ],
                     ),
                   ),
