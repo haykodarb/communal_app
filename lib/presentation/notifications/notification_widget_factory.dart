@@ -1,5 +1,6 @@
 import 'package:communal/models/custom_notification.dart';
 import 'package:communal/presentation/notifications/notifications_controller.dart';
+import 'package:communal/presentation/notifications/widgets/book_notification_widget.dart';
 import 'package:communal/presentation/notifications/widgets/friendship_notification_widget.dart';
 import 'package:communal/presentation/notifications/widgets/loan_notification_widget.dart';
 import 'package:communal/presentation/notifications/widgets/membership_notification_widget.dart';
@@ -71,6 +72,12 @@ class NotificationWidgetFactory {
               );
             case 'friendships':
               return FriendshipNotificationWidget(
+                key: key,
+                notification: notification,
+                controller: controller,
+              );
+            case 'books':
+              return BookNotificationWidget(
                 key: key,
                 notification: notification,
                 controller: controller,

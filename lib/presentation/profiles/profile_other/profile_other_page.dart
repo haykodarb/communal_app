@@ -181,6 +181,11 @@ class ProfileOtherPage extends StatelessWidget {
                             ),
                           ),
                         ),
+                        // Mutual friends load before the header is built.
+                        ProfileCommonWidgets.infoLine(
+                          profile,
+                          via: controller.viaNote,
+                        ),
                       ],
                     ),
                     SizedBox(

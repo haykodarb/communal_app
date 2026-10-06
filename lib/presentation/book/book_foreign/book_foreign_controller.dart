@@ -30,6 +30,8 @@ class BookForeignController extends GetxController {
   final Rxn<Loan> currentLoan = Rxn<Loan>();
 
   final RxBool loading = true.obs;
+  final RxBool waitlisted = false.obs;
+  final RxBool loadingWaitlist = false.obs;
   final RxBool firstLoad = false.obs;
 
   final RxInt carouselIndex = 0.obs;
@@ -86,6 +88,7 @@ class BookForeignController extends GetxController {
     }
 
     checkLoanStatus();
+    BooksBackend.isOnWaitlist(bookId).then((value) => waitlisted.value = value);
 
     loadingCarousel.value = true;
 
@@ -115,6 +118,22 @@ class BookForeignController extends GetxController {
     }
 
     loading.value = false;
+  }
+
+  /// "Notify me when available" on a book someone else has borrowed.
+  Future<void> toggleWaitlist(BuildContext context) async {
+    loadingWaitlist.value = true;
+
+    final BackendResponse response =
+        await BooksBackend.setWaitlisted(bookId, !waitlisted.value);
+
+    if (response.success) {
+      waitlisted.value = !waitlisted.value;
+    } else if (context.mounted) {
+      CommonAlertDialog(title: response.payload).open(context);
+    }
+
+    loadingWaitlist.value = false;
   }
 
   Future<void> withdrawLoanRequest(BuildContext context) async {

@@ -25,6 +25,17 @@ class ProfileOtherController extends ProfileCommonController {
 
   final RxBool loadingProfile = true.obs;
   final RxBool loadingFriendship = false.obs;
+  final RxList<Profile> mutualFriends = <Profile>[].obs;
+
+  /// How you're connected to a friend of a friend ("via <friend>").
+  String? get viaNote {
+    if (profile.value.friendship?.isAccepted ?? false) return null;
+    if (mutualFriends.isEmpty) return null;
+    final String first =
+        'via {name}'.tr.replaceFirst('{name}', mutualFriends.first.username);
+    if (mutualFriends.length == 1) return first;
+    return '$first ${'and {n} more'.tr.replaceFirst('{n}', '${mutualFriends.length - 1}')}';
+  }
 
   @override
   Future<void> onInit() async {
@@ -50,6 +61,8 @@ class ProfileOtherController extends ProfileCommonController {
         print(friendRes.payload);
       }
     }
+
+    mutualFriends.value = await UsersBackend.getMutualFriends(userId);
 
     loadingProfile.value = false;
   }

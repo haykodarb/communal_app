@@ -105,6 +105,7 @@ class ProfileOwnPage extends StatelessWidget {
                             ),
                           ),
                         ),
+                        ProfileCommonWidgets.infoLine(profile),
                       ],
                     ),
                     SizedBox(

@@ -1,6 +1,11 @@
 import 'package:communal/models/book.dart';
 import 'package:communal/models/profile.dart';
-import 'package:communal/presentation/common/common_circular_avatar.dart';
+import 'package:atlas_icons/atlas_icons.dart';
+import 'package:communal/presentation/common/common_button.dart';
+import 'package:communal/presentation/common/common_filter_bottomsheet.dart';
+import 'package:communal/presentation/common/common_pill_button.dart';
+import 'package:communal/presentation/common/common_text_field.dart';
+import 'package:communal/presentation/common/common_user_card.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/presentation/common/common_search_bar.dart';
@@ -8,57 +13,49 @@ import 'package:communal/presentation/common/common_tab_bar.dart';
 import 'package:communal/presentation/common/common_vertical_book_card.dart';
 import 'package:communal/presentation/search/search_controller.dart';
 import 'package:communal/responsive.dart';
-import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 
 class SearchPage extends StatelessWidget {
   const SearchPage({super.key});
 
-  Widget _userCard(Profile user) {
+  String _note(Book book) {
+    return [
+      if (book.viaUsername != null)
+        'via {name}'.tr.replaceFirst('{name}', book.viaUsername!),
+      if ((book.owner.location ?? '').isNotEmpty) book.owner.location!,
+    ].join(' · ');
+  }
+
+  Widget _locationSheet(SearchPageController controller) {
+    String draft = controller.location.value;
+
     return Builder(
       builder: (context) {
-        return Card(
-          child: InkWell(
-            onTap: () {
-              context.push(
-                RouteNames.profileOtherPage.replaceFirst(
-                  ':userId',
-                  user.id,
-                ),
-              );
-            },
-            enableFeedback: false,
-            highlightColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            child: SizedBox(
-              height: 60,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CommonCircularAvatar(
-                      profile: user,
-                      radius: 20,
-                      clickable: true,
-                    ),
-                    const VerticalDivider(width: 10),
-                    Expanded(
-                      child: Text(
-                        user.username,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                    const VerticalDivider(width: 10),
-                  ],
-                ),
+        void apply(String value) {
+          controller.onLocationChanged(value);
+          Navigator.of(context).pop();
+        }
+
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: CommonFilterBottomsheet(
+            children: [
+              CommonTextField(
+                label: 'Location (neighbourhood or city)'.tr,
+                initialValue: draft,
+                validator: (_) => null,
+                callback: (value) => draft = value,
+                submitCallback: apply,
               ),
-            ),
+              const Divider(height: 20),
+              CommonButton(
+                onPressed: (_) => apply(draft),
+                child: Text('Apply'.tr),
+              ),
+            ],
           ),
         );
       },
@@ -72,7 +69,7 @@ class SearchPage extends StatelessWidget {
       builder: (SearchPageController controller) {
         return Scaffold(
           appBar: Responsive.isMobile(context)
-              ? AppBar(title: const Text('Search'))
+              ? AppBar(title: Text('Search'.tr))
               : null,
           drawer:
               Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
@@ -102,9 +99,19 @@ class SearchPage extends StatelessWidget {
                 SliverAppBar(
                   title: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: CommonSearchBar(
-                      searchCallback: controller.onQueryChanged,
-                      focusNode: FocusNode(),
+                    child: Obx(
+                      () => CommonSearchBar(
+                        searchCallback: controller.onQueryChanged,
+                        focusNode: FocusNode(),
+                        filterCallback: controller.currentTabIndex.value == 0
+                            ? () => showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  builder: (context) =>
+                                      _locationSheet(controller),
+                                )
+                            : null,
+                      ),
                     ),
                   ),
                   titleSpacing: 0,
@@ -112,6 +119,28 @@ class SearchPage extends StatelessWidget {
                   centerTitle: true,
                   automaticallyImplyLeading: false,
                   pinned: true,
+                ),
+                Obx(
+                  () {
+                    if (controller.currentTabIndex.value != 0 ||
+                        controller.location.value.isEmpty) {
+                      return const SliverToBoxAdapter(child: SizedBox.shrink());
+                    }
+
+                    return SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 15, top: 5),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: CommonPillButton(
+                            icon: Atlas.pin_destination,
+                            label: '${controller.location.value}  ✕',
+                            onPressed: (_) => controller.onLocationChanged(''),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 const SliverToBoxAdapter(child: SizedBox(height: 5)),
                 Obx(
@@ -126,10 +155,13 @@ class SearchPage extends StatelessWidget {
                           ),
                           isSliver: true,
                           scrollController: controller.scrollController,
-                          childBuilder: (Book book) =>
-                              CommonVerticalBookCard(book: book),
+                          childBuilder: (Book book) => CommonVerticalBookCard(
+                            book: book,
+                            note: _note(book),
+                          ),
                           noItemsText:
-                              'No books found in any of the communities you are a part of.',
+                              'No books found among your friends and their friends.'
+                                  .tr,
                           controller: controller.bookListController,
                         );
                       case 1:
@@ -142,7 +174,10 @@ class SearchPage extends StatelessWidget {
                           isSliver: true,
                           scrollController: controller.scrollController,
                           childBuilder: (Profile profile, _) =>
-                              _userCard(profile),
+                              CommonUserCard(
+                            profile: profile,
+                            subtitle: profile.location,
+                          ),
                           controller: controller.profileListController,
                           noItemsText:
                               'No users found, likely a network issue.',

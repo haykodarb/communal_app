@@ -20,6 +20,9 @@ class SearchPageController extends GetxController {
   final CommonListViewController<Profile> profileListController =
       CommonListViewController(pageSize: pageSize);
   String query = '';
+
+  /// Owner-location filter for the Books tab ("" = any).
+  final RxString location = ''.obs;
   Timer? debounceTimer;
 
   final RxInt currentTabIndex = 0.obs;
@@ -39,6 +42,11 @@ class SearchPageController extends GetxController {
       const Duration(milliseconds: 300),
       reloadCurrentPage,
     );
+  }
+
+  void onLocationChanged(String value) {
+    location.value = value.trim();
+    bookListController.reloadList();
   }
 
   void reloadCurrentPage() async {
@@ -92,10 +100,10 @@ class SearchPageController extends GetxController {
   }
 
   Future<List<Book>> searchBooks(int pageKey) async {
-    final BackendResponse response =
-        await BooksBackend.getBooksFriendsOfFriends(
+    final BackendResponse response = await BooksBackend.getNetworkBooks(
       pageKey: pageKey,
       query: query,
+      location: location.value,
       pageSize: pageSize,
     );
 
