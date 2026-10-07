@@ -52,7 +52,13 @@ class CommonPillButton extends StatelessWidget {
         loaderSize: 20,
         style: filled
             ? FilledButton.styleFrom(padding: _padding)
-            : OutlinedButton.styleFrom(padding: _padding),
+            : OutlinedButton.styleFrom(
+                padding: _padding,
+                side: BorderSide(
+                  color: Theme.of(context).colorScheme.primary,
+                  width: 1.5,
+                ),
+              ),
         onPressed: onPressed,
         child: Row(
           mainAxisSize: MainAxisSize.min,

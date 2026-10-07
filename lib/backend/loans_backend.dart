@@ -275,8 +275,12 @@ class LoansBackend {
     }
   }
 
+  /// Accepted loans of a book that left a review, newest first. `pageKey` is
+  /// the offset of the first one, as in CommonListViewController.
   static Future<BackendResponse> getCompletedLoansForItem({
     required String bookId,
+    required int pageKey,
+    required int pageSize,
   }) async {
     try {
       final SupabaseClient client = Supabase.instance.client;
@@ -288,7 +292,10 @@ class LoansBackend {
           )
           .eq('book', bookId)
           .eq('accepted', true)
-          .not('review', 'is', null);
+          .not('review', 'is', null)
+          .order('latest_date', ascending: false, nullsFirst: false)
+          .order('id', ascending: false)
+          .range(pageKey, pageKey + pageSize - 1);
 
       final List<Loan> loanList =
           response.map((element) => Loan.fromMap(element)).toList();

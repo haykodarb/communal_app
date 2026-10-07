@@ -1,3 +1,4 @@
+import 'package:communal/features.dart';
 import 'package:communal/presentation/book/book_create/book_create_page.dart';
 import 'package:communal/presentation/book/book_edit/book_edit_page.dart';
 import 'package:communal/presentation/book/book_foreign/book_foreign_page.dart';
@@ -150,6 +151,9 @@ final GoRoute _myBooksRoutes = GoRoute(
 final GoRoute _communityRoutes = GoRoute(
   path: RouteNames.communityListPage,
   parentNavigatorKey: _shellNavigatorKey,
+  // Disabled for now (see features.dart): the pages are kept, not reachable.
+  redirect: (context, state) =>
+      Features.communitiesEnabled ? null : RouteNames.myBooks,
   pageBuilder: (context, state) {
     return const NoTransitionPage(
       child: SafeArea(

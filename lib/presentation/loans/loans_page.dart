@@ -227,7 +227,7 @@ class LoansPage extends StatelessWidget {
                           loan.returned
                               ? 'Loan completed'.tr
                               : loan.accepted
-                                  ? 'Loan accepted'.tr
+                                  ? 'On loan'.tr
                                   : loan.rejected
                                       ? 'Loan rejected'.tr
                                       : 'Awaiting approval'.tr,

@@ -24,14 +24,6 @@ class BookOwnedController extends GetxController {
   final RxBool firstLoad = false.obs;
   final RxBool deleting = false.obs;
 
-  final RxInt carouselIndex = 0.obs;
-  final RxBool loadingCarousel = false.obs;
-  final RxList<Loan> completedLoans = <Loan>[].obs;
-
-  final RxBool expandCarouselItem = false.obs;
-
-  final PageController reviewsPageController = PageController();
-
   BookListController? bookListController;
   ProfileOwnController? profileOwnController;
 
@@ -46,12 +38,6 @@ class BookOwnedController extends GetxController {
     if (Get.isRegistered<ProfileOwnController>()) {
       profileOwnController = Get.find<ProfileOwnController>();
     }
-
-    reviewsPageController.addListener(() {
-      carouselIndex.value = reviewsPageController.page?.toInt() ?? 0;
-    });
-
-    loadingCarousel.value = true;
 
     inheritedBook =
         bookListController?.listViewController.itemList.firstWhereOrNull(
@@ -75,19 +61,6 @@ class BookOwnedController extends GetxController {
     }
 
     await loadCurrentLoan();
-
-    completedLoans.clear();
-
-    final BackendResponse response =
-        await LoansBackend.getCompletedLoansForItem(
-      bookId: bookId,
-    );
-
-    if (response.success) {
-      completedLoans.addAll(response.payload);
-    }
-
-    loadingCarousel.value = false;
 
     super.onInit();
   }

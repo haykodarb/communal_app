@@ -28,7 +28,7 @@ class FriendshipsPage extends StatelessWidget {
             onPressed: (context) => controller.remove(friendship, context),
           ),
         ];
-      case 1:
+      default:
         return [
           CommonPillButton(
             icon: Icons.check,
@@ -44,22 +44,12 @@ class FriendshipsPage extends StatelessWidget {
             onPressed: (context) => controller.reject(friendship, context),
           ),
         ];
-      default:
-        return [
-          CommonPillButton(
-            icon: Icons.close,
-            label: 'Withdraw'.tr,
-            loading: friendship.loading,
-            onPressed: (context) => controller.withdraw(friendship, context),
-          ),
-        ];
     }
   }
 
   static const List<String> _noItemsTexts = [
     'You have no friends yet. Find people in Search.',
     'No pending requests.',
-    'You have not sent any requests.',
   ];
 
   @override
@@ -88,11 +78,11 @@ class FriendshipsPage extends StatelessWidget {
                     child: CommonTabBar(
                       onTabTapped: controller.onTabTapped,
                       currentIndex: controller.currentTabIndex,
-                      tabs: ['Friends'.tr, 'Received'.tr, 'Sent'.tr],
+                      tabs: ['Friends'.tr, 'Requests'.tr],
                     ),
                   ),
                 ),
-                const SliverToBoxAdapter(child: SizedBox(height: 5)),
+                const SliverToBoxAdapter(child: SizedBox(height: 10)),
                 Obx(
                   () {
                     final int tab = controller.currentTabIndex.value;

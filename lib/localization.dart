@@ -91,7 +91,7 @@ class LocalizationText extends Translations {
           'Create': 'Crear',
           'Add': 'Agregar',
           'Create topic': 'Crear conversación',
-          'Loan accepted': 'Prestamo aceptado',
+          'On loan': 'En préstamo',
           'Loan rejected': 'Prestamo rechazado',
           'Loan completed': 'Prestamo completado',
           'Returned': 'Devuelto',
@@ -159,7 +159,7 @@ class LocalizationText extends Translations {
               'Sacá fotos a tus libros físicos para subirlos a la app. Compartí tu colección y permití que otros descubran lo que te gusta leer.',
           'landing-join-communities':
               'Encuentra grupos de amigos, clubes o apasionados de los libros. Construí librerías compartidas junto a tu círculo de confianza.',
-          'Received': 'Recibidas',
+          'Requests': 'Solicitudes',
           'Sent': 'Enviadas',
           'Remove': 'Eliminar',
           'Withdraw': 'Retirar',

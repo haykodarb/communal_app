@@ -12,7 +12,7 @@ import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-/// Friends / Received / Sent tabs over the friendships table.
+/// Friends / Requests tabs over the friendships table.
 class FriendshipsController extends GetxController {
   static const int pageSize = 30;
 
@@ -23,13 +23,11 @@ class FriendshipsController extends GetxController {
       CommonListViewController(pageSize: pageSize);
   final CommonListViewController<Friendship> receivedController =
       CommonListViewController(pageSize: pageSize);
-  final CommonListViewController<Friendship> sentController =
-      CommonListViewController(pageSize: pageSize);
 
   StreamSubscription? realtimeSubscription;
 
   List<CommonListViewController<Friendship>> get _lists =>
-      [friendsController, receivedController, sentController];
+      [friendsController, receivedController];
 
   CommonListViewController<Friendship> get currentList =>
       _lists[currentTabIndex.value];
@@ -46,12 +44,6 @@ class FriendshipsController extends GetxController {
     );
     receivedController.registerNewPageCallback(
       (pageKey) => _load(FriendshipsBackend.getPendingRequests(
-        pageKey: pageKey,
-        pageSize: pageSize,
-      )),
-    );
-    sentController.registerNewPageCallback(
-      (pageKey) => _load(FriendshipsBackend.getSentRequests(
         pageKey: pageKey,
         pageSize: pageSize,
       )),
@@ -128,13 +120,6 @@ class FriendshipsController extends GetxController {
   void reject(Friendship friendship, BuildContext context) => _run(
         friendship,
         'Reject this request?'.tr,
-        () => FriendshipsBackend.deleteFriendship(friendship.id),
-        context,
-      );
-
-  void withdraw(Friendship friendship, BuildContext context) => _run(
-        friendship,
-        'Withdraw friend request?'.tr,
         () => FriendshipsBackend.deleteFriendship(friendship.id),
         context,
       );

@@ -34,14 +34,6 @@ class BookForeignController extends GetxController {
   final RxBool loadingWaitlist = false.obs;
   final RxBool firstLoad = false.obs;
 
-  final RxInt carouselIndex = 0.obs;
-  final RxBool loadingCarousel = false.obs;
-  final RxList<Loan> completedLoans = <Loan>[].obs;
-
-  final RxBool expandCarouselItem = false.obs;
-
-  final PageController reviewsPageController = PageController();
-
   LoansController? loansController;
 
   @override
@@ -89,19 +81,6 @@ class BookForeignController extends GetxController {
 
     checkLoanStatus();
     BooksBackend.isOnWaitlist(bookId).then((value) => waitlisted.value = value);
-
-    loadingCarousel.value = true;
-
-    completedLoans.clear();
-
-    final BackendResponse response =
-        await LoansBackend.getCompletedLoansForItem(bookId: bookId);
-
-    if (response.success) {
-      completedLoans.addAll(response.payload);
-    }
-
-    loadingCarousel.value = false;
 
     super.onInit();
   }
