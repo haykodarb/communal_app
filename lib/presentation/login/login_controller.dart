@@ -67,7 +67,7 @@ class LoginController extends GetxController {
       loading.value = false;
 
       if (response.success && context.mounted) {
-        GoRouter.of(context).go(RouteNames.communityListPage);
+        GoRouter.of(context).go(RouteNames.homePage);
       } else {
         errorMessage.value = response.payload;
       }

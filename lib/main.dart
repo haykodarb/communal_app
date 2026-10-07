@@ -59,14 +59,14 @@ void main() async {
     routes: routes,
     onException: (_, GoRouterState state, GoRouter router) {
       if (Supabase.instance.client.auth.currentUser != null) {
-        router.go(RouteNames.myBooks);
+        router.go(RouteNames.homePage);
       } else {
         router.go(RouteNames.startPage);
       }
     },
     initialLocation: Supabase.instance.client.auth.currentUser == null
         ? (welcomeShown ? RouteNames.startPage : RouteNames.landingPage)
-        : RouteNames.myBooks,
+        : RouteNames.homePage,
   );
 
   if (_isFirebaseSupported) {

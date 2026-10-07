@@ -15,7 +15,7 @@ const ColorScheme _lightScheme = ColorScheme.light(
   onTertiary: Color(0xFFfffaf3),
   onSurface: Color(0xFF575279),
   onSurfaceVariant: Color(0xFF797593),
-  error: Color(0xFFeb6f92),
+  error: Color(0xFFc8463f),
 );
 
 const Color _overlayColor = Colors.transparent;

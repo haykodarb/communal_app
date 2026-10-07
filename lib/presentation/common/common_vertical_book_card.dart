@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class CommonVerticalBookCard extends StatelessWidget {
-  CommonVerticalBookCard({
+  const CommonVerticalBookCard({
     super.key,
     required this.book,
     this.clickable = true,
@@ -19,7 +19,6 @@ class CommonVerticalBookCard extends StatelessWidget {
   final String? note;
   final bool clickable;
   final Axis axis;
-  final GlobalKey _imageKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +52,6 @@ class CommonVerticalBookCard extends StatelessWidget {
                 flex: axis == Axis.vertical ? 0 : 1,
                 child: CommonBookCover(
                   book,
-                  key: _imageKey,
                 ),
               ),
               const Divider(height: 10),

@@ -8,7 +8,20 @@ import 'package:get/get.dart';
 class CommonBookCoverController extends GetxController {
   CommonBookCoverController({
     required this.book,
-  });
+  }) {
+    // A cover seen before shows on the first frame: grid cells are disposed
+    // when they scroll away, and reading the disk cache again would flash
+    // the placeholder every time one scrolls back in.
+    final Uint8List? cached = _memoryCache[book.image_path];
+    if (cached != null) {
+      coverBytes = cached;
+      loading.value = false;
+    }
+  }
+
+  /// Covers already loaded this session, by image path. The same bytes
+  /// instance also lets Image.memory reuse its decoded image.
+  static final Map<String, Uint8List> _memoryCache = {};
 
   final Book book;
   Uint8List coverBytes = Uint8List(0);
@@ -19,9 +32,12 @@ class CommonBookCoverController extends GetxController {
   Future<void> onReady() async {
     super.onReady();
 
+    if (!loading.value) return;
+
     coverBytes = await BooksBackend.getBookCover(book);
 
     if (coverBytes.isNotEmpty) {
+      _memoryCache[book.image_path] = coverBytes;
       loading.value = false;
     }
   }
@@ -78,6 +94,7 @@ class CommonBookCover extends StatelessWidget {
 
               return Image.memory(
                 controller.coverBytes,
+                gaplessPlayback: true,
               );
             },
           ),

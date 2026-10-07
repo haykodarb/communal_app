@@ -14,10 +14,6 @@ import 'package:get/get.dart';
 class SearchPage extends StatelessWidget {
   const SearchPage({super.key});
 
-  String? _note(Book book) => book.viaUsername == null
-      ? null
-      : 'via {name}'.tr.replaceFirst('{name}', book.viaUsername!);
-
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
@@ -72,6 +68,7 @@ class SearchPage extends StatelessWidget {
                     switch (controller.currentTabIndex.value) {
                       case 0:
                         return CommonGridView<Book>(
+                          maxColumns: 3,
                           padding: const EdgeInsets.only(
                             bottom: 20,
                             left: 10,
@@ -79,10 +76,8 @@ class SearchPage extends StatelessWidget {
                           ),
                           isSliver: true,
                           scrollController: controller.scrollController,
-                          childBuilder: (Book book) => CommonVerticalBookCard(
-                            book: book,
-                            note: _note(book),
-                          ),
+                          childBuilder: (Book book) =>
+                              CommonVerticalBookCard(book: book),
                           noItemsText:
                               'No books found among your friends and their friends.'
                                   .tr,

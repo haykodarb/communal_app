@@ -2,6 +2,7 @@ import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/models/profile.dart';
+import 'package:communal/presentation/common/common_review_card.dart';
 import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
@@ -280,10 +281,7 @@ class ProfileOtherPage extends StatelessWidget {
                   book: book,
                 ),
                 reviewCardBuilder: (Loan loan, _) =>
-                    ProfileCommonWidgets.reviewCard(
-                  loan: loan,
-                  onTap: null,
-                ),
+                    CommonReviewCard(loan: loan),
                 booksNoItemsText: 'No books.',
                 reviewsNoItemsText: 'No reviews.',
               ),

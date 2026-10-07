@@ -10,7 +10,7 @@ ColorScheme _darkScheme = const ColorScheme.dark(
   secondary: Color(0xFF9ccfd8),
   tertiary: Color(0xFFc4a7e7),
   tertiaryContainer: Color(0xFF5D5172),
-  error: Color(0xFFeb6f92),
+  error: Color(0xFFef6e6b),
   onPrimary: Color(0xFF191724),
   onSecondary: Color(0xFF191724),
   onTertiary: Color(0xFF191724),

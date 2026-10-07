@@ -40,7 +40,7 @@ class StartController extends GetxController {
       }
 
       if (response.success && context.mounted) {
-        context.go(RouteNames.communityListPage);
+        context.go(RouteNames.homePage);
       }
 
       loading.value = false;

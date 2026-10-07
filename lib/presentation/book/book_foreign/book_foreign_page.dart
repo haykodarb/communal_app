@@ -4,7 +4,8 @@ import 'package:communal/presentation/book/book_detail_view.dart';
 import 'package:communal/presentation/book/book_foreign/book_foreign_controller.dart';
 import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
-import 'package:communal/presentation/common/common_username_button.dart';
+import 'package:communal/presentation/common/common_status_badge.dart';
+import 'package:communal/presentation/common/common_user_link.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -116,15 +117,6 @@ class BookForeignPage extends StatelessWidget {
               book: book,
               info: [
                 BookInfoItem(
-                    'Owner'.tr, CommonUsernameButton(user: book.owner)),
-                BookInfoItem(
-                  'Added'.tr,
-                  Text(
-                    DateFormat('dd/MM/yy', Get.locale?.languageCode)
-                        .format(book.created_at),
-                  ),
-                ),
-                BookInfoItem(
                   'Status'.tr,
                   Obx(() {
                     if (controller.loading.value) return const Text('');
@@ -133,8 +125,13 @@ class BookForeignPage extends StatelessWidget {
                         controller.currentLoan.value?.loanee.isCurrentUser ??
                             false;
 
-                    return Text(
-                      book.loaned
+                    return CommonStatusBadge(
+                      tone: book.loaned
+                          ? StatusTone.loaned
+                          : requestByCurrentUser
+                              ? StatusTone.requested
+                              : StatusTone.available,
+                      label: book.loaned
                           ? (requestByCurrentUser
                               ? 'Loaned'.tr
                               : 'Unavailable'.tr)
@@ -143,6 +140,17 @@ class BookForeignPage extends StatelessWidget {
                               : 'Available'.tr),
                     );
                   }),
+                ),
+                BookInfoItem(
+                  'Added'.tr,
+                  Text(
+                    DateFormat.yMMMd(Get.locale?.languageCode)
+                        .format(book.created_at),
+                  ),
+                ),
+                BookInfoItem(
+                  'Owner'.tr,
+                  CommonUserLink(profile: book.owner, fontSize: 15),
                 ),
               ],
               actions: _buttonRow(controller),

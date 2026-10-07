@@ -4,8 +4,8 @@ import 'package:communal/models/book.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_book_cover.dart';
-import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_user_link.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -25,6 +25,16 @@ class BookReviewsList {
   final RxBool loading = false.obs;
   final RxBool fullyLoaded = false.obs;
   final RxnString error = RxnString();
+
+  /// How many readers reviewed the book, for the heading.
+  final RxInt count = 0.obs;
+
+  Future<void> loadCount() async {
+    final BackendResponse<int> response =
+        await LoansBackend.getReviewCountForBook(bookId);
+
+    if (response.success) count.value = response.payload ?? 0;
+  }
 
   Future<void> loadMore() async {
     if (loading.value || fullyLoaded.value) return;
@@ -52,7 +62,7 @@ class BookReviewsList {
   }
 }
 
-/// One cell of the info pill under the title (Owner, Added, Status...).
+/// One cell of the info row under the title (Status, Added, Owner...).
 class BookInfoItem {
   const BookInfoItem(this.label, this.value);
 
@@ -61,37 +71,43 @@ class BookInfoItem {
 }
 
 /// Shared layout of BookOwnedPage / BookForeignPage. The page scrolls as a
-/// whole: the cover and title stay on top and shrink as you scroll, the info
-/// pill and the reviews pass under them, and the action buttons stay pinned
-/// at the bottom.
+/// whole: the cover, title and info row scroll away, and once the title is
+/// out of view a compact bar (back, a thumbnail, title and author) takes over
+/// at the top, so the reviews get most of the screen. Tapping the cover shows
+/// it large. The action buttons stay pinned at the bottom.
 class BookDetailView extends StatefulWidget {
   const BookDetailView({
     super.key,
     required this.book,
     required this.info,
     required this.actions,
-    this.expandCoverOnTap = false,
   });
 
   final Book book;
   final List<BookInfoItem> info;
   final Widget actions;
-  final bool expandCoverOnTap;
 
   @override
   State<BookDetailView> createState() => _BookDetailViewState();
 }
 
 class _BookDetailViewState extends State<BookDetailView> {
+  /// The compact bar's height; it shows once the title has gone under it.
+  static const double _barHeight = 56;
+
   final ScrollController _scroll = ScrollController();
+  final GlobalKey _stackKey = GlobalKey();
+  final GlobalKey _titleKey = GlobalKey();
   late final BookReviewsList _reviews = BookReviewsList(bookId: widget.book.id);
   late final Worker _afterLoad;
+
+  bool _compact = false;
 
   @override
   void initState() {
     super.initState();
 
-    _scroll.addListener(_maybeLoadMore);
+    _scroll.addListener(_onScroll);
 
     // A page that doesn't fill the screen can't be scrolled to load the next
     // one, so keep loading until it does (or there are no more).
@@ -100,6 +116,7 @@ class _BookDetailViewState extends State<BookDetailView> {
       WidgetsBinding.instance.addPostFrameCallback((_) => _maybeLoadMore());
     });
 
+    _reviews.loadCount();
     _reviews.loadMore();
   }
 
@@ -110,112 +127,215 @@ class _BookDetailViewState extends State<BookDetailView> {
     super.dispose();
   }
 
+  void _onScroll() {
+    _maybeLoadMore();
+
+    final RenderBox? title =
+        _titleKey.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? stack =
+        _stackKey.currentContext?.findRenderObject() as RenderBox?;
+    if (title == null || stack == null || !title.attached) return;
+
+    final double bottom =
+        title.localToGlobal(Offset(0, title.size.height), ancestor: stack).dy;
+    final bool compact = bottom < _barHeight;
+
+    if (compact != _compact) setState(() => _compact = compact);
+  }
+
   void _maybeLoadMore() {
     if (!mounted || !_scroll.hasClients) return;
     if (_scroll.position.extentAfter < 200) _reviews.loadMore();
   }
 
-  /// The cover, title and author. As [progress] goes from 0 (top of the page)
-  /// to 1 (one full screen scrolled) the cover shrinks to 60% and the text to
-  /// 70%. Behind the cover's top half is the page background; a rounded card
-  /// starts at its midpoint and hides the content sliding under it.
-  Widget _header(
-    BuildContext context,
-    double height, {
-    double progress = 0,
-    double shadow = 0,
-    bool placeholder = false,
-  }) {
+  /// The cover shown large over a dimmed page; a tap anywhere closes it.
+  void _openCover() {
+    final Size size = MediaQuery.sizeOf(context);
+    final double height =
+        (size.height * 0.9).clamp(0, size.width * 0.9 * 4 / 3);
+
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withValues(alpha: 0.75),
+      animationStyle: const AnimationStyle(
+        duration: Duration(milliseconds: 200),
+        reverseDuration: Duration(milliseconds: 160),
+      ),
+      // Dialog supplies the Material the cover's InkWell needs. A tap on the
+      // cover closes it; a tap on the dimmed page does too (the barrier).
+      builder: (context) => Dialog(
+        insetPadding: EdgeInsets.zero,
+        backgroundColor: Colors.transparent,
+        clipBehavior: Clip.hardEdge,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        child: MouseRegion(
+          cursor: SystemMouseCursors.zoomOut,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => Navigator.of(context).pop(),
+            child: SizedBox(
+              height: height,
+              child: IgnorePointer(
+                child: CommonBookCover(widget.book, radius: 8),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// The cover, title and author. Behind the cover's top half is the page
+  /// background; the near-white card starts at its midpoint.
+  Widget _header(BuildContext context, double height) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final double gap = height * 0.05;
-    final double cover = height * 0.46 * (1 - 0.4 * progress);
-    final double textScale = 1 - 0.3 * progress;
+    final double cover = height * 0.46;
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: colors.surface,
-        // Elevation cue (hairline + soft shadow) that fades in quickly as you
-        // scroll, so the list clearly passes under the header.
-        boxShadow: shadow == 0
-            ? null
-            : [
+    return Stack(
+      children: [
+        Positioned(
+          top: gap + cover / 2,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: colors.surfaceContainer,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(30)),
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(20, gap, 20, 0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: cover,
+                child: Center(
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.zoomIn,
+                    child: GestureDetector(
+                      onTap: _openCover,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              offset: const Offset(2, 1),
+                              blurRadius: 20,
+                              spreadRadius: 12,
+                              color: colors.surface,
+                            ),
+                          ],
+                        ),
+                        child: CommonBookCover(widget.book),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                key: _titleKey,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  children: [
+                    Text(
+                      widget.book.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                        height: 1.3,
+                      ),
+                    ),
+                    Text(
+                      widget.book.author,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: colors.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const Positioned(top: 4, left: 4, child: _BookBackButton()),
+      ],
+    );
+  }
+
+  /// Takes over the top of the page once the title has scrolled under it.
+  Widget _compactBar(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+
+    return IgnorePointer(
+      ignoring: !_compact,
+      child: AnimatedOpacity(
+        opacity: _compact ? 1 : 0,
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOut,
+        child: AnimatedSlide(
+          offset: _compact ? Offset.zero : const Offset(0, -8 / _barHeight),
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeOut,
+          child: Container(
+            height: _barHeight,
+            padding: const EdgeInsets.only(left: 4, right: 16),
+            decoration: BoxDecoration(
+              color: colors.surfaceContainer,
+              boxShadow: [
                 BoxShadow(
-                  offset: const Offset(0, 2),
-                  color: colors.onSurface.withValues(alpha: 0.08 * shadow),
+                  offset: const Offset(0, 1),
+                  color: colors.onSurface.withValues(alpha: 0.08),
                 ),
                 BoxShadow(
                   offset: const Offset(0, 2),
                   blurRadius: 10,
-                  color: colors.shadow.withValues(alpha: 0.5 * shadow),
+                  color: colors.shadow.withValues(alpha: 0.5),
                 ),
               ],
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: gap + cover / 2,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: colors.surfaceContainer,
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(30)),
-              ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(20, gap, 20, 0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+            child: Row(
               children: [
+                const _BookBackButton(),
+                const SizedBox(width: 6),
                 SizedBox(
-                  height: cover,
-                  child: placeholder
-                      ? null
-                      : Center(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  offset: const Offset(2, 1),
-                                  blurRadius: 20,
-                                  spreadRadius: 12,
-                                  color: colors.surface,
-                                ),
-                              ],
-                            ),
-                            child: CommonBookCover(
-                              widget.book,
-                              expandOnTap: widget.expandCoverOnTap,
-                            ),
-                          ),
-                        ),
+                  width: 30,
+                  height: 40,
+                  child: CommonBookCover(widget.book, radius: 4),
                 ),
-                SizedBox(height: 20 - 10 * progress),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                const SizedBox(width: 10),
+                Expanded(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         widget.book.title,
-                        maxLines: 2,
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 24 * textScale,
+                        style: const TextStyle(
+                          fontSize: 14,
                           fontWeight: FontWeight.w600,
                           height: 1.3,
                         ),
                       ),
                       Text(
                         widget.book.author,
-                        maxLines: 2,
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 20 * textScale,
+                          fontSize: 12,
                           color: colors.onSurfaceVariant,
                         ),
                       ),
@@ -225,57 +345,73 @@ class _BookDetailViewState extends State<BookDetailView> {
               ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _infoPill(BuildContext context) {
+  /// Centred cells with uppercase labels, separated by faint dividers.
+  Widget _infoRow(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
+    final Color divider = colors.onSurface.withValues(alpha: 0.12);
 
-    return Container(
+    return SizedBox(
       height: 65,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      decoration: BoxDecoration(
-        color: colors.surface,
-        borderRadius: BorderRadius.circular(40),
-      ),
-      child: Row(
-        children: [
-          for (final BookInfoItem item in widget.info)
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    item.label,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: colors.onSurfaceVariant,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Row(
+          children: [
+            for (int i = 0; i < widget.info.length; i++) ...[
+              if (i > 0) Container(width: 1, height: 65 * 0.64, color: divider),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      widget.info[i].label.toUpperCase(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.66,
+                        color: colors.onSurfaceVariant.withValues(alpha: 0.85),
+                      ),
                     ),
-                  ),
-                  DefaultTextStyle.merge(
-                    style: const TextStyle(fontSize: 16),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    child: item.value,
-                  ),
-                ],
+                    const SizedBox(height: 4),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                      child: DefaultTextStyle.merge(
+                        style: const TextStyle(fontSize: 15),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        child: widget.info[i].value,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-        ],
+            ],
+          ],
+        ),
       ),
     );
   }
 
+  /// "Reviews · N" and the list; nothing at all when there are no reviews.
   List<Widget> _reviewItems(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
     final String? ownerReview = widget.book.review;
+    final bool hasOwnerReview = ownerReview != null && ownerReview.isNotEmpty;
 
     // The owner's own review has no date and is shown first.
     final List<Widget> reviews = [
-      if (ownerReview != null && ownerReview.isNotEmpty)
-        BookReviewItem(author: widget.book.owner, text: ownerReview),
+      if (hasOwnerReview)
+        BookReviewItem(
+          author: widget.book.owner,
+          text: ownerReview,
+          tag: "Owner's note".tr,
+        ),
       for (final Loan loan in _reviews.items)
         BookReviewItem(
           author: loan.loanee,
@@ -284,32 +420,45 @@ class _BookDetailViewState extends State<BookDetailView> {
         ),
     ];
 
-    if (reviews.isEmpty &&
+    final bool empty = reviews.isEmpty &&
         !_reviews.loading.value &&
         _reviews.fullyLoaded.value &&
-        _reviews.error.value == null) {
-      return [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 30),
-          child: Text(
-            'No reviews'.tr,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 18, color: colors.onSurfaceVariant),
-          ),
-        ),
-      ];
-    }
+        _reviews.error.value == null;
+
+    if (empty) return [];
+
+    final int total = _reviews.count.value + (hasOwnerReview ? 1 : 0);
 
     return [
+      // Separates the reviews from the book's facts above.
+      Padding(
+        padding: const EdgeInsets.only(top: 24, bottom: 10),
+        child: Text.rich(
+          TextSpan(
+            text: 'Reviews'.tr,
+            children: [
+              if (total > 0)
+                TextSpan(
+                  text: '  · $total',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    color: colors.onSurfaceVariant,
+                  ),
+                ),
+            ],
+          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
+      ),
       for (int i = 0; i < reviews.length; i++)
         if (i == 0)
-          // A little air between the info pill and the first review.
+          // A little air above the first review.
           Padding(padding: const EdgeInsets.only(top: 6), child: reviews[i])
         else
           // A very subtle divider between reviews.
           Container(
-            margin: const EdgeInsets.only(top: 10),
-            padding: const EdgeInsets.only(top: 10),
+            margin: const EdgeInsets.only(top: 14),
+            padding: const EdgeInsets.only(top: 14),
             decoration: BoxDecoration(
               border: Border(
                 top: BorderSide(
@@ -340,8 +489,8 @@ class _BookDetailViewState extends State<BookDetailView> {
     final ColorScheme colors = Theme.of(context).colorScheme;
 
     return Scaffold(
-      // The content's card color; the header paints the page background above
-      // the cover's midpoint.
+      // The content's card colour; the header paints the page background
+      // above the cover's midpoint.
       backgroundColor: colors.surfaceContainer,
       body: SafeArea(
         child: LayoutBuilder(
@@ -352,34 +501,27 @@ class _BookDetailViewState extends State<BookDetailView> {
               children: [
                 Expanded(
                   child: Stack(
+                    key: _stackKey,
                     children: [
                       CustomScrollView(
                         controller: _scroll,
                         slivers: [
-                          // Room for the header at full size, which the
-                          // content then scrolls under.
                           SliverToBoxAdapter(
-                            child: ExcludeSemantics(
-                              child: Opacity(
-                                opacity: 0,
-                                child: _header(
-                                  context,
-                                  height,
-                                  placeholder: true,
-                                ),
-                              ),
+                            child: ColoredBox(
+                              color: colors.surface,
+                              child: _header(context, height),
                             ),
                           ),
                           SliverPadding(
                             padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
                             sliver: SliverToBoxAdapter(
-                              child: _infoPill(context),
+                              child: _infoRow(context),
                             ),
                           ),
                           // The bottom padding separates the list from the
                           // pinned buttons.
                           SliverPadding(
-                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                             sliver: Obx(
                               () => SliverList.list(
                                 children: _reviewItems(context),
@@ -392,29 +534,8 @@ class _BookDetailViewState extends State<BookDetailView> {
                         top: 0,
                         left: 0,
                         right: 0,
-                        child: AnimatedBuilder(
-                          animation: _scroll,
-                          builder: (context, _) {
-                            final double y =
-                                _scroll.hasClients ? _scroll.offset : 0;
-
-                            return _header(
-                              context,
-                              height,
-                              // The header shrinks over one full screen of
-                              // scrolling; its shadow ramps up much sooner.
-                              progress: (y / height).clamp(0.0, 1.0),
-                              shadow: (y / 60).clamp(0.0, 1.0),
-                            );
-                          },
-                        ),
+                        child: _compactBar(context),
                       ),
-                      if (Navigator.of(context).canPop())
-                        const Positioned(
-                          top: 4,
-                          left: 4,
-                          child: BackButton(),
-                        ),
                     ],
                   ),
                 ),
@@ -433,25 +554,35 @@ class _BookDetailViewState extends State<BookDetailView> {
   }
 }
 
-/// One review in the book page's list: author, optional date and the text,
-/// clamped to 4 lines and expanded on tap.
+/// One review in the book page's list: author, a date or a [tag] ("Owner's
+/// note"), and the text clamped to 4 lines. Only a review that's actually cut
+/// off can be expanded; the text is selectable.
 class BookReviewItem extends StatefulWidget {
   const BookReviewItem({
     super.key,
     required this.author,
     required this.text,
     this.date,
+    this.tag,
+    this.showAuthor = true,
   });
 
   final Profile author;
   final String text;
   final DateTime? date;
+  final String? tag;
+
+  /// Off where the reviewer is already clear from the page (the loan card).
+  final bool showAuthor;
 
   @override
   State<BookReviewItem> createState() => _BookReviewItemState();
 }
 
 class _BookReviewItemState extends State<BookReviewItem> {
+  static const int _maxLines = 4;
+  static const TextStyle _textStyle = TextStyle(fontSize: 14, height: 1.5);
+
   bool expanded = false;
 
   @override
@@ -462,39 +593,18 @@ class _BookReviewItemState extends State<BookReviewItem> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: widget.showAuthor
+              ? MainAxisAlignment.spaceBetween
+              : MainAxisAlignment.end,
           children: [
-            Flexible(
-              child: InkWell(
-                borderRadius: BorderRadius.circular(15),
-                onTap: widget.author.isCurrentUser
-                    ? null
-                    : () => context.push(
-                          RouteNames.profileOtherPage
-                              .replaceFirst(':userId', widget.author.id),
-                        ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CommonCircularAvatar(profile: widget.author, radius: 15),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: Text(
-                        widget.author.username,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: colors.primary,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+            if (widget.showAuthor)
+              Flexible(
+                child: CommonUserLink(profile: widget.author, avatarSize: 30),
               ),
-            ),
-            if (widget.date != null) ...[
+            if (widget.tag != null) ...[
+              const SizedBox(width: 8),
+              BookReviewTag(label: widget.tag!),
+            ] else if (widget.date != null) ...[
               const SizedBox(width: 8),
               Text(
                 DateFormat.yMMMd(Get.locale?.languageCode).format(widget.date!),
@@ -508,17 +618,86 @@ class _BookReviewItemState extends State<BookReviewItem> {
           ],
         ),
         const SizedBox(height: 8),
-        GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => setState(() => expanded = !expanded),
-          child: Text(
-            widget.text,
-            maxLines: expanded ? null : 4,
-            overflow: expanded ? TextOverflow.visible : TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 13, height: 1.4),
-          ),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final TextPainter painter = TextPainter(
+              text: TextSpan(text: widget.text, style: _textStyle),
+              maxLines: _maxLines,
+              textDirection: Directionality.of(context),
+              textScaler: MediaQuery.textScalerOf(context),
+            )..layout(maxWidth: constraints.maxWidth);
+            final bool expandable = painter.didExceedMaxLines || expanded;
+            painter.dispose();
+
+            final Widget text = Text(
+              widget.text,
+              maxLines: expanded ? null : _maxLines,
+              overflow: expanded ? TextOverflow.visible : TextOverflow.ellipsis,
+              style: _textStyle,
+            );
+
+            // The text stays selectable. The tap handler sits inside the
+            // SelectionArea so it wins the tap over the selection's own
+            // recognizer; dragging still selects.
+            return SelectionArea(
+              child: !expandable
+                  ? text
+                  : MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => setState(() => expanded = !expanded),
+                        child: text,
+                      ),
+                    ),
+            );
+          },
         ),
       ],
+    );
+  }
+}
+
+/// A small uppercase label saying what a review is ("Owner's note", "Your
+/// review").
+class BookReviewTag extends StatelessWidget {
+  const BookReviewTag({super.key, required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final Color color = Theme.of(context).colorScheme.tertiary;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.14),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Text(
+        label.toUpperCase(),
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0.44,
+          color: color,
+        ),
+      ),
+    );
+  }
+}
+
+/// Always shown: goes back when there's somewhere to go back to, and to Home
+/// when the book page is the first page (a reload, a shared link).
+class _BookBackButton extends StatelessWidget {
+  const _BookBackButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return BackButton(
+      onPressed: () =>
+          context.canPop() ? context.pop() : context.go(RouteNames.homePage),
     );
   }
 }

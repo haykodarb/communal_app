@@ -22,6 +22,13 @@ class CommonPillButton extends StatelessWidget {
 
   static const EdgeInsets _padding = EdgeInsets.symmetric(horizontal: 12);
 
+  /// A deeper pink than primary in light mode, so outlined pills keep their
+  /// contrast on the beige background. Dark mode keeps primary.
+  static Color strongPrimary(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.light
+          ? const Color(0xFFb5605b)
+          : Theme.of(context).colorScheme.primary;
+
   @override
   Widget build(BuildContext context) {
     if (label == null) {
@@ -54,8 +61,9 @@ class CommonPillButton extends StatelessWidget {
             ? FilledButton.styleFrom(padding: _padding)
             : OutlinedButton.styleFrom(
                 padding: _padding,
+                foregroundColor: strongPrimary(context),
                 side: BorderSide(
-                  color: Theme.of(context).colorScheme.primary,
+                  color: strongPrimary(context),
                   width: 1.5,
                 ),
               ),

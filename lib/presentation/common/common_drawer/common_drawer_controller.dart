@@ -16,6 +16,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 const List<String> rootRoutes = [
+  RouteNames.homePage,
   RouteNames.myBooks,
   RouteNames.searchPage,
   RouteNames.profileOwnPage,

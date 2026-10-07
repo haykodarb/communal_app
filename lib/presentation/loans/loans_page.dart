@@ -1,18 +1,15 @@
 import 'package:communal/backend/loans_backend.dart';
 import 'package:communal/models/loan.dart';
-import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/common/common_filter_bottomsheet.dart';
 import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
 import 'package:communal/presentation/common/common_list_view.dart';
+import 'package:communal/presentation/common/common_loan_card.dart';
 import 'package:communal/presentation/common/common_search_bar.dart';
 import 'package:communal/presentation/loans/loans_controller.dart';
 import 'package:communal/responsive.dart';
-import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 class LoansPage extends StatelessWidget {
   const LoansPage({super.key});
@@ -53,7 +50,7 @@ class LoansPage extends StatelessWidget {
                     noItemsText:
                         'You have not loaned or borrowed any books yet.\n\nYou can get started by joining communities and searching their libraries for books you might enjoy.',
                     childBuilder: (Loan loan, _) => CommonKeepaliveWrapper(
-                      child: _loanCard(loan, controller),
+                      child: CommonLoanCard(loan: loan),
                     ),
                     controller: controller.listViewController,
                     scrollController: controller.scrollController,
@@ -128,146 +125,6 @@ class LoansPage extends StatelessWidget {
           onIndexChange: controller.onFilterByOwnerChanged,
         ),
       ],
-    );
-  }
-
-  Widget _loanCard(Loan loan, LoansController controller) {
-    return Builder(
-      builder: (context) {
-        return InkWell(
-          overlayColor: WidgetStateColor.transparent,
-          highlightColor: Colors.transparent,
-          onTap: () {
-            context.push('${RouteNames.loansPage}/${loan.id}');
-          },
-          child: Card(
-            margin: EdgeInsets.zero,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          loan.book.title,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            height: 1.2,
-                          ),
-                        ),
-                        const Divider(height: 5),
-                        Text(
-                          loan.book.author,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            height: 1.2,
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                        const Divider(height: 20),
-                        Row(
-                          children: [
-                            Text(
-                              loan.loanee.isCurrentUser
-                                  ? loan.book.owner.username
-                                  : loan.loanee.username,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                height: 1.2,
-                              ),
-                            ),
-                            const VerticalDivider(width: 5),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: loan.loanee.isCurrentUser
-                                    ? Theme.of(context)
-                                        .colorScheme
-                                        .tertiary
-                                        .withValues(alpha: 0.25)
-                                    : Theme.of(context)
-                                        .colorScheme
-                                        .primary
-                                        .withValues(alpha: 0.25),
-                                borderRadius: BorderRadius.circular(40),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 2,
-                                horizontal: 10,
-                              ),
-                              child: Text(
-                                loan.loanee.isCurrentUser
-                                    ? 'Owner'.tr
-                                    : 'Loanee'.tr,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400,
-                                  height: 1.2,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Divider(height: 5),
-                        Text(
-                          loan.returned
-                              ? 'Loan completed'.tr
-                              : loan.accepted
-                                  ? 'On loan'.tr
-                                  : loan.rejected
-                                      ? 'Loan rejected'.tr
-                                      : 'Awaiting approval'.tr,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            height: 1.2,
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                        const Divider(height: 5),
-                        Text(
-                          '${loan.returned ? 'Returned'.tr : loan.accepted ? 'Approved'.tr : loan.rejected ? 'Rejected'.tr : 'Requested'.tr}${DateFormat(' MMMM d, y', Get.locale?.languageCode).format(loan.latest_date ?? loan.created_at)}',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            height: 1.2,
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const VerticalDivider(width: 10),
-                  SizedBox(
-                    height: 120,
-                    child: Center(
-                      child: CommonBookCover(
-                        loan.book,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 

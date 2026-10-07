@@ -19,6 +19,7 @@ class ProfileCommonHelpers {
       () {
         if (currentTabIndex.value == 0) {
           return CommonGridView<Book>(
+            maxColumns: 3,
             padding: const EdgeInsets.symmetric(
               horizontal: 20,
               vertical: 10,

@@ -134,7 +134,7 @@ class StartPage extends StatelessWidget {
 
               if (response.session.accessToken.isNotEmpty) {
                 if (context.mounted) {
-                  GoRouter.of(context).go(RouteNames.communityListPage);
+                  GoRouter.of(context).go(RouteNames.homePage);
                 }
               }
             }

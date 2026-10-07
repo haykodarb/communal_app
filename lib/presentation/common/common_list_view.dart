@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 
 class CommonListViewController<ItemType> extends GetxController {
@@ -134,10 +134,37 @@ class CommonGridView<ItemType> extends StatelessWidget {
     this.isSliver = false,
     this.scrollController,
     this.noItemsText = 'No items.',
+    this.maxColumns = 2,
     super.key,
   });
 
+  static const double _spacing = 8;
+  static const double _minColumnWidth = 140;
+
+  /// Columns for a grid `width` wide: as many as fit at 140px each, between
+  /// 2 and [maxColumns].
+  int _columnsFor(double width) =>
+      ((width + _spacing) / (_minColumnWidth + _spacing))
+          .floor()
+          .clamp(2, maxColumns < 2 ? 2 : maxColumns);
+
+  /// The items as a masonry, as many columns as fit (see [_columnsFor]).
+  Widget _grid() {
+    return LayoutBuilder(
+      builder: (context, constraints) => _MasonryLayout(
+        columns: _columnsFor(constraints.maxWidth),
+        spacing: _spacing,
+        children: [
+          for (final ItemType item in controller.itemList) childBuilder(item),
+        ],
+      ),
+    );
+  }
+
   final Widget Function(ItemType) childBuilder;
+
+  /// Upper bound on the number of columns; narrow screens get 2.
+  final int maxColumns;
   final Widget verticalSeparator;
   final Widget horizontalSeparator;
   final EdgeInsets padding;
@@ -205,16 +232,7 @@ class CommonGridView<ItemType> extends StatelessWidget {
                 padding: padding,
                 sliver: SliverMainAxisGroup(
                   slivers: [
-                    SliverMasonryGrid.count(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 8,
-                      crossAxisSpacing: 8,
-                      childCount: controller.itemList.length,
-                      itemBuilder: (context, index) {
-                        final ItemType item = controller.itemList[index];
-                        return childBuilder(item);
-                      },
-                    ),
+                    SliverToBoxAdapter(child: _grid()),
                     Obx(
                       () {
                         return SliverVisibility(
@@ -237,16 +255,7 @@ class CommonGridView<ItemType> extends StatelessWidget {
               padding: padding,
               child: Column(
                 children: [
-                  MasonryGridView.count(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 8,
-                    crossAxisSpacing: 8,
-                    itemCount: controller.itemList.length,
-                    itemBuilder: (context, index) {
-                      final ItemType item = controller.itemList[index];
-                      return childBuilder(item);
-                    },
-                  ),
+                  _grid(),
                   const CommonLoadingBody(
                     size: 30,
                   ),
@@ -467,4 +476,110 @@ class CommonListView<ItemType> extends StatelessWidget {
       },
     );
   }
+}
+
+/// A masonry grid that fills row by row: each item goes into the leftmost
+/// column that's no more than half an average item taller than the shortest
+/// one. Items then go left to right, so the left column gets any extra one
+/// and ends longest; a column only catches up out of turn once it's clearly
+/// behind. (SliverMasonryGrid always picks the shortest column, so any
+/// column can end up longest.) Every item is laid out, which is fine for the
+/// paged lists this shows.
+class _MasonryLayout extends MultiChildRenderObjectWidget {
+  const _MasonryLayout({
+    required this.columns,
+    required this.spacing,
+    required super.children,
+  });
+
+  final int columns;
+  final double spacing;
+
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      _RenderMasonry(columns: columns, spacing: spacing);
+
+  @override
+  void updateRenderObject(BuildContext context, _RenderMasonry renderObject) {
+    renderObject
+      ..columns = columns
+      ..spacing = spacing;
+  }
+}
+
+class _MasonryParentData extends ContainerBoxParentData<RenderBox> {}
+
+class _RenderMasonry extends RenderBox
+    with
+        ContainerRenderObjectMixin<RenderBox, _MasonryParentData>,
+        RenderBoxContainerDefaultsMixin<RenderBox, _MasonryParentData> {
+  _RenderMasonry({required int columns, required double spacing})
+      : _columns = columns,
+        _spacing = spacing;
+
+  int _columns;
+  set columns(int value) {
+    if (value == _columns) return;
+    _columns = value;
+    markNeedsLayout();
+  }
+
+  double _spacing;
+  set spacing(double value) {
+    if (value == _spacing) return;
+    _spacing = value;
+    markNeedsLayout();
+  }
+
+  @override
+  void setupParentData(RenderBox child) {
+    if (child.parentData is! _MasonryParentData) {
+      child.parentData = _MasonryParentData();
+    }
+  }
+
+  @override
+  void performLayout() {
+    final double width = constraints.maxWidth;
+    final double columnWidth = (width - (_columns - 1) * _spacing) / _columns;
+    final List<double> bottoms = List.filled(_columns, 0);
+
+    int placed = 0;
+    double total = 0;
+
+    RenderBox? child = firstChild;
+    while (child != null) {
+      child.layout(
+        BoxConstraints.tightFor(width: columnWidth),
+        parentUsesSize: true,
+      );
+      final double height = child.size.height;
+
+      final double tie = placed == 0 ? 0 : total / placed / 2;
+      final double shortest = bottoms.reduce((a, b) => a < b ? a : b);
+      final int column = bottoms.indexWhere((b) => b - shortest <= tie);
+
+      final _MasonryParentData data = child.parentData! as _MasonryParentData;
+      data.offset = Offset(column * (columnWidth + _spacing), bottoms[column]);
+
+      bottoms[column] += height + _spacing;
+      total += height;
+      placed++;
+
+      child = data.nextSibling;
+    }
+
+    final double tallest = bottoms.reduce((a, b) => a > b ? a : b);
+    size = constraints.constrain(
+      Size(width, placed == 0 ? 0 : tallest - _spacing),
+    );
+  }
+
+  @override
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) =>
+      defaultHitTestChildren(result, position: position);
+
+  @override
+  void paint(PaintingContext context, Offset offset) =>
+      defaultPaint(context, offset);
 }

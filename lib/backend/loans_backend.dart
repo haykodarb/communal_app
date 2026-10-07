@@ -1,7 +1,10 @@
+import 'package:communal/backend/friendships_backend.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
+import 'package:communal/models/friendship.dart';
 import 'package:communal/models/loan.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -18,6 +21,46 @@ class LoansFilterParams {
 }
 
 class LoansBackend {
+  /// Debug only, opt-in: `--dart-define=SIMULATED_REVIEWS=23` pretends every
+  /// book has that many reviews, so the book page's review list can be
+  /// tried without real data. Release builds always use the real reviews.
+  static const int _simulatedReviews =
+      kReleaseMode ? 0 : int.fromEnvironment('SIMULATED_REVIEWS');
+
+  static const String _sampleReview =
+      'An absorbing read. The argument builds patiently and the last third '
+      'ties everything together; I found myself rereading whole chapters. '
+      'Would happily lend this to anyone curious about the subject.';
+
+  /// One page of fake reviews, newest first. Their length varies so some
+  /// clamp to 4 lines and some don't.
+  static List<Loan> _simulatedReviewPage(int pageKey, int pageSize) {
+    final int count = (_simulatedReviews - pageKey).clamp(0, pageSize);
+
+    return List.generate(count, (int i) {
+      final int n = pageKey + i;
+      final Map<String, dynamic> reader = {
+        'id': 'simulated-$n',
+        'username': 'reader_${n + 1}',
+        'show_email': false,
+      };
+
+      return Loan.fromMap({
+        'id': 'simulated-$n',
+        'created_at': DateTime.utc(2025).toIso8601String(),
+        'latest_date':
+            DateTime.utc(2026, 1, _simulatedReviews - n).toIso8601String(),
+        'review': List.filled(1 + n % 4, _sampleReview).join(' '),
+        'books': null,
+        'owner_profile': {...reader, 'id': '', 'username': ''},
+        'loanee_profile': reader,
+        'accepted': true,
+        'rejected': false,
+        'returned': true,
+      });
+    });
+  }
+
   static Future<BackendResponse> deleteLoan(Loan loan) async {
     final SupabaseClient client = Supabase.instance.client;
 
@@ -282,6 +325,13 @@ class LoansBackend {
     required int pageKey,
     required int pageSize,
   }) async {
+    if (_simulatedReviews > 0) {
+      return BackendResponse(
+        success: true,
+        payload: _simulatedReviewPage(pageKey, pageSize),
+      );
+    }
+
     try {
       final SupabaseClient client = Supabase.instance.client;
 
@@ -306,6 +356,29 @@ class LoansBackend {
     }
   }
 
+  /// How many readers reviewed a book (accepted loans with a review).
+  static Future<BackendResponse<int>> getReviewCountForBook(
+    String bookId,
+  ) async {
+    if (_simulatedReviews > 0) {
+      return BackendResponse(success: true, payload: _simulatedReviews);
+    }
+
+    try {
+      final PostgrestResponse response = await Supabase.instance.client
+          .from('loans')
+          .select('id')
+          .eq('book', bookId)
+          .eq('accepted', true)
+          .not('review', 'is', null)
+          .count(CountOption.exact);
+
+      return BackendResponse(success: true, payload: response.count);
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, error: error.message);
+    }
+  }
+
   static Future<BackendResponse> getBooksReviewedByUser({
     required int pageKey,
     required int pageSize,
@@ -325,6 +398,50 @@ class LoansBackend {
           .eq('loanee', userToQuery)
           .not('book', 'is', null)
           .not('review', 'is', null)
+          .range(pageKey, pageKey + pageSize - 1);
+
+      final List<Loan> loanList =
+          response.map((element) => Loan.fromMap(element)).toList();
+
+      return BackendResponse(success: true, payload: loanList);
+    } on PostgrestException catch (error) {
+      return BackendResponse(success: false, payload: error.message);
+    }
+  }
+
+  /// Reviews written by the current user's friends, newest first. Loans are
+  /// world-readable, so this narrows to friends explicitly; books!inner lets
+  /// the books RLS hide reviews of books the user can't see.
+  static Future<BackendResponse> getFriendReviews({
+    required int pageKey,
+    required int pageSize,
+  }) async {
+    try {
+      final BackendResponse<List<Friendship>> friendsResponse =
+          await FriendshipsBackend.getFriends(pageKey: 0, pageSize: 200);
+
+      if (!friendsResponse.success) {
+        return BackendResponse(success: false, payload: friendsResponse.error);
+      }
+
+      final List<String> friendIds = friendsResponse.payload!
+          .map((Friendship friendship) => friendship.otherUser.id)
+          .toList();
+
+      if (friendIds.isEmpty) {
+        return BackendResponse(success: true, payload: <Loan>[]);
+      }
+
+      final List<Map<String, dynamic>> response = await Supabase.instance.client
+          .from('loans')
+          .select(
+            '*, books!inner(*, profiles(*)), loanee_profile:profiles!loanee(*), owner_profile:profiles!owner(*)',
+          )
+          .eq('accepted', true)
+          .not('review', 'is', null)
+          .inFilter('loanee', friendIds)
+          .order('latest_date', ascending: false, nullsFirst: false)
+          .order('id', ascending: false)
           .range(pageKey, pageKey + pageSize - 1);
 
       final List<Loan> loanList =

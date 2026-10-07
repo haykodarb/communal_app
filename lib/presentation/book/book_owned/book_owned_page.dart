@@ -3,6 +3,7 @@ import 'package:communal/presentation/book/book_detail_view.dart';
 import 'package:communal/presentation/book/book_owned/book_owned_controller.dart';
 import 'package:communal/presentation/common/common_button.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_status_badge.dart';
 import 'package:communal/routes.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -85,22 +86,25 @@ class BookOwnedPage extends StatelessWidget {
             return BookDetailView(
               key: ValueKey(book.id),
               book: book,
-              expandCoverOnTap: true,
               info: [
+                BookInfoItem(
+                  'Status'.tr,
+                  CommonStatusBadge(
+                    tone:
+                        book.loaned ? StatusTone.loaned : StatusTone.available,
+                    label: book.loaned ? 'Loaned'.tr : 'Available'.tr,
+                  ),
+                ),
                 BookInfoItem(
                   'Added'.tr,
                   Text(
-                    DateFormat('dd/MM/yy', Get.locale?.languageCode)
+                    DateFormat.yMMMd(Get.locale?.languageCode)
                         .format(book.created_at),
                   ),
                 ),
                 BookInfoItem(
                   'Visibility'.tr,
                   Text(book.public ? 'Public'.tr : 'Private'.tr),
-                ),
-                BookInfoItem(
-                  'Status'.tr,
-                  Text(book.loaned ? 'Loaned'.tr : 'Available'.tr),
                 ),
               ],
               actions: _buttonRow(controller),

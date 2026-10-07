@@ -92,6 +92,27 @@ class LocalizationText extends Translations {
           'Add': 'Agregar',
           'Create topic': 'Crear conversación',
           'On loan': 'En préstamo',
+          'Home': 'Inicio',
+          'See all': 'Ver todo',
+          'Recent reviews from friends': 'Reseñas recientes de tus amigos',
+          'New in your network': 'Nuevo en tu red',
+          'Reviews by friends': 'Reseñas de amigos',
+          "Owner's note": 'Nota del dueño',
+          'Review': 'Reseña',
+          'Wants to borrow this book': 'Quiere este libro prestado',
+          'Owner · you asked to borrow this book':
+              'Dueño · le pediste este libro',
+          'Is borrowing this book': 'Tiene este libro prestado',
+          'Borrowed this book': 'Tuvo este libro prestado',
+          'Asked to borrow this book': 'Pidió este libro prestado',
+          "Owner · you're borrowing this book":
+              'Dueño · tenés este libro prestado',
+          'Owner · you borrowed this book':
+              'Dueño · tuviste este libro prestado',
+          'No books from your friends yet. Find people you know in Search.':
+              'Todavía no hay libros de tus amigos. Buscá gente que conozcas en Buscar.',
+          'Your friends have not reviewed any books yet.':
+              'Tus amigos todavía no reseñaron ningún libro.',
           'Loan rejected': 'Prestamo rechazado',
           'Loan completed': 'Prestamo completado',
           'Returned': 'Devuelto',

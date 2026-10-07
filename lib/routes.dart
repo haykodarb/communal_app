@@ -13,6 +13,7 @@ import 'package:communal/presentation/community/community_specific/community_dis
 import 'package:communal/presentation/community/community_specific/community_settings/community_settings_page.dart';
 import 'package:communal/presentation/community/community_specific/community_specific_page.dart';
 import 'package:communal/presentation/friendships/friendships_page.dart';
+import 'package:communal/presentation/home/home_page.dart';
 import 'package:communal/presentation/loans/loan_info/loan_info_page.dart';
 import 'package:communal/presentation/profiles/profile_own/profile_own_account/profile_own_account_page.dart';
 import 'package:communal/presentation/loans/loans_page.dart';
@@ -28,6 +29,7 @@ import 'package:communal/presentation/profiles/profile_own/profile_own_edit/prof
 import 'package:communal/presentation/profiles/profile_own/profile_own_page.dart';
 import 'package:communal/presentation/register/register_page.dart';
 import 'package:communal/presentation/register/register_resend/register_resend_page.dart';
+import 'package:communal/presentation/reviews/reviews_page.dart';
 import 'package:communal/presentation/search/search_community_details_page.dart';
 import 'package:communal/presentation/search/search_page.dart';
 import 'package:communal/presentation/start/landing/landing_page.dart';
@@ -57,6 +59,9 @@ class RouteNames {
   static const String profileOwnPage = '/my-profile';
   static const String profileOwnEditPage = '/edit';
   static const String profileOwnAccountPage = '/account';
+
+  static const String homePage = '/home';
+  static const String reviewsPage = '/reviews';
 
   static const String friendsPage = '/friends';
 
@@ -296,6 +301,22 @@ final GoRoute _profilesRoutes = GoRoute(
   },
 );
 
+final GoRoute _homeRoutes = GoRoute(
+  path: RouteNames.homePage,
+  parentNavigatorKey: _shellNavigatorKey,
+  pageBuilder: (context, state) => const NoTransitionPage(
+    child: HomePage(),
+  ),
+);
+
+final GoRoute _reviewsRoutes = GoRoute(
+  path: RouteNames.reviewsPage,
+  parentNavigatorKey: _shellNavigatorKey,
+  pageBuilder: (context, state) => const NoTransitionPage(
+    child: ReviewsPage(),
+  ),
+);
+
 final GoRoute _friendsRoutes = GoRoute(
   path: RouteNames.friendsPage,
   parentNavigatorKey: _shellNavigatorKey,
@@ -399,7 +420,7 @@ final GoRoute _startRoutes = GoRoute(
   path: RouteNames.startPage,
   redirect: (context, state) {
     if (Supabase.instance.client.auth.currentUser != null) {
-      return RouteNames.myBooks;
+      return RouteNames.homePage;
     }
 
     return null;
@@ -476,6 +497,8 @@ final List<RouteBase> routes = <RouteBase>[
       );
     },
     routes: [
+      _homeRoutes,
+      _reviewsRoutes,
       _loansRoutes,
       _searchPage,
       _communityRoutes,
