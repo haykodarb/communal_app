@@ -181,21 +181,21 @@ class MessagesSpecificPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(30),
                         borderSide: BorderSide(
                           color: Theme.of(context).colorScheme.primary,
-                          width: 2,
+                          width: 1.5,
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                         borderSide: BorderSide(
                           color: Theme.of(context).colorScheme.primary,
-                          width: 2,
+                          width: 1.5,
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                         borderSide: BorderSide(
                           color: Theme.of(context).colorScheme.primary,
-                          width: 2,
+                          width: 1.5,
                         ),
                       ),
                       hintText: 'Type something...'.tr,
