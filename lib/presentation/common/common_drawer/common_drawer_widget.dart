@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/login_backend.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
@@ -20,10 +22,12 @@ class _DrawerItem {
 class CommonDrawerWidget extends StatelessWidget {
   const CommonDrawerWidget({super.key});
 
-  /// Rows take 2 flex units each and the header 3, so the header is as tall
-  /// as one and a half rows and grows with the window like they do.
   static const int _rowFlex = 2;
-  static const int _headerFlex = 3;
+
+  /// The 80px avatar plus 20px above and below, under the status bar. On
+  /// tall screens the header grows to [_headerShare] of the drawer.
+  static const double _headerMinHeight = 120;
+  static const double _headerShare = 0.18;
 
   Widget _drawerButton({
     required IconData icon,
@@ -130,103 +134,95 @@ class CommonDrawerWidget extends StatelessWidget {
 
   /// Your avatar and name, and "View profile": the whole header opens My
   /// Profile (there's no Profile row). On the drawer's own background.
-  Widget _drawerHeader(CommonDrawerController controller) {
-    return Expanded(
-      flex: _headerFlex,
-      child: Builder(
-        builder: (context) {
-          final ColorScheme colors = Theme.of(context).colorScheme;
+  Widget _drawerHeader(
+    CommonDrawerController controller,
+    double drawerHeight,
+  ) {
+    return Builder(
+      builder: (context) {
+        final ColorScheme colors = Theme.of(context).colorScheme;
+        final double top = MediaQuery.paddingOf(context).top;
 
-          return InkWell(
-            onTap: () =>
-                controller.goToRoute(RouteNames.profileOwnPage, context),
-            child: Container(
-              // Clear of the status bar, as DrawerHeader was.
-              padding: EdgeInsets.fromLTRB(
-                30,
-                10 + MediaQuery.paddingOf(context).top,
-                30,
-                10,
-              ),
-              width: double.maxFinite,
-              alignment: Alignment.centerLeft,
-              // Never squeezes the 80px avatar on short windows.
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                alignment: Alignment.centerLeft,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Obx(
-                      () {
-                        if (controller.currentUserProfile.value.id.isEmpty) {
-                          return Container(
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                            ),
-                            clipBehavior: Clip.hardEdge,
-                            height: 40 * 2,
-                            width: 40 * 2,
-                            child: const CommonLoadingImage(),
-                          );
-                        }
+        return InkWell(
+          onTap: () =>
+              controller.goToRoute(RouteNames.profileOwnPage, context),
+          child: Container(
+            height: math.max(
+              _headerMinHeight + top,
+              drawerHeight * _headerShare,
+            ),
+            // Clear of the status bar, as DrawerHeader was.
+            padding: EdgeInsets.fromLTRB(30, top, 30, 0),
+            width: double.maxFinite,
+            alignment: Alignment.centerLeft,
+            child: Row(
+              children: [
+                Obx(
+                  () {
+                    if (controller.currentUserProfile.value.id.isEmpty) {
+                      return Container(
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        clipBehavior: Clip.hardEdge,
+                        height: 40 * 2,
+                        width: 40 * 2,
+                        child: const CommonLoadingImage(),
+                      );
+                    }
 
-                        return CommonCircularAvatar(
-                          profile: controller.currentUserProfile.value,
-                          radius: 40,
-                        );
-                      },
-                    ),
-                    const SizedBox(width: 20),
-                    // Bounded so a long name ellipsizes inside the FittedBox.
-                    ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 160),
-                      child: Column(
+                    return CommonCircularAvatar(
+                      profile: controller.currentUserProfile.value,
+                      radius: 40,
+                    );
+                  },
+                ),
+                const SizedBox(width: 20),
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Obx(
+                        () => Text(
+                          controller.currentUserProfile.value.username,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          style: TextStyle(
+                            color: colors.onSurface,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Row(
                         mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Obx(
-                            () => Text(
-                              controller.currentUserProfile.value.username,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: TextStyle(
-                                color: colors.onSurface,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
+                          Text(
+                            'View profile'.tr,
+                            style: TextStyle(
+                              color: colors.primary,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              height: 18 / 14,
                             ),
                           ),
-                          const SizedBox(height: 2),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'View profile'.tr,
-                                style: TextStyle(
-                                  color: colors.primary,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  height: 18 / 14,
-                                ),
-                              ),
-                              Icon(
-                                Icons.chevron_right,
-                                size: 18,
-                                color: colors.primary,
-                              ),
-                            ],
+                          Icon(
+                            Icons.chevron_right,
+                            size: 18,
+                            color: colors.primary,
                           ),
                         ],
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+              ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -289,7 +285,7 @@ class CommonDrawerWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  _drawerHeader(controller),
+                  _drawerHeader(controller, MediaQuery.sizeOf(context).height),
                   for (final _DrawerItem item in items) ...[
                     divider,
                     Obx(
