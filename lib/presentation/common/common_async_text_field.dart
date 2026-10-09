@@ -55,7 +55,7 @@ class CommonAsyncTextField extends StatelessWidget {
                 if (syncValidationMessage != null) return syncValidationMessage;
 
                 if (isValidating) {
-                  return 'Checking username...';
+                  return 'Checking username...'.tr;
                 }
 
                 if (asyncValidationMessage != null) {

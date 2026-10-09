@@ -138,12 +138,12 @@ class BookCreateController extends GetxController {
       if (value == null || value.isEmpty) return null;
     } else {
       if (value == null || value.isEmpty) {
-        return 'Please enter something.';
+        return 'Please enter something'.tr;
       }
     }
 
     if (value.length < length) {
-      return 'Must be at least $length characters long.';
+      return 'Must be at least {n} characters long.'.tr.replaceFirst('{n}', '$length');
     }
 
     return null;

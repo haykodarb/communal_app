@@ -93,7 +93,7 @@ class CommunitySettingsController extends GetxController {
       if (value == null || value.isEmpty) return null;
     } else {
       if (value == null || value.isEmpty) {
-        return 'Please enter something.';
+        return 'Please enter something'.tr;
       }
     }
 

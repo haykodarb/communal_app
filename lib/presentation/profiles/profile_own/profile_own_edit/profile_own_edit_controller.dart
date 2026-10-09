@@ -106,7 +106,7 @@ class ProfileOwnEditController extends GetxController {
 
   Future<String?> asyncUsernameValidator(String? value) async {
     if (value == null) {
-      return 'Input can\'t be empty';
+      return 'Please enter something'.tr;
     }
 
     if (value == inheritedProfile.value.username) return null;
@@ -114,7 +114,7 @@ class ProfileOwnEditController extends GetxController {
     final bool available = await UsersBackend.validateUsername(value);
 
     if (!available) {
-      return 'Username is already taken.';
+      return 'Username is already taken.'.tr;
     }
 
     return null;
@@ -126,15 +126,15 @@ class ProfileOwnEditController extends GetxController {
     }
 
     if (value.length < 6) {
-      return 'Username must be at least 6 characters long';
+      return 'Username must be at least 6 characters long'.tr;
     }
 
     if (value.length > 20) {
-      return 'Username must be at most 20 characters long';
+      return 'Username must be at most 20 characters long'.tr;
     }
 
     if (!isAscii(value)) {
-      return 'Username should only include ASCII characters';
+      return 'Username should only include ASCII characters'.tr;
     }
 
     return null;
@@ -146,11 +146,11 @@ class ProfileOwnEditController extends GetxController {
     }
 
     if (value.length < 20) {
-      return 'Bio must be at least 20 characters long';
+      return 'Bio must be at least 20 characters long'.tr;
     }
 
     if (value.length > 1000) {
-      return 'Bio must be at most 1000 characters long';
+      return 'Bio must be at most 1000 characters long'.tr;
     }
 
     return null;

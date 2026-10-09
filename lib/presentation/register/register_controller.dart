@@ -27,7 +27,7 @@ class RegisterController extends GetxController {
     }
 
     if (!GetUtils.isEmail(value)) {
-      return 'Input must be a valid email.';
+      return 'Input must be a valid email.'.tr;
     }
 
     return null;
@@ -35,13 +35,13 @@ class RegisterController extends GetxController {
 
   Future<String?> asyncUsernameValidator(String? value) async {
     if (value == null) {
-      return 'Input can\'t be empty';
+      return 'Please enter something'.tr;
     }
 
     final bool available = await UsersBackend.validateUsername(value);
 
     if (!available) {
-      return 'Username is already taken.';
+      return 'Username is already taken.'.tr;
     }
 
     return null;
@@ -53,11 +53,11 @@ class RegisterController extends GetxController {
     }
 
     if (value.length < 6) {
-      return 'Username must be at least 6 characters long';
+      return 'Username must be at least 6 characters long'.tr;
     }
 
     if (!isAscii(value)) {
-      return 'Username should only include ASCII characters';
+      return 'Username should only include ASCII characters'.tr;
     }
 
     return null;
@@ -69,11 +69,11 @@ class RegisterController extends GetxController {
     }
 
     if (value.length < 6) {
-      return 'Password must be at least 6 characters long';
+      return 'Password must be at least 6 characters long'.tr;
     }
 
     if (!isAscii(value)) {
-      return 'Password should only include ASCII characters';
+      return 'Password should only include ASCII characters'.tr;
     }
 
     return null;

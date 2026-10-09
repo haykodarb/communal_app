@@ -44,15 +44,15 @@ class PasswordResetController extends GetxController {
 
   String? passwordValidator(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter something.';
+      return 'Please enter something'.tr;
     }
 
     if (value.length < 6) {
-      return 'Password must be at least 6 characters long';
+      return 'Password must be at least 6 characters long'.tr;
     }
 
     if (!value.isAscii) {
-      return 'Password should only include ASCII characters';
+      return 'Password should only include ASCII characters'.tr;
     }
 
     return null;

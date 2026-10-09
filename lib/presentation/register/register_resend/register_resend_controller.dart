@@ -37,7 +37,7 @@ class RegisterResendController extends GetxController {
     }
 
     if (!value.isEmail) {
-      return 'Input must be a valid email';
+      return 'Input must be a valid email.'.tr;
     }
 
     return null;

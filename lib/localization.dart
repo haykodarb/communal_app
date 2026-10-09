@@ -78,6 +78,21 @@ class LocalizationText extends Translations {
           'Publicly visible?': '¿Públicamente visible?',
           'Logout': 'Salir',
           'Please enter something': 'Por favor ingresar algo',
+          'Input must be a valid email.': 'Ingresá un email válido.',
+          'Username is already taken.': 'El usuario ya está en uso.',
+          'Username must be at least 6 characters long':
+              'El usuario debe tener al menos 6 caracteres',
+          'Username must be at most 20 characters long':
+              'El usuario debe tener como máximo 20 caracteres',
+          'Username should only include ASCII characters':
+              'El usuario solo puede incluir caracteres ASCII',
+          'Bio must be at least 20 characters long':
+              'La bio debe tener al menos 20 caracteres',
+          'Bio must be at most 1000 characters long':
+              'La bio debe tener como máximo 1000 caracteres',
+          'Must be at least {n} characters long.':
+              'Debe tener al menos {n} caracteres.',
+          'Checking username...': 'Verificando usuario...',
           'Delete account': 'Eliminar cuenta',
           'Enter with Google': 'Entrar con Google',
           'Bio (Optional)': 'Bio (Opcional)',

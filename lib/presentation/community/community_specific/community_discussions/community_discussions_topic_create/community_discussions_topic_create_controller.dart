@@ -22,7 +22,7 @@ class CommunityDiscussionsTopicCreateController extends GetxController {
 
   String? stringValidator(String? value, int length) {
     if (value == null || value.isEmpty) {
-      return 'Please enter something.';
+      return 'Please enter something'.tr;
     }
 
     if (value.length < length) {

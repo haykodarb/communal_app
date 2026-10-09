@@ -40,11 +40,11 @@ class LoginPasswordRecoveryController extends GetxController {
 
   String? emailValidator(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter something.';
+      return 'Please enter something'.tr;
     }
 
     if (!value.isEmail) {
-      return 'Input must be a valid email.';
+      return 'Input must be a valid email.'.tr;
     }
 
     return null;
