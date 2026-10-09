@@ -99,7 +99,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp.router(
       title: 'Communal',
-      scaffoldMessengerKey: rootScaffoldMessengerKey,
       theme: lightTheme,
       translations: LocalizationText(),
       smartManagement: SmartManagement.full,
@@ -116,7 +115,7 @@ class MyApp extends StatelessWidget {
       themeMode: themeMode,
       color: Theme.of(context).colorScheme.surface,
       builder: (context, child) {
-        return child!;
+        return CommonToastHost(child: child!);
       },
     );
   }
