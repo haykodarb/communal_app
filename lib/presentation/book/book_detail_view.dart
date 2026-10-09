@@ -510,6 +510,16 @@ class _BookDetailViewState extends State<BookDetailView> {
       // The content's card colour; the header paints the page background
       // above the cover's midpoint.
       backgroundColor: colors.surfaceContainer,
+      // No toolbar: only paints the status bar (and sets its icons), in the
+      // header's colour, or the compact bar's once that takes over.
+      appBar: AppBar(
+        toolbarHeight: 0,
+        automaticallyImplyLeading: false,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        shadowColor: Colors.transparent,
+        backgroundColor: _compact ? colors.surfaceContainer : colors.surface,
+      ),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
