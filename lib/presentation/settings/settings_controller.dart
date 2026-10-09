@@ -1,4 +1,5 @@
 import 'package:communal/backend/login_backend.dart';
+import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/presentation/common/common_confirmation_dialog.dart';
@@ -7,32 +8,34 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:string_validator/string_validator.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-/// Account settings: change email, change password, delete account.
-class ProfileOwnAccountController extends GetxController {
-  final GlobalKey<FormState> emailFormKey = GlobalKey<FormState>();
+/// Settings: language, theme, change password, delete account.
+class SettingsController extends GetxController {
+  static const List<Locale> locales = [Locale('en', 'US'), Locale('es', 'ES')];
+
   final GlobalKey<FormState> passwordFormKey = GlobalKey<FormState>();
 
-  String newEmail = '';
   String newPassword = '';
   String repeatPassword = '';
 
-  final RxBool emailLoading = false.obs;
   final RxBool passwordLoading = false.obs;
   final RxBool deleteLoading = false.obs;
 
-  final RxnString emailMessage = RxnString();
   final RxnString passwordMessage = RxnString();
   final RxnString errorMessage = RxnString();
 
-  User? get user => Supabase.instance.client.auth.currentUser;
+  void toggleLanguage() {
+    final Locale next = Get.locale == locales[0] ? locales[1] : locales[0];
+    UserPreferences.setSelectedLocale(next);
+    Get.updateLocale(next);
+  }
 
-  String? emailValidator(String? value) {
-    if (value == null || !isEmail(value.trim())) {
-      return 'Please enter a valid email'.tr;
-    }
-    return null;
+  /// An explicit choice: saved, so it no longer follows the system.
+  void toggleThemeMode(BuildContext context) {
+    final ThemeMode next =
+        UserPreferences.isDarkMode(context) ? ThemeMode.light : ThemeMode.dark;
+    Get.changeThemeMode(next);
+    UserPreferences.setSelectedThemeMode(next);
   }
 
   String? passwordValidator(String? value) {
@@ -48,22 +51,6 @@ class ProfileOwnAccountController extends GetxController {
   String? repeatPasswordValidator(String? value) {
     if (value != newPassword) return 'Passwords do not match'.tr;
     return null;
-  }
-
-  Future<void> changeEmail(BuildContext context) async {
-    emailMessage.value = null;
-    if (!emailFormKey.currentState!.validate()) return;
-
-    emailLoading.value = true;
-    final BackendResponse response =
-        await LoginBackend.updateUserEmail(newEmail.trim());
-    emailLoading.value = false;
-
-    emailMessage.value = response.success
-        ? 'Check your inbox: we sent a confirmation link to {email}.'
-            .tr
-            .replaceFirst('{email}', newEmail.trim())
-        : response.payload?.toString();
   }
 
   Future<void> changePassword(BuildContext context) async {

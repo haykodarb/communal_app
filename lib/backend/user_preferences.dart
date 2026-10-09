@@ -1,3 +1,5 @@
+import 'dart:ui' show PlatformDispatcher;
+
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -37,8 +39,9 @@ class UserPreferences {
 
     final bool? isDarkMode = box.get('isDarkMode');
 
+    // No choice made yet: follow the system's light/dark setting.
     if (isDarkMode == null) {
-      return ThemeMode.light;
+      return ThemeMode.system;
     }
 
     await box.close();
@@ -60,8 +63,11 @@ class UserPreferences {
     final String? locale_lang = box.get('locale_lang');
     final String? locale_country = box.get('locale_country');
 
+    // No choice made yet: Spanish if the device is in Spanish, else English.
     if (locale_lang == null || locale_country == null) {
-      return const Locale('en', 'US');
+      return PlatformDispatcher.instance.locale.languageCode == 'es'
+          ? const Locale('es', 'ES')
+          : const Locale('en', 'US');
     }
 
     await box.close();

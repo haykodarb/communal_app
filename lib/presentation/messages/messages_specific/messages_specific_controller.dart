@@ -8,7 +8,10 @@ import 'package:communal/models/profile.dart';
 import 'package:communal/models/realtime_message.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/presentation/messages/messages_controller.dart';
+import 'package:communal/presentation/common/common_confirmation_dialog.dart';
+import 'package:communal/routes.dart';
 import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -40,6 +43,31 @@ class MessagesSpecificController extends GetxController {
   int currentIndex = 0;
 
   StreamSubscription? streamSubscription;
+
+  /// "Delete chat" in the bar's ⋮ menu: hides the conversation for you,
+  /// then goes back to the chat list.
+  Future<void> deleteChat(BuildContext context) async {
+    final Profile? chatter = userProfile.value;
+    if (chatter == null) return;
+
+    final bool confirm = await CommonConfirmationDialog(
+      title: 'Delete chat?'.tr,
+    ).open(context);
+    if (!confirm) return;
+
+    final BackendResponse response =
+        await MessagesBackend.deleteMessagesWithUser(chatter);
+
+    if (!response.success) {
+      if (context.mounted) {
+        CommonAlertDialog(title: response.errorMessage.tr).open(context);
+      }
+      return;
+    }
+
+    messagesController?.removeChatWith(chatter.id);
+    if (context.mounted) context.go(RouteNames.messagesPage);
+  }
 
   @override
   Future<void> onInit() async {

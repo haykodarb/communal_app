@@ -1,12 +1,18 @@
+import 'package:atlas_icons/atlas_icons.dart';
+import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/presentation/common/common_button.dart';
+import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
+import 'package:communal/presentation/common/common_switch.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
-import 'package:communal/presentation/profiles/profile_own/profile_own_account/profile_own_account_controller.dart';
+import 'package:communal/presentation/settings/settings_controller.dart';
 import 'package:communal/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ProfileOwnAccountPage extends StatelessWidget {
-  const ProfileOwnAccountPage({super.key});
+/// Settings: language and theme, change password, delete account. A drawer
+/// page, so the title is only in the mobile app bar.
+class SettingsPage extends StatelessWidget {
+  const SettingsPage({super.key});
 
   Widget _title(String text, {Color? color}) {
     return Builder(
@@ -59,57 +65,52 @@ class ProfileOwnAccountPage extends StatelessWidget {
     );
   }
 
+  Widget _switchRow(String label, Widget toggle) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label, style: const TextStyle(fontSize: 16)),
+        const Expanded(child: VerticalDivider()),
+        toggle,
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: ProfileOwnAccountController(),
-      builder: (ProfileOwnAccountController controller) {
+      init: SettingsController(),
+      builder: (SettingsController controller) {
         final Color error = Theme.of(context).colorScheme.error;
 
         return Scaffold(
-          appBar: AppBar(
-            title: Responsive.isMobile(context)
-                ? Text('Account settings'.tr)
-                : null,
-          ),
+          appBar: Responsive.isMobile(context)
+              ? AppBar(title: Text('Settings'.tr))
+              : null,
+          drawer:
+              Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
           body: SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  Form(
-                    key: controller.emailFormKey,
-                    child: Column(
-                      children: [
-                        _title('Email'.tr),
-                        const Divider(height: 10),
-                        _muted(controller.user?.email ?? ''),
-                        if ((controller.user?.newEmail ?? '').isNotEmpty)
-                          _muted(
-                            'Waiting for confirmation of {email}.'
-                                .tr
-                                .replaceFirst(
-                                    '{email}', controller.user!.newEmail!),
-                          ),
-                        const Divider(height: 10),
-                        CommonTextField(
-                          label: 'New email'.tr,
-                          callback: (value) => controller.newEmail = value,
-                          validator: controller.emailValidator,
-                          submitCallback: (_) =>
-                              controller.changeEmail(context),
-                        ),
-                        const Divider(height: 10),
-                        _message(controller.emailMessage),
-                        SizedBox(
-                          width: double.maxFinite,
-                          child: CommonButton(
-                            loading: controller.emailLoading,
-                            onPressed: controller.changeEmail,
-                            child: Text('Change email'.tr),
-                          ),
-                        ),
-                      ],
+                  _title('Preferences'.tr),
+                  const Divider(height: 10),
+                  _switchRow(
+                    'Language'.tr,
+                    CommonSwitch(
+                      callback: controller.toggleLanguage,
+                      value: Get.locale == SettingsController.locales[0],
+                      labels: const ['EN', 'ES'],
+                    ),
+                  ),
+                  const Divider(height: 10),
+                  _switchRow(
+                    'Theme'.tr,
+                    CommonSwitch(
+                      value: !UserPreferences.isDarkMode(context),
+                      callback: () => controller.toggleThemeMode(context),
+                      icons: const [Atlas.sunny_bold, Atlas.moon_bold],
                     ),
                   ),
                   const Divider(height: 40),

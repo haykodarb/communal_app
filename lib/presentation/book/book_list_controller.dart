@@ -84,7 +84,7 @@ class BookListController extends GetxController {
       return response.payload;
     }
 
-    return [];
+    throw response.errorMessage;
   }
 
   Future<void> goToAddBookPage(BuildContext context) async {

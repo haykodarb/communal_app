@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:typed_data';
-import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_controller.dart';
 import 'package:communal/presentation/common/common_image_cropper.dart';
+import 'package:communal/presentation/common/common_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide debounce;
 import 'package:go_router/go_router.dart';
@@ -156,15 +156,6 @@ class ProfileOwnEditController extends GetxController {
     return null;
   }
 
-  Future<void> changeThemeMode(BuildContext context) async {
-    final ThemeMode newThemeMode =
-        UserPreferences.isDarkMode(context) ? ThemeMode.light : ThemeMode.dark;
-
-    Get.changeThemeMode(newThemeMode);
-
-    UserPreferences.setSelectedThemeMode(newThemeMode);
-  }
-
   Future<void> onSubmit(BuildContext context) async {
     if (formKey.currentState!.validate()) {
       loading.value = true;
@@ -193,6 +184,7 @@ class ProfileOwnEditController extends GetxController {
       if (context.mounted) {
         if (response.success) {
           context.pop(response.payload);
+          CommonToast.show('Profile saved'.tr);
         } else {
           CommonAlertDialog(title: response.payload).open(context);
         }

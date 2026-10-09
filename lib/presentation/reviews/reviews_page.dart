@@ -1,8 +1,10 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
 import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/presentation/common/common_review_card.dart';
 import 'package:communal/presentation/reviews/reviews_controller.dart';
+import 'package:communal/presentation/common/common_empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -29,6 +31,10 @@ class ReviewsPage extends StatelessWidget {
                   scrollController: controller.scrollController,
                   noItemsText:
                       'Your friends have not reviewed any books yet.'.tr,
+                  emptyState: () => CommonEmptyState(
+                    icon: Atlas.comment_dots,
+                    title: 'Your friends have not reviewed any books yet.'.tr,
+                  ),
                   childBuilder: (Loan loan, _) => CommonKeepaliveWrapper(
                     child: CommonReviewCard(loan: loan, showReviewer: true),
                   ),

@@ -4,6 +4,7 @@ import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/presentation/common/common_confirmation_dialog.dart';
 import 'package:communal/presentation/loans/loans_controller.dart';
+import 'package:communal/presentation/common/common_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -112,6 +113,7 @@ class LoanInfoController extends GetxController {
         inheritedLoan?.accepted = true;
         inheritedLoan?.accepted_at = DateTime.now();
         loansController?.listViewController.itemList.refresh();
+        CommonToast.show('Loan approved'.tr);
       } else {
         if (context.mounted) {
           CommonAlertDialog(title: response.payload).open(context);
@@ -131,10 +133,13 @@ class LoanInfoController extends GetxController {
       final BackendResponse response =
           await LoansBackend.setLoanParameterTrue(loan.value, 'rejected');
 
-      if (response.success && inheritedLoan != null) {
-        loansController?.listViewController.itemList.removeWhere(
-          (element) => element.id == inheritedLoan!.id,
-        );
+      if (response.success) {
+        if (inheritedLoan != null) {
+          loansController?.listViewController.itemList.removeWhere(
+            (element) => element.id == inheritedLoan!.id,
+          );
+        }
+        CommonToast.show('Loan rejected'.tr);
       }
 
       if (!response.success && context.mounted) {

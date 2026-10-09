@@ -1,3 +1,4 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/backend/loans_backend.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
@@ -8,6 +9,7 @@ import 'package:communal/presentation/common/common_loan_card.dart';
 import 'package:communal/presentation/common/common_search_bar.dart';
 import 'package:communal/presentation/loans/loans_controller.dart';
 import 'package:communal/responsive.dart';
+import 'package:communal/presentation/common/common_empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -47,8 +49,11 @@ class LoansPage extends StatelessWidget {
                     floating: true,
                   ),
                   CommonListView<Loan>(
-                    noItemsText:
-                        'You have not loaned or borrowed any books yet.\n\nYou can get started by joining communities and searching their libraries for books you might enjoy.',
+                    noItemsText: 'No loans found.'.tr,
+                    emptyState: () => CommonEmptyState(
+                      icon: Atlas.account_arrows,
+                      title: 'No loans found.'.tr,
+                    ),
                     childBuilder: (Loan loan, _) => CommonKeepaliveWrapper(
                       child: CommonLoanCard(loan: loan),
                     ),

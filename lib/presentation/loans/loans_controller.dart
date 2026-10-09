@@ -123,6 +123,6 @@ class LoansController extends GetxController {
       return response.payload;
     }
 
-    return [];
+    throw response.errorMessage;
   }
 }

@@ -5,6 +5,7 @@ import 'package:communal/models/book.dart';
 import 'package:communal/presentation/book/book_list_controller.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/presentation/common/common_image_cropper.dart';
+import 'package:communal/presentation/common/common_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -175,6 +176,7 @@ class BookCreateController extends GetxController {
         bookListController.listViewController.itemList.refresh();
         bookListController.listViewController.pageKey++;
         context.pop(response.payload);
+        CommonToast.show('Book added'.tr);
       } else {
         showDialog(
           context: context,

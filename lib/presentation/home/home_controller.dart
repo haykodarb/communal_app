@@ -65,6 +65,6 @@ class HomeController extends GetxController {
       return response.payload;
     }
 
-    return <Book>[];
+    throw response.errorMessage;
   }
 }

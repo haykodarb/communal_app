@@ -69,7 +69,8 @@ class FriendshipsController extends GetxController {
     Future<BackendResponse<List<Friendship>>> request,
   ) async {
     final BackendResponse<List<Friendship>> response = await request;
-    return response.success ? response.payload ?? [] : [];
+    if (!response.success) throw response.errorMessage;
+    return response.payload ?? [];
   }
 
   void onTabTapped(int index) {

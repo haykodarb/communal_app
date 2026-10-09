@@ -1,5 +1,4 @@
 import 'package:atlas_icons/atlas_icons.dart';
-import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/presentation/common/common_async_text_field.dart';
 import 'package:communal/presentation/common/common_switch.dart';
 import 'package:communal/presentation/common/common_button.dart';
@@ -7,71 +6,12 @@ import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_text_field.dart';
 import 'package:communal/presentation/profiles/profile_own/profile_own_edit/profile_own_edit_controller.dart';
 import 'package:communal/responsive.dart';
-import 'package:communal/routes.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfileOwnEditPage extends StatelessWidget {
   const ProfileOwnEditPage({super.key});
-  static const List<Locale> _locales = [Locale('en', 'US'), Locale('es', 'ES')];
-
-  Widget _themeToggleSwitch(ProfileOwnEditController controller) {
-    return Builder(
-      builder: (context) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Theme'.tr,
-              style: const TextStyle(fontSize: 16),
-            ),
-            const Expanded(child: VerticalDivider()),
-            CommonSwitch(
-              value: !UserPreferences.isDarkMode(context),
-              callback: () => controller.changeThemeMode(context),
-              icons: const [Atlas.sunny_bold, Atlas.moon_bold],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _languageToggleSwitch(ProfileOwnEditController controller) {
-    return Builder(
-      builder: (context) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Language'.tr,
-              style: const TextStyle(fontSize: 16),
-            ),
-            const Expanded(child: VerticalDivider()),
-            CommonSwitch(
-              callback: () {
-                if (Get.locale == _locales[0]) {
-                  UserPreferences.setSelectedLocale(_locales[1]);
-                  Get.updateLocale(_locales[1]);
-                } else {
-                  UserPreferences.setSelectedLocale(_locales[0]);
-                  Get.updateLocale(_locales[0]);
-                }
-              },
-              value: Get.locale == _locales[0],
-              labels: const [
-                "EN",
-                "ES",
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   Widget _extendedCircleToggleSwitch(ProfileOwnEditController controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -297,10 +237,7 @@ class ProfileOwnEditPage extends StatelessWidget {
                         _showEmailToggleSwitch(controller),
                         const Divider(height: 20),
                         _extendedCircleToggleSwitch(controller),
-                        const Divider(height: 20),
-                        _languageToggleSwitch(controller),
-                        const Divider(height: 20),
-                        _themeToggleSwitch(controller),
+                        // Language and theme live in Settings.
                         const Divider(height: 20),
                         SizedBox(
                           width: double.maxFinite,
@@ -308,17 +245,6 @@ class ProfileOwnEditPage extends StatelessWidget {
                             onPressed: controller.onSubmit,
                             loading: controller.loading,
                             child: Text('Save'.tr),
-                          ),
-                        ),
-                        const Divider(height: 10),
-                        SizedBox(
-                          width: double.maxFinite,
-                          child: CommonButton(
-                            type: CommonButtonType.outlined,
-                            onPressed: (context) => context.push(
-                              '${RouteNames.profileOwnPage}${RouteNames.profileOwnEditPage}${RouteNames.profileOwnAccountPage}',
-                            ),
-                            child: Text('Account settings'.tr),
                           ),
                         ),
                       ],

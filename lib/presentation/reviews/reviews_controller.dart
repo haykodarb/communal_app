@@ -29,6 +29,6 @@ class ReviewsController extends GetxController {
       return response.payload;
     }
 
-    return <Loan>[];
+    throw response.errorMessage;
   }
 }

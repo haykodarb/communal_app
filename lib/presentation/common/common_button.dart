@@ -36,6 +36,13 @@ class CommonButton extends StatelessWidget {
   final bool expand;
   final double loaderSize;
 
+  /// A light primary, solid (over the card colour) so nothing shows through
+  /// it, e.g. the reviews behind the book page's floating buttons.
+  static Color _tonalFill(BuildContext context) => Color.alphaBlend(
+        Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
+        Theme.of(context).colorScheme.surfaceContainer,
+      );
+
   Widget _buildButton(
     void Function()? callback,
     CommonButtonType type,
@@ -70,7 +77,7 @@ class CommonButton extends StatelessWidget {
           onPressed: callback,
           style: finalStyle?.copyWith(
                 backgroundColor: WidgetStatePropertyAll(
-                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
+                  _tonalFill(context),
                 ),
                 foregroundColor: WidgetStatePropertyAll(
                   Theme.of(context).colorScheme.primary,
@@ -78,10 +85,7 @@ class CommonButton extends StatelessWidget {
               ) ??
               FilledButton.styleFrom(
                 foregroundColor: Theme.of(context).colorScheme.primary,
-                backgroundColor: Theme.of(context)
-                    .colorScheme
-                    .primary
-                    .withValues(alpha: 0.15),
+                backgroundColor: _tonalFill(context),
               ),
           child: CommonLoadingBody(
             loading: loading?.value ?? false,
@@ -157,7 +161,7 @@ class CommonButton extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color:
-                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
+                  _tonalFill(context),
             ),
             child: IconButton(
               onPressed: callback,

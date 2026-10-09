@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:communal/presentation/common/common_loading_body.dart';
+import 'package:communal/presentation/common/common_empty_state.dart';
+import 'package:communal/presentation/common/common_error_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
@@ -12,6 +14,10 @@ class CommonListViewController<ItemType> extends GetxController {
   final RxList<ItemType> itemList = <ItemType>[].obs;
   final RxBool firstLoad = true.obs;
   final RxBool showLoadingMore = false.obs;
+
+  /// Why the last page failed to load; the list shows it with "Try again"
+  /// when it has nothing else to show.
+  final RxnString error = RxnString();
   bool loadingMore = false;
 
   bool fullyLoaded = false;
@@ -33,7 +39,27 @@ class CommonListViewController<ItemType> extends GetxController {
 
     firstLoad.value = true;
 
-    final List<ItemType> newItems = await newPageCallback!(pageKey);
+    _addPage(await _fetch());
+
+    firstLoad.value = false;
+    _loadMoreIfShort();
+  }
+
+  /// The next page, or null (with [error] set) if it failed. Page callbacks
+  /// throw a message to report a failure.
+  Future<List<ItemType>?> _fetch() async {
+    try {
+      final List<ItemType> newItems = await newPageCallback!(pageKey);
+      error.value = null;
+      return newItems;
+    } catch (e) {
+      error.value = e.toString();
+      return null;
+    }
+  }
+
+  void _addPage(List<ItemType>? newItems) {
+    if (newItems == null) return;
 
     pageKey += newItems.length;
     itemList.addAll(newItems);
@@ -42,8 +68,12 @@ class CommonListViewController<ItemType> extends GetxController {
     if (newItems.length < pageSize) {
       fullyLoaded = true;
     }
+  }
 
-    firstLoad.value = false;
+  /// The scroll listener only fires on scrolling: if a page landed but the
+  /// end is still within reach (short pages, tall screens), look again.
+  void _loadMoreIfShort() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => _maybeLoadMore());
   }
 
   void addItem(ItemType item) {
@@ -66,15 +96,13 @@ class CommonListViewController<ItemType> extends GetxController {
     fullyLoaded = false;
     pageKey = 0;
 
+    error.value = null;
     firstLoad.value = true;
 
-    final List<ItemType> newItems = await newPageCallback!(pageKey);
-
-    pageKey += newItems.length;
-    itemList.addAll(newItems);
-    itemList.refresh();
+    _addPage(await _fetch());
 
     firstLoad.value = false;
+    _loadMoreIfShort();
   }
 
   void registerScrollController(ScrollController newScrollController) {
@@ -91,35 +119,44 @@ class CommonListViewController<ItemType> extends GetxController {
   Future<void> scrollListener() async {
     scrollPosition.value = scrollController?.position.pixels.toInt() ?? 0;
 
-    if (scrollController!.position.maxScrollExtent -
-            scrollController!.position.pixels <
-        200) {
-      if (loadingMore) return;
-      if (fullyLoaded) return;
-      if (newPageCallback == null) return;
+    await _maybeLoadMore();
+  }
 
-      showLoadingMore.value = true;
-      loadingMore = true;
+  /// Loads the next page once the end is within a screen and a half, so it's
+  /// there before you reach it.
+  Future<void> _maybeLoadMore() async {
+    final ScrollController? controller = scrollController;
+    if (controller == null || !controller.hasClients) return;
+    if (controller.positions.length != 1) return;
 
-      final List<ItemType> newItems = await newPageCallback!(pageKey);
-
-      pageKey += newItems.length;
-      itemList.addAll(newItems);
-      itemList.refresh();
-
-      if (newItems.length < pageSize) {
-        fullyLoaded = true;
-      }
-
-      showLoadingMore.value = false;
-
-      debounceTimer = Timer(
-        const Duration(milliseconds: 500),
-        () {
-          loadingMore = false;
-        },
-      );
+    final ScrollPosition position = controller.position;
+    if (!position.hasContentDimensions) return;
+    if (position.maxScrollExtent - position.pixels >
+        position.viewportDimension * 1.5) {
+      return;
     }
+
+    if (loadingMore) return;
+    if (fullyLoaded) return;
+    if (firstLoad.value) return;
+    if (newPageCallback == null) return;
+
+    showLoadingMore.value = true;
+    loadingMore = true;
+
+    final List<ItemType>? newItems = await _fetch();
+    _addPage(newItems);
+
+    showLoadingMore.value = false;
+
+    debounceTimer = Timer(
+      const Duration(milliseconds: 500),
+      () {
+        loadingMore = false;
+        // Only when the list grew, so a failing or finished one stops.
+        if (newItems != null && newItems.isNotEmpty) _maybeLoadMore();
+      },
+    );
   }
 }
 
@@ -134,6 +171,7 @@ class CommonGridView<ItemType> extends StatelessWidget {
     this.isSliver = false,
     this.scrollController,
     this.noItemsText = 'No items.',
+    this.emptyState,
     this.maxColumns = 2,
     super.key,
   });
@@ -174,6 +212,11 @@ class CommonGridView<ItemType> extends StatelessWidget {
   final ScrollController? scrollController;
   final String noItemsText;
 
+  /// Builds what shows instead of [noItemsText] when there are no items,
+  /// e.g. a CommonEmptyState with an icon and an action. Built each time,
+  /// so it can read state like the current search.
+  final Widget Function()? emptyState;
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
@@ -198,33 +241,23 @@ class CommonGridView<ItemType> extends StatelessWidget {
             }
 
             if (controller.itemList.isEmpty) {
+              final String? error = controller.error.value;
+              final Widget placeholder = error != null
+                  ? CommonErrorState(
+                      message: error,
+                      onRetry: controller.reloadList,
+                    )
+                  : emptyState?.call() ?? CommonEmptyState(title: noItemsText);
+
               if (isSliver) {
                 return SliverFillRemaining(
                   hasScrollBody: false,
                   fillOverscroll: false,
-                  child: Center(
-                    child: SizedBox(
-                      width: 300,
-                      child: Text(
-                        noItemsText,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    ),
-                  ),
+                  child: Center(child: placeholder),
                 );
               }
 
-              return Center(
-                child: SizedBox(
-                  width: 300,
-                  child: Text(
-                    noItemsText,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                ),
-              );
+              return Center(child: placeholder);
             }
 
             if (isSliver) {
@@ -279,6 +312,7 @@ class CommonListView<ItemType> extends StatelessWidget {
     this.isSliver = false,
     this.scrollController,
     this.noItemsText = 'No items.',
+    this.emptyState,
     this.padding,
     super.key,
   });
@@ -293,6 +327,11 @@ class CommonListView<ItemType> extends StatelessWidget {
 
   final Axis axis;
   final String noItemsText;
+
+  /// Builds what shows instead of [noItemsText] when there are no items,
+  /// e.g. a CommonEmptyState with an icon and an action. Built each time,
+  /// so it can read state like the current search.
+  final Widget Function()? emptyState;
 
   @override
   Widget build(BuildContext context) {
@@ -320,33 +359,23 @@ class CommonListView<ItemType> extends StatelessWidget {
             }
 
             if (controller.itemList.isEmpty) {
+              final String? error = controller.error.value;
+              final Widget placeholder = error != null
+                  ? CommonErrorState(
+                      message: error,
+                      onRetry: controller.reloadList,
+                    )
+                  : emptyState?.call() ?? CommonEmptyState(title: noItemsText);
+
               if (isSliver) {
                 return SliverFillRemaining(
                   hasScrollBody: false,
                   fillOverscroll: false,
-                  child: Center(
-                    child: SizedBox(
-                      width: 300,
-                      child: Text(
-                        noItemsText,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                    ),
-                  ),
+                  child: Center(child: placeholder),
                 );
               }
 
-              return Center(
-                child: SizedBox(
-                  width: 300,
-                  child: Text(
-                    noItemsText,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                ),
-              );
+              return Center(child: placeholder);
             }
 
             int childrenBuilt = 0;

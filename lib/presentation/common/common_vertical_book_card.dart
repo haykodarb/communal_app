@@ -1,6 +1,9 @@
+import 'dart:math' as math;
+
 import 'package:communal/models/book.dart';
 import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/routes.dart';
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -11,12 +14,17 @@ class CommonVerticalBookCard extends StatelessWidget {
     this.clickable = true,
     this.axis = Axis.vertical,
     this.note,
+    this.showLoaned = false,
   });
 
   final Book book;
 
   /// Optional third line, e.g. "via <friend> · <location>".
   final String? note;
+
+  /// My Books: marks loaned books with a ribbon across the cover's top-left
+  /// corner.
+  final bool showLoaned;
   final bool clickable;
   final Axis axis;
 
@@ -50,9 +58,17 @@ class CommonVerticalBookCard extends StatelessWidget {
             children: [
               Expanded(
                 flex: axis == Axis.vertical ? 0 : 1,
-                child: CommonBookCover(
-                  book,
-                ),
+                child: showLoaned && book.loaned
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: Stack(
+                          children: [
+                            CommonBookCover(book),
+                            const _LoanedRibbon(),
+                          ],
+                        ),
+                      )
+                    : CommonBookCover(book),
               ),
               const Divider(height: 10),
               Text(
@@ -93,6 +109,57 @@ class CommonVerticalBookCard extends StatelessWidget {
                   ),
                 ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A band rotated 45° about its centre, which sits 26px in from both edges
+/// on the corner's diagonal (leaving ~73px of it showing, room for
+/// "PRESTADO"); the cover's clip cuts its ends. In the loaned purple.
+class _LoanedRibbon extends StatelessWidget {
+  const _LoanedRibbon();
+
+  static const double _width = 100;
+  static const double _height = 16;
+  static const double _inset = 26;
+
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
+
+    return Positioned(
+      top: _inset - _height / 2,
+      left: _inset - _width / 2,
+      child: IgnorePointer(
+        child: Transform.rotate(
+          angle: -math.pi / 4,
+          child: Container(
+            width: _width,
+            height: _height,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: colors.tertiary,
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x40000000),
+                  blurRadius: 3,
+                  offset: Offset(0, 1),
+                ),
+              ],
+            ),
+            child: Text(
+              'Loaned'.tr.toUpperCase(),
+              style: TextStyle(
+                color: colors.onTertiary,
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.4,
+                height: 1,
+              ),
+            ),
           ),
         ),
       ),

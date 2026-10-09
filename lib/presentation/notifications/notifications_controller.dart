@@ -97,7 +97,7 @@ class NotificationsController extends GetxController {
       return new_notifs;
     }
 
-    return [];
+    throw response.errorMessage;
   }
 
   Future<void> respondToCommunityInvitation(

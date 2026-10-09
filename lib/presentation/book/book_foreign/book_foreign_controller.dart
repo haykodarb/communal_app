@@ -10,6 +10,7 @@ import 'package:communal/presentation/community/community_specific/community_boo
 import 'package:communal/presentation/loans/loans_controller.dart';
 import 'package:communal/presentation/profiles/profile_other/profile_other_controller.dart';
 import 'package:communal/presentation/search/search_controller.dart';
+import 'package:communal/presentation/common/common_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -162,6 +163,7 @@ class BookForeignController extends GetxController {
       if (response.success) {
         currentLoan.value = response.payload;
         loading.value = false;
+        CommonToast.show('Loan requested'.tr);
       } else {
         if (context.mounted) {
           showDialog(

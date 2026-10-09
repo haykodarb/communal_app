@@ -15,7 +15,6 @@ import 'package:communal/presentation/community/community_specific/community_spe
 import 'package:communal/presentation/friendships/friendships_page.dart';
 import 'package:communal/presentation/home/home_page.dart';
 import 'package:communal/presentation/loans/loan_info/loan_info_page.dart';
-import 'package:communal/presentation/profiles/profile_own/profile_own_account/profile_own_account_page.dart';
 import 'package:communal/presentation/loans/loans_page.dart';
 import 'package:communal/presentation/login/login_page.dart';
 import 'package:communal/presentation/book/book_owned/book_owned_page.dart';
@@ -30,6 +29,7 @@ import 'package:communal/presentation/profiles/profile_own/profile_own_page.dart
 import 'package:communal/presentation/register/register_page.dart';
 import 'package:communal/presentation/register/register_resend/register_resend_page.dart';
 import 'package:communal/presentation/reviews/reviews_page.dart';
+import 'package:communal/presentation/settings/settings_page.dart';
 import 'package:communal/presentation/search/search_community_details_page.dart';
 import 'package:communal/presentation/search/search_page.dart';
 import 'package:communal/presentation/start/landing/landing_page.dart';
@@ -58,10 +58,10 @@ class RouteNames {
 
   static const String profileOwnPage = '/my-profile';
   static const String profileOwnEditPage = '/edit';
-  static const String profileOwnAccountPage = '/account';
 
   static const String homePage = '/home';
   static const String reviewsPage = '/reviews';
+  static const String settingsPage = '/settings';
 
   static const String friendsPage = '/friends';
 
@@ -317,6 +317,14 @@ final GoRoute _reviewsRoutes = GoRoute(
   ),
 );
 
+final GoRoute _settingsRoutes = GoRoute(
+  path: RouteNames.settingsPage,
+  parentNavigatorKey: _shellNavigatorKey,
+  pageBuilder: (context, state) => const NoTransitionPage(
+    child: SettingsPage(),
+  ),
+);
+
 final GoRoute _friendsRoutes = GoRoute(
   path: RouteNames.friendsPage,
   parentNavigatorKey: _shellNavigatorKey,
@@ -352,8 +360,10 @@ final GoRoute _searchPage = GoRoute(
   path: RouteNames.searchPage,
   parentNavigatorKey: _shellNavigatorKey,
   pageBuilder: (context, state) {
-    return const NoTransitionPage(
-      child: SearchPage(),
+    return NoTransitionPage(
+      child: SearchPage(
+        initialTab: state.extra is int ? state.extra as int : 0,
+      ),
     );
   },
   routes: [
@@ -403,15 +413,6 @@ final GoRoute _myProfileRoutes = GoRoute(
       pageBuilder: (context, state) => const NoTransitionPage(
         child: ProfileOwnEditPage(),
       ),
-      routes: [
-        GoRoute(
-          path: RouteNames.profileOwnAccountPage,
-          parentNavigatorKey: _shellNavigatorKey,
-          pageBuilder: (context, state) => const NoTransitionPage(
-            child: ProfileOwnAccountPage(),
-          ),
-        ),
-      ],
     ),
   ],
 );
@@ -508,6 +509,7 @@ final List<RouteBase> routes = <RouteBase>[
       _messagesRoutes,
       _notificationsRoutes,
       _friendsRoutes,
+      _settingsRoutes,
       _foreignBookPage,
     ],
   ),

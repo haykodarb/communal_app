@@ -8,8 +8,22 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 
+class _DrawerItem {
+  const _DrawerItem(this.route, this.text, this.icon, [this.notifications]);
+
+  final String route;
+  final String text;
+  final IconData icon;
+  final RxInt? notifications;
+}
+
 class CommonDrawerWidget extends StatelessWidget {
   const CommonDrawerWidget({super.key});
+
+  /// Rows take 2 flex units each and the header 3, so the header is as tall
+  /// as one and a half rows and grows with the window like they do.
+  static const int _rowFlex = 2;
+  static const int _headerFlex = 3;
 
   Widget _drawerButton({
     required IconData icon,
@@ -19,6 +33,7 @@ class CommonDrawerWidget extends StatelessWidget {
     RxInt? notifications,
   }) {
     return Expanded(
+      flex: _rowFlex,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -113,26 +128,34 @@ class CommonDrawerWidget extends StatelessWidget {
     );
   }
 
+  /// Your avatar and name, and "View profile": the whole header opens My
+  /// Profile (there's no Profile row). On the drawer's own background.
   Widget _drawerHeader(CommonDrawerController controller) {
-    return SizedBox(
-      height: 150,
-      child: DrawerHeader(
-        margin: EdgeInsets.zero,
-        padding: EdgeInsets.zero,
-        child: Builder(
-          builder: (context) {
-            return InkWell(
-              onTap: () =>
-                  controller.goToRoute(RouteNames.profileOwnPage, context),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 10,
-                  horizontal: 30,
-                ),
-                width: double.maxFinite,
-                color: Theme.of(context).colorScheme.surface,
+    return Expanded(
+      flex: _headerFlex,
+      child: Builder(
+        builder: (context) {
+          final ColorScheme colors = Theme.of(context).colorScheme;
+
+          return InkWell(
+            onTap: () =>
+                controller.goToRoute(RouteNames.profileOwnPage, context),
+            child: Container(
+              // Clear of the status bar, as DrawerHeader was.
+              padding: EdgeInsets.fromLTRB(
+                30,
+                10 + MediaQuery.paddingOf(context).top,
+                30,
+                10,
+              ),
+              width: double.maxFinite,
+              alignment: Alignment.centerLeft,
+              // Never squeezes the 80px avatar on short windows.
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Obx(
                       () {
@@ -148,37 +171,61 @@ class CommonDrawerWidget extends StatelessWidget {
                           );
                         }
 
-                        print(
-                            'Profile changed - Image: ${controller.currentUserProfile.value.avatar_path}');
-
                         return CommonCircularAvatar(
                           profile: controller.currentUserProfile.value,
                           radius: 40,
-                          clickable: true,
                         );
                       },
                     ),
-                    const VerticalDivider(width: 20),
-                    Expanded(
-                      child: Obx(
-                        () => Text(
-                          controller.currentUserProfile.value.username,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurface,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
+                    const SizedBox(width: 20),
+                    // Bounded so a long name ellipsizes inside the FittedBox.
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 160),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Obx(
+                            () => Text(
+                              controller.currentUserProfile.value.username,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: TextStyle(
+                                color: colors.onSurface,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: 2),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'View profile'.tr,
+                                style: TextStyle(
+                                  color: colors.primary,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  height: 18 / 14,
+                                ),
+                              ),
+                              Icon(
+                                Icons.chevron_right,
+                                size: 18,
+                                color: colors.primary,
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -194,6 +241,43 @@ class CommonDrawerWidget extends StatelessWidget {
         global: true,
         builder: (CommonDrawerController controller) {
           final Color dividerColor = Theme.of(context).colorScheme.surface;
+          final Widget divider = Divider(
+            thickness: 2,
+            color: dividerColor,
+            height: dividerHeight,
+          );
+
+          // Profile is the header; Loans is reached from Home's "See all".
+          // Communities is hidden while the feature is off.
+          final List<_DrawerItem> items = [
+            _DrawerItem(RouteNames.homePage, 'Home'.tr, Atlas.home),
+            _DrawerItem(
+              RouteNames.searchPage,
+              'Search'.tr,
+              Atlas.magnifying_glass,
+            ),
+            _DrawerItem(
+              RouteNames.notificationsPage,
+              'Notifications'.tr,
+              Atlas.bell,
+              controller.globalNotifications,
+            ),
+            _DrawerItem(
+              RouteNames.messagesPage,
+              'Messages'.tr,
+              Atlas.chats,
+              controller.messageNotifications,
+            ),
+            _DrawerItem(
+              RouteNames.friendsPage,
+              'Friends'.tr,
+              Atlas.users,
+              controller.friendRequests,
+            ),
+            _DrawerItem(RouteNames.myBooks, 'My Books'.tr, Atlas.library),
+            _DrawerItem(RouteNames.settingsPage, 'Settings'.tr, Atlas.gear),
+          ];
+
           return Drawer(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(0),
@@ -206,212 +290,52 @@ class CommonDrawerWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   _drawerHeader(controller),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        const Divider(
-                          thickness: 0,
-                          color: Colors.transparent,
-                          height: dividerHeight,
+                  for (final _DrawerItem item in items) ...[
+                    divider,
+                    Obx(
+                      () => _drawerButton(
+                        text: item.text,
+                        icon: item.icon,
+                        selected: controller.currentRoute.value == item.route,
+                        callback: () =>
+                            controller.goToRoute(item.route, context),
+                        notifications: item.notifications,
+                      ),
+                    ),
+                  ],
+                  const Expanded(
+                    flex: 3 * _rowFlex,
+                    child: SizedBox(),
+                  ),
+                  divider,
+                  Container(
+                    padding: const EdgeInsets.only(left: 20),
+                    width: double.maxFinite,
+                    child: Obx(
+                      () => Text(
+                        controller.versionNumber.value,
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontSize: 14,
                         ),
-                        Obx(() {
-                          return _drawerButton(
-                            text: 'Home'.tr,
-                            icon: Atlas.home,
-                            selected: controller.currentRoute.value ==
-                                RouteNames.homePage,
-                            callback: () => controller.goToRoute(
-                                RouteNames.homePage, context),
-                          );
-                        }),
-                        Divider(
-                          thickness: 2,
-                          color: dividerColor,
-                          height: dividerHeight,
-                        ),
-                        Obx(() {
-                          return _drawerButton(
-                            text: 'Profile'.tr,
-                            icon: Atlas.account,
-                            selected: controller.currentRoute.value ==
-                                RouteNames.profileOwnPage,
-                            callback: () => controller.goToRoute(
-                                RouteNames.profileOwnPage, context),
-                          );
-                        }),
-                        Divider(
-                          thickness: 2,
-                          color: dividerColor,
-                          height: dividerHeight,
-                        ),
-                        Obx(() {
-                          return _drawerButton(
-                            text: 'Notifications'.tr,
-                            icon: Atlas.bell,
-                            selected: controller.currentRoute.value ==
-                                RouteNames.notificationsPage,
-                            callback: () => controller.goToRoute(
-                              RouteNames.notificationsPage,
-                              context,
-                            ),
-                            notifications: controller.globalNotifications,
-                          );
-                        }),
-                        Divider(
-                          thickness: 2,
-                          color: dividerColor,
-                          height: dividerHeight,
-                        ),
-                        Obx(() {
-                          return _drawerButton(
-                            text: 'Search'.tr,
-                            icon: Atlas.magnifying_glass,
-                            selected: controller.currentRoute.value ==
-                                RouteNames.searchPage,
-                            callback: () => controller.goToRoute(
-                              RouteNames.searchPage,
-                              context,
-                            ),
-                          );
-                        }),
-                        Divider(
-                          thickness: 2,
-                          color: dividerColor,
-                          height: dividerHeight,
-                        ),
-                        Obx(
-                          () {
-                            return _drawerButton(
-                              text: 'Messages'.tr,
-                              icon: Atlas.chats,
-                              selected: controller.currentRoute.value ==
-                                  RouteNames.messagesPage,
-                              callback: () => controller.goToRoute(
-                                  RouteNames.messagesPage, context),
-                              notifications: controller.messageNotifications,
-                            );
-                          },
-                        ),
-                        Divider(
-                          thickness: 2,
-                          color: dividerColor,
-                          height: dividerHeight,
-                        ),
-                        Obx(
-                          () {
-                            return _drawerButton(
-                              text: 'Friends'.tr,
-                              icon: Atlas.users,
-                              selected: controller.currentRoute.value ==
-                                  RouteNames.friendsPage,
-                              callback: () => controller.goToRoute(
-                                  RouteNames.friendsPage, context),
-                              notifications: controller.friendRequests,
-                            );
-                          },
-                        ),
-                        Divider(
-                          thickness: 2,
-                          color: dividerColor,
-                          height: dividerHeight,
-                        ),
-                        Obx(
-                          () {
-                            return _drawerButton(
-                              text: 'My Books'.tr,
-                              icon: Atlas.library,
-                              selected: controller.currentRoute.value ==
-                                  RouteNames.myBooks,
-                              callback: () => controller.goToRoute(
-                                  RouteNames.myBooks, context),
-                            );
-                          },
-                        ),
-                        Divider(
-                          thickness: 2,
-                          color: dividerColor,
-                          height: dividerHeight,
-                        ),
-                        // Obx(
-                        //   () {
-                        //     return _drawerButton(
-                        //       text: 'Communities'.tr,
-                        //       selected: controller.currentRoute.value ==
-                        //           RouteNames.communityListPage,
-                        //       icon: Atlas.users,
-                        //       callback: () => controller.goToRoute(
-                        //         RouteNames.communityListPage,
-                        //         context,
-                        //       ),
-                        //     );
-                        //   },
-                        // ),
-                        // Divider(
-                        //   thickness: 2,
-                        //   color: dividerColor,
-                        //   height: dividerHeight,
-                        // ),
-                        Obx(
-                          () {
-                            return _drawerButton(
-                              text: 'Loans'.tr,
-                              selected: controller.currentRoute.value ==
-                                  RouteNames.loansPage,
-                              icon: Atlas.account_arrows,
-                              callback: () => controller.goToRoute(
-                                RouteNames.loansPage,
-                                context,
-                              ),
-                            );
-                          },
-                        ),
-                        const Expanded(
-                          flex: 3,
-                          child: SizedBox(),
-                        ),
-                        Divider(
-                          thickness: 2,
-                          color: dividerColor,
-                          height: dividerHeight,
-                        ),
-                        Container(
-                          padding: const EdgeInsets.only(left: 20),
-                          width: double.maxFinite,
-                          child: Obx(
-                            () => Text(
-                              controller.versionNumber.value,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Divider(
-                          thickness: 2,
-                          color: dividerColor,
-                          height: dividerHeight,
-                        ),
-                        _drawerButton(
-                          text: 'Logout'.tr,
-                          selected: false,
-                          icon: Atlas.double_arrow_right_circle,
-                          callback: () async {
-                            await LoginBackend.logout();
-                            Get.deleteAll();
-                            if (context.mounted) {
-                              context.go(RouteNames.startPage);
-                            }
-                          },
-                        ),
-                        const Divider(height: 10),
-                      ],
+                      ),
                     ),
                   ),
+                  divider,
+                  _drawerButton(
+                    text: 'Logout'.tr,
+                    selected: false,
+                    icon: Atlas.double_arrow_right_circle,
+                    callback: () async {
+                      await LoginBackend.logout();
+                      Get.deleteAll();
+                      if (context.mounted) {
+                        context.go(RouteNames.startPage);
+                      }
+                    },
+                  ),
+                  const Divider(height: 10),
                 ],
               ),
             ),

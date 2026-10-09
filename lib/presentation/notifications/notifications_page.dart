@@ -1,9 +1,11 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/models/custom_notification.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/presentation/notifications/notification_widget_factory.dart';
 import 'package:communal/presentation/notifications/notifications_controller.dart';
 import 'package:communal/responsive.dart';
+import 'package:communal/presentation/common/common_empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -24,7 +26,11 @@ class NotificationsPage extends StatelessWidget {
                 ? AppBar(title: Text('Notifications'.tr))
                 : null,
             body: CommonListView<CustomNotification>(
-              noItemsText: 'No notifications.',
+              noItemsText: 'No notifications yet.'.tr,
+              emptyState: () => CommonEmptyState(
+                icon: Atlas.bell,
+                title: 'No notifications yet.'.tr,
+              ),
               childBuilder: (notification, index) {
                 return NotificationWidgetFactory.create(
                   notification: notification,

@@ -5,7 +5,6 @@ import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/message.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/models/realtime_message.dart';
-import 'package:communal/presentation/common/common_confirmation_dialog.dart';
 import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
@@ -103,28 +102,18 @@ class MessagesController extends GetxController {
     context.push('${RouteNames.messagesPage}/${chatter.id}');
   }
 
-  Future<void> deleteChatsWithUsers(
-    Profile chatter,
-    BuildContext context,
-  ) async {
-    final bool deleteConfirm = await const CommonConfirmationDialog(
-      title: 'Delete chat?',
-    ).open(context);
-
-    if (deleteConfirm) {
-      final BackendResponse response =
-          await MessagesBackend.deleteMessagesWithUser(chatter);
-
-      if (response.success) {
-        listViewController.itemList.removeWhere(
-          (element) =>
-              element.value.sender.id == chatter.id ||
-              element.value.receiver.id == chatter.id,
-        );
-        listViewController.pageKey--;
-        listViewController.itemList.refresh();
-      }
+  /// After the chat was deleted from its page (the ⋮ menu).
+  void removeChatWith(String chatterId) {
+    final int before = listViewController.itemList.length;
+    listViewController.itemList.removeWhere(
+      (element) =>
+          element.value.sender.id == chatterId ||
+          element.value.receiver.id == chatterId,
+    );
+    if (listViewController.itemList.length < before) {
+      listViewController.pageKey--;
     }
+    listViewController.itemList.refresh();
   }
 
   Future<List<Rx<Message>>> loadChats(int pageKey) async {
@@ -138,6 +127,6 @@ class MessagesController extends GetxController {
       return response.payload!.map((e) => e.obs).toList();
     }
 
-    return [];
+    throw response.errorMessage;
   }
 }

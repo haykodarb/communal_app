@@ -12,7 +12,11 @@ class CommonStatusBadge extends StatelessWidget {
     required this.label,
   });
 
-  static const Color green = Color(0xFF7DAE6B);
+  /// A lighter green in dark mode, so it reads on the dark background.
+  static Color green(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark
+          ? const Color(0xFF9CCC8F)
+          : const Color(0xFF7DAE6B);
 
   final StatusTone tone;
   final String label;
@@ -21,7 +25,7 @@ class CommonStatusBadge extends StatelessWidget {
     final ColorScheme colors = Theme.of(context).colorScheme;
 
     return switch (tone) {
-      StatusTone.available => green,
+      StatusTone.available => green(context),
       StatusTone.loaned => colors.tertiary,
       StatusTone.requested => colors.primary,
       StatusTone.rejected => colors.error,

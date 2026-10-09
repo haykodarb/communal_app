@@ -7,6 +7,7 @@ import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_user_link.dart';
 import 'package:communal/routes.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -293,15 +294,12 @@ class _BookDetailViewState extends State<BookDetailView> {
             padding: const EdgeInsets.only(left: 4, right: 16),
             decoration: BoxDecoration(
               color: colors.surfaceContainer,
+              // The same soft drop shadow as the chat's bar.
               boxShadow: [
                 BoxShadow(
-                  offset: const Offset(0, 1),
-                  color: colors.onSurface.withValues(alpha: 0.08),
-                ),
-                BoxShadow(
-                  offset: const Offset(0, 2),
-                  blurRadius: 10,
-                  color: colors.shadow.withValues(alpha: 0.5),
+                  offset: const Offset(0, 3),
+                  blurRadius: 12,
+                  color: colors.shadow.withValues(alpha: 0.75),
                 ),
               ],
             ),
@@ -484,6 +482,26 @@ class _BookDetailViewState extends State<BookDetailView> {
     ];
   }
 
+  /// Height of the floating actions, measured after layout.
+  double _actionsHeight = 0;
+
+  /// Outlined buttons are see-through; give them the card colour.
+  Widget _opaqueButtons(BuildContext context, Widget child) {
+    final ThemeData theme = Theme.of(context);
+    final ButtonStyle fill = ButtonStyle(
+      backgroundColor: WidgetStatePropertyAll(theme.colorScheme.surfaceContainer),
+    );
+
+    return Theme(
+      data: theme.copyWith(
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: theme.outlinedButtonTheme.style?.merge(fill) ?? fill,
+        ),
+      ),
+      child: child,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
@@ -518,10 +536,15 @@ class _BookDetailViewState extends State<BookDetailView> {
                               child: _infoRow(context),
                             ),
                           ),
-                          // The bottom padding separates the list from the
-                          // pinned buttons.
+                          // The bottom padding keeps the last review clear of
+                          // the floating buttons.
                           SliverPadding(
-                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                            padding: EdgeInsets.fromLTRB(
+                              20,
+                              0,
+                              20,
+                              20 + _actionsHeight,
+                            ),
                             sliver: Obx(
                               () => SliverList.list(
                                 children: _reviewItems(context),
@@ -536,14 +559,27 @@ class _BookDetailViewState extends State<BookDetailView> {
                         right: 0,
                         child: _compactBar(context),
                       ),
+                      // Floats over the reviews: nothing behind the buttons,
+                      // which get solid fills so the reviews don't show
+                      // through them.
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: _MeasureHeight(
+                          onChange: (double value) {
+                            if (mounted && value != _actionsHeight) {
+                              setState(() => _actionsHeight = value);
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
+                            child: _opaqueButtons(context, widget.actions),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                ),
-                // Pinned at the bottom; the space above it lives in the list
-                // so the buttons hug the edges.
-                Padding(
-                  padding: const EdgeInsets.all(5),
-                  child: widget.actions,
                 ),
               ],
             );
@@ -551,6 +587,41 @@ class _BookDetailViewState extends State<BookDetailView> {
         ),
       ),
     );
+  }
+}
+
+/// Reports its child's height after each layout.
+class _MeasureHeight extends SingleChildRenderObjectWidget {
+  const _MeasureHeight({required this.onChange, required super.child});
+
+  final void Function(double) onChange;
+
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      _RenderMeasureHeight(onChange);
+
+  @override
+  void updateRenderObject(
+    BuildContext context,
+    _RenderMeasureHeight renderObject,
+  ) {
+    renderObject.onChange = onChange;
+  }
+}
+
+class _RenderMeasureHeight extends RenderProxyBox {
+  _RenderMeasureHeight(this.onChange);
+
+  void Function(double) onChange;
+  double? _last;
+
+  @override
+  void performLayout() {
+    super.performLayout();
+    final double height = size.height;
+    if (height == _last) return;
+    _last = height;
+    WidgetsBinding.instance.addPostFrameCallback((_) => onChange(height));
   }
 }
 

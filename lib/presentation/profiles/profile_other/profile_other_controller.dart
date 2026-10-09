@@ -5,6 +5,7 @@ import 'package:communal/models/friendship.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_confirmation_dialog.dart';
 import 'package:communal/presentation/profiles/common/profile_common_controller.dart';
+import 'package:communal/presentation/common/common_toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -27,12 +28,16 @@ class ProfileOtherController extends ProfileCommonController {
   final RxBool loadingFriendship = false.obs;
   final RxList<Profile> mutualFriends = <Profile>[].obs;
 
-  /// How you're connected to a friend of a friend ("via <friend>").
-  String? get viaNote {
+  /// How you're connected to a friend of a friend ("Is friends with
+  /// <friend>").
+  String? get mutualNote {
     if (profile.value.friendship?.isAccepted ?? false) return null;
     if (mutualFriends.isEmpty) return null;
     final String first =
-        'via {name}'.tr.replaceFirst('{name}', mutualFriends.first.username);
+        'Is friends with {name}'.tr.replaceFirst(
+      '{name}',
+      mutualFriends.first.username,
+    );
     if (mutualFriends.length == 1) return first;
     return '$first ${'and {n} more'.tr.replaceFirst('{n}', '${mutualFriends.length - 1}')}';
   }
@@ -93,6 +98,7 @@ class ProfileOtherController extends ProfileCommonController {
       if (res.success) {
         profile.value.friendship = res.payload;
         profile.refresh();
+        CommonToast.show('Friend request sent'.tr);
       } else {
         if (kDebugMode) {
           print(res.payload);

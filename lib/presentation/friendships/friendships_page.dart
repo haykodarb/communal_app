@@ -7,6 +7,9 @@ import 'package:communal/presentation/common/common_tab_bar.dart';
 import 'package:communal/presentation/common/common_user_card.dart';
 import 'package:communal/presentation/friendships/friendships_controller.dart';
 import 'package:communal/responsive.dart';
+import 'package:communal/presentation/common/common_empty_state.dart';
+import 'package:communal/routes.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -48,7 +51,7 @@ class FriendshipsPage extends StatelessWidget {
   }
 
   static const List<String> _noItemsTexts = [
-    'You have no friends yet. Find people in Search.',
+    'You have no friends yet.',
     'No pending requests.',
   ];
 
@@ -98,6 +101,14 @@ class FriendshipsPage extends StatelessWidget {
                       scrollController: controller.scrollController,
                       controller: controller.currentList,
                       noItemsText: _noItemsTexts[tab].tr,
+                      emptyState: () => CommonEmptyState(
+                        icon: Atlas.users,
+                        title: _noItemsTexts[tab].tr,
+                        actionLabel: tab == 0 ? 'Search'.tr : null,
+                        actionIcon: Atlas.magnifying_glass,
+                        onAction: (context) =>
+                            context.go(RouteNames.searchPage, extra: 1),
+                      ),
                       childBuilder: (Friendship friendship, _) => Obx(
                         () => CommonUserCard(
                           profile: friendship.otherUser,

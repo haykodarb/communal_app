@@ -6,6 +6,7 @@ import 'package:communal/dark_theme.dart';
 import 'package:communal/firebase_options.dart';
 import 'package:communal/light_theme.dart';
 import 'package:communal/localization.dart';
+import 'package:communal/presentation/common/common_toast.dart';
 import 'package:communal/routes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -98,6 +99,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp.router(
       title: 'Communal',
+      scaffoldMessengerKey: rootScaffoldMessengerKey,
       theme: lightTheme,
       translations: LocalizationText(),
       smartManagement: SmartManagement.full,

@@ -93,7 +93,7 @@ class LocalizationText extends Translations {
           'Create topic': 'Crear conversación',
           'On loan': 'En préstamo',
           'Home': 'Inicio',
-          'See all': 'Ver todo',
+          'See all': 'Ver todos',
           'Recent reviews from friends': 'Reseñas recientes de tus amigos',
           'New in your network': 'Nuevo en tu red',
           'Reviews by friends': 'Reseñas de amigos',
@@ -109,11 +109,11 @@ class LocalizationText extends Translations {
               'Dueño · tenés este libro prestado',
           'Owner · you borrowed this book':
               'Dueño · tuviste este libro prestado',
-          'No books from your friends yet. Find people you know in Search.':
-              'Todavía no hay libros de tus amigos. Buscá gente que conozcas en Buscar.',
+          'No books from your friends yet.\nFind people you know in Search.':
+              'Todavía no hay libros de tus amigos.\nBuscá gente que conozcas en Buscar.',
           'Your friends have not reviewed any books yet.':
               'Tus amigos todavía no reseñaron ningún libro.',
-          'Loan rejected': 'Prestamo rechazado',
+          'Loan rejected': 'Préstamo rechazado',
           'Loan completed': 'Prestamo completado',
           'Returned': 'Devuelto',
           'Rejected': 'Rechazado',
@@ -166,8 +166,7 @@ class LocalizationText extends Translations {
           'Share books': 'Compartí libros',
           'Chat messages in Communal are still unencrypted, please refrain from sharing sensitive information here':
               'Los chats en Communal aún no están encriptados, por favor evitar compatir información sensible aquí',
-          'No books found in your library.\n\nYou can upload some with the floating button on the bottom right.':
-              'No tienes libros en tu biblioteca.\n\nPuedes subir algunos usando el botón flotante abajo a la derecha.',
+          'No books found in your library.': 'No tenés libros en tu biblioteca.',
           'community-list-no-items':
               'Aún no te uniste a ninguna comunidad.\n\nPodes crear una propia o solicitar una invitación a comunidades existentes.',
           'community-books-no-items':
@@ -192,12 +191,11 @@ class LocalizationText extends Translations {
           'Remove {name} as friend?': '¿Eliminar a {name} de tus amigos?',
           'No pending requests.': 'No hay solicitudes pendientes.',
           'Server error.': 'Error del servidor.',
-          'You have no friends yet. Find people in Search.':
-              'Todavía no tenés amigos. Buscá personas en Buscar.',
+          'You have no friends yet.': 'Todavía no tenés amigos.',
           'You have not sent any requests.': 'No enviaste ninguna solicitud.',
           'You requested this book from': 'Solicitaste este libro a',
           'requested this book': 'solicitó este libro',
-          'via {name}': 'vía {name}',
+          'Is friends with {name}': 'Es amigo/a de {name}',
           'and {n} more': 'y {n} más',
           'No books found among your friends and their friends.':
               'No se encontraron libros entre tus amigos y sus amigos.',
@@ -206,14 +204,25 @@ class LocalizationText extends Translations {
           ' is available again.': ' está disponible de nuevo.',
           'Show my books to friends of friends':
               'Mostrar mis libros a amigos de amigos',
-          'Account settings': 'Configuración de la cuenta',
-          'Please enter a valid email': 'Ingresá un email válido',
-          'New email': 'Nuevo email',
-          'Change email': 'Cambiar email',
-          'Check your inbox: we sent a confirmation link to {email}.':
-              'Revisá tu bandeja de entrada: enviamos un link de confirmación a {email}.',
-          'Waiting for confirmation of {email}.':
-              'Esperando la confirmación de {email}.',
+          'Preferences': 'Preferencias',
+          'View profile': 'Ver perfil',
+          'Book added': 'Libro agregado',
+          'Changes saved': 'Cambios guardados',
+          'Book deleted': 'Libro eliminado',
+          'Profile saved': 'Perfil guardado',
+          'Loan requested': 'Préstamo solicitado',
+          'Loan approved': 'Préstamo aprobado',
+          'Friend request sent': 'Solicitud de amistad enviada',
+          'Try again': 'Reintentar',
+          'Add book': 'Agregar libro',
+          'No loans found.': 'No se encontraron préstamos.',
+          'No messages yet.': 'Aún no hay mensajes.',
+          'No notifications yet.': 'Aún no hay notificaciones.',
+          'No users found.': 'No se encontraron usuarios.',
+          'No books match "{query}"': 'No se encontraron libros para "{query}"',
+          'No users match "{query}"': 'No se encontraron usuarios para "{query}"',
+          'Delete chat': 'Borrar chat',
+          'Delete chat?': '¿Borrar chat?',
           'New password': 'Nueva contraseña',
           'Repeat password': 'Repetir contraseña',
           'Change password': 'Cambiar contraseña',

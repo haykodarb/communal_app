@@ -1,3 +1,4 @@
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/models/message.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
@@ -6,6 +7,7 @@ import 'package:communal/presentation/messages/messages_controller.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/responsive.dart';
 import 'package:get/get.dart';
+import 'package:communal/presentation/common/common_empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -23,10 +25,6 @@ class MessagesPage extends StatelessWidget {
       builder: (context) {
         return InkWell(
           onTap: () => controller.goToSpecificChat(staticChatter, context),
-          onLongPress: () => controller.deleteChatsWithUsers(
-            staticChatter,
-            context,
-          ),
           splashColor: Colors.transparent,
           child: Card(
             margin: EdgeInsets.zero,
@@ -176,8 +174,11 @@ class MessagesPage extends StatelessWidget {
               ? AppBar(title: Text('Messages'.tr))
               : null,
           body: CommonListView<Rx<Message>>(
-            noItemsText:
-                'No messages yet.\nChat with other users to get started.',
+            noItemsText: 'No messages yet.'.tr,
+            emptyState: () => CommonEmptyState(
+              icon: Atlas.chats,
+              title: 'No messages yet.'.tr,
+            ),
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
             childBuilder: (rx_message, _) => _chatCard(controller, rx_message),
             controller: controller.listViewController,

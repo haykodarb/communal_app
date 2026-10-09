@@ -8,6 +8,7 @@ import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/presentation/common/common_confirmation_dialog.dart';
 import 'package:communal/presentation/profiles/profile_own/profile_own_controller.dart';
 import 'package:communal/routes.dart';
+import 'package:communal/presentation/common/common_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -87,6 +88,7 @@ class BookOwnedController extends GetxController {
         if (context.mounted) {
           context.pop();
         }
+        CommonToast.show('Book deleted'.tr);
       } else {
         deleting.value = false;
         if (context.mounted) {

@@ -1,135 +1,18 @@
-import 'package:auto_size_text/auto_size_text.dart';
+import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/models/book.dart';
-import 'package:communal/presentation/common/common_book_cover.dart';
+import 'package:communal/presentation/common/common_empty_state.dart';
+import 'package:communal/presentation/common/common_vertical_book_card.dart';
 import 'package:communal/presentation/common/common_filter_bottomsheet.dart';
-import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
 import 'package:communal/presentation/common/common_list_view.dart';
-import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_drawer/common_drawer_widget.dart';
 import 'package:communal/presentation/book/book_list_controller.dart';
 import 'package:communal/presentation/common/common_search_bar.dart';
 import 'package:communal/responsive.dart';
-import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 
 class BookListPage extends StatelessWidget {
   const BookListPage({super.key});
-
-  Widget _bookCard(Book book) {
-    return SizedBox(
-      width: 600,
-      child: InkWell(
-        child: Builder(
-          builder: (context) {
-            final Color purple = Theme.of(context).colorScheme.tertiary;
-            const Color green = Color(0xFF7DAE6B);
-
-            return InkWell(
-              onTap: () {
-                context.push('${RouteNames.myBooks}/${book.id}');
-              },
-              child: Obx(
-                () => CommonLoadingBody(
-                  loading: book.loading.value,
-                  child: SizedBox(
-                    height: 200,
-                    width: double.maxFinite,
-                    child: Card(
-                      margin: EdgeInsets.zero,
-                      clipBehavior: Clip.hardEdge,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          CommonBookCover(
-                            book,
-                            radius: 0,
-                          ),
-                          // const VerticalDivider(width: 10),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  AutoSizeText(
-                                    book.title,
-                                    maxLines: 3,
-                                    minFontSize: 12,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface,
-                                      fontWeight: FontWeight.w600,
-                                      height: 1.25,
-                                    ),
-                                  ),
-                                  const Divider(height: 5),
-                                  AutoSizeText(
-                                    book.author,
-                                    maxLines: 3,
-                                    minFontSize: 10,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurfaceVariant,
-                                      fontWeight: FontWeight.w400,
-                                      height: 1.25,
-                                    ),
-                                  ),
-                                  const Expanded(child: Divider()),
-                                  Container(
-                                    height: 30,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 5, horizontal: 10),
-                                    decoration: BoxDecoration(
-                                      color: book.loaned
-                                          ? purple.withValues(alpha: 0.25)
-                                          : green.withValues(alpha: 0.25),
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            color: book.loaned ? purple : green,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          height: 8,
-                                          width: 8,
-                                        ),
-                                        const VerticalDivider(width: 10),
-                                        Text(
-                                          book.loaned
-                                              ? 'Loaned'.tr
-                                              : 'Available'.tr,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
 
   Widget _bottomSheet(BookListController controller) {
     int filterByIndex = 0;
@@ -168,7 +51,8 @@ class BookListPage extends StatelessWidget {
   Widget _searchRow(BookListController controller) {
     return Builder(builder: (context) {
       return Padding(
-        padding: const EdgeInsets.only(left: 5, right: 5, bottom: 2),
+        // Lines up with the grid's 10px edges.
+        padding: const EdgeInsets.only(left: 10, right: 10, bottom: 2),
         child: CommonSearchBar(
           searchCallback: controller.searchBooks,
           filterCallback: () {
@@ -218,16 +102,26 @@ class BookListPage extends StatelessWidget {
                 automaticallyImplyLeading: false,
                 floating: true,
               ),
-              CommonListView<Book>(
-                childBuilder: (Book book, _) => CommonKeepaliveWrapper(
-                  child: _bookCard(book),
+              // The masonry of Search and profiles; loaned books get a ribbon.
+              // The bottom padding keeps the last row clear of the + button.
+              CommonGridView<Book>(
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 90),
+                maxColumns: 3,
+                childBuilder: (Book book) => CommonVerticalBookCard(
+                  book: book,
+                  showLoaned: true,
                 ),
                 controller: controller.listViewController,
                 scrollController: controller.scrollController,
                 isSliver: true,
-                noItemsText:
-                    'No books found.\n\nYou can upload some with the floating button on the bottom right.'
-                        .tr,
+                noItemsText: 'No books found in your library.'.tr,
+                emptyState: () => CommonEmptyState(
+                  icon: Atlas.library,
+                  title: 'No books found in your library.'.tr,
+                  actionLabel: 'Add book'.tr,
+                  actionIcon: Icons.add,
+                  onAction: controller.goToAddBookPage,
+                ),
               ),
             ],
           ),

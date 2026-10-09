@@ -12,6 +12,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SearchPageController extends GetxController {
+  SearchPageController({int initialTab = 0}) {
+    currentTabIndex.value = initialTab;
+  }
+
   static const int pageSize = 20;
   final CommonListViewController<Book> bookListController =
       CommonListViewController(pageSize: pageSize);
@@ -75,7 +79,7 @@ class SearchPageController extends GetxController {
       return response.payload;
     }
 
-    return [];
+    throw response.errorMessage;
   }
 
   Future<List<Profile>> searchUsers(int pageKey) async {
@@ -89,7 +93,7 @@ class SearchPageController extends GetxController {
       return response.payload;
     }
 
-    return [];
+    throw response.errorMessage;
   }
 
   Future<List<Book>> searchBooks(int pageKey) async {
@@ -103,6 +107,6 @@ class SearchPageController extends GetxController {
       return response.payload;
     }
 
-    return <Book>[];
+    throw response.errorMessage;
   }
 }

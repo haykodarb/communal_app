@@ -25,6 +25,7 @@ const List<String> rootRoutes = [
   RouteNames.messagesPage,
   RouteNames.friendsPage,
   RouteNames.loansPage,
+  RouteNames.settingsPage,
 ];
 
 class CommonDrawerController extends GetxController {

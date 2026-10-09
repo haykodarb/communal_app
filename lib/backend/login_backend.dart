@@ -105,20 +105,6 @@ class LoginBackend {
     }
   }
 
-  /// Sends a confirmation link to the new address; the change applies once
-  /// it's opened.
-  static Future<BackendResponse> updateUserEmail(String email) async {
-    try {
-      await Supabase.instance.client.auth.updateUser(
-        UserAttributes(email: email),
-      );
-
-      return BackendResponse(success: true);
-    } on AuthException catch (error) {
-      return BackendResponse(success: false, payload: error.message);
-    }
-  }
-
   static Future<void> logout() async {
     if (kIsWeb || Platform.isAndroid) {
       if (await GoogleSignIn().isSignedIn()) {

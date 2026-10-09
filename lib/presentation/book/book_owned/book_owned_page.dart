@@ -35,7 +35,7 @@ class BookOwnedPage extends StatelessWidget {
                       child: Text('Edit'.tr),
                     ),
                   ),
-                  const VerticalDivider(),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: CommonButton(
                       type: CommonButtonType.tonal,

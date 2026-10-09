@@ -166,9 +166,13 @@ class MessagesSpecificPage extends StatelessWidget {
                     minLines: kIsWeb ? 1 : null,
                     maxLines: kIsWeb ? 6 : null,
                     expands: !kIsWeb,
+                    // Opaque over the messages behind it; one line is 52px,
+                    // the send button's size.
                     decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Theme.of(context).colorScheme.surface,
                       contentPadding: const EdgeInsets.symmetric(
-                        vertical: kIsWeb ? 25 : 15,
+                        vertical: 16,
                         horizontal: 20,
                       ),
                       border: OutlineInputBorder(
@@ -210,12 +214,12 @@ class MessagesSpecificPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                const VerticalDivider(width: 5),
+                const VerticalDivider(width: 6),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
-                    height: 60,
-                    width: 60,
+                    height: 52,
+                    width: 52,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: Theme.of(context).colorScheme.primary,
@@ -250,7 +254,7 @@ class MessagesSpecificPage extends StatelessWidget {
                                   Icons.send_rounded,
                                   color:
                                       Theme.of(context).colorScheme.onPrimary,
-                                  size: 30,
+                                  size: 26,
                                 );
                               },
                             ),
@@ -275,8 +279,14 @@ class MessagesSpecificPage extends StatelessWidget {
         userId: userId,
       ),
       builder: (MessagesSpecificController controller) {
+        final ColorScheme colors = Theme.of(context).colorScheme;
+
         return Scaffold(
+          // Raised over the messages scrolling under it by a soft shadow.
           appBar: AppBar(
+            elevation: 6,
+            scrolledUnderElevation: 6,
+            shadowColor: colors.shadow.withValues(alpha: 0.75),
             title: Responsive.isMobile(context)
                 ? Obx(
                     () {
@@ -284,6 +294,22 @@ class MessagesSpecificPage extends StatelessWidget {
                     },
                   )
                 : null,
+            actions: [
+              PopupMenuButton<void>(
+                icon: const Icon(Icons.more_vert),
+                tooltip: '',
+                color: colors.surfaceContainer,
+                itemBuilder: (_) => [
+                  PopupMenuItem<void>(
+                    onTap: () => controller.deleteChat(context),
+                    child: Text(
+                      'Delete chat'.tr,
+                      style: TextStyle(color: colors.error),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
           body: Stack(
             children: [
