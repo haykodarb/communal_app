@@ -11,12 +11,12 @@ class LocalizationText extends Translations {
               'No members found in this community.\n\nThis is likely an internet error or a bug with the app.',
           'community-topics-no-items':
               'No topics have been created in this community.',
-          'landing-upload-books':
-              'Snap photos of your physical books to add them to the app. Share your collection and let others discover what you love to read.',
-          'landing-join-communities':
-              'Find groups of friends, clubs, or local book lovers. Build shared libraries by collaborating with people you trust.',
-          'landing-share-books':
-              'Request books from your peers or lend out yours. Track loans and discuss reads with others.',
+          'landing-shelf':
+              'Add the books you own to your shelf. Your friends can see what\'s on it, and you can see what\'s on theirs.',
+          'landing-community':
+              'The people you\'ve added as friends, and the people they\'ve added. Nobody past that can see your books.',
+          'landing-borrowing':
+              'Ask the owner if you can borrow a book. If they say yes, message each other to meet up, and give it back when you\'re done.',
         },
         'es_ES': {
           'Login': 'Ingresar',
@@ -176,9 +176,6 @@ class LocalizationText extends Translations {
           ' has been marked as returned by ': ' fue marcado como devuelto por ',
           'Type something...': 'Ecribe algo...',
           'Seen': 'Visto',
-          'Upload your books': 'Subí tus libros',
-          'Join communities': 'Unite a comunidades',
-          'Share books': 'Compartí libros',
           'Chat messages in Communal are still unencrypted, please refrain from sharing sensitive information here':
               'Los chats en Communal aún no están encriptados, por favor evitar compatir información sensible aquí',
           'No books found in your library.': 'No tenés libros en tu biblioteca.',
@@ -190,10 +187,6 @@ class LocalizationText extends Translations {
               'No se encontraron usuarios en esta comunidad.\nEsto es probablemente un error de conexión o un bug.',
           'community-topics-no-items':
               'No se crearon conversaciones en esta comunidad.',
-          'landing-upload-books':
-              'Sacá fotos a tus libros físicos para subirlos a la app. Compartí tu colección y permití que otros descubran lo que te gusta leer.',
-          'landing-join-communities':
-              'Encuentra grupos de amigos, clubes o apasionados de los libros. Construí librerías compartidas junto a tu círculo de confianza.',
           'Requests': 'Solicitudes',
           'Sent': 'Enviadas',
           'Remove': 'Eliminar',
@@ -255,8 +248,24 @@ class LocalizationText extends Translations {
               '¿Seguro que querés borrar tu cuenta? Es inmediato y no se puede deshacer.',
           'Could not delete your account, please try again.':
               'No se pudo borrar tu cuenta, intentá de nuevo.',
-          'landing-share-books':
-              'Solicitá libros de tus compañeros o prestá los tuyos. Seguí tus prestamos y charla sobre tus lecturas con otros.',
+          'landing-shelf':
+              'Agregá los libros que tenés a tu biblioteca. Tus amigos pueden ver qué hay en ella, y vos lo que hay en las suyas.',
+          'landing-community':
+              'Las personas que agregaste como amigos, y las que agregaron ellos. Más allá de eso, nadie ve tus libros.',
+          'landing-borrowing':
+              'Preguntale al dueño si te presta un libro. Si te dice que sí, arreglen por mensaje para verse, y devolvelo cuando lo termines.',
+          'Add your books': 'Agregá tus libros',
+          'Who\'s in your community': 'Quién está en tu comunidad',
+          'How borrowing works': 'Cómo funcionan los préstamos',
+          'You': 'Vos',
+          'Friends of friends': 'Amigos de amigos',
+          'Return': 'Devolver',
+          'Skip': 'Saltear',
+          'Next': 'Siguiente',
+          'Get started': 'Empezar',
+          'Ask the owner': 'Pedíselo al dueño',
+          'Meet up': 'Júntense',
+          'When you\'re done': 'Cuando lo termines',
         },
       };
 }
