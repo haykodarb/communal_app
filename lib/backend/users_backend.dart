@@ -198,14 +198,14 @@ class UsersBackend {
     }
   }
 
+  /// The username given at email sign-up, from the auth metadata. Accounts
+  /// made with Google have none there (their profile has it), so this is
+  /// only for placeholders, like a message bubble before it's sent.
   static String getCurrentUsername() {
-    if (_client.auth.currentUser == null &&
-        _client.auth.currentUser!.userMetadata == null &&
-        _client.auth.currentUser!.userMetadata!['username'] == null) {
-      return 'No user';
-    }
+    final Object? username =
+        _client.auth.currentUser?.userMetadata?['username'];
 
-    return _client.auth.currentUser!.userMetadata!['username'];
+    return username is String ? username : '';
   }
 
   static Future<BackendResponse> getUserProfile(String id) async {
