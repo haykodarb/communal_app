@@ -60,6 +60,10 @@ class CommonBookCover extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
+      // GetBuilder only reads init/tag when it first mounts, so when a list
+      // reuses this element for another book (e.g. one inserted above it),
+      // the key makes it start over instead of keeping the old cover.
+      key: ValueKey(book.image_path),
       init: CommonBookCoverController(book: book),
       tag: book.image_path,
       builder: (controller) {
