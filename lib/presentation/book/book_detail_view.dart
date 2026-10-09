@@ -30,6 +30,15 @@ class BookReviewsList {
   /// How many readers reviewed the book, for the heading.
   final RxInt count = 0.obs;
 
+  /// The count and the first page are in: the section shows (fading in)
+  /// only then, so the heading never sits alone over a spinner.
+  final RxBool ready = false.obs;
+
+  Future<void> loadFirst() async {
+    await Future.wait([loadCount(), loadMore()]);
+    ready.value = true;
+  }
+
   Future<void> loadCount() async {
     final BackendResponse<int> response =
         await LoansBackend.getReviewCountForBook(bookId);
@@ -117,8 +126,7 @@ class _BookDetailViewState extends State<BookDetailView> {
       WidgetsBinding.instance.addPostFrameCallback((_) => _maybeLoadMore());
     });
 
-    _reviews.loadCount();
-    _reviews.loadMore();
+    _reviews.loadFirst();
   }
 
   @override
@@ -402,6 +410,8 @@ class _BookDetailViewState extends State<BookDetailView> {
     final String? ownerReview = widget.book.review;
     final bool hasOwnerReview = ownerReview != null && ownerReview.isNotEmpty;
 
+    if (!_reviews.ready.value) return [];
+
     // The owner's own review has no date and is shown first.
     final List<Widget> reviews = [
       if (hasOwnerReview)
@@ -556,8 +566,13 @@ class _BookDetailViewState extends State<BookDetailView> {
                               20 + _actionsHeight,
                             ),
                             sliver: Obx(
-                              () => SliverList.list(
-                                children: _reviewItems(context),
+                              () => SliverAnimatedOpacity(
+                                opacity: _reviews.ready.value ? 1 : 0,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeOut,
+                                sliver: SliverList.list(
+                                  children: _reviewItems(context),
+                                ),
                               ),
                             ),
                           ),

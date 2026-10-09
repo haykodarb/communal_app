@@ -18,7 +18,24 @@ class BookForeignPage extends StatelessWidget {
   final String bookId;
   final String? ownerId;
 
+  /// Until the first loan check is done the button is laid out but hidden,
+  /// then it fades in (no spinner). Actions after that show their spinner
+  /// inside the button.
   Widget _buttonRow(BookForeignController controller) {
+    return Obx(
+      () => AnimatedOpacity(
+        opacity: controller.loanChecked.value ? 1 : 0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+        child: IgnorePointer(
+          ignoring: !controller.loanChecked.value,
+          child: _button(controller),
+        ),
+      ),
+    );
+  }
+
+  Widget _button(BookForeignController controller) {
     return Builder(
       builder: (context) {
         return Row(
@@ -26,13 +43,6 @@ class BookForeignPage extends StatelessWidget {
             Expanded(
               child: Obx(
                 () {
-                  if (controller.loading.value) {
-                    return const SizedBox(
-                      height: 60,
-                      child: CommonLoadingBody(),
-                    );
-                  }
-
                   final Loan? currentLoan = controller.currentLoan.value;
 
                   final Book book = controller.book!;
@@ -119,25 +129,29 @@ class BookForeignPage extends StatelessWidget {
                 BookInfoItem(
                   'Status'.tr,
                   Obx(() {
-                    if (controller.loading.value) return const Text('');
-
                     final bool requestByCurrentUser =
                         controller.currentLoan.value?.loanee.isCurrentUser ??
                             false;
 
-                    return CommonStatusBadge(
-                      tone: book.loaned
-                          ? StatusTone.loaned
-                          : requestByCurrentUser
-                              ? StatusTone.requested
-                              : StatusTone.available,
-                      label: book.loaned
-                          ? (requestByCurrentUser
-                              ? 'Loaned'.tr
-                              : 'Unavailable'.tr)
-                          : (requestByCurrentUser
-                              ? 'Requested'.tr
-                              : 'Available'.tr),
+                    // Laid out from the start so the row doesn't shift.
+                    return AnimatedOpacity(
+                      opacity: controller.loanChecked.value ? 1 : 0,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeOut,
+                      child: CommonStatusBadge(
+                        tone: book.loaned
+                            ? StatusTone.loaned
+                            : requestByCurrentUser
+                                ? StatusTone.requested
+                                : StatusTone.available,
+                        label: book.loaned
+                            ? (requestByCurrentUser
+                                ? 'Loaned'.tr
+                                : 'Unavailable'.tr)
+                            : (requestByCurrentUser
+                                ? 'Requested'.tr
+                                : 'Available'.tr),
+                      ),
                     );
                   }),
                 ),

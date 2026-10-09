@@ -35,6 +35,10 @@ class BookForeignController extends GetxController {
   final RxBool loadingWaitlist = false.obs;
   final RxBool firstLoad = false.obs;
 
+  /// The first loan check is done: the status and the buttons fade in then,
+  /// instead of showing a spinner.
+  final RxBool loanChecked = false.obs;
+
   LoansController? loansController;
 
   @override
@@ -98,6 +102,7 @@ class BookForeignController extends GetxController {
     }
 
     loading.value = false;
+    loanChecked.value = true;
   }
 
   /// "Notify me when available" on a book someone else has borrowed.
