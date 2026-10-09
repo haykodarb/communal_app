@@ -44,7 +44,10 @@ class LoginBackend {
         final GoogleSignIn googleSignIn = GoogleSignIn(serverClientId: webClientId);
 
         final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-        final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+        // Closed the account picker.
+        if (googleUser == null) return BackendResponse(success: false);
+
+        final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
         final String? idToken = googleAuth.idToken;
         final String? accessToken = googleAuth.accessToken;
 

@@ -35,8 +35,9 @@ class StartController extends GetxController {
 
       final BackendResponse response = await LoginBackend.signInWithGoogle();
 
-      if (!response.success && context.mounted) {
-        CommonAlertDialog(title: response.error ?? '').open(context);
+      // No error: the user closed Google's account picker.
+      if (!response.success && response.error != null && context.mounted) {
+        CommonAlertDialog(title: response.error!).open(context);
       }
 
       if (response.success && context.mounted) {

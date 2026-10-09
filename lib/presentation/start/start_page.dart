@@ -3,7 +3,6 @@ import 'package:atlas_icons/atlas_icons.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:communal/backend/user_preferences.dart';
 import 'package:communal/presentation/common/common_button.dart';
-import 'package:communal/presentation/common/common_loading_body.dart';
 import 'package:communal/presentation/common/common_switch.dart';
 import 'package:communal/routes.dart';
 import 'package:flutter/foundation.dart';
@@ -177,29 +176,25 @@ class StartPage extends StatelessWidget {
                         const Divider(height: 10),
                         Expanded(
                           flex: 2,
-                          child: Obx(
-                            () {
-                              return CommonLoadingBody(
-                                loading: controller.loading.value,
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    _loginButton(controller),
-                                    const Divider(height: 10),
-                                    _registerButton(controller),
-                                    const Divider(height: 10),
-                                    Visibility(
-                                      visible: kIsWeb || Platform.isAndroid,
-                                      child: CommonButton(
-                                        onPressed: controller.signInWithGoogle,
-                                        child: Text('Enter with Google'.tr),
-                                      ),
-                                    ),
-                                  ],
+                          // The Google button shows its own spinner and stays
+                          // mounted: signInWithGoogle navigates with its
+                          // context once Google is done.
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              _loginButton(controller),
+                              const Divider(height: 10),
+                              _registerButton(controller),
+                              const Divider(height: 10),
+                              Visibility(
+                                visible: kIsWeb || Platform.isAndroid,
+                                child: CommonButton(
+                                  onPressed: controller.signInWithGoogle,
+                                  loading: controller.loading,
+                                  child: Text('Enter with Google'.tr),
                                 ),
-                              );
-                            },
+                              ),
+                            ],
                           ),
                         ),
                       ],
