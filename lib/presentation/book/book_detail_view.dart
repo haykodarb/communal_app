@@ -363,43 +363,40 @@ class _BookDetailViewState extends State<BookDetailView> {
 
     return SizedBox(
       height: 65,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: Row(
-          children: [
-            for (int i = 0; i < widget.info.length; i++) ...[
-              if (i > 0) Container(width: 1, height: 65 * 0.64, color: divider),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      widget.info[i].label.toUpperCase(),
+      child: Row(
+        children: [
+          for (int i = 0; i < widget.info.length; i++) ...[
+            if (i > 0) Container(width: 1, height: 65 * 0.64, color: divider),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    widget.info[i].label.toUpperCase(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.66,
+                      color: colors.onSurfaceVariant.withValues(alpha: 0.85),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    child: DefaultTextStyle.merge(
+                      style: const TextStyle(fontSize: 15),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 0.66,
-                        color: colors.onSurfaceVariant.withValues(alpha: 0.85),
-                      ),
+                      child: widget.info[i].value,
                     ),
-                    const SizedBox(height: 4),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: DefaultTextStyle.merge(
-                        style: const TextStyle(fontSize: 15),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        child: widget.info[i].value,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ],
-        ),
+        ],
       ),
     );
   }
@@ -550,8 +547,10 @@ class _BookDetailViewState extends State<BookDetailView> {
                               child: _header(context, height),
                             ),
                           ),
+                          // Wider than the reviews, so a status badge like
+                          // "Disponible" fits its third of a phone's width.
                           SliverPadding(
-                            padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                            padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
                             sliver: SliverToBoxAdapter(
                               child: _infoRow(context),
                             ),
