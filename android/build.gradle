@@ -9,6 +9,17 @@ rootProject.buildDir = "../build"
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
+// Some plugins (flutter_native_splash) still compile against an old Android
+// API, which AGP 9 rejects because their AndroidX dependencies need a newer
+// one. Compile every plugin against the app's SDK instead. Registered before
+// evaluationDependsOn below, which evaluates the projects.
+subprojects {
+    afterEvaluate { project ->
+        if (project.plugins.hasPlugin("com.android.library")) {
+            project.android.compileSdk = 35
+        }
+    }
+}
 subprojects {
     project.evaluationDependsOn(":app")
 }

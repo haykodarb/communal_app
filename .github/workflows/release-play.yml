@@ -1,0 +1,131 @@
+name: Release to Google Play
+
+# Builds a release App Bundle with the Nix flake toolchain and uploads it to a
+# Google Play track. Triggered manually (Actions -> Release to Google Play ->
+# Run workflow) or by pushing a v* tag. Uploads to the internal track as a
+# draft by default, so nothing reaches testers until you promote it in the Play
+# Console.
+#
+# One-time setup
+# --------------
+# 1. Google Play Console -> Users and permissions: invite the service-account
+#    email and grant at least "Release to testing tracks" (add "Manage
+#    production releases" if you also target production) and "Manage store
+#    presence".
+# 2. Google Cloud project: enable the "Google Play Android Developer API" and
+#    create a service account, then create and download a JSON key for it.
+# 3. In this GitHub repo -> Settings -> Secrets and variables -> Actions, add:
+#      PLAY_SERVICE_ACCOUNT_JSON   the service-account JSON key (raw JSON)
+#      ANDROID_KEYSTORE_BASE64     base64 of your upload keystore (.jks)
+#      ANDROID_KEYSTORE_PASSWORD   storePassword from android/key.properties
+#      ANDROID_KEY_PASSWORD        keyPassword from android/key.properties
+#      ANDROID_KEY_ALIAS           keyAlias from android/key.properties
+#
+#    Create the base64 value with: base64 -w0 android/upload-keystore.jks
+#
+# The version name and code come from `version:` in pubspec.yaml, so bump it
+# before releasing. Google Play rejects a version code it has already seen.
+
+on:
+  workflow_dispatch:
+    inputs:
+      track:
+        description: Play track to upload to
+        type: choice
+        options: [internal, alpha, beta, production]
+        default: internal
+      status:
+        description: Release status
+        type: choice
+        options: [draft, completed]
+        default: draft
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-play-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      PLAY_PACKAGE_NAME: ar.communal
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Free disk space
+        run: |
+          sudo rm -rf \
+            /usr/share/dotnet \
+            /usr/local/lib/android \
+            /opt/ghc \
+            /opt/hostedtoolcache/CodeQL \
+            /usr/local/share/boost
+          sudo apt-get clean
+          df -h /
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Cache pub and Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-pub-gradle-${{ hashFiles('pubspec.lock', 'android/**/*.gradle*', 'android/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-gradle-
+
+      - name: Decode signing keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::error::Missing repository secret ANDROID_KEYSTORE_BASE64"
+            exit 1
+          fi
+          printf '%s' "$KEYSTORE_BASE64" | base64 -d > "$GITHUB_WORKSPACE/android/upload-keystore.jks"
+
+      - name: Write android/key.properties
+        env:
+          STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          if [ -z "$STORE_PASSWORD" ] || [ -z "$KEY_PASSWORD" ] || [ -z "$KEY_ALIAS" ]; then
+            echo "::error::Missing one of ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_PASSWORD, ANDROID_KEY_ALIAS"
+            exit 1
+          fi
+          cat > "$GITHUB_WORKSPACE/android/key.properties" <<EOF
+          storePassword=$STORE_PASSWORD
+          keyPassword=$KEY_PASSWORD
+          keyAlias=$KEY_ALIAS
+          storeFile=$GITHUB_WORKSPACE/android/upload-keystore.jks
+          EOF
+
+      - name: Build release App Bundle
+        run: nix develop --command flutter build appbundle --release
+
+      - name: Upload App Bundle as a workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-aab
+          path: build/app/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+
+      - name: Upload to Google Play
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: ${{ env.PLAY_PACKAGE_NAME }}
+          releaseFiles: build/app/outputs/bundle/release/app-release.aab
+          track: ${{ github.event.inputs.track || 'internal' }}
+          status: ${{ github.event.inputs.status || 'draft' }}

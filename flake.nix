@@ -15,15 +15,10 @@
       # toolchain without bumping the rest of the dev shell.
       unstable = import nixpkgs-unstable { inherit system config; };
       androidSdk = (pkgs.androidenv.composeAndroidPackages {
-        platformVersions = ["31" "34" "35"];
-        abiVersions = ["arm64-v8a" "x86_64"];
-        buildToolsVersions = ["34.0.0"];
-        cmakeVersions = ["3.22.1"];
+        platformVersions = ["35"];
+        buildToolsVersions = ["36.0.0"];
         includeNDK = true;
-        ndkVersions = ["27.0.12077973"];
-        includeEmulator = true;
-        includeSystemImages = true;
-        systemImageTypes = ["google_apis_playstore"];
+        ndkVersions = ["28.2.13676358"];
       }).androidsdk;
     in {
       devShells.default = pkgs.mkShell {
@@ -33,10 +28,6 @@
           androidSdk
           jdk17
           chromium
-          firebase-tools
-          # Emulator dependencies
-          libGL
-          vulkan-loader
         ];
         shellHook = ''
           export CHROME_EXECUTABLE=$(which chromium)

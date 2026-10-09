@@ -33,9 +33,9 @@ void main() async {
   await Hive.initFlutter();
 
   // const String supabaseURL = 'https://supabase.communal.ar';
-  const String supabaseURL = 'https://ievjxqrtftfnwzobklde.supabase.co';
+  const String supabaseURL = 'https://ddqyylvlywedqjuoqqlh.supabase.co';
   const String supabaseKey =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlldmp4cXJ0ZnRmbnd6b2JrbGRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODI4MDYwNTIsImV4cCI6MTk5ODM4MjA1Mn0.45wNq5bt6JUHxJzTEiiKjngSHfLonG8gSXxhzt7Xl5c';
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkcXl5bHZseXdlZHFqdW9xcWxoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE0ODIwMjcsImV4cCI6MjEwNzA1ODAyN30.kL-5X4VMLZhFv1eijuNXx3Tr4eZ79MuuyhUrWk8O_LI';
 
   await Supabase.initialize(
     url: supabaseURL,

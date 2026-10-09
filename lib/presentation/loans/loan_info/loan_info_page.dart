@@ -152,19 +152,31 @@ class LoanInfoPage extends StatelessWidget {
     );
   }
 
+  /// How long a step takes to light up once the line reaches it.
+  static const Duration _stepDuration = Duration(milliseconds: 300);
+
+  /// How far ahead of the line (as a share of its length) a step starts to
+  /// light up, so it grows while the line comes in rather than after it
+  /// has arrived (the line slows down as it gets to its last step).
+  static const double _stepLead = 0.12;
+
+  /// The line's speed, as time per timeline length: a returned loan's full
+  /// run (-0.2 to 1) takes 900ms, an accepted one (-0.2 to 0.5) 525ms.
+  static const Duration _lineDurationPerLength = Duration(milliseconds: 750);
+
   Widget _timelineStep({
     required String label,
     required String date,
-    required bool active,
+    required bool reached,
     bool rejected = false,
   }) {
     return Builder(builder: (context) {
       final ColorScheme colors = Theme.of(context).colorScheme;
-      final Color color = rejected
-          ? colors.error
-          : active
-              ? colors.onSurface
-              : colors.tertiaryContainer;
+      final Color color = !reached
+          ? colors.tertiaryContainer
+          : rejected
+              ? colors.error
+              : colors.onSurface;
 
       return SizedBox(
         height: 80,
@@ -174,37 +186,52 @@ class LoanInfoPage extends StatelessWidget {
           children: [
             SizedBox(
               height: 14,
-              child: Text(
-                active ? date : '',
-                style: TextStyle(
-                  color: colors.onSurfaceVariant,
-                  fontSize: 10,
+              child: AnimatedOpacity(
+                opacity: reached ? 1 : 0,
+                duration: _stepDuration,
+                child: Text(
+                  date,
+                  style: TextStyle(
+                    color: colors.onSurfaceVariant,
+                    fontSize: 10,
+                  ),
                 ),
               ),
             ),
             const SizedBox(height: 2),
-            // A ring: the card's colour inside a coloured dot.
-            Container(
-              height: 20,
-              width: 20,
-              margin: const EdgeInsets.all(5),
+            // A ring: the card's colour inside a coloured dot. It grows to
+            // full size and takes its colour when the line reaches it.
+            Padding(
               padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(shape: BoxShape.circle, color: color),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: colors.surfaceContainer,
+              child: AnimatedScale(
+                scale: reached ? 1 : 0.7,
+                duration: _stepDuration,
+                curve: Curves.easeOutBack,
+                child: AnimatedContainer(
+                  height: 20,
+                  width: 20,
+                  padding: const EdgeInsets.all(5),
+                  duration: _stepDuration,
+                  decoration:
+                      BoxDecoration(shape: BoxShape.circle, color: color),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: colors.surfaceContainer,
+                    ),
+                  ),
                 ),
               ),
             ),
             const SizedBox(height: 2),
-            Text(
-              label.toUpperCase(),
+            AnimatedDefaultTextStyle(
+              duration: _stepDuration,
               style: TextStyle(
                 color: color,
                 fontWeight: FontWeight.w600,
                 fontSize: 12,
               ),
+              child: Text(label.toUpperCase()),
             ),
           ],
         ),
@@ -214,6 +241,8 @@ class LoanInfoPage extends StatelessWidget {
 
   /// Requested → Accepted → Returned, with each step's real date. A rejected
   /// request reads the same, except the middle step says Rejected in red.
+  /// The line fills up to the loan's step, and each step lights up as the
+  /// line reaches it.
   Widget _timeline(Loan loan) {
     return Builder(
       builder: (context) {
@@ -225,64 +254,73 @@ class LoanInfoPage extends StatelessWidget {
             DateFormat.yMMMd(Get.locale?.languageCode)
                 .format(date ?? loan.created_at);
 
-        return Stack(
-          alignment: Alignment.center,
-          children: [
-            // The line sits behind the dots (top of the dot: 14 + 2 + 5,
-            // centre 10 below that), filled up to the loan's step.
-            Positioned(
-              left: 40,
-              right: 40,
-              top: 38,
-              child: TweenAnimationBuilder<double>(
-                tween: Tween(begin: 0, end: progress),
-                duration: const Duration(milliseconds: 900),
-                curve: Curves.ease,
-                builder: (context, value, _) => Row(
-                  children: [
-                    Expanded(
-                      flex: (value * 1000).round(),
-                      child: Container(height: 4, color: colors.onSurface),
-                    ),
-                    Expanded(
-                      flex: ((1 - value) * 1000).round(),
-                      child: Container(
-                        height: 4,
-                        color: colors.tertiaryContainer,
+        // Starts before the first step, so it lights up too. The duration
+        // follows the distance, so the line moves at the same speed whether
+        // it stops at the middle step or goes all the way.
+        const double start = -0.2;
+
+        return TweenAnimationBuilder<double>(
+          tween: Tween(begin: start, end: progress),
+          duration: _lineDurationPerLength * (progress - start),
+          curve: Curves.ease,
+          builder: (context, value, _) {
+            final double line = value.clamp(0.0, 1.0);
+
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+                // The line sits behind the dots (top of the dot: 14 + 2 + 5,
+                // centre 10 below that).
+                Positioned(
+                  left: 40,
+                  right: 40,
+                  top: 38,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: (line * 1000).round(),
+                        child: Container(height: 4, color: colors.onSurface),
                       ),
+                      Expanded(
+                        flex: ((1 - line) * 1000).round(),
+                        child: Container(
+                          height: 4,
+                          color: colors.tertiaryContainer,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _timelineStep(
+                      label: 'Requested'.tr,
+                      date: format(loan.created_at),
+                      reached: value >= 0 - _stepLead,
+                    ),
+                    loan.rejected
+                        ? _timelineStep(
+                            label: 'Rejected'.tr,
+                            date: format(loan.rejected_at),
+                            reached: value >= 0.5 - _stepLead,
+                            rejected: true,
+                          )
+                        : _timelineStep(
+                            label: 'Accepted'.tr,
+                            date: format(loan.accepted_at),
+                            reached: loan.accepted && value >= 0.5 - _stepLead,
+                          ),
+                    _timelineStep(
+                      label: 'Returned'.tr,
+                      date: format(loan.returned_at),
+                      reached: loan.returned && value >= 1 - _stepLead,
                     ),
                   ],
                 ),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _timelineStep(
-                  label: 'Requested'.tr,
-                  date: format(loan.created_at),
-                  active: true,
-                ),
-                loan.rejected
-                    ? _timelineStep(
-                        label: 'Rejected'.tr,
-                        date: format(loan.rejected_at),
-                        active: true,
-                        rejected: true,
-                      )
-                    : _timelineStep(
-                        label: 'Accepted'.tr,
-                        date: format(loan.accepted_at),
-                        active: loan.accepted,
-                      ),
-                _timelineStep(
-                  label: 'Returned'.tr,
-                  date: format(loan.returned_at),
-                  active: loan.returned,
-                ),
               ],
-            ),
-          ],
+            );
+          },
         );
       },
     );
