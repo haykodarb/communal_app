@@ -166,11 +166,13 @@ class MessagesSpecificPage extends StatelessWidget {
                     minLines: kIsWeb ? 1 : null,
                     maxLines: kIsWeb ? 6 : null,
                     expands: !kIsWeb,
-                    // Opaque over the messages behind it; one line is 52px,
+                    // White over the messages behind it (the row around it stays
+                    // transparent); one line is 52px,
                     // the send button's size.
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: Theme.of(context).colorScheme.surface,
+                      fillColor:
+                          Theme.of(context).colorScheme.surfaceContainer,
                       contentPadding: const EdgeInsets.symmetric(
                         vertical: 16,
                         horizontal: 20,
