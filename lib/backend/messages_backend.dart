@@ -87,12 +87,16 @@ class MessagesBackend {
         }
       }
 
+      // No chats (yet, or past the last page) is not a failure.
       return BackendResponse(
-        success: messages.isNotEmpty,
+        success: true,
         payload: messages,
       );
     } catch (err) {
-      return BackendResponse(success: false);
+      return BackendResponse(
+        success: false,
+        error: err is PostgrestException ? err.message : null,
+      );
     }
   }
 
