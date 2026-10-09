@@ -50,125 +50,80 @@ class BookCreatePage extends StatelessWidget {
                 key: controller.formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-		  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Container(
-                      height: 350,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      clipBehavior: Clip.hardEdge,
-                      child: AspectRatio(
-                        aspectRatio: 3 / 4,
-                        child: Stack(
-                          children: [
-                            Obx(
-                              () {
-                                if (controller.selectedBytes.value != null) {
-                                  return Image.memory(
-                                    controller.selectedBytes.value!,
-                                    fit: BoxFit.contain,
-                                  );
-                                } else {
-                                  return Card(
-                                    margin: EdgeInsets.zero,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .surfaceContainer,
-                                    child: Center(
-                                      child: Text(
-                                        'Add\nimage'.tr,
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurfaceVariant,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                            Container(
-                              width: double.maxFinite,
-                              padding: const EdgeInsets.only(bottom: 20),
-                              alignment: Alignment.bottomCenter,
-                              child: Obx(
+                    Center(
+                      child: Container(
+                        height: 350,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        clipBehavior: Clip.hardEdge,
+                        child: AspectRatio(
+                          aspectRatio: 3 / 4,
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              Obx(
                                 () {
-                                  final bool fileSelected =
-                                      controller.selectedBytes.value != null;
-
-                                  final Color buttonBackground = fileSelected
-                                      ? Theme.of(context)
+                                  if (controller.selectedBytes.value != null) {
+                                    return Image.memory(
+                                      controller.selectedBytes.value!,
+                                      fit: BoxFit.contain,
+                                    );
+                                  } else {
+                                    return Card(
+                                      margin: EdgeInsets.zero,
+                                      color: Theme.of(context)
                                           .colorScheme
-                                          .surfaceContainer
-                                      : Theme.of(context).colorScheme.primary;
-
-                                  final Color iconColor = fileSelected
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Theme.of(context).colorScheme.onPrimary;
-
-                                  final Border? buttonBorder = fileSelected
-                                      ? Border.all(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                          width: 2)
-                                      : null;
-
-                                  if (!Responsive.isMobile(context)) {
-                                    return InkWell(
-                                      onTap: () => controller.takePicture(
-                                        ImageSource.gallery,
-                                        context,
-                                      ),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          border: buttonBorder,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          color: buttonBackground,
-                                        ),
-                                        padding: const EdgeInsets.all(13),
-                                        child: Icon(
-                                          Atlas.image_gallery,
-                                          color: iconColor,
-                                          size: 24,
+                                          .surfaceContainer,
+                                      child: Center(
+                                        child: Text(
+                                          'Add\nimage'.tr,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant,
+                                          ),
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
                                     );
                                   }
+                                },
+                              ),
+                              Container(
+                                width: double.maxFinite,
+                                padding: const EdgeInsets.only(bottom: 20),
+                                alignment: Alignment.bottomCenter,
+                                child: Obx(
+                                  () {
+                                    final bool fileSelected =
+                                        controller.selectedBytes.value != null;
 
-                                  return Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      InkWell(
-                                        onTap: () => controller.takePicture(
-                                          ImageSource.camera,
-                                          context,
-                                        ),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            border: buttonBorder,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: buttonBackground,
-                                          ),
-                                          padding: const EdgeInsets.all(13),
-                                          child: Icon(
-                                            Atlas.camera,
-                                            weight: 400,
-                                            color: iconColor,
-                                            size: 24,
-                                          ),
-                                        ),
-                                      ),
-                                      InkWell(
+                                    final Color buttonBackground = fileSelected
+                                        ? Theme.of(context)
+                                            .colorScheme
+                                            .surfaceContainer
+                                        : Theme.of(context).colorScheme.primary;
+
+                                    final Color iconColor = fileSelected
+                                        ? Theme.of(context).colorScheme.primary
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary;
+
+                                    final Border? buttonBorder = fileSelected
+                                        ? Border.all(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                            width: 2)
+                                        : null;
+
+                                    if (!Responsive.isMobile(context)) {
+                                      return InkWell(
                                         onTap: () => controller.takePicture(
                                           ImageSource.gallery,
                                           context,
@@ -187,13 +142,63 @@ class BookCreatePage extends StatelessWidget {
                                             size: 24,
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  );
-                                },
+                                      );
+                                    }
+
+                                    return Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        InkWell(
+                                          onTap: () => controller.takePicture(
+                                            ImageSource.camera,
+                                            context,
+                                          ),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              border: buttonBorder,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              color: buttonBackground,
+                                            ),
+                                            padding: const EdgeInsets.all(13),
+                                            child: Icon(
+                                              Atlas.camera,
+                                              weight: 400,
+                                              color: iconColor,
+                                              size: 24,
+                                            ),
+                                          ),
+                                        ),
+                                        InkWell(
+                                          onTap: () => controller.takePicture(
+                                            ImageSource.gallery,
+                                            context,
+                                          ),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              border: buttonBorder,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              color: buttonBackground,
+                                            ),
+                                            padding: const EdgeInsets.all(13),
+                                            child: Icon(
+                                              Atlas.image_gallery,
+                                              color: iconColor,
+                                              size: 24,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
