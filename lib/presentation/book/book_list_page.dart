@@ -109,7 +109,6 @@ class BookListPage extends StatelessWidget {
                 maxColumns: 3,
                 childBuilder: (Book book) => CommonVerticalBookCard(
                   book: book,
-                  showLoaned: true,
                 ),
                 controller: controller.listViewController,
                 scrollController: controller.scrollController,
