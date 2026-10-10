@@ -683,9 +683,9 @@ class _BookPainter extends CustomPainter {
     const double pages = 7;
     const Radius radius = Radius.circular(4);
 
-    // The pages: a block in the surface colour under the cover's bottom
-    // edge, with a couple of lines for the leaves.
-    final Color paper = colors.surface;
+    // The pages: a paper-coloured block under the cover's bottom edge, with
+    // a couple of lines for the leaves.
+    const Color paper = Color(0xFFfffaf3);
     final Rect pagesRect = Rect.fromLTRB(spine - 2, h - pages - 4, w - 2, h);
     canvas.drawRRect(
       RRect.fromRectAndCorners(pagesRect,
@@ -693,7 +693,7 @@ class _BookPainter extends CustomPainter {
       Paint()..color = paper,
     );
     final Paint leaf = Paint()
-      ..color = colors.onSurfaceVariant.withValues(alpha: 0.45)
+      ..color = const Color(0xFF797593).withValues(alpha: 0.45)
       ..strokeWidth = 1;
     for (final double y in [h - 4.5, h - 2]) {
       canvas.drawLine(Offset(spine + 1, y), Offset(w - 5, y), leaf);
@@ -717,7 +717,7 @@ class _BookPainter extends CustomPainter {
     );
 
     // A title label and an author line on the cover.
-    final Paint label = Paint()..color = paper;
+    final Paint label = Paint()..color = paper.withValues(alpha: 0.85);
     const double left = spine + 6;
     canvas.drawRRect(
       RRect.fromRectAndRadius(
