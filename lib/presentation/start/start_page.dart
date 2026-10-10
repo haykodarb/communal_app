@@ -165,6 +165,12 @@ class StartPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             _dropdownLanguageButton(controller),
+                            // TEMPORARY: to test the welcome pages again.
+                            TextButton(
+                              onPressed: () =>
+                                  context.go(RouteNames.landingPage),
+                              child: const Text('Welcome'),
+                            ),
                             _changeThemeButton(controller),
                           ],
                         ),
