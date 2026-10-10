@@ -173,8 +173,9 @@ class HomePage extends StatelessWidget {
                             .tr,
                     actionLabel: 'Search'.tr,
                     actionIcon: Atlas.magnifying_glass,
+                    // Pushed, so Search shows a back arrow to Home.
                     onAction: (context) =>
-                        context.go(RouteNames.searchPage, extra: 1),
+                        context.push(RouteNames.searchPage, extra: 1),
                   ),
                   controller: controller.networkListController,
                 ),

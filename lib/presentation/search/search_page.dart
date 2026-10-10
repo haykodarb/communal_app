@@ -12,6 +12,7 @@ import 'package:communal/responsive.dart';
 import 'package:communal/presentation/common/common_empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 class SearchPage extends StatelessWidget {
   const SearchPage({super.key, this.initialTab = 0});
@@ -37,8 +38,11 @@ class SearchPage extends StatelessWidget {
           appBar: Responsive.isMobile(context)
               ? AppBar(title: Text('Search'.tr))
               : null,
-          drawer:
-              Responsive.isMobile(context) ? const CommonDrawerWidget() : null,
+          // Without the drawer the app bar shows a back arrow instead of the
+          // menu, when Search was pushed from another page (e.g. Home).
+          drawer: Responsive.isMobile(context) && !GoRouter.of(context).canPop()
+              ? const CommonDrawerWidget()
+              : null,
           body: SafeArea(
             child: CustomScrollView(
               controller: controller.scrollController,
