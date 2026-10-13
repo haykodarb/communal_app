@@ -30,6 +30,10 @@
           androidSdk
           jdk17
           chromium
+          # scripts/release.sh: Google Play API calls.
+          curl
+          jq
+          openssl
         ];
         shellHook = ''
           export CHROME_EXECUTABLE=$(which chromium)
