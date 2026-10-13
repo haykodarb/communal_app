@@ -1,5 +1,7 @@
 flutter_launcher_icons:
-  android: "launcher_icon"
+  # Android uses hand-made vector drawables (android/app/src/main/res:
+  # mipmap-anydpi-v26/launcher_icon.xml), traced from assets/new.png.
+  android: false
   ios: true
   image_path: "assets/new.png"
   min_sdk_android: 21 # android min sdk min:16, default 21

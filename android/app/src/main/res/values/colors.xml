@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The crow on paper, as on the web app's icon. -->
+    <color name="ic_launcher_background">#F2E7E0</color>
+    <color name="splash_background">#F2E7E0</color>
+    <color name="splash_crow">#232036</color>
+</resources>

@@ -1,4 +1,7 @@
 flutter_native_splash:
   image: assets/splash_image.png
+  # Android's splash (Android 12+, minSdk 32) is set by hand in res/values-v31
+  # and values-night-v31; regenerating would overwrite those styles.
+  android: false
   color: "191724"
   android_disable_fullscreen: true
