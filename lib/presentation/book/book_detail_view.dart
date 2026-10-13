@@ -731,8 +731,12 @@ class _BookReviewItemState extends State<BookReviewItem> {
         const SizedBox(height: 8),
         LayoutBuilder(
           builder: (context, constraints) {
+            // Measured in the style the text is drawn in: the bare style lacks
+            // the theme's font, which wraps differently.
+            final TextStyle style =
+                DefaultTextStyle.of(context).style.merge(_textStyle);
             final TextPainter painter = TextPainter(
-              text: TextSpan(text: widget.text, style: _textStyle),
+              text: TextSpan(text: widget.text, style: style),
               maxLines: _maxLines,
               textDirection: Directionality.of(context),
               textScaler: MediaQuery.textScalerOf(context),
@@ -744,7 +748,7 @@ class _BookReviewItemState extends State<BookReviewItem> {
               widget.text,
               maxLines: expanded ? null : _maxLines,
               overflow: expanded ? TextOverflow.visible : TextOverflow.ellipsis,
-              style: _textStyle,
+              style: style,
             );
 
             // The text stays selectable. The tap handler sits inside the
