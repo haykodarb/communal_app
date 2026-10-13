@@ -350,6 +350,17 @@ class BooksBackend {
     }
   }
 
+  /// Anyone can see a public book on its owner's profile, but only the
+  /// owner's network (friends, and friends of friends if the owner opted in)
+  /// can request it or join its waitlist.
+  static Future<bool> canRequestBook(String bookId) async {
+    try {
+      return await _client.rpc('can_request_book', params: {'book_id': bookId}) == true;
+    } on PostgrestException {
+      return false;
+    }
+  }
+
   static Future<bool> isOnWaitlist(String bookId) async {
     final PostgrestResponse response = await _client
         .from('waitlist')

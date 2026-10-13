@@ -33,6 +33,9 @@ class BookForeignController extends GetxController {
   final RxBool loading = true.obs;
   final RxBool waitlisted = false.obs;
   final RxBool loadingWaitlist = false.obs;
+
+  /// Outside the owner's network the book can be seen but not requested.
+  final RxBool canRequest = false.obs;
   final RxBool firstLoad = false.obs;
 
   /// The first loan check is done: the status and the buttons fade in then,
@@ -93,8 +96,10 @@ class BookForeignController extends GetxController {
   Future<void> checkLoanStatus() async {
     loading.value = true;
 
+    final Future<bool> canRequestFuture = BooksBackend.canRequestBook(bookId);
     final BackendResponse currentLoanResponse =
         await LoansBackend.getCurrentLoanForBook(bookId);
+    canRequest.value = await canRequestFuture;
 
     if (currentLoanResponse.success) {
       currentLoan.value = currentLoanResponse.payload;

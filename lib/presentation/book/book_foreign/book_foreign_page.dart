@@ -70,6 +70,11 @@ class BookForeignPage extends StatelessWidget {
                     );
                   }
 
+                  // Outside the owner's network: visible, not requestable.
+                  if (!controller.canRequest.value) {
+                    return const SizedBox.shrink();
+                  }
+
                   if (book.loaned) {
                     return CommonButton(
                       type: controller.waitlisted.value
