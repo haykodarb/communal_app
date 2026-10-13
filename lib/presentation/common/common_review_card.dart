@@ -1,23 +1,24 @@
-import 'package:communal/models/loan.dart';
+import 'package:communal/models/review.dart';
 import 'package:communal/presentation/common/common_circular_avatar.dart';
 import 'package:communal/presentation/common/common_loan_card.dart';
+import 'package:communal/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 /// A review in a list, laid out like CommonLoanCard: the book and the review
 /// text on the left, the cover on the right, the date in the top corner. Long
-/// reviews clamp to 4 lines (the loan page has the rest). `showReviewer` adds
+/// reviews clamp to 4 lines (the book page has the rest). `showReviewer` adds
 /// who wrote it as a byline under the text, for lists mixing several people
 /// (Home, Reviews by friends).
 class CommonReviewCard extends StatelessWidget {
   const CommonReviewCard({
     super.key,
-    required this.loan,
+    required this.review,
     this.showReviewer = false,
   });
 
-  final Loan loan;
+  final Review review;
   final bool showReviewer;
 
   @override
@@ -25,7 +26,10 @@ class CommonReviewCard extends StatelessWidget {
     final Color variant = Theme.of(context).colorScheme.onSurfaceVariant;
 
     return CommonLoanCardBox(
-      loan: loan,
+      book: review.book,
+      route: review.book.owner.isCurrentUser
+          ? '${RouteNames.myBooks}/${review.book.id}'
+          : RouteNames.foreignBooksPage.replaceFirst(':bookId', review.book.id),
       crossAxisAlignment: CrossAxisAlignment.stretch,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,7 +42,7 @@ class CommonReviewCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      loan.book.title,
+                      review.book.title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
@@ -49,7 +53,7 @@ class CommonReviewCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      loan.book.author,
+                      review.book.author,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -61,11 +65,11 @@ class CommonReviewCard extends StatelessWidget {
                   ],
                 ),
               ),
-              if (loan.latest_date != null) ...[
+              ...[
                 const SizedBox(width: 8),
                 Text(
                   DateFormat('MMM d, y', Get.locale?.languageCode)
-                      .format(loan.latest_date!),
+                      .format(review.created_at),
                   style: TextStyle(
                     fontSize: 12,
                     fontStyle: FontStyle.italic,
@@ -81,7 +85,7 @@ class CommonReviewCard extends StatelessWidget {
           const Spacer(),
           const SizedBox(height: 8),
           Text(
-            loan.review ?? '',
+            review.body,
             maxLines: 4,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(fontSize: 13, height: 1.4),
@@ -94,12 +98,12 @@ class CommonReviewCard extends StatelessWidget {
                 // default avatar's LayoutBuilder.
                 SizedBox.square(
                   dimension: 20,
-                  child: CommonCircularAvatar(profile: loan.loanee, radius: 10),
+                  child: CommonCircularAvatar(profile: review.reviewer, radius: 10),
                 ),
                 const SizedBox(width: 6),
                 Flexible(
                   child: Text(
-                    loan.loanee.username,
+                    review.reviewer.username,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(

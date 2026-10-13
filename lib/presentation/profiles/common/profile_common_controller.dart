@@ -1,5 +1,5 @@
 import 'package:communal/models/book.dart';
-import 'package:communal/models/loan.dart';
+import 'package:communal/models/review.dart';
 import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,7 +10,7 @@ abstract class ProfileCommonController extends GetxController {
   final ScrollController scrollController = ScrollController();
   final RxInt currentTabIndex = 0.obs;
 
-  final CommonListViewController<Loan> reviewListController =
+  final CommonListViewController<Review> reviewListController =
       CommonListViewController(pageSize: pageSize);
   final CommonListViewController<Book> bookListController =
       CommonListViewController(pageSize: pageSize);
@@ -37,5 +37,5 @@ abstract class ProfileCommonController extends GetxController {
   }
 
   Future<List<Book>> loadBooks(int pageKey);
-  Future<List<Loan>> loadReviews(int pageKey);
+  Future<List<Review>> loadReviews(int pageKey);
 }

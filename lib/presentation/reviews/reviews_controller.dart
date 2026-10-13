@@ -1,6 +1,6 @@
-import 'package:communal/backend/loans_backend.dart';
+import 'package:communal/backend/reviews_backend.dart';
 import 'package:communal/models/backend_response.dart';
-import 'package:communal/models/loan.dart';
+import 'package:communal/models/review.dart';
 import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,7 +10,7 @@ class ReviewsController extends GetxController {
 
   final ScrollController scrollController = ScrollController();
 
-  final CommonListViewController<Loan> listViewController =
+  final CommonListViewController<Review> listViewController =
       CommonListViewController(pageSize: pageSize);
 
   @override
@@ -19,8 +19,8 @@ class ReviewsController extends GetxController {
     listViewController.registerNewPageCallback(loadReviews);
   }
 
-  Future<List<Loan>> loadReviews(int pageKey) async {
-    final BackendResponse response = await LoansBackend.getFriendReviews(
+  Future<List<Review>> loadReviews(int pageKey) async {
+    final BackendResponse response = await ReviewsBackend.getFriendReviews(
       pageKey: pageKey,
       pageSize: pageSize,
     );

@@ -1,5 +1,5 @@
 import 'package:atlas_icons/atlas_icons.dart';
-import 'package:communal/models/loan.dart';
+import 'package:communal/models/review.dart';
 import 'package:communal/presentation/common/common_keepalive_wrapper.dart';
 import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:communal/presentation/common/common_review_card.dart';
@@ -24,7 +24,7 @@ class ReviewsPage extends StatelessWidget {
             child: CustomScrollView(
               controller: controller.scrollController,
               slivers: [
-                CommonListView<Loan>(
+                CommonListView<Review>(
                   padding: const EdgeInsets.fromLTRB(15, 0, 15, 40),
                   separator: const SizedBox(height: 10),
                   isSliver: true,
@@ -35,8 +35,8 @@ class ReviewsPage extends StatelessWidget {
                     icon: Atlas.comment_dots,
                     title: 'Your friends have not reviewed any books yet.'.tr,
                   ),
-                  childBuilder: (Loan loan, _) => CommonKeepaliveWrapper(
-                    child: CommonReviewCard(loan: loan, showReviewer: true),
+                  childBuilder: (Review review, _) => CommonKeepaliveWrapper(
+                    child: CommonReviewCard(review: review, showReviewer: true),
                   ),
                   controller: controller.listViewController,
                 ),

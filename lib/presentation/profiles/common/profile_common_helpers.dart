@@ -1,5 +1,5 @@
 import 'package:communal/models/book.dart';
-import 'package:communal/models/loan.dart';
+import 'package:communal/models/review.dart';
 import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,10 +8,10 @@ class ProfileCommonHelpers {
   static Widget tabBarView({
     required RxInt currentTabIndex,
     required CommonListViewController<Book> bookListController,
-    required CommonListViewController<Loan> reviewListController,
+    required CommonListViewController<Review> reviewListController,
     required ScrollController scrollController,
     required Widget Function(Book) bookCardBuilder,
-    required Widget Function(Loan, int?) reviewCardBuilder,
+    required Widget Function(Review, int?) reviewCardBuilder,
     String booksNoItemsText = 'No books.',
     String reviewsNoItemsText = 'No reviews.',
   }) {
@@ -33,7 +33,7 @@ class ProfileCommonHelpers {
         }
 
         if (currentTabIndex.value == 1) {
-          return CommonListView<Loan>(
+          return CommonListView<Review>(
             padding: const EdgeInsets.symmetric(
               horizontal: 20,
               vertical: 10,

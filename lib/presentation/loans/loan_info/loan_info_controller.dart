@@ -1,6 +1,8 @@
 import 'package:communal/backend/loans_backend.dart';
+import 'package:communal/backend/reviews_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/loan.dart';
+import 'package:communal/models/review.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
 import 'package:communal/presentation/common/common_confirmation_dialog.dart';
 import 'package:communal/presentation/loans/loans_controller.dart';
@@ -26,6 +28,9 @@ class LoanInfoController extends GetxController {
 
   final RxBool loadingPage = false.obs;
 
+  /// The borrower's review of the book (in the reviews table), if any.
+  final RxnString review = RxnString();
+
   String? newReview = '';
 
   LoansController? loansController;
@@ -47,16 +52,23 @@ class LoanInfoController extends GetxController {
 
     if (inheritedLoan != null) {
       loan.value = inheritedLoan!;
-      newReview = inheritedLoan!.review;
       loan.refresh();
     } else {
       final BackendResponse response = await LoansBackend.getLoanById(loanId);
 
       if (response.success) {
         loan.value = response.payload;
-        newReview = loan.value.review;
         loan.refresh();
       }
+    }
+
+    if (loan.value.id.isNotEmpty) {
+      final Review? existing = await ReviewsBackend.getReview(
+        reviewerId: loan.value.loanee.id,
+        bookId: loan.value.book.id,
+      );
+      review.value = existing?.body;
+      newReview = review.value;
     }
 
     loadingPage.value = false;
@@ -196,11 +208,10 @@ class LoanInfoController extends GetxController {
     deleting.value = true;
 
     final BackendResponse response =
-        await LoansBackend.updateLoanReview(loan.value, null);
+        await ReviewsBackend.saveReview(bookId: loan.value.book.id, body: null);
 
     if (response.success) {
-      loan.value.review = null;
-      loan.refresh();
+      review.value = null;
       editing.value = false;
     }
 
@@ -210,11 +221,13 @@ class LoanInfoController extends GetxController {
   Future<void> onReviewSubmit(BuildContext _) async {
     loading.value = true;
 
-    final BackendResponse response =
-        await LoansBackend.updateLoanReview(loan.value, newReview);
+    final BackendResponse response = await ReviewsBackend.saveReview(
+      bookId: loan.value.book.id,
+      body: newReview,
+    );
 
     if (response.success) {
-      loan.value.review = newReview;
+      review.value = response.payload;
       editing.value = false;
     }
 

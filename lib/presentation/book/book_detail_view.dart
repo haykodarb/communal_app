@@ -1,7 +1,7 @@
-import 'package:communal/backend/loans_backend.dart';
+import 'package:communal/backend/reviews_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
-import 'package:communal/models/loan.dart';
+import 'package:communal/models/review.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/presentation/common/common_loading_body.dart';
@@ -13,16 +13,20 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-/// The book page's reviews (completed loans that left one), newest first,
-/// loaded a page at a time as the page scrolls.
+/// The book page's reviews, a page at a time as the page scrolls: the
+/// owner's own first, then readers', newest first.
 class BookReviewsList {
-  BookReviewsList({required this.bookId});
+  BookReviewsList({required this.bookId, required this.ownerId});
 
   static const int pageSize = 5;
 
   final String bookId;
+  final String ownerId;
 
-  final RxList<Loan> items = <Loan>[].obs;
+  /// The owner's review, shown first with a tag instead of a date.
+  final Rxn<Review> ownerReview = Rxn<Review>();
+
+  final RxList<Review> items = <Review>[].obs;
   final RxBool loading = false.obs;
   final RxBool fullyLoaded = false.obs;
   final RxnString error = RxnString();
@@ -35,13 +39,21 @@ class BookReviewsList {
   final RxBool ready = false.obs;
 
   Future<void> loadFirst() async {
-    await Future.wait([loadCount(), loadMore()]);
+    await Future.wait([loadOwnerReview(), loadCount(), loadMore()]);
     ready.value = true;
+  }
+
+  Future<void> loadOwnerReview() async {
+    ownerReview.value =
+        await ReviewsBackend.getReview(reviewerId: ownerId, bookId: bookId);
   }
 
   Future<void> loadCount() async {
     final BackendResponse<int> response =
-        await LoansBackend.getReviewCountForBook(bookId);
+        await ReviewsBackend.getReaderReviewCountForBook(
+      bookId: bookId,
+      ownerId: ownerId,
+    );
 
     if (response.success) count.value = response.payload ?? 0;
   }
@@ -52,14 +64,15 @@ class BookReviewsList {
     loading.value = true;
 
     final BackendResponse response =
-        await LoansBackend.getCompletedLoansForItem(
+        await ReviewsBackend.getReaderReviewsForBook(
       bookId: bookId,
+      ownerId: ownerId,
       pageKey: items.length,
       pageSize: pageSize,
     );
 
     if (response.success) {
-      final List<Loan> page = response.payload;
+      final List<Review> page = response.payload;
       items.addAll(page);
       if (page.length < pageSize) fullyLoaded.value = true;
     } else {
@@ -108,7 +121,10 @@ class _BookDetailViewState extends State<BookDetailView> {
   final ScrollController _scroll = ScrollController();
   final GlobalKey _stackKey = GlobalKey();
   final GlobalKey _titleKey = GlobalKey();
-  late final BookReviewsList _reviews = BookReviewsList(bookId: widget.book.id);
+  late final BookReviewsList _reviews = BookReviewsList(
+    bookId: widget.book.id,
+    ownerId: widget.book.owner.id,
+  );
   late final Worker _afterLoad;
 
   bool _compact = false;
@@ -404,24 +420,24 @@ class _BookDetailViewState extends State<BookDetailView> {
   /// "Reviews · N" and the list; nothing at all when there are no reviews.
   List<Widget> _reviewItems(BuildContext context) {
     final ColorScheme colors = Theme.of(context).colorScheme;
-    final String? ownerReview = widget.book.review;
-    final bool hasOwnerReview = ownerReview != null && ownerReview.isNotEmpty;
+    final Review? ownerReview = _reviews.ownerReview.value;
+    final bool hasOwnerReview = ownerReview != null;
 
     if (!_reviews.ready.value) return [];
 
-    // The owner's own review has no date and is shown first.
+    // The owner's own review is tagged rather than dated, and shown first.
     final List<Widget> reviews = [
-      if (hasOwnerReview)
+      if (ownerReview != null)
         BookReviewItem(
           author: widget.book.owner,
-          text: ownerReview,
+          text: ownerReview.body,
           tag: "Owner's note".tr,
         ),
-      for (final Loan loan in _reviews.items)
+      for (final Review review in _reviews.items)
         BookReviewItem(
-          author: loan.loanee,
-          text: loan.review ?? '',
-          date: loan.latest_date,
+          author: review.reviewer,
+          text: review.body,
+          date: review.created_at,
         ),
     ];
 

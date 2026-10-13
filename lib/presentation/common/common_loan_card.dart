@@ -1,3 +1,4 @@
+import 'package:communal/models/book.dart';
 import 'package:communal/models/loan.dart';
 import 'package:communal/presentation/common/common_book_cover.dart';
 import 'package:communal/routes.dart';
@@ -12,7 +13,8 @@ import 'package:intl/intl.dart';
 class CommonLoanCardBox extends StatelessWidget {
   const CommonLoanCardBox({
     super.key,
-    required this.loan,
+    required this.book,
+    required this.route,
     required this.child,
     this.crossAxisAlignment = CrossAxisAlignment.center,
   });
@@ -22,7 +24,10 @@ class CommonLoanCardBox extends StatelessWidget {
   static const double coverWidth = 96;
   static const double coverHeight = 128;
 
-  final Loan loan;
+  final Book book;
+
+  /// Where tapping the card goes.
+  final String route;
   final Widget child;
   final CrossAxisAlignment crossAxisAlignment;
 
@@ -31,7 +36,7 @@ class CommonLoanCardBox extends StatelessWidget {
     return InkWell(
       overlayColor: WidgetStateColor.transparent,
       highlightColor: Colors.transparent,
-      onTap: () => context.push('${RouteNames.loansPage}/${loan.id}'),
+      onTap: () => context.push(route),
       child: Card(
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
@@ -49,7 +54,7 @@ class CommonLoanCardBox extends StatelessWidget {
                   width: coverWidth,
                   height: coverHeight,
                   child: CommonBookCover(
-                    loan.book,
+                    book,
                     radius: radius - padding < 5 ? 5 : radius - padding,
                   ),
                 ),
@@ -80,7 +85,8 @@ class CommonLoanCard extends StatelessWidget {
     );
 
     return CommonLoanCardBox(
-      loan: loan,
+      book: loan.book,
+      route: '${RouteNames.loansPage}/${loan.id}',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,

@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:communal/backend/reviews_backend.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
@@ -49,6 +50,21 @@ class BooksBackend {
     }
   }
 
+  /// Saves the owner's review (in the reviews table) of a book just written,
+  /// and returns the book carrying it.
+  static Future<BackendResponse> _withOwnerReview(
+    Book saved,
+    String? review,
+  ) async {
+    final BackendResponse reviewResponse =
+        await ReviewsBackend.saveReview(bookId: saved.id, body: review);
+
+    if (!reviewResponse.success) return reviewResponse;
+
+    saved.review = reviewResponse.payload;
+    return BackendResponse(success: true, payload: saved);
+  }
+
   static Future<BackendResponse> updateBook(Book book, Uint8List? image) async {
     try {
       final String userId = _client.auth.currentUser!.id;
@@ -87,19 +103,20 @@ class BooksBackend {
               'author': book.author,
               'image_path': fileName,
               'public': book.public,
-              'review': book.review,
             },
           )
           .eq('id', book.id)
           .select('*, profiles(*)')
           .single();
 
-      return BackendResponse(
-        success: response.isNotEmpty,
-        payload: response.isNotEmpty
-            ? Book.fromMap(response)
-            : 'Could not update book. Please try again.',
-      );
+      if (response.isEmpty) {
+        return BackendResponse(
+          success: false,
+          payload: 'Could not update book. Please try again.',
+        );
+      }
+
+      return await _withOwnerReview(Book.fromMap(response), book.review);
     } on StorageException catch (error) {
       return BackendResponse(success: false, payload: error.message);
     } on PostgrestException catch (error) {
@@ -145,18 +162,19 @@ class BooksBackend {
               'owner': _client.auth.currentUser!.id,
               'image_path': pathToUpload,
               'public': book.public,
-              'review': book.review,
             },
           )
           .select('*, profiles(*)')
           .single();
 
-      return BackendResponse(
-        success: response.isNotEmpty,
-        payload: response.isNotEmpty
-            ? Book.fromMap(response)
-            : 'Could not create book. Please try again.',
-      );
+      if (response.isEmpty) {
+        return BackendResponse(
+          success: false,
+          payload: 'Could not create book. Please try again.',
+        );
+      }
+
+      return await _withOwnerReview(Book.fromMap(response), book.review);
     } on StorageException catch (error) {
       return BackendResponse(success: false, payload: error.message);
     } on PostgrestException catch (error) {

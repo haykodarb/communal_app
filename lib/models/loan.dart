@@ -17,7 +17,6 @@ class Loan {
   Book book;
   Profile loanee;
   Profile owner;
-  String? review;
   bool accepted;
   bool rejected;
   bool returned;
@@ -59,7 +58,6 @@ class Loan {
         returned_at = DateTime.tryParse(map['returned_at'] ?? '')?.toLocal(),
         rejected_at = DateTime.tryParse(map['rejected_at'] ?? '')?.toLocal(),
         latest_date = DateTime.tryParse(map['latest_date'] ?? '')?.toLocal(),
-        review = map['review'],
         book = map['books'] != null ? Book.fromMap(map['books']) : Book.empty(),
         owner = Profile.fromMap(map['owner_profile']),
         loanee = Profile.fromMap(map['loanee_profile']),

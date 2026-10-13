@@ -1,7 +1,9 @@
 import 'dart:typed_data';
 import 'package:communal/backend/books_backend.dart';
+import 'package:communal/backend/reviews_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
+import 'package:communal/models/review.dart';
 import 'package:communal/presentation/book/book_list_controller.dart';
 import 'package:communal/presentation/book/book_owned/book_owned_controller.dart';
 import 'package:communal/presentation/common/common_alert_dialog.dart';
@@ -40,18 +42,28 @@ class BookEditController extends GetxController {
       bookListController = Get.find<BookListController>();
     }
 
+    // The form's fields take their initial values once, so it waits for the
+    // review too.
+    firstLoad.value = true;
+
     if (bookOwnedController.inheritedBook != null) {
       bookForm.value = bookOwnedController.inheritedBook!;
     } else {
-      firstLoad.value = true;
       final BackendResponse response = await BooksBackend.getBookById(bookId);
-      firstLoad.value = false;
       if (response.success) {
         bookForm.value = response.payload;
       } else {
+        firstLoad.value = false;
         return;
       }
     }
+
+    final Review? ownerReview = await ReviewsBackend.getReview(
+      reviewerId: bookForm.value.owner.id,
+      bookId: bookForm.value.id,
+    );
+    bookForm.value.review = ownerReview?.body;
+    firstLoad.value = false;
 
     addingReview.value = bookForm.value.review != null;
     initialForm = bookForm.value;

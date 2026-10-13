@@ -330,7 +330,7 @@ class LoanInfoPage extends StatelessWidget {
 
   /// One card for the loan's story: the book, the timeline and, once there
   /// is one, the review. The actions stay below it.
-  Widget _loanCard(Loan loan, bool editing) {
+  Widget _loanCard(Loan loan, String? review, bool editing) {
     return Builder(
       builder: (context) {
         final Widget divider = Divider(
@@ -358,13 +358,13 @@ class LoanInfoPage extends StatelessWidget {
                   children: [
                     divider,
                     _timeline(loan),
-                    if (loan.review != null &&
+                    if (review != null &&
                         (loan.accepted || loan.returned) &&
                         !editing) ...[
                       divider,
                       BookReviewItem(
                         author: loan.loanee,
-                        text: loan.review!,
+                        text: review,
                         tag: loan.isBorrowed ? 'Your review'.tr : 'Review'.tr,
                         showAuthor: false,
                       ),
@@ -456,7 +456,7 @@ class LoanInfoPage extends StatelessWidget {
                       ),
                       controller: TextEditingController.fromValue(
                         TextEditingValue(
-                          text: controller.loan.value.review ?? '',
+                          text: controller.review.value ?? '',
                         ),
                       ),
                       style: const TextStyle(
@@ -519,7 +519,7 @@ class LoanInfoPage extends StatelessWidget {
                 );
               }
 
-              if (loan.review == null) {
+              if (controller.review.value == null) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -579,7 +579,11 @@ class LoanInfoPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           _contactRow(loan),
-                          _loanCard(loan, controller.editing.value),
+                          _loanCard(
+                            loan,
+                            controller.review.value,
+                            controller.editing.value,
+                          ),
                           const SizedBox(height: 28),
                           if (loan.isOwned)
                             _ownerBottomHalf(controller)

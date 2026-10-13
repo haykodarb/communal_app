@@ -1,6 +1,6 @@
 import 'package:atlas_icons/atlas_icons.dart';
 import 'package:communal/models/book.dart';
-import 'package:communal/models/loan.dart';
+import 'package:communal/models/review.dart';
 import 'package:communal/models/profile.dart';
 import 'package:communal/presentation/common/common_review_card.dart';
 import 'package:communal/presentation/common/common_button.dart';
@@ -192,8 +192,8 @@ class ProfileOwnPage extends StatelessWidget {
                       book: book,
                     ),
                   ),
-                  reviewCardBuilder: (Loan loan, _) =>
-                      CommonReviewCard(loan: loan),
+                  reviewCardBuilder: (Review review, _) =>
+                      CommonReviewCard(review: review),
                   booksNoItemsText:
                       'You have not uploaded any books.\n\nYou can start doing so from the "My Books" page.',
                   reviewsNoItemsText:

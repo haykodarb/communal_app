@@ -1,8 +1,10 @@
 import 'package:communal/backend/books_backend.dart';
 import 'package:communal/backend/loans_backend.dart';
+import 'package:communal/backend/reviews_backend.dart';
 import 'package:communal/models/backend_response.dart';
 import 'package:communal/models/book.dart';
 import 'package:communal/models/loan.dart';
+import 'package:communal/models/review.dart';
 import 'package:communal/presentation/common/common_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,7 +18,7 @@ class HomeController extends GetxController {
   final ScrollController scrollController = ScrollController();
 
   final RxList<Loan> activeLoans = <Loan>[].obs;
-  final RxList<Loan> reviews = <Loan>[].obs;
+  final RxList<Review> reviews = <Review>[].obs;
 
   final CommonListViewController<Book> networkListController =
       CommonListViewController(pageSize: networkPageSize);
@@ -44,7 +46,7 @@ class HomeController extends GetxController {
   }
 
   Future<void> loadReviews() async {
-    final BackendResponse response = await LoansBackend.getFriendReviews(
+    final BackendResponse response = await ReviewsBackend.getFriendReviews(
       pageKey: 0,
       pageSize: reviewsPreview,
     );

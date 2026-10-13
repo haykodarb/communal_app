@@ -10,9 +10,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:communal/backend/books_backend.dart';
-import 'package:communal/backend/loans_backend.dart';
+import 'package:communal/backend/reviews_backend.dart';
 import 'package:communal/models/book.dart';
-import 'package:communal/models/loan.dart';
+import 'package:communal/models/review.dart';
 
 class ProfileOtherController extends ProfileCommonController {
   ProfileOtherController({
@@ -136,11 +136,11 @@ class ProfileOtherController extends ProfileCommonController {
   }
 
   @override
-  Future<List<Loan>> loadReviews(int pageKey) async {
-    final BackendResponse response = await LoansBackend.getBooksReviewedByUser(
+  Future<List<Review>> loadReviews(int pageKey) async {
+    final BackendResponse response = await ReviewsBackend.getReviewsByUser(
       userId: userId,
-      pageSize: ProfileCommonController.pageSize,
       pageKey: pageKey,
+      pageSize: ProfileCommonController.pageSize,
     );
 
     if (response.success) {

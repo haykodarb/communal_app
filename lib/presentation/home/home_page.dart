@@ -137,8 +137,8 @@ class HomePage extends StatelessWidget {
                           controller.reviews
                               .take(HomeController.reviewsPreview)
                               .map(
-                                (loan) => CommonReviewCard(
-                                  loan: loan,
+                                (review) => CommonReviewCard(
+                                  review: review,
                                   showReviewer: true,
                                 ),
                               )

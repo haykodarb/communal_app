@@ -40,7 +40,8 @@ class Book {
         author = map['author'],
         owner = Profile.fromMap(map['profiles']),
         loaned = map['loaned'],
-        review = map['review'],
+        // The owner's review lives in the reviews table; see ReviewsBackend.
+        review = null,
         public = map['public'],
         image_path = map['image_path'];
 
