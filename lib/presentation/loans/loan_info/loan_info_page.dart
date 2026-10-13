@@ -26,9 +26,11 @@ class LoanInfoPage extends StatelessWidget {
   final String loanId;
   final Loan? loan;
 
-  /// What the other person is to you, following the loan's state.
+  /// What the other person is to you, following the loan's state. Someone
+  /// who is neither party (e.g. opened from a review) sees the borrower, like
+  /// the owner does.
   String _role(Loan loan) {
-    if (loan.isOwned) {
+    if (!loan.isBorrowed) {
       return loan.returned
           ? 'Borrowed this book'.tr
           : loan.accepted
@@ -50,7 +52,7 @@ class LoanInfoPage extends StatelessWidget {
   Widget _contactRow(Loan loan) {
     return Builder(
       builder: (context) {
-        final Profile person = loan.isOwned ? loan.loanee : loan.book.owner;
+        final Profile person = loan.isBorrowed ? loan.book.owner : loan.loanee;
 
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
@@ -363,7 +365,7 @@ class LoanInfoPage extends StatelessWidget {
                       BookReviewItem(
                         author: loan.loanee,
                         text: loan.review!,
-                        tag: loan.isOwned ? 'Review'.tr : 'Your review'.tr,
+                        tag: loan.isBorrowed ? 'Your review'.tr : 'Review'.tr,
                         showAuthor: false,
                       ),
                     ],
@@ -582,9 +584,8 @@ class LoanInfoPage extends StatelessWidget {
                           if (loan.isOwned)
                             _ownerBottomHalf(controller)
                           else if (loan.isBorrowed)
-                            _borrowerBottomHalf(controller)
-                          else
-                            const Text('Error'),
+                            _borrowerBottomHalf(controller),
+                          // Neither party (e.g. from a review): nothing to do.
                         ],
                       );
                     },
