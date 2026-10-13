@@ -21,16 +21,7 @@ migration:
     - platform: ios
       create_revision: nixpkgs000000000000000000000000000000000
       base_revision: nixpkgs000000000000000000000000000000000
-    - platform: linux
-      create_revision: nixpkgs000000000000000000000000000000000
-      base_revision: nixpkgs000000000000000000000000000000000
-    - platform: macos
-      create_revision: nixpkgs000000000000000000000000000000000
-      base_revision: nixpkgs000000000000000000000000000000000
     - platform: web
-      create_revision: nixpkgs000000000000000000000000000000000
-      base_revision: nixpkgs000000000000000000000000000000000
-    - platform: windows
       create_revision: nixpkgs000000000000000000000000000000000
       base_revision: nixpkgs000000000000000000000000000000000
 
