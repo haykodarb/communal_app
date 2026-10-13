@@ -12,7 +12,6 @@ import 'package:communal/responsive.dart';
 import 'package:communal/presentation/common/common_empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 
 class SearchPage extends StatelessWidget {
   const SearchPage({super.key, this.initialTab = 0});
@@ -39,8 +38,12 @@ class SearchPage extends StatelessWidget {
               ? AppBar(title: Text('Search'.tr))
               : null,
           // Without the drawer the app bar shows a back arrow instead of the
-          // menu, when Search was pushed from another page (e.g. Home).
-          drawer: Responsive.isMobile(context) && !GoRouter.of(context).canPop()
+          // menu, when Search was pushed from another page (e.g. Home). Asks
+          // the route, like AppBar does, rather than GoRouter.canPop(): that
+          // still counts the previous page (drawer open) when Search is first
+          // built from the drawer, and leaves it with neither button.
+          drawer: Responsive.isMobile(context) &&
+                  !(ModalRoute.of(context)?.impliesAppBarDismissal ?? false)
               ? const CommonDrawerWidget()
               : null,
           body: SafeArea(
