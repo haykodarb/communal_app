@@ -7,6 +7,15 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart';
 
 class LoginBackend {
+  static const String _webClientId = '77347798204-2mtvb57qeb4gmmks3ep7ikth565i9vca.apps.googleusercontent.com';
+
+  // google_sign_in must be initialized exactly once before any other call.
+  static Future<void>? _googleSignInInit;
+
+  static Future<void> _initGoogleSignIn() {
+    return _googleSignInInit ??= GoogleSignIn.instance.initialize(serverClientId: _webClientId);
+  }
+
   static Future<BackendResponse> login({required LoginForm form}) async {
     try {
       final AuthResponse response = await Supabase.instance.client.auth.signInWithPassword(
@@ -39,35 +48,35 @@ class LoginBackend {
       }
 
       if (Platform.isAndroid) {
-        const String webClientId = '77347798204-2mtvb57qeb4gmmks3ep7ikth565i9vca.apps.googleusercontent.com';
+        await _initGoogleSignIn();
 
-        final GoogleSignIn googleSignIn = GoogleSignIn(serverClientId: webClientId);
+        final GoogleSignInAccount googleUser = await GoogleSignIn.instance.authenticate();
 
-        final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-        // Closed the account picker.
-        if (googleUser == null) return BackendResponse(success: false);
-
-        final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-        final String? idToken = googleAuth.idToken;
-        final String? accessToken = googleAuth.accessToken;
-
-        if (accessToken == null) {
-          throw 'No Access Token found.';
-        }
+        final String? idToken = googleUser.authentication.idToken;
         if (idToken == null) {
           throw 'No ID Token found.';
         }
 
+        const List<String> scopes = ['email', 'profile'];
+        final GoogleSignInClientAuthorization authorization =
+            await googleUser.authorizationClient.authorizationForScopes(scopes) ??
+                await googleUser.authorizationClient.authorizeScopes(scopes);
+
         await Supabase.instance.client.auth.signInWithIdToken(
           provider: OAuthProvider.google,
           idToken: idToken,
-          accessToken: accessToken,
+          accessToken: authorization.accessToken,
         );
 
         return BackendResponse(success: true);
       }
 
       return BackendResponse(success: false);
+    } on GoogleSignInException catch (err) {
+      // Closed the account picker.
+      if (err.code == GoogleSignInExceptionCode.canceled) return BackendResponse(success: false);
+
+      return BackendResponse(success: false, error: err.toString());
     } catch (err) {
       return BackendResponse(success: false, error: err.toString());
     }
@@ -109,10 +118,10 @@ class LoginBackend {
   }
 
   static Future<void> logout() async {
-    if (kIsWeb || Platform.isAndroid) {
-      if (await GoogleSignIn().isSignedIn()) {
-        await GoogleSignIn().signOut();
-      }
+    // The web signs in through Supabase's OAuth redirect, not google_sign_in.
+    if (!kIsWeb && Platform.isAndroid) {
+      await _initGoogleSignIn();
+      await GoogleSignIn.instance.signOut();
     }
 
     await Supabase.instance.client.auth.signOut();

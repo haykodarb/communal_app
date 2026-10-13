@@ -16,7 +16,13 @@ subprojects {
 subprojects {
     afterEvaluate { project ->
         if (project.plugins.hasPlugin("com.android.library")) {
-            project.android.compileSdk = 35
+            project.android.compileSdk = 37
+            project.android.buildToolsVersion = "37.0.0"
+            // Native plugins (jni) otherwise ask for AGP's default CMake,
+            // which the read-only Nix SDK doesn't ship.
+            if (project.android.externalNativeBuild.cmake.path != null) {
+                project.android.externalNativeBuild.cmake.version = "4.1.2"
+            }
         }
     }
 }

@@ -15,8 +15,10 @@
       # toolchain without bumping the rest of the dev shell.
       unstable = import nixpkgs-unstable { inherit system config; };
       androidSdk = (pkgs.androidenv.composeAndroidPackages {
-        platformVersions = ["35"];
-        buildToolsVersions = ["36.0.0"];
+        platformVersions = ["37"];
+        buildToolsVersions = ["37.0.0"];
+        includeCmake = true;
+        cmakeVersions = ["4.1.2"];
         includeNDK = true;
         ndkVersions = ["28.2.13676358"];
       }).androidsdk;
