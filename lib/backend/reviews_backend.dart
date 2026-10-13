@@ -1,7 +1,5 @@
-import 'package:communal/backend/friendships_backend.dart';
 import 'package:communal/backend/users_backend.dart';
 import 'package:communal/models/backend_response.dart';
-import 'package:communal/models/friendship.dart';
 import 'package:communal/models/review.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -180,34 +178,22 @@ class ReviewsBackend {
     }
   }
 
-  /// Reviews written by the current user's friends, newest first.
+  /// Reviews written by the current user's friends of books in their circle
+  /// (get_circle_reviews RPC), newest first. A friend may have reviewed a
+  /// book from outside it, which Home shouldn't surface.
   static Future<BackendResponse> getFriendReviews({
     required int pageKey,
     required int pageSize,
   }) async {
     try {
-      final BackendResponse<List<Friendship>> friendsResponse =
-          await FriendshipsBackend.getFriends(pageKey: 0, pageSize: 200);
-
-      if (!friendsResponse.success) {
-        return BackendResponse(success: false, payload: friendsResponse.error);
-      }
-
-      final List<String> friendIds = friendsResponse.payload!
-          .map((Friendship friendship) => friendship.otherUser.id)
-          .toList();
-
-      if (friendIds.isEmpty) {
-        return BackendResponse(success: true, payload: <Review>[]);
-      }
-
       final List<Map<String, dynamic>> response = await _client
-          .from('reviews')
+          .rpc(
+            'get_circle_reviews',
+            params: {'offset_num': pageKey, 'limit_num': pageSize},
+          )
           .select(_select)
-          .inFilter('reviewer', friendIds)
           .order('created_at', ascending: false)
-          .order('id', ascending: false)
-          .range(pageKey, pageKey + pageSize - 1);
+          .order('id', ascending: false);
 
       return BackendResponse(
         success: true,
